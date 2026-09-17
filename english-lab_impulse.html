@@ -126,7 +126,7 @@
 }
 
 *{box-sizing:border-box;}
-html,body{margin:0;padding:0;scroll-behavior:smooth;}
+html,body{margin:0;padding:0;scroll-behavior:smooth;overflow-x:hidden;}
 body{
   background:var(--bg);
   color:var(--ink);
@@ -964,7 +964,6 @@ footer{max-width:1180px;margin:20px auto 0;padding:26px 24px;color:var(--ink-sof
       </button>
     </div>
   </div>
-  <div class="nav-backdrop" id="navBackdrop"></div>
   <div class="level-bar" id="levelBar">
     <div class="level-bar-inner">
       <span class="level-bar-label">Nivel:</span>
@@ -972,6 +971,8 @@ footer{max-width:1180px;margin:20px auto 0;padding:26px 24px;color:var(--ink-sof
     </div>
   </div>
 </header>
+
+<div class="nav-backdrop" id="navBackdrop"></div>
 
 <main id="main"></main>
 
