@@ -20105,12 +20105,14 @@ function renderHome(){
   const weakId = weakestExerciseType();
   const weakLabel = (EX_TABS.find(t=>t.id===weakId) || {label:weakId}).label;
   const dailyChartData = computeDailyActivity(7);
+  const activeProfileName = (getProfiles().find(p=>p.id===ACTIVE_PROFILE_ID) || {}).name || "";
+  const greetName = userName || activeProfileName;
   const html = `
     <div class="landing-hero">
       ${auroraBackgroundSVG()}
       <div class="landing-hero-inner">
         <div class="landing-hero-text">
-          <h1>¡Hola de nuevo${userName ? ", " + userName : ""}! 👋</h1>
+          <h1>¡Hola de nuevo${greetName ? ", " + greetName : ""}! 👋</h1>
           <p>Teoría clara, ejercicios interactivos y seguimiento real de tu progreso — de A1 a C2.</p>
           <button id="placementCta" class="landing-cta">🎯 ¿No sabes tu nivel? Descúbrelo en 5 minutos →</button>
         </div>
