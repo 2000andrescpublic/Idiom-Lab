@@ -744,6 +744,25 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .why-btn:active{transform:scale(0.96);}
 @media(max-width:420px){.why-compare{grid-template-columns:1fr;}}
 
+.route-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px;}
+.route-tab{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;}
+.route-tab span{font-weight:600;font-size:0.75rem;color:var(--ink-soft);}
+.route-tab.active{background:var(--purple-soft);border-color:var(--purple);color:var(--purple-dark);}
+.route-review-note{margin:12px 0 0;padding:10px 14px;border-radius:12px;background:#FFF3C9;color:#5B4300;font-size:0.88rem;line-height:1.5;}
+.route-progress{height:10px;border-radius:999px;background:var(--bg-soft);border:1px solid var(--line);overflow:hidden;margin:14px 0 6px;}
+.route-progress>span{display:block;height:100%;background:var(--grad-purple);border-radius:999px;}
+.route-list{display:grid;gap:14px;margin-top:18px;}
+.route-unit{display:grid;gap:12px;margin:0;}
+.route-unit.locked{opacity:0.78;}
+.route-unit.next{border-color:var(--purple);}
+.route-unit-head{display:flex;gap:12px;align-items:flex-start;}
+.route-unit h3{margin:0 0 3px;font-size:1.02rem;}
+.route-unit p{margin:0;color:var(--ink-soft);font-size:0.88rem;line-height:1.5;}
+.route-num{flex:0 0 34px;height:34px;border-radius:50%;background:var(--purple-soft);color:var(--purple-dark);font-weight:800;display:flex;align-items:center;justify-content:center;}
+.route-unit.done .route-num{background:var(--teal);color:#fff;}
+.route-missed{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:0.9rem;}
+.route-missed:last-child{border-bottom:none;}
+.route-missed b{text-align:right;color:var(--teal);}
 .mp-pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 4px;}
 .mp-pair-col{display:flex;flex-direction:column;gap:10px;min-width:0;}
 .mp-pair-btn{
@@ -1032,6 +1051,7 @@ const LEVELS = ["A1","A2","B1","B2","C1","C2"];
    relacionadas para que el header no se desborde con 12 enlaces. */
 const NAV = [
   {id:"home", label:"Inicio"},
+  {id:"route", label:"Ruta"},
   {group:"theory-group", label:"Teoría", icon:"book", items:[
     {id:"theory", label:"Gramática"},
     {id:"categories", label:"Categorías Gramaticales"},
@@ -5739,7 +5759,7 @@ const THEORY = {
        {en:"My brother is younger than me.", es:"Mi hermano es menor que yo."},
        {en:"That was the worst movie I've ever seen.", es:"Esa fue la peor película que he visto."},
      ],
-     tip:"Regla general: adjetivos de 1-2 sílabas usan '-er/-est'; de 3 o más, 'more/most'."},
+     tip:"Regla general: los adjetivos de 1 sílaba (y los de 2 sílabas terminados en -y, como happy) usan '-er/-est'; los demás de 2 sílabas (careful, modern) y los de 3 o más usan 'more/most'."},
     {title:"Futuro: be going to", summary:"Se usa para planes ya decididos o predicciones basadas en evidencia presente.",
      detail:"'Be going to' + verbo base se usa para hablar de planes que ya decidiste antes de hablar (no en el momento), y también para predicciones cuando hay evidencia visible de que algo va a pasar (por ejemplo, nubes negras → 'it's going to rain'). Es distinto de 'will', que se usa más para decisiones espontáneas o predicciones sin evidencia concreta.",
      mindmap:{center:"Going to", branches:[
@@ -5826,7 +5846,7 @@ const THEORY = {
        {en:"Don't forget your keys.", es:"No olvides tus llaves."},
        {en:"Mix the eggs and sugar first.", es:"Mezcla los huevos y el azúcar primero."},
      ],
-     tip:"El imperativo nunca lleva 'you' ni 's' aunque hables con una sola persona: 'Close the door', no 'Closes the door'."},
+     tip:"Normalmente el imperativo no lleva sujeto ni '-s' aunque hables con una sola persona: 'Close the door', no 'Closes the door'. Solo se usa 'you' para dar énfasis o contrastar: 'You sit down!'."},
     {title:"Verbos estativos (Stative verbs)", summary:"Describen estados, no acciones (know, like, believe, own) — normalmente NO se usan en tiempos continuos (-ing).",
      detail:"La mayoría de los verbos en inglés se pueden usar en forma continua (-ing) para describir una acción en progreso, pero los verbos estativos son una excepción: describen estados mentales, emociones, posesión o percepción, no acciones que 'están pasando', así que normalmente no llevan '-ing'. Por ejemplo, decimos 'I know the answer', nunca 'I am knowing the answer'. Algunos verbos pueden ser estativos o de acción según el significado: 'think' (opinar = estativo) vs 'think' (procesar activamente = puede ser continuo, 'I'm thinking about it').",
      mindmap:{center:"Verbos estativos", branches:[
@@ -5842,7 +5862,7 @@ const THEORY = {
        {en:"I'm thinking about the problem.", es:"Estoy pensando en el problema (proceso activo)."},
        {en:"We own a small house.", es:"Somos dueños de una casa pequeña."},
      ],
-     tip:"Si puedes reemplazar el verbo por 'estar + adjetivo' en español (sé, creo, quiero), probablemente es estativo en inglés."},
+     tip:"Truco: si el verbo describe un estado (saber, creer, querer, poseer) y no una acción que puedas 'estar haciendo' ahora mismo, probablemente es estativo y no lleva '-ing'."},
     {title:"Orden de los adjetivos", summary:"Cuando usas varios adjetivos juntos, siguen un orden fijo: opinión, tamaño, edad, forma, color, origen, material + sustantivo.",
      detail:"Cuando describes algo con más de un adjetivo antes del sustantivo, el inglés sigue un orden casi fijo que los hablantes nativos aplican automáticamente, aunque rara vez lo piensen conscientemente. El orden típico es: opinión (beautiful, ugly) → tamaño (big, small) → edad (old, young) → forma (round, square) → color (red, blue) → origen (French, Mexican) → material (wooden, metal) + sustantivo. Cambiar el orden no siempre es 'incorrecto' gramaticalmente, pero suena raro para un nativo.",
      mindmap:{center:"Orden de adjetivos", branches:[
@@ -6010,17 +6030,20 @@ const THEORY = {
      ],
      tip:"También cambian los pronombres y expresiones de tiempo/lugar (this→that, here→there)."},
     {title:"Modales de deducción: must / might / can't", summary:"Expresan qué tan seguro estás de algo, basándote en evidencia o lógica.",
-     detail:"Estos modales no hablan de obligación sino de certeza: 'must' se usa cuando estás casi seguro de que algo es verdad (fuerte evidencia lógica), 'might/may/could' cuando es solo una posibilidad, y 'can't' cuando estás casi seguro de que algo NO es verdad. Es una forma muy natural de especular sobre situaciones en inglés cotidiano.",
+     detail:"Estos modales no hablan de obligación sino de certeza: 'must' se usa cuando estás casi seguro de que algo es verdad (fuerte evidencia lógica), 'might/may/could' cuando es solo una posibilidad, y 'can't' cuando estás casi seguro de que algo NO es verdad. Es una forma muy natural de especular sobre situaciones en inglés cotidiano. Para deducir sobre el PASADO se usa modal + have + participio: 'She must have forgotten' (seguro que olvidó), 'He might have missed the bus' (quizá perdió el bus) y 'They can't have known' (es imposible que supieran).",
      mindmap:{center:"Deducción", branches:[
         {label:"Must", items:["casi seguro que sí"]},
         {label:"Might/May/Could", items:["posible, no seguro"]},
         {label:"Can't", items:["casi seguro que no"]},
+        {label:"En el pasado", items:["must have + participio","might have + participio","can't have + participio"]},
      ]},
      examples:[
        {en:"She must be tired after that long flight.", es:"Ella debe estar cansada después de ese vuelo tan largo."},
        {en:"He might be at work right now.", es:"Él podría estar en el trabajo ahora mismo."},
        {en:"That can't be true!", es:"¡Eso no puede ser verdad!"},
        {en:"They could be stuck in traffic.", es:"Podrían estar atrapados en el tráfico."},
+       {en:"She must have forgotten our appointment.", es:"Debe de haber olvidado nuestra cita."},
+       {en:"He can't have known about the surprise.", es:"No puede haber sabido de la sorpresa."},
      ],
      tip:"No confundir con el 'must' de obligación: aquí 'must' expresa una conclusión lógica, no una regla."},
     {title:"Used to / would (hábitos pasados)", summary:"Describen hábitos o estados que eran ciertos en el pasado pero ya no lo son.",
@@ -6048,7 +6071,7 @@ const THEORY = {
        {en:"If they had known, they would have helped.", es:"Si hubieran sabido, habrían ayudado."},
        {en:"Would you have come if I had invited you?", es:"¿Habrías venido si te hubiera invitado?"},
      ],
-     tip:"Distíntolo del condicional mixto: el tipo 3 tiene condición Y resultado en el pasado; el mixto combina pasado con presente."},
+     tip:"Distínguelo del condicional mixto: el tipo 3 tiene condición Y resultado en el pasado; el mixto combina pasado con presente."},
     {title:"Énfasis con do / does / did", summary:"Agregar 'do/does/did' antes del verbo en afirmativo sirve para dar énfasis o contradecir algo: 'I DO like it!'",
      detail:"Normalmente 'do/does/did' solo aparecen en preguntas y negaciones, pero también se pueden usar en oraciones afirmativas para dar énfasis especial — algo que en español haríamos con la entonación o con palabras como 'sí que' ('¡sí que me gusta!'). Es muy común cuando alguien duda de algo o lo contradice: sirve para insistir en que algo es cierto. El verbo principal vuelve a su forma base, igual que en preguntas y negaciones.",
      mindmap:{center:"Énfasis con do", branches:[
@@ -6102,7 +6125,7 @@ const THEORY = {
        {en:"If only I had brought my umbrella!", es:"¡Ojalá hubiera traído mi paraguas!"},
        {en:"She wishes she could sing better.", es:"Ella desearía poder cantar mejor."},
      ],
-     tip:"Después de 'wish', el verbo 'be' casi siempre es 'were', no 'was' (I wish I were taller)."},
+     tip:"Después de 'wish', el verbo 'be' suele ser 'were' en registro formal (I wish I were taller), aunque en el habla cotidiana también se oye 'was'."},
     {title:"Inversión enfática", summary:"Se antepone una expresión negativa o limitante al inicio de la oración para dar énfasis, invirtiendo sujeto y auxiliar.",
      detail:"La inversión enfática es un recurso de estilo formal o literario que invierte el orden habitual sujeto-verbo cuando la oración empieza con ciertas expresiones negativas o restrictivas (never, rarely, not only, no sooner, little). Después de esa expresión, el auxiliar se coloca antes del sujeto, igual que en una pregunta, aunque la oración sea afirmativa en significado. Se usa para dar énfasis dramático, no en conversación cotidiana.",
      mindmap:{center:"Inversión", branches:[
@@ -7037,7 +7060,7 @@ const VOCAB = {
     {en:"achieve", es:"lograr", opts:["lograr","fallar","intentar","perder"], example:"She worked hard to achieve her goals.", esExample:"Ella trabajó duro para lograr sus metas."},
     {en:"reliable", es:"confiable", opts:["confiable","rápido","caro","aburrido"], example:"He is a reliable friend.", esExample:"Él es un amigo confiable."},
     {en:"crowded", es:"lleno de gente", opts:["vacío","lleno de gente","limpio","silencioso"], example:"The train was very crowded this morning.", esExample:"El tren estaba lleno de gente esta mañana."},
-    {en:"accomplish", es:"cumplir", opts:["cumplir","fallar","intentar","abandonar"], example:"We accomplished all our tasks today.", esExample:"Cumplimos todas nuestras tareas hoy."},
+    {en:"accomplish", es:"realizar", opts:["realizar","fallar","intentar","abandonar"], example:"We accomplished all our tasks today.", esExample:"Realizamos todas nuestras tareas hoy."},
     {en:"improve", es:"mejorar", opts:["mejorar","empeorar","mantener","cambiar"], example:"I want to improve my English.", esExample:"Quiero mejorar mi inglés."},
     {en:"increase", es:"aumentar", opts:["aumentar","disminuir","mantener","reducir"], example:"The company plans to increase prices.", esExample:"La empresa planea aumentar los precios."},
     {en:"decrease", es:"disminuir", opts:["disminuir","aumentar","crecer","subir"], example:"Sales decreased last month.", esExample:"Las ventas disminuyeron el mes pasado."},
@@ -7057,7 +7080,7 @@ const VOCAB = {
     {en:"ambitious", es:"ambicioso", opts:["ambicioso","perezoso","conformista","tímido"], example:"She is an ambitious young lawyer.", esExample:"Ella es una abogada joven y ambiciosa."},
     {en:"flexible", es:"flexible", opts:["flexible","rígido","terco","estricto"], example:"My work schedule is flexible.", esExample:"Mi horario de trabajo es flexible."},
     {en:"independent", es:"independiente", opts:["independiente","dependiente","tímido","inseguro"], example:"She became independent at a young age.", esExample:"Ella se volvió independiente a una edad temprana."},
-    {en:"convenient", es:"conveniente", opts:["conveniente","incómodo","difícil","complicado"], example:"This location is very convenient for me.", esExample:"Esta ubicación es muy conveniente para mí."},
+    {en:"convenient", es:"práctico", opts:["práctico","incómodo","difícil","complicado"], example:"This location is very convenient for me.", esExample:"Esta ubicación es muy práctica para mí."},
     {en:"efficient", es:"eficiente", opts:["eficiente","ineficiente","lento","descuidado"], example:"The new system is more efficient.", esExample:"El nuevo sistema es más eficiente."},
     {en:"valuable", es:"valioso", opts:["valioso","inútil","barato","común"], example:"Your feedback is very valuable to us.", esExample:"Tu retroalimentación es muy valiosa para nosotros."},
     {en:"essential", es:"esencial", opts:["esencial","opcional","innecesario","secundario"], example:"Water is essential for life.", esExample:"El agua es esencial para la vida."},
@@ -7150,7 +7173,7 @@ const VOCAB = {
     {en:"refute", es:"refutar", opts:["refutar","confirmar","apoyar","corroborar"], example:"He refuted all the accusations.", esExample:"Él refutó todas las acusaciones."},
     {en:"discern", es:"discernir", opts:["discernir","confundir","ignorar","mezclar"], example:"It's hard to discern the truth from rumors.", esExample:"Es difícil discernir la verdad de los rumores."},
     {en:"infer", es:"inferir", opts:["inferir","afirmar","negar","declarar"], example:"From her tone, I could infer she was upset.", esExample:"Por su tono, pude inferir que estaba molesta."},
-    {en:"presume", es:"presumir", opts:["presumir","confirmar","comprobar","verificar"], example:"I presume you already know the answer.", esExample:"Presumo que ya sabes la respuesta."},
+    {en:"presume", es:"suponer", opts:["suponer","confirmar","comprobar","verificar"], example:"I presume you already know the answer.", esExample:"Supongo que ya sabes la respuesta."},
     {en:"comprehensive", es:"integral", opts:["integral","parcial","incompleto","limitado"], example:"The report offers a comprehensive analysis.", esExample:"El informe ofrece un análisis integral."},
     {en:"intricate", es:"intrincado", opts:["intrincado","simple","sencillo","básico"], example:"The watch has an intricate design.", esExample:"El reloj tiene un diseño intrincado."},
     {en:"rigorous", es:"riguroso", opts:["riguroso","relajado","flexible","descuidado"], example:"The course has a rigorous curriculum.", esExample:"El curso tiene un plan de estudios riguroso."},
@@ -12365,13 +12388,26 @@ const GRAMMAR = {
     {sentence:"There ___ (be) a book on the table.", answer:"is", explain:"'There is' se usa con sustantivos singulares o incontables; 'there are' con plurales."},
     {sentence:"There ___ (be) three chairs in the room.", answer:"are", explain:"Con sustantivos plurales se usa 'there are', no 'there is'."},
     {sentence:"This is ___ (I) car.", answer:"my", explain:"'My' es el adjetivo posesivo que corresponde a 'I' (yo)."},
-    {sentence:"The cat is ___ (on) the table.", answer:"on", explain:"'On' indica que algo está sobre una superficie."},
-    {sentence:"My keys are ___ (in) my bag.", answer:"in", explain:"'In' indica que algo está dentro de un espacio cerrado."},
+    {sentence:"The cat is ___ (sobre) the table.", answer:"on", explain:"'On' indica que algo está sobre una superficie."},
+    {sentence:"My keys are ___ (dentro de) my bag.", answer:"in", explain:"'In' indica que algo está dentro de un espacio cerrado."},
     {sentence:"Can you give it to ___ (I)?", answer:"me", explain:"'Me' es el pronombre de objeto que corresponde a 'I'."},
     {sentence:"We ___ (not/have) a car.", answer:"don't have", explain:"En presente simple, la negación se forma con 'don't' + verbo base (excepto con he/she/it, que usa 'doesn't')."},
     {sentence:"___ you like coffee?", answer:"Do", explain:"Las preguntas en presente simple empiezan con 'do' (o 'does' con he/she/it)."},
     {sentence:"She ___ (not/be) at home.", answer:"isn't", explain:"La negación de 'is' se forma agregando 'not': is not / isn't."},
     {sentence:"They ___ (be) my friends.", answer:"are", explain:"Con 'they' (plural) el verbo 'to be' es 'are'."},
+    /* Preguntas 15-26: agregadas para la Ruta A1 (unidades sin banco propio). Se agregan al final para no mover los ids de repaso de las anteriores. */
+    {sentence:"I have ___ (a/an) umbrella.", answer:"an", explain:"Se usa 'an' delante de un sonido de vocal: an umbrella, an apple. Delante de sonido de consonante se usa 'a': a book."},
+    {sentence:"She bought two ___ (box) of cookies.", answer:"boxes", explain:"Los sustantivos que terminan en -x, -s, -ch o -sh forman el plural con '-es': box → boxes."},
+    {sentence:"There are three ___ (child) in the park.", answer:"children", explain:"'Child' tiene un plural irregular: child → children (no se agrega -s)."},
+    {sentence:"___ there a bathroom here? (be)", answer:"Is", explain:"En preguntas con 'there' se invierte el orden: 'Is there...?' para singular y 'Are there...?' para plural."},
+    {sentence:"There ___ (not/be, forma corta) any eggs in the fridge.", answer:"aren't", explain:"'Eggs' es plural, así que se usa 'there aren't' (there are not): There aren't any eggs."},
+    {sentence:"This is ___ (she) bag.", answer:"her", explain:"El adjetivo posesivo de 'she' es 'her': her bag (su bolso). Va siempre antes del sustantivo."},
+    {sentence:"___ (we) house is very big.", answer:"Our", explain:"El adjetivo posesivo de 'we' es 'our': our house (nuestra casa). Va antes del sustantivo."},
+    {sentence:"The cat is ___ (debajo de) the chair.", answer:"under", explain:"'Under' significa 'debajo de': the cat is under the chair. 'In' es dentro, 'on' es sobre."},
+    {sentence:"There is a picture ___ (sobre) the wall.", answer:"on", explain:"'On' indica que algo está apoyado sobre una superficie o pegado a ella: on the wall, on the table."},
+    {sentence:"I love Anna. I love ___ (she).", answer:"her", explain:"Después del verbo se usa el pronombre de objeto: she → her. 'I love her' (la quiero)."},
+    {sentence:"This gift is for ___ (we).", answer:"us", explain:"Después de una preposición como 'for' se usa el pronombre de objeto: we → us. 'This gift is for us'."},
+    {sentence:"The children are happy. I see ___ (they) at the park.", answer:"them", explain:"El pronombre de objeto de 'they' es 'them': I see them (los veo)."},
   ],
   A2:[
     {sentence:"I ___ (visit) my grandma last weekend.", answer:"visited", explain:"Es una acción terminada en el pasado, así que se usa pasado simple: verbo regular + '-ed'."},
@@ -12383,9 +12419,9 @@ const GRAMMAR = {
     {sentence:"He ___ (not/watch) TV at the moment.", answer:"isn't watching", explain:"La negación del presente continuo se forma con isn't/aren't/am not + verbo-ing."},
     {sentence:"This is the ___ (big) building in the city.", answer:"biggest", explain:"'Big' es un adjetivo corto, así que el superlativo se forma duplicando la consonante final y agregando '-est'."},
     {sentence:"My sister is ___ (young) than me.", answer:"younger", explain:"'Young' es un adjetivo corto: el comparativo se forma agregando '-er'."},
-    {sentence:"We ___ (go) to visit my aunt next Sunday.", answer:"are going to", explain:"'Be going to' se usa para hablar de planes ya decididos."},
-    {sentence:"There isn't ___ (much) milk left.", answer:"much", explain:"'Much' se usa con sustantivos incontables como 'milk'."},
-    {sentence:"How ___ (many) apples do you need?", answer:"many", explain:"'Many' se usa con sustantivos contables en plural."},
+    {sentence:"We ___ (go) to visit my aunt next Sunday.", answer:"are going", explain:"'Be going to' se usa para hablar de planes ya decididos. Aquí el 'to' ya está escrito después del hueco (to visit), así que solo falta 'are going'."},
+    {sentence:"There isn't ___ (much/many) milk left.", answer:"much", explain:"'Milk' es incontable, por eso se usa 'much' y no 'many'."},
+    {sentence:"How ___ (much/many) apples do you need?", answer:"many", explain:"'Apples' es contable en plural, por eso se usa 'many' y no 'much'."},
     {sentence:"While I ___ (cook), the phone rang.", answer:"was cooking", explain:"El pasado continuo (was/were + verbo-ing) describe una acción en progreso interrumpida por otra."},
     {sentence:"If you heat ice, it ___ (melt).", answer:"melts", explain:"El condicional cero usa presente simple en ambas partes para hablar de verdades generales."},
     {sentence:"___ (not/talk) in the library!", answer:"Don't talk", explain:"Los imperativos negativos se forman con 'don't' + verbo base."},
@@ -12393,14 +12429,14 @@ const GRAMMAR = {
   B1:[
     {sentence:"I ___ (never/be) to Japan.", answer:"have never been", explain:"Para experiencias de vida sin decir cuándo, se usa presente perfecto: have/has + participio. 'Never' va entre el auxiliar y el participio."},
     {sentence:"If it rains, I ___ (stay) home.", answer:"will stay", explain:"En el condicional tipo 1, la parte del resultado usa 'will + verbo base', nunca 'will' en la parte con 'if'."},
-    {sentence:"You ___ (must) wear a seatbelt.", answer:"must", explain:"'Must' expresa una obligación fuerte y va seguido del verbo en forma base, sin 'to'."},
-    {sentence:"I ___ (know) the answer, but I don't want to tell.", answer:"know", explain:"'Know' es un verbo estativo (describe un estado mental), así que no se usa en forma continua."},
+    {sentence:"You ___ (obligación fuerte) wear a seatbelt.", answer:"must", alt:["have to"], explain:"'Must' expresa una obligación fuerte (también sirve 'have to') y va seguido del verbo en forma base, sin 'to'."},
+    {sentence:"I ___ (know / be knowing) the answer, but I don't want to tell.", answer:"know", explain:"'Know' es un verbo estativo (describe un estado mental), así que no se usa en forma continua."},
     {sentence:"She has a ___ (beautiful/small) garden.", answer:"beautiful small", explain:"El orden de los adjetivos es opinión antes que tamaño: 'beautiful' (opinión) va antes de 'small' (tamaño)."},
     {sentence:"I ___ (already/finish) my homework.", answer:"have already finished", explain:"El presente perfecto se usa para acciones recientes sin decir exactamente cuándo; 'already' va entre el auxiliar y el participio."},
-    {sentence:"You ___ (should) apologize to her.", answer:"should", explain:"'Should' expresa un consejo y va seguido del verbo base, sin 'to'."},
-    {sentence:"I think it ___ (rain) tomorrow.", answer:"will rain", explain:"'Will' se usa para predicciones sin evidencia clara en el momento de hablar."},
+    {sentence:"You ___ (consejo) apologize to her.", answer:"should", alt:["ought to"], explain:"'Should' expresa un consejo (también sirve 'ought to') y va seguido del verbo base, sin 'to'."},
+    {sentence:"I think it ___ (rain) tomorrow.", answer:"will rain", alt:["is going to rain"], explain:"'Will' se usa para predicciones sin evidencia clara en el momento de hablar. También se acepta 'is going to rain', pero 'will' es lo más natural cuando no hay evidencia visible."},
     {sentence:"Look at those clouds! It ___ (rain) soon.", answer:"is going to rain", explain:"'Going to' se usa para predicciones basadas en evidencia presente (las nubes)."},
-    {sentence:"This is the man ___ (who) helped me yesterday.", answer:"who", explain:"'Who' se usa para introducir información sobre una persona en una oración de relativo."},
+    {sentence:"This is the man ___ (who/which) helped me yesterday.", answer:"who", alt:["that"], explain:"'Who' se usa para personas ('which' es para cosas). En oraciones definitorias como esta también se puede usar 'that'."},
     {sentence:"She enjoys ___ (read) mystery novels.", answer:"reading", explain:"Después de 'enjoy' siempre se usa el gerundio (verbo + -ing), nunca el infinitivo."},
     {sentence:"I decided ___ (study) medicine.", answer:"to study", explain:"Después de 'decide' se usa el infinitivo con 'to', no el gerundio."},
     {sentence:"You've met him before, ___ you?", answer:"haven't", explain:"Los question tags usan la forma negativa del auxiliar cuando la oración principal es afirmativa."},
@@ -12418,45 +12454,45 @@ const GRAMMAR = {
     {sentence:"She said she ___ (see) that movie before.", answer:"had seen", explain:"En estilo indirecto, el presente perfecto retrocede a pasado perfecto (had + participio)."},
     {sentence:"He must ___ (forget) our appointment; he's not answering.", answer:"have forgotten", explain:"'Must have + participio' expresa una deducción fuerte sobre algo pasado."},
     {sentence:"She can't ___ (know) about the surprise; she looks so calm.", answer:"have known", explain:"'Can't have + participio' expresa que algo es imposible que haya pasado."},
-    {sentence:"When I was a child, I ___ (play) outside every day.", answer:"used to play", explain:"'Used to' describe un hábito pasado que ya no es cierto."},
+    {sentence:"When I was a child, I ___ (play, con 'used to') outside every day.", answer:"used to play", explain:"'Used to' describe un hábito pasado que ya no es cierto."},
     {sentence:"If they had left earlier, they ___ (not/miss) the train.", answer:"wouldn't have missed", explain:"Condicional tipo 3: would have/wouldn't have + participio, para un resultado irreal en el pasado."},
     {sentence:"I ___ (not/realize) how late it was until I checked my phone.", answer:"didn't realize", explain:"Pasado simple negativo con 'didn't' + verbo base, describiendo un hecho pasado completo."},
-    {sentence:"She ___ (really/enjoy) the concert last night.", answer:"did really enjoy", explain:"'Did' antes del verbo base se usa para dar énfasis en afirmativo: 'she DID enjoy it'."},
+    {sentence:"—You didn't enjoy the concert. —Yes, I ___ (enjoy) it! (énfasis)", answer:"did enjoy", explain:"Para contradecir o insistir se usa 'did' antes del verbo base en afirmativo: 'I DID enjoy it!'. Sin énfasis diríamos simplemente 'I enjoyed it'."},
     {sentence:"If he ___ (study) harder, he would pass the exam.", answer:"studied", explain:"En el condicional tipo 2, la parte con 'if' usa pasado simple, aunque hable del presente/futuro."},
   ],
   C1:[
-    {sentence:"I ___ (live) here for ten years.", answer:"have been living", explain:"Presente perfecto continuo: enfatiza la duración de una acción que sigue pasando. También se acepta 'have lived', pero pone énfasis en el resultado, no en la duración."},
+    {sentence:"I ___ (live) here for ten years.", answer:"have been living", alt:["have lived"], explain:"Presente perfecto continuo: enfatiza la duración de una acción que sigue pasando. También se acepta 'have lived', pero pone énfasis en el resultado, no en la duración."},
     {sentence:"I wish I ___ (know) the answer.", answer:"knew", explain:"Después de 'wish' para deseos irreales en el presente, se usa el pasado simple (no el presente)."},
     {sentence:"By the time we arrived, the movie ___ (already/start).", answer:"had already started", explain:"Usamos pasado perfecto (had + participio) porque la acción de la película ya había comenzado antes de otra acción pasada (llegar)."},
     {sentence:"I ___ (work) on this project for three hours, and I'm exhausted.", answer:"have been working", explain:"Presente perfecto continuo: enfatiza la duración de una actividad reciente que explica el estado actual."},
     {sentence:"I've read the book, but I ___ (not/watch) the movie yet.", answer:"haven't watched", explain:"Presente perfecto simple: enfatiza el resultado (aún no lo he hecho), no la duración."},
     {sentence:"If only I ___ (have) more free time!", answer:"had", explain:"Después de 'if only' (deseo irreal en el presente) se usa el pasado simple, igual que con 'wish'."},
     {sentence:"Never ___ (I/see) such a beautiful sunset.", answer:"have I seen", explain:"La inversión enfática invierte el orden sujeto-auxiliar después de una expresión negativa como 'never' al inicio."},
-    {sentence:"My brother, ___ (who) lives in Canada, is visiting us next week.", answer:"who", explain:"Esta es una cláusula relativa no definitoria (con comas): agrega información extra sin identificar de quién se habla."},
-    {sentence:"It was Maria ___ (who) solved the problem, not John.", answer:"who", explain:"Esta es una cleft sentence (oración enfática): 'It was Maria who...' pone el énfasis específicamente en Maria."},
-    {sentence:"The teacher suggested ___ (I/review) the material again.", answer:"that I review", explain:"Después de 'suggest' en discurso reportado formal, se usa 'that' + sujeto + verbo base (subjuntivo)."},
+    {sentence:"My brother, ___ (who/which/that) lives in Canada, is visiting us next week.", answer:"who", explain:"Esta es una cláusula relativa no definitoria (con comas): agrega información extra sin identificar de quién se habla. Aquí NO se puede usar 'that'."},
+    {sentence:"It was Maria ___ (who/which/what) solved the problem, not John.", answer:"who", alt:["that"], explain:"Esta es una cleft sentence (oración enfática): 'It was Maria who...' pone el énfasis específicamente en Maria. También se acepta 'that'."},
+    {sentence:"The teacher suggested ___ (I/review) the material again.", answer:"that I review", alt:["that I should review"], explain:"Después de 'suggest' en discurso reportado formal, se usa 'that' + sujeto + verbo base (subjuntivo)."},
     {sentence:"He had his roof ___ (repair) after the storm.", answer:"repaired", explain:"Estructura causativa: have + objeto + participio, cuando alguien más hace la acción por nosotros."},
-    {sentence:"By next year, I ___ (live) here for a decade.", answer:"will have been living", explain:"Futuro perfecto continuo: enfatiza la duración de una acción que continuará hasta un punto futuro."},
+    {sentence:"By next year, I ___ (live) here for a decade.", answer:"will have been living", alt:["will have lived"], explain:"Futuro perfecto continuo: enfatiza la duración de una acción que continuará hasta un punto futuro."},
     {sentence:"She denied ___ (take) the money.", answer:"taking", explain:"'Deny' va seguido de gerundio, no de infinitivo."},
     {sentence:"Not only ___ (he/arrive) late, but he also forgot the documents.", answer:"did he arrive", explain:"Con 'not only' al inicio de la oración se invierte el orden: auxiliar + sujeto + verbo."},
     {sentence:"I wish I ___ (not/say) that to her.", answer:"hadn't said", explain:"Después de 'wish' para arrepentimientos sobre el pasado, se usa el pasado perfecto."},
   ],
   C2:[
     {sentence:"I ___ (have) my car repaired yesterday.", answer:"had", explain:"Estructura causativa en pasado: had + objeto + participio. Indica que alguien más hizo la reparación por ti."},
-    {sentence:"If she had studied, she ___ (pass).", answer:"would have passed", explain:"Condicional tipo 3 (o mixto si el resultado es presente): would have + participio, para un resultado irreal en el pasado."},
-    {sentence:"He is known ___ (for) his honesty.", answer:"for", explain:"'Known for' es una colocación fija: se usa para describir por qué alguien es reconocido/famoso."},
+    {sentence:"If she had studied, she ___ (pass) the exam last month.", answer:"would have passed", explain:"Condicional tipo 3: would have + participio, para un resultado irreal en el pasado."},
+    {sentence:"He is known ___ (for/as/by) his honesty.", answer:"for", explain:"'Known for' es una colocación fija: se usa para describir por qué alguien es reconocido/famoso."},
     {sentence:"If she had studied harder, she ___ (be) a doctor now.", answer:"would be", explain:"Condicional mixto: condición irreal en el pasado (had studied) con resultado en el presente (would be)."},
     {sentence:"I wouldn't be so tired if I ___ (not/stay up) so late last night.", answer:"hadn't stayed up", explain:"Condicional mixto: la condición se refiere al pasado (hadn't stayed up) y el resultado al presente."},
-    {sentence:"The committee insists that the report ___ (be) submitted by Friday.", answer:"be", explain:"El subjuntivo formal (mandative subjunctive) usa el verbo en forma base después de verbos como 'insist' o 'demand', sin importar el sujeto."},
-    {sentence:"It is essential that she ___ (arrive) on time.", answer:"arrive", explain:"Después de expresiones como 'it is essential that', se usa el subjuntivo formal: verbo en forma base."},
+    {sentence:"The committee insists that the report ___ (be/is/will be) submitted by Friday.", answer:"be", explain:"El subjuntivo formal (mandative subjunctive) usa el verbo en forma base después de verbos como 'insist' o 'demand', sin importar el sujeto."},
+    {sentence:"It is essential that she ___ (arrive/arrives/will arrive) on time.", answer:"arrive", alt:["should arrive"], explain:"Después de expresiones como 'it is essential that', se usa el subjuntivo formal: verbo en forma base. En inglés británico también se usa 'should arrive'."},
     {sentence:"The company announced a significant ___ (reduce) in costs.", answer:"reduction", explain:"Nominalización: convertir el verbo 'reduce' en el sustantivo 'reduction' da un tono más formal y objetivo, típico de la escritura académica."},
     {sentence:"There has been a considerable ___ (improve) in performance.", answer:"improvement", explain:"Nominalización: 'improve' se convierte en 'improvement' para un registro más formal."},
     {sentence:"Had I known about the meeting, I ___ (attend).", answer:"would have attended", explain:"Inversión condicional formal: 'had I known' reemplaza a 'if I had known', omitiendo 'if' e invirtiendo el auxiliar."},
-    {sentence:"Were she to apply, she would certainly ___ (get) the job.", answer:"get", explain:"Inversión condicional formal en tipo 2: 'were she to apply' reemplaza a 'if she applied', típico de registro literario/formal."},
-    {sentence:"He finally managed to ___ (come to terms with) his failure.", answer:"come to terms with", explain:"'Come to terms with' es una colocación avanzada que significa aceptar algo difícil emocionalmente."},
+    {sentence:"___ she to apply, she would certainly get the job. (were/if/should)", answer:"Were", explain:"Inversión condicional formal en tipo 2: 'were she to apply' reemplaza a 'if she applied', típico de registro literario/formal."},
+    {sentence:"He finally managed to ___ (aceptar, asimilar) his failure.", answer:"come to terms with", explain:"'Come to terms with' es una colocación avanzada que significa aceptar algo difícil emocionalmente."},
     {sentence:"The negotiations eventually ___ (fall through) due to a lack of funding.", answer:"fell through", explain:"'Fall through' (phrasal verb avanzado) significa que un plan no se concreta o fracasa."},
-    {sentence:"She is known for her ability to ___ (think outside the box).", answer:"think outside the box", explain:"Esta colocación significa pensar de forma creativa, fuera de los métodos convencionales."},
-    {sentence:"Should you ___ (need) any assistance, do not hesitate to contact us.", answer:"need", explain:"Inversión condicional formal: 'should you need' reemplaza a 'if you should need', muy común en registro formal escrito."},
+    {sentence:"She is known for her ability to ___ (pensar de forma creativa).", answer:"think outside the box", explain:"Esta colocación significa pensar de forma creativa, fuera de los métodos convencionales."},
+    {sentence:"Should you ___ (need/needs/needed) any assistance, do not hesitate to contact us.", answer:"need", explain:"Inversión condicional formal: 'should you need' reemplaza a 'if you should need', muy común en registro formal escrito."},
   ],
 };
 
@@ -13598,64 +13634,64 @@ const TRANSLATE = {
     {es:"Ella no está en casa.", en:["she isn't at home","she is not at home"], explain:"La negación de 'is' se forma agregando 'not'."},
   ],
   A2:[
-    {es:"Ayer visité a mi abuela.", en:["i visited my grandma yesterday","yesterday i visited my grandma"], explain:"Acción terminada en el pasado → pasado simple: visit + ed = visited."},
+    {es:"Ayer visité a mi abuela.", en:["i visited my grandma yesterday","yesterday i visited my grandma","i visited my grandmother yesterday","yesterday i visited my grandmother"], explain:"Acción terminada en el pasado → pasado simple: visit + ed = visited."},
     {es:"Está lloviendo afuera.", en:["it is raining outside"], explain:"Acción que pasa ahora mismo → presente continuo: is + raining. Se usa 'it' como sujeto para el clima."},
     {es:"Ella no fue a la fiesta anoche.", en:["she didn't go to the party last night"], explain:"Negación en pasado simple: didn't + verbo base."},
     {es:"Ahora mismo estamos estudiando para el examen.", en:["right now we are studying for the exam","we are studying for the exam right now"], explain:"Presente continuo: be + verbo-ing."},
     {es:"Este es el edificio más grande de la ciudad.", en:["this is the biggest building in the city"], explain:"Superlativo de adjetivo corto: '-est'."},
     {es:"Mi hermana es más joven que yo.", en:["my sister is younger than me"], explain:"Comparativo corto: adjetivo + '-er' + than."},
-    {es:"Vamos a visitar a mi tía el domingo.", en:["we are going to visit my aunt on sunday"], explain:"'Be going to' se usa para planes ya decididos."},
-    {es:"No queda mucha leche.", en:["there isn't much milk left"], explain:"'Much' se usa con sustantivos incontables."},
+    {es:"Vamos a visitar a mi tía el domingo.", en:["we are going to visit my aunt on sunday","we are going to visit my aunt next sunday"], explain:"'Be going to' se usa para planes ya decididos."},
+    {es:"No queda mucha leche.", en:["there isn't much milk left","there isn't a lot of milk left","we don't have much milk left"], explain:"'Much' se usa con sustantivos incontables."},
     {es:"Si calientas el hielo, se derrite.", en:["if you heat ice it melts","if you heat ice, it melts"], explain:"Condicional cero: presente simple en ambas partes."},
     {es:"¡No hables en la biblioteca!", en:["don't talk in the library"], explain:"Imperativo negativo: don't + verbo base."},
   ],
   B1:[
     {es:"Nunca he estado en París.", en:["i have never been to paris"], explain:"Experiencia de vida sin fecha específica → presente perfecto: have + never + been."},
-    {es:"Si llueve, me quedaré en casa.", en:["if it rains i will stay home","if it rains, i will stay home"], explain:"Condicional tipo 1: 'if' + presente simple, + will + verbo base."},
+    {es:"Si llueve, me quedaré en casa.", en:["if it rains i will stay home","if it rains, i will stay home","if it rains i will stay at home"], explain:"Condicional tipo 1: 'if' + presente simple, + will + verbo base."},
     {es:"Ya terminé mi tarea.", en:["i have already finished my homework"], explain:"Presente perfecto con 'already' entre el auxiliar y el participio."},
-    {es:"Deberías disculparte con ella.", en:["you should apologize to her"], explain:"'Should' expresa consejo y va con el verbo base."},
+    {es:"Deberías disculparte con ella.", en:["you should apologize to her","you should apologise to her"], explain:"'Should' expresa consejo y va con el verbo base."},
     {es:"Ella disfruta leer novelas de misterio.", en:["she enjoys reading mystery novels"], explain:"Después de 'enjoy' se usa el gerundio."},
     {es:"Decidí estudiar medicina.", en:["i decided to study medicine"], explain:"Después de 'decide' se usa el infinitivo con 'to'."},
     {es:"Este es el hombre que me ayudó ayer.", en:["this is the man who helped me yesterday"], explain:"'Who' introduce información sobre una persona."},
     {es:"Creo que va a llover mañana.", en:["i think it will rain tomorrow"], explain:"'Will' para predicciones sin evidencia clara."},
-    {es:"No debes llegar tarde a la reunión.", en:["you must not be late for the meeting"], explain:"'Must not' expresa una prohibición fuerte."},
+    {es:"No debes llegar tarde a la reunión.", en:["you must not be late for the meeting","you should not be late for the meeting"], explain:"'Must not' expresa una prohibición fuerte."},
     {es:"Ya has estado aquí antes, ¿verdad?", en:["you've been here before haven't you","you have been here before haven't you"], explain:"Question tag negativo cuando la oración principal es afirmativa."},
   ],
   B2:[
     {es:"La carta fue escrita por ella.", en:["the letter was written by her"], explain:"Voz pasiva en pasado: was + participio (written) + by + agente."},
     {es:"Si yo fuera tú, me disculparía.", en:["if i were you i would apologize","if i were you, i would apologize"], explain:"Condicional tipo 2: con 'be' siempre se usa 'were', y el resultado lleva 'would'."},
     {es:"El inglés se habla en muchos países.", en:["english is spoken in many countries"], explain:"Voz pasiva en presente: is + participio."},
-    {es:"Él me dijo que estaría ocupado al día siguiente.", en:["he told me he would be busy the next day"], explain:"En estilo indirecto, 'will' retrocede a 'would'."},
+    {es:"Él me dijo que estaría ocupado al día siguiente.", en:["he told me he would be busy the next day","he told me he would be busy the following day"], explain:"En estilo indirecto, 'will' retrocede a 'would'."},
     {es:"Ella debe haber olvidado nuestra cita.", en:["she must have forgotten our appointment"], explain:"'Must have + participio' expresa una deducción fuerte."},
-    {es:"Cuando era niño, jugaba afuera todos los días.", en:["when i was a child i used to play outside every day","when i was a child, i used to play outside every day"], explain:"'Used to' describe un hábito pasado."},
+    {es:"Cuando era niño, jugaba afuera todos los días.", en:["when i was a child i used to play outside every day","when i was a child, i used to play outside every day","when i was a child i played outside every day","when i was a child i would play outside every day"], explain:"'Used to' describe un hábito pasado."},
     {es:"Si hubieran salido antes, no habrían perdido el tren.", en:["if they had left earlier they wouldn't have missed the train","if they had left earlier, they wouldn't have missed the train"], explain:"Condicional tipo 3."},
-    {es:"No me di cuenta de lo tarde que era.", en:["i didn't realize how late it was"], explain:"Pasado simple negativo con 'didn't'."},
-    {es:"Si él estudiara más, aprobaría el examen.", en:["if he studied harder he would pass the exam","if he studied harder, he would pass the exam"], explain:"Condicional tipo 2: 'if' + pasado simple."},
+    {es:"No me di cuenta de lo tarde que era.", en:["i didn't realize how late it was","i didn't realise how late it was"], explain:"Pasado simple negativo con 'didn't'."},
+    {es:"Si él estudiara más, aprobaría el examen.", en:["if he studied harder he would pass the exam","if he studied harder, he would pass the exam","if he studied more he would pass the exam"], explain:"Condicional tipo 2: 'if' + pasado simple."},
     {es:"Ella no puede haber sabido sobre la sorpresa.", en:["she can't have known about the surprise","she cannot have known about the surprise"], explain:"'Can't have + participio' expresa imposibilidad."},
   ],
   C1:[
     {es:"He estado viviendo aquí por diez años.", en:["i have been living here for ten years"], explain:"Presente perfecto continuo: enfatiza la duración con 'have been' + verbo-ing."},
     {es:"Ojalá supiera la respuesta.", en:["i wish i knew the answer"], explain:"'Wish' + pasado simple para expresar un deseo sobre algo irreal en el presente."},
-    {es:"He leído el libro, pero todavía no he visto la película.", en:["i've read the book but i haven't watched the movie yet","i have read the book but i haven't watched the movie yet"], explain:"Presente perfecto simple enfatiza el resultado."},
+    {es:"He leído el libro, pero todavía no he visto la película.", en:["i've read the book but i haven't watched the movie yet","i have read the book but i haven't watched the movie yet","i've read the book but i haven't seen the movie yet"], explain:"Presente perfecto simple enfatiza el resultado."},
     {es:"¡Ojalá tuviera más tiempo libre!", en:["if only i had more free time"], explain:"'If only' + pasado simple para deseos irreales en el presente."},
     {es:"Mi hermano, que vive en Canadá, nos visita la próxima semana.", en:["my brother who lives in canada is visiting us next week"], explain:"Cláusula relativa no definitoria: agrega información extra."},
-    {es:"Fue María quien resolvió el problema.", en:["it was maria who solved the problem"], explain:"Cleft sentence: pone énfasis en 'Maria'."},
+    {es:"Fue María quien resolvió el problema.", en:["it was maria who solved the problem","it was maria that solved the problem"], explain:"Cleft sentence: pone énfasis en 'Maria'."},
     {es:"Él mandó a reparar su techo después de la tormenta.", en:["he had his roof repaired after the storm"], explain:"Estructura causativa: have + objeto + participio."},
     {es:"Ella negó haber tomado el dinero.", en:["she denied taking the money"], explain:"'Deny' va seguido de gerundio."},
     {es:"No solo llegó tarde, sino que también olvidó los documentos.", en:["not only did he arrive late but he also forgot the documents","not only did he arrive late, but he also forgot the documents"], explain:"Inversión con 'not only' al inicio."},
-    {es:"Ojalá no le hubiera dicho eso.", en:["i wish i hadn't said that to her"], explain:"'Wish' + pasado perfecto para arrepentimientos del pasado."},
+    {es:"Ojalá no le hubiera dicho eso.", en:["i wish i hadn't said that to her","i wish i hadn't said that"], explain:"'Wish' + pasado perfecto para arrepentimientos del pasado."},
   ],
   C2:[
     {es:"Mandé a reparar mi auto ayer.", en:["i had my car repaired yesterday"], explain:"Estructura causativa: had + objeto + participio, porque otra persona hizo la reparación."},
     {es:"No puedo tolerar este ruido.", en:["i can't put up with this noise","i cannot put up with this noise"], explain:"'Put up with' es un phrasal verb que significa 'tolerar' y se usa como una sola unidad."},
-    {es:"Si ella hubiera estudiado más, ahora sería doctora.", en:["if she had studied harder she would be a doctor now","if she had studied harder, she would be a doctor now"], explain:"Condicional mixto."},
+    {es:"Si ella hubiera estudiado más, ahora sería doctora.", en:["if she had studied harder she would be a doctor now","if she had studied harder, she would be a doctor now","if she had studied more she would be a doctor now"], explain:"Condicional mixto."},
     {es:"El comité insiste en que el informe se entregue el viernes.", en:["the committee insists that the report be submitted by friday"], explain:"Subjuntivo formal: verbo en forma base después de 'insist that'."},
     {es:"Ha habido una mejora considerable en el rendimiento.", en:["there has been a considerable improvement in performance"], explain:"Nominalización: 'improve' → 'improvement'."},
     {es:"De haber sabido sobre la reunión, habría asistido.", en:["had i known about the meeting i would have attended","had i known about the meeting, i would have attended"], explain:"Inversión condicional formal: 'had I known' reemplaza 'if I had known'."},
-    {es:"Si ella aplicara, seguramente conseguiría el trabajo.", en:["were she to apply she would certainly get the job","were she to apply, she would certainly get the job"], explain:"Inversión condicional formal tipo 2."},
-    {es:"Finalmente logró aceptar su fracaso.", en:["he finally managed to come to terms with his failure"], explain:"'Come to terms with' es una colocación avanzada."},
-    {es:"Las negociaciones finalmente fracasaron por falta de financiamiento.", en:["the negotiations eventually fell through due to a lack of funding"], explain:"'Fall through' significa que un plan fracasa."},
-    {es:"Si necesita ayuda, no dude en contactarnos.", en:["should you need any assistance do not hesitate to contact us","should you need any assistance, do not hesitate to contact us"], explain:"Inversión condicional formal: 'should you need' reemplaza 'if you should need'."},
+    {es:"Si ella aplicara, seguramente conseguiría el trabajo.", en:["were she to apply she would certainly get the job","were she to apply, she would certainly get the job","if she applied she would certainly get the job","if she applied she would surely get the job"], explain:"Inversión condicional formal tipo 2."},
+    {es:"Finalmente logró aceptar su fracaso.", en:["he finally managed to come to terms with his failure","she finally managed to come to terms with her failure"], explain:"'Come to terms with' es una colocación avanzada."},
+    {es:"Las negociaciones finalmente fracasaron por falta de financiamiento.", en:["the negotiations eventually fell through due to a lack of funding","the negotiations finally fell through due to a lack of funding","the negotiations eventually fell through because of a lack of funding"], explain:"'Fall through' significa que un plan fracasa."},
+    {es:"Si necesita ayuda, no dude en contactarnos.", en:["should you need any assistance do not hesitate to contact us","should you need any assistance, do not hesitate to contact us","if you need any assistance do not hesitate to contact us","if you need any help do not hesitate to contact us"], explain:"Inversión condicional formal: 'should you need' reemplaza 'if you should need'."},
   ],
 };
 
@@ -19171,6 +19207,7 @@ let dailyGoal = 10;               // meta diaria de ejercicios
 let notificationsEnabled = false; // recordatorios diarios (ajuste visual, sin backend de notificaciones)
 let userName = "";                // nombre del usuario, usado en el saludo del Dashboard
 const matchPairsBest = {};        // récord de "Une los pares" por duración: {t15, t30, t45} -> pares emparejados
+const routeProgress = {};         // progreso de la Ruta: "A1:0" -> {theory, best (%), attempts, passed, skipped}
 
 /* ---- Idioma que se está aprendiendo (distinto de uiLangPref, que es
    el idioma de la interfaz). Cada perfil guarda su propio learningLang;
@@ -19253,7 +19290,7 @@ let currentLang = "en";
    Mientras un idioma no esté en LANG_PACKS_READY, estas secciones
    muestran un aviso de "en construcción" en vez de contenido en inglés
    bajo un idioma distinto. */
-const LANG_GATED_SECTIONS = ["theory","categories","phrasal","verbs","situations","expressions","falsefriends","howtosay","vocabtopics","placement","exams","exercises"];
+const LANG_GATED_SECTIONS = ["route","theory","categories","phrasal","verbs","situations","expressions","falsefriends","howtosay","vocabtopics","placement","exams","exercises"];
 /* Qué secciones ya tienen contenido real por idioma (más allá de "en",
    que siempre las tiene todas). Una sección ausente de un idioma en
    este mapa se trata como no lista. */
@@ -19276,6 +19313,330 @@ function isExerciseReadyForLang(exId, lang){
 /* Los paquetes de contenido en sí: cada idioma expone las mismas claves
    (VOCAB, GRAMMAR, THEORY...) para que el código de renderizado no
    tenga que saber en qué idioma está — solo pide LANG_PACKS[currentLang].X */
+/* =========================================================
+   PREGUNTAS NUEVAS DE LA RUTA (A2–C2, inglés)
+   Se agregan al final de GRAMMAR/ORDER/TRANSLATE de cada nivel (así no cambian los ids de repaso
+   de las preguntas anteriores) y su índice se guarda por unidad en ROUTE_NEW_IDX.
+   ========================================================= */
+const ROUTE_NEW = {
+  A2:{
+    1:{
+      gapfill:[
+        {"sentence":"Listen! The baby ___ (cry).","answer":"is crying","explain":"'Listen!' indica que algo ocurre ahora mismo, así que se usa presente continuo: is/are + verbo-ing."},
+      ],
+      order:[
+        {"words":["are","they","playing","football","in","the","park"],"correct":"They are playing football in the park.","explain":"Presente continuo: sujeto + am/is/are + verbo-ing + complemento."},
+      ],
+    },
+    2:{
+      gapfill:[
+        {"sentence":"This is the ___ (good) restaurant in town.","answer":"best","explain":"'Good' es irregular: good → better → best. El superlativo lleva 'the' delante: the best."},
+      ],
+    },
+    3:{
+      gapfill:[
+        {"sentence":"Look at the sky! It ___ (snow) tonight.","answer":"is going to snow","explain":"Hay evidencia visible ahora (el cielo), así que se usa 'be going to' para predecir: is going to + verbo base."},
+        {"sentence":"She ___ (not/travel, be going to) next month; she changed her plans.","answer":"isn't going to travel","explain":"La negación de 'be going to' se forma con isn't/aren't/am not + going to + verbo base."},
+        {"sentence":"What ___ (be) you going to do tonight?","answer":"are","explain":"En preguntas con 'be going to' se invierte el verbo 'be': What are you going to do?"},
+      ],
+      order:[
+        {"words":["are","we","going","to","have","dinner","at","eight"],"correct":"We are going to have dinner at eight.","explain":"Futuro con 'going to': sujeto + am/is/are + going to + verbo base + complemento."},
+      ],
+    },
+    4:{
+      gapfill:[
+        {"sentence":"Would you like ___ (some/any) coffee?","answer":"some","explain":"En ofertas y peticiones corteses se usa 'some', aunque sea una pregunta: Would you like some coffee?"},
+        {"sentence":"I don't have ___ (some/any) brothers.","answer":"any","explain":"En oraciones negativas se usa 'any', no 'some'."},
+      ],
+      translate:[
+        {"es":"¿Cuántos estudiantes hay en tu clase?","en":["how many students are there in your class","how many students are in your class","how many students are there in your classroom"],"explain":"'How many' se usa con sustantivos contables en plural (students) para preguntar cantidad."},
+      ],
+    },
+    5:{
+      gapfill:[
+        {"sentence":"At 8 o'clock last night, I ___ (watch) a movie.","answer":"was watching","explain":"Una acción en progreso en un momento preciso del pasado (a las 8) se expresa con pasado continuo: was/were + verbo-ing."},
+        {"sentence":"They ___ (not/sleep) when the phone rang.","answer":"weren't sleeping","explain":"Pasado continuo negativo: wasn't/weren't + verbo-ing. La acción corta (rang) va en pasado simple."},
+        {"sentence":"What ___ (you/do) when I called you?","answer":"were you doing","explain":"Pregunta en pasado continuo: palabra pregunta + was/were + sujeto + verbo-ing."},
+        {"sentence":"She hurt her leg while she ___ (play) tennis.","answer":"was playing","explain":"Con 'while' se describe la acción larga en progreso (was playing); la acción corta (hurt) va en pasado simple."},
+      ],
+      order:[
+        {"words":["was","it","raining","when","we","left","home"],"correct":"It was raining when we left home.","explain":"Pasado continuo (was raining) + 'when' + pasado simple (left): una acción corta interrumpe a la larga."},
+      ],
+      translate:[
+        {"es":"Yo estaba estudiando cuando llegaste.","en":["i was studying when you arrived","i was studying when you got here","i was studying when you came"],"explain":"Pasado continuo (was studying) para la acción en progreso y pasado simple (arrived) para la que la interrumpe."},
+      ],
+    },
+    6:{
+      gapfill:[
+        {"sentence":"If you mix red and blue, you ___ (get/will get) purple.","answer":"get","explain":"En el condicional cero se usa presente simple en las dos partes: If you mix..., you get..."},
+        {"sentence":"Water ___ (boil) if you heat it to 100°C.","answer":"boils","explain":"Un hecho científico se expresa con presente simple; con 'water' (tercera persona) el verbo lleva -s: boils."},
+        {"sentence":"If it ___ (rain), the streets get wet.","answer":"rains","explain":"Condicional cero: presente simple en las dos partes. Con 'it' el verbo lleva -s: rains."},
+        {"sentence":"If I don't sleep enough, I ___ (be) tired.","answer":"am","explain":"Condicional cero: presente simple en las dos partes. Con 'I', el verbo 'be' es 'am'."},
+      ],
+      order:[
+        {"words":["if","you","press","this","button","the","door","opens"],"correct":"If you press this button, the door opens.","explain":"Condicional cero: 'if' + presente simple, + presente simple."},
+      ],
+      translate:[
+        {"es":"Si mezclas rojo y azul, obtienes morado.","en":["if you mix red and blue you get purple","if you mix red and blue you get violet","if you mix blue and red you get purple"],"explain":"Condicional cero: presente simple en ambas partes (mix... get)."},
+      ],
+    },
+    7:{
+      gapfill:[
+        {"sentence":"I need some ___ (advice/advices) about my career.","answer":"advice","explain":"'Advice' es incontable: no tiene plural (no se dice 'advices')."},
+        {"sentence":"There ___ (be) too much noise in here.","answer":"is","explain":"'Noise' es incontable, así que el verbo va en singular: there is too much noise."},
+        {"sentence":"How ___ (much/many) money do you have?","answer":"much","explain":"'Money' es incontable, por eso se usa 'much' y no 'many'."},
+        {"sentence":"She gave me three pieces of ___ (information/informations).","answer":"information","explain":"'Information' es incontable: no tiene plural. Para contarla se usa 'pieces of information'."},
+      ],
+    },
+    8:{
+      gapfill:[
+        {"sentence":"___ (not/touch) that! It's hot.","answer":"Don't touch","explain":"El imperativo negativo se forma con don't + verbo base."},
+        {"sentence":"___ (be/are) quiet, please. The baby is sleeping.","answer":"Be","explain":"El imperativo usa el verbo en forma base, y la forma base de 'to be' es 'be': Be quiet."},
+        {"sentence":"___ (open/opens) your books to page ten.","answer":"Open","explain":"El imperativo usa el verbo base, sin sujeto y sin '-s'."},
+        {"sentence":"Please ___ (not/be) late tomorrow.","answer":"don't be","explain":"El imperativo negativo con 'be' es don't be: Don't be late."},
+      ],
+      order:[
+        {"words":["turn","off","your","phones","please"],"correct":"Turn off your phones, please.","explain":"Imperativo: verbo base (turn off) + complemento; 'please' suaviza la orden."},
+      ],
+      translate:[
+        {"es":"No olvides tus llaves.","en":["don't forget your keys","do not forget your keys"],"explain":"Imperativo negativo: don't + verbo base."},
+      ],
+    },
+    9:{
+      gapfill:[
+        {"sentence":"I ___ (want/am wanting) a glass of water.","answer":"want","explain":"'Want' es un verbo estativo (expresa un deseo), así que no se usa en forma continua."},
+        {"sentence":"She ___ (love/is loving) her new job.","answer":"loves","explain":"'Love' es un verbo estativo (emoción) y no se usa en continuo; con 'she' lleva -s: loves."},
+        {"sentence":"This soup ___ (taste/is tasting) delicious.","answer":"tastes","explain":"Cuando 'taste' describe cómo sabe algo es estativo y va en presente simple: tastes."},
+        {"sentence":"Be quiet! I ___ (think/am thinking) about the answer.","answer":"am thinking","alt":["'m thinking"],"explain":"Aquí 'think' significa procesar algo activamente (una acción en curso), y con ese sentido sí admite continuo. Con el sentido de 'opinar' sería estativo (I think it's good)."},
+        {"sentence":"Right now I ___ (need/am needing) your help.","answer":"need","explain":"'Need' es un verbo estativo (necesidad): no se usa en continuo aunque sea 'ahora mismo'."},
+      ],
+      order:[
+        {"words":["i","don't","understand","this","exercise"],"correct":"I don't understand this exercise.","explain":"'Understand' es estativo: se usa en presente simple (don't understand), no en continuo."},
+      ],
+      translate:[
+        {"es":"Ella conoce a mi hermano.","en":["she knows my brother"],"explain":"'Know' es un verbo estativo: presente simple (knows), nunca 'is knowing'."},
+      ],
+    },
+    10:{
+      gapfill:[
+        {"sentence":"She has a ___ (red/big) car.","answer":"big red","explain":"El orden es tamaño antes que color: a big red car."},
+        {"sentence":"He wore a ___ (leather/black) jacket.","answer":"black leather","explain":"El color va antes que el material: a black leather jacket."},
+        {"sentence":"I bought a ___ (wooden/beautiful) table.","answer":"beautiful wooden","explain":"La opinión va primero y el material justo antes del sustantivo: a beautiful wooden table."},
+        {"sentence":"They live in a ___ (old/big) house.","answer":"big old","explain":"El tamaño va antes que la edad: a big old house."},
+        {"sentence":"She has ___ (long/beautiful/black) hair.","answer":"beautiful long black","explain":"Orden: opinión (beautiful), tamaño (long) y color (black), y luego el sustantivo."},
+      ],
+      order:[
+        {"words":["she","has","a","small","blue","bag"],"correct":"She has a small blue bag.","explain":"Orden de adjetivos: tamaño (small) antes que color (blue)."},
+      ],
+      translate:[
+        {"es":"Tengo un pequeño coche rojo.","en":["i have a small red car"],"explain":"Orden de adjetivos: tamaño (small) antes que color (red)."},
+      ],
+    },
+  },
+  B1:{
+    1:{
+      gapfill:[
+        {"sentence":"If you ___ (not/hurry), you will miss the train.","answer":"don't hurry","explain":"Condicional tipo 1: 'if' + presente simple (aquí negativo con don't), y 'will' + verbo base en el resultado."},
+        {"sentence":"If she ___ (call) me, I will tell her the news.","answer":"calls","explain":"Después de 'if' se usa presente simple, no 'will': if she calls (con she lleva -s)."},
+      ],
+      translate:[
+        {"es":"Si estudias, aprobarás el examen.","en":["if you study you will pass the exam","if you study you'll pass the exam"],"explain":"Condicional tipo 1: 'if' + presente simple, + will + verbo base."},
+      ],
+    },
+    3:{
+      gapfill:[
+        {"sentence":"—The phone is ringing. —I ___ (get) it!","answer":"will get","alt":["'ll get"],"explain":"Una decisión espontánea, tomada en el momento de hablar, se expresa con 'will': I'll get it!"},
+        {"sentence":"I have already bought the tickets. We ___ (visit, be going to) Rome in June.","answer":"are going to visit","explain":"Un plan ya decidido antes de hablar se expresa con 'be going to': are going to + verbo base."},
+        {"sentence":"Look! That man ___ (fall)!","answer":"is going to fall","explain":"Hay evidencia visible ahora mismo (lo estás viendo), así que se usa 'be going to' para predecir."},
+        {"sentence":"I think Spain ___ (win) the match.","answer":"will win","alt":["is going to win"],"explain":"Una predicción basada en una opinión, sin evidencia concreta, suele usar 'will'. También se acepta 'is going to win'."},
+      ],
+      order:[
+        {"words":["i","will","help","you","with","your","homework"],"correct":"I will help you with your homework.","explain":"'Will' para una oferta o promesa: sujeto + will + verbo base + complemento."},
+      ],
+    },
+    4:{
+      gapfill:[
+        {"sentence":"The book ___ (who/which) I bought is great.","answer":"which","alt":["that"],"explain":"'Which' (o 'that') se usa para cosas; 'who' es solo para personas."},
+        {"sentence":"She is the teacher ___ (who/which) taught me English.","answer":"who","alt":["that"],"explain":"'Who' (o 'that') se usa para personas."},
+        {"sentence":"The car ___ (who/which) is parked outside is mine.","answer":"which","alt":["that"],"explain":"'Which' (o 'that') se usa para cosas; 'who' es solo para personas."},
+      ],
+      translate:[
+        {"es":"La mujer que vive aquí es médica.","en":["the woman who lives here is a doctor","the woman that lives here is a doctor"],"explain":"'Who' (o 'that') introduce información sobre una persona (the woman)."},
+      ],
+    },
+    5:{
+      gapfill:[
+        {"sentence":"She avoided ___ (talk) about the problem.","answer":"talking","explain":"Después de 'avoid' se usa gerundio (verbo + -ing), no infinitivo."},
+        {"sentence":"We hope ___ (see) you soon.","answer":"to see","explain":"Después de 'hope' se usa infinitivo con 'to'."},
+      ],
+      order:[
+        {"words":["i","want","to","learn","English"],"correct":"I want to learn English.","explain":"Después de 'want' va infinitivo con 'to': want + to + verbo base."},
+      ],
+    },
+    6:{
+      gapfill:[
+        {"sentence":"You like pizza, ___ you?","answer":"don't","explain":"La oración principal es afirmativa, así que el tag es negativo. Como no hay auxiliar, se usa 'do': don't you?"},
+        {"sentence":"She isn't at home, ___ she?","answer":"is","explain":"La oración principal es negativa, así que el tag es afirmativo: is she?"},
+        {"sentence":"They went to the cinema, ___ they?","answer":"didn't","explain":"Oración afirmativa en pasado simple → tag negativo con did: didn't they?"},
+        {"sentence":"He can swim, ___ he?","answer":"can't","explain":"Se repite el auxiliar 'can' en forma negativa: can't he?"},
+      ],
+      order:[
+        {"words":["you","are","coming","aren't","you"],"correct":"You are coming, aren't you?","explain":"Question tag: oración afirmativa + auxiliar en negativo + pronombre."},
+      ],
+      translate:[
+        {"es":"Vas a venir, ¿verdad?","en":["you are going to come aren't you","you're going to come aren't you","you are coming aren't you","you're coming aren't you"],"explain":"Question tag: oración afirmativa + tag negativo (aren't you?)."},
+      ],
+    },
+  },
+  B2:{
+    2:{
+      gapfill:[
+        {"sentence":"He said, 'I am hungry.' → He said he ___ (be) hungry.","answer":"was","explain":"En estilo indirecto el presente (am) retrocede a pasado (was)."},
+        {"sentence":"She said, 'I will call you.' → She said she ___ (call) me.","answer":"would call","explain":"En estilo indirecto 'will' retrocede a 'would'."},
+      ],
+    },
+    3:{
+      gapfill:[
+        {"sentence":"The lights are on. Somebody ___ (be) at home.","answer":"must be","explain":"Con evidencia fuerte (las luces encendidas) se deduce con 'must': casi seguro que sí."},
+        {"sentence":"He hasn't answered his phone. He ___ (be) asleep. (posible, no seguro)","answer":"might be","alt":["may be","could be"],"explain":"Para una posibilidad sin certeza se usa might/may/could + verbo base."},
+        {"sentence":"That ___ (not/be) Anna. She's in Paris.","answer":"can't be","alt":["cannot be"],"explain":"Cuando estás casi seguro de que algo NO es verdad se usa 'can't' (no 'mustn't')."},
+      ],
+    },
+    4:{
+      gapfill:[
+        {"sentence":"We ___ (live, con 'used to') in London when I was little.","answer":"used to live","explain":"'Used to' + verbo base describe un estado o hábito del pasado que ya no es cierto."},
+        {"sentence":"She ___ (not/eat) meat, but now she does.","answer":"didn't use to eat","alt":["used not to eat","never used to eat"],"explain":"La negación de 'used to' es 'didn't use to' + verbo base (sin -d en 'use')."},
+        {"sentence":"Every summer we ___ (go) to the beach. (hábito repetido)","answer":"would go","alt":["used to go"],"explain":"Para acciones repetidas en el pasado se puede usar 'would' + verbo base (o 'used to')."},
+      ],
+      order:[
+        {"words":["i","used","to","play","the","piano"],"correct":"I used to play the piano.","explain":"'Used to' + verbo base: un hábito que tenías en el pasado y ya no."},
+      ],
+      translate:[
+        {"es":"Antes fumaba, pero lo dejé.","en":["i used to smoke but i quit","i used to smoke but i stopped","i used to smoke but i gave it up","i used to smoke but i gave up"],"explain":"'Used to' + verbo base para un hábito pasado que terminó."},
+      ],
+    },
+    5:{
+      gapfill:[
+        {"sentence":"If I ___ (know) about the party, I would have come.","answer":"had known","explain":"Condicional tipo 3: 'if' + pasado perfecto (had known), + would have + participio."},
+        {"sentence":"She ___ (not/pass) the exam if she hadn't studied.","answer":"wouldn't have passed","explain":"Resultado irreal en el pasado: would have / wouldn't have + participio."},
+      ],
+      order:[
+        {"words":["if","you","had","asked","i","would","have","helped"],"correct":"If you had asked, I would have helped.","explain":"Condicional tipo 3: 'if' + pasado perfecto, + would have + participio."},
+      ],
+      translate:[
+        {"es":"Si hubiera sabido, te habría llamado.","en":["if i had known i would have called you","if i had known i would have called"],"explain":"Condicional tipo 3: 'if' + had + participio, + would have + participio."},
+      ],
+    },
+    6:{
+      gapfill:[
+        {"sentence":"—You don't care. —I ___ (care)! I really do.","answer":"do care","explain":"Para contradecir se usa 'do' antes del verbo base en afirmativo, con énfasis: I DO care!"},
+        {"sentence":"—She doesn't speak Italian. —She ___ (speak) Italian! I heard her.","answer":"does speak","explain":"Con he/she/it el énfasis se hace con 'does' + verbo base: She DOES speak Italian!"},
+        {"sentence":"I ___ (tell) you about the meeting! Check your email.","answer":"did tell","explain":"En pasado, el énfasis se hace con 'did' + verbo base: I DID tell you!"},
+        {"sentence":"They ___ (want) to come, but they were busy.","answer":"did want","explain":"'Did' + verbo base enfatiza que sí querían: They DID want to come."},
+        {"sentence":"—Why aren't you eating? —I ___ (like) it; I'm just not hungry.","answer":"do like","explain":"'Do' + verbo base insiste en que es cierto: I DO like it."},
+      ],
+      order:[
+        {"words":["i","do","want","to","help","you"],"correct":"I do want to help you.","explain":"Énfasis: sujeto + do + verbo base. El verbo principal queda en forma base."},
+      ],
+      translate:[
+        {"es":"¡Sí me gustó la película!","en":["i did like the movie","i did like the film"],"explain":"Para dar énfasis en pasado se usa 'did' + verbo base: I DID like it!"},
+      ],
+    },
+  },
+  C1:{
+    0:{
+      gapfill:[
+        {"sentence":"She ___ (write) five emails since this morning.","answer":"has written","explain":"Presente perfecto simple: se enfatiza el resultado o la cantidad (five emails), no la duración."},
+      ],
+    },
+    3:{
+      gapfill:[
+        {"sentence":"The Eiffel Tower, ___ (that/which) is in Paris, attracts millions of visitors.","answer":"which","explain":"En cláusulas no definitorias (con comas) NUNCA se usa 'that'; para cosas se usa 'which'."},
+        {"sentence":"My sister, ___ (who/that) is a nurse, works at night.","answer":"who","explain":"En cláusulas no definitorias no se usa 'that'; para personas se usa 'who'."},
+        {"sentence":"Mr. Smith, ___ (whose/who) car was stolen, called the police.","answer":"whose","explain":"'Whose' indica posesión: Mr. Smith's car → whose car."},
+        {"sentence":"London, ___ (where/which) I was born, is a huge city.","answer":"where","explain":"'Where' se usa para lugares: London, where I was born."},
+      ],
+      order:[
+        {"words":["my","brother","who","lives","in","Spain","is","a","teacher"],"correct":"My brother, who lives in Spain, is a teacher.","explain":"Cláusula no definitoria: la información extra va entre comas y no se puede cambiar 'who' por 'that'."},
+      ],
+      translate:[
+        {"es":"Mi casa, que es muy vieja, necesita reparaciones.","en":["my house which is very old needs repairs","my house which is very old needs repairing"],"explain":"Cláusula no definitoria: información extra entre comas con 'which' (nunca 'that')."},
+      ],
+    },
+    4:{
+      gapfill:[
+        {"sentence":"___ (What/It) I need is a holiday.","answer":"What","explain":"Cleft con 'What': What I need is..., pone el énfasis en lo que va después de 'is'."},
+        {"sentence":"It was in Paris ___ (that/what) we first met.","answer":"that","explain":"Cleft con 'It': It was + elemento enfatizado + that + resto de la oración."},
+        {"sentence":"What surprised me ___ (is/was) his reaction.","answer":"was","explain":"En el cleft 'What... was' el verbo 'be' concuerda con el tiempo: surprised (pasado) → was."},
+      ],
+      translate:[
+        {"es":"Lo que necesito es un café.","en":["what i need is a coffee","what i need is a cup of coffee"],"explain":"Cleft sentence con 'What': What I need is + elemento enfatizado."},
+      ],
+    },
+    5:{
+      gapfill:[
+        {"sentence":"She admitted ___ (steal) the money.","answer":"stealing","explain":"'Admit' va seguido de gerundio: admitted stealing."},
+        {"sentence":"He warned us ___ (not/go) out at night.","answer":"not to go","explain":"'Warn someone not to + verbo base': warned us not to go."},
+        {"sentence":"They accused him ___ (lie).","answer":"of lying","explain":"'Accuse someone of + gerundio': accused him of lying."},
+        {"sentence":"She apologized ___ (be) late.","answer":"for being","explain":"'Apologize for + gerundio': apologized for being late."},
+      ],
+      order:[
+        {"words":["he","denied","breaking","the","window"],"correct":"He denied breaking the window.","explain":"'Deny' va seguido de gerundio: denied breaking."},
+      ],
+    },
+  },
+  C2:{
+    0:{
+      gapfill:[
+        {"sentence":"She ___ (get) her hair cut every month.","answer":"gets","alt":["has"],"explain":"Causativo: get/have + objeto + participio. Con 'she' en presente simple: gets (o has) her hair cut."},
+      ],
+    },
+    1:{
+      gapfill:[
+        {"sentence":"If I had taken that job, I ___ (live) in Paris now.","answer":"would be living","alt":["would live"],"explain":"Condicional mixto: condición en el pasado (had taken) y resultado en el presente (would be living now)."},
+        {"sentence":"If she ___ (not/be) so shy, she would have spoken up yesterday.","answer":"weren't","alt":["wasn't"],"explain":"Condicional mixto: condición en presente (si no fuera tan tímida) y resultado en el pasado: weren't + would have + participio."},
+        {"sentence":"If you had listened to me, you ___ (not/be) in this mess now.","answer":"wouldn't be","explain":"Condicional mixto: condición en el pasado (had listened) y resultado en el presente (wouldn't be)."},
+      ],
+      translate:[
+        {"es":"Si hubiera aceptado el trabajo, ahora viviría en París.","en":["if i had accepted the job i would be living in paris now","if i had accepted the job i would live in paris now","if i had taken the job i would be living in paris now"],"explain":"Condicional mixto: pasado perfecto en la condición y 'would' + verbo base en el resultado presente."},
+      ],
+    },
+    3:{
+      gapfill:[
+        {"sentence":"The board recommended that he ___ (resign/resigns/resigned).","answer":"resign","alt":["should resign"],"explain":"Subjuntivo formal tras 'recommend that': el verbo va en forma base, aunque el sujeto sea 'he'."},
+        {"sentence":"It is vital that everyone ___ (be/is) informed.","answer":"be","explain":"Tras 'it is vital that' se usa el subjuntivo formal: 'be' en forma base."},
+        {"sentence":"She insisted that he ___ (not/smoke) inside.","answer":"not smoke","alt":["should not smoke"],"explain":"El subjuntivo formal negativo se forma con 'not' + verbo base (sin do): that he not smoke."},
+        {"sentence":"I demand that she ___ (apologize) immediately.","answer":"apologize","alt":["apologise","should apologize"],"explain":"Tras 'demand that' el verbo va en forma base: that she apologize (sin -s)."},
+      ],
+      order:[
+        {"words":["it","is","essential","that","he","arrive","on","time"],"correct":"It is essential that he arrive on time.","explain":"Subjuntivo formal: tras 'it is essential that' el verbo queda en forma base (arrive), sin -s."},
+      ],
+    },
+    4:{
+      gapfill:[
+        {"sentence":"The ___ (decide) to close the factory shocked everyone.","answer":"decision","explain":"Nominalización: el verbo 'decide' se convierte en el sustantivo 'decision', más formal."},
+        {"sentence":"Her ___ (achieve) in science is remarkable.","answer":"achievement","explain":"Nominalización: achieve → achievement."},
+        {"sentence":"There is growing ___ (aware) of climate change.","answer":"awareness","explain":"Nominalización de un adjetivo: aware → awareness."},
+        {"sentence":"The ___ (discover) of penicillin changed medicine.","answer":"discovery","explain":"Nominalización: discover → discovery."},
+      ],
+      translate:[
+        {"es":"El aumento de los precios preocupa a los inversores.","en":["the increase in prices worries investors","the rise in prices worries investors","the increase in prices worries the investors","the rise in prices worries the investors"],"explain":"Nominalización: el sustantivo 'increase' en lugar del verbo, más formal."},
+      ],
+    },
+  },
+};
+const ROUTE_NEW_IDX = {};   // nivel -> unidad -> {gapfill:[índices], order:[...], translate:[...]}
+Object.keys(ROUTE_NEW).forEach(lv=>{
+  ROUTE_NEW_IDX[lv] = {};
+  Object.keys(ROUTE_NEW[lv]).forEach(u=>{
+    const src = ROUTE_NEW[lv][u], idx = {gapfill:[], order:[], translate:[]};
+    [["gapfill",GRAMMAR],["order",ORDER],["translate",TRANSLATE]].forEach(([type,pool])=>{
+      (src[type]||[]).forEach(item=>{ pool[lv].push(item); idx[type].push(pool[lv].length-1); });
+    });
+    ROUTE_NEW_IDX[lv][u] = idx;
+  });
+});
+
 const LANG_PACKS = {
   en: { VOCAB, GRAMMAR, THEORY, CATEGORIES, CATEGORY_EXAMPLES, VERBS, SITUATION_THEMES, EXPRESSION_THEMES, FALSE_FRIENDS, HOW_TO_SAY, ORDER, LISTEN, TRANSLATE, READING, READING_CLOZE, READING_LETTERS, DIALOGUES, WRITING_PROMPTS, PLACEMENT_BANK },
   pt: { VOCAB: VOCAB_PT, GRAMMAR: GRAMMAR_PT, THEORY: THEORY_PT, CATEGORIES: CATEGORIES_PT, CATEGORY_EXAMPLES: CATEGORY_EXAMPLES_PT, VERBS: VERBS_PT,
@@ -19339,7 +19700,7 @@ function saveProgress(){
   try{
     localStorage.setItem(progressKeyFor(ACTIVE_PROFILE_ID, currentLang), JSON.stringify({
       stats, srs: SRS_DATA, errors: ERROR_BANK, level: currentLevel, ts: Date.now(),
-      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest
+      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest, routeProgress
     }));
   }catch(e){ /* almacenamiento no disponible: el progreso queda solo en esta sesión */ }
 }
@@ -19362,6 +19723,7 @@ function loadProgress(){
     if(typeof data.notificationsEnabled === "boolean") notificationsEnabled = data.notificationsEnabled;
     if(typeof data.userName === "string") userName = data.userName;
     if(data.matchPairsBest && typeof data.matchPairsBest === "object") Object.assign(matchPairsBest, data.matchPairsBest);
+    if(data.routeProgress && typeof data.routeProgress === "object") Object.assign(routeProgress, data.routeProgress);
   }catch(e){ /* datos corruptos: se ignoran y se empieza de cero */ }
 }
 /* Reinicia el progreso del perfil activo a sus valores por defecto
@@ -19381,6 +19743,7 @@ function resetActiveProfileData(){
   notificationsEnabled = false;
   userName = "";
   Object.keys(matchPairsBest).forEach(k=> delete matchPairsBest[k]);
+  Object.keys(routeProgress).forEach(k=> delete routeProgress[k]);
   saveProgress();
 }
 
@@ -19676,6 +20039,7 @@ const ICONS = {
   chartbar:`<rect x="4" y="12" width="4.5" height="8" rx="1"/><rect x="10" y="7" width="4.5" height="13" rx="1"/><rect x="16" y="3" width="4.5" height="17" rx="1"/>`,
   radar:`<polygon points="12,3 20,9 17,18 7,18 4,9"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/>`,
   keyboard:`<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M6.5 14h11"/>`,
+  route:`<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h5a3.5 3.5 0 000-7h-2a3.5 3.5 0 010-7h5"/>`,
 };
 function svgIcon(name, size){
   size = size || 20;
@@ -19686,6 +20050,19 @@ function svgIcon(name, size){
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 function normalize(s){ return s.toLowerCase().replace(/[.,!?¿¡']/g,"").replace(/\s+/g," ").trim(); }
+/* Igual que normalize, pero antes expande las contracciones para que "didn't go" y
+   "did not go" (o "it's" e "it is") cuenten como la misma respuesta. Se aplica a los
+   dos lados de la comparación. 'd y 's posesivo/has se dejan como están (ambiguos). */
+function normalizeEq(s){
+  let t = String(s).toLowerCase().replace(/[\u2019\u2018]/g, "'");
+  t = t.replace(/\bcan't\b/g, "can not").replace(/\bcannot\b/g, "can not")
+       .replace(/\bwon't\b/g, "will not").replace(/\bshan't\b/g, "shall not")
+       .replace(/(\w)n't\b/g, "$1 not")
+       .replace(/\bi'm\b/g, "i am")
+       .replace(/(\w)'re\b/g, "$1 are").replace(/(\w)'ve\b/g, "$1 have").replace(/(\w)'ll\b/g, "$1 will")
+       .replace(/\b(it|he|she|that|there|what|here|who|where|how)'s\b/g, "$1 is");
+  return normalize(t);
+}
 
 /* =========================================================
    TRADUCCIÓN AL HACER CLIC (feature global)
@@ -19784,9 +20161,9 @@ document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); }
 /* =========================================================
    HEADER: nav + level bar
    ========================================================= */
-const NAV_ICONS = {home:"home", placement:"target", theory:"book", categories:"tag", phrasal:"puzzle", situations:"compass", expressions:"chat", falsefriends:"burst", howtosay:"search", vocabtopics:"flashcards", verbs:"books", exercises:"pencil", exams:"clock", profile:"user"};
+const NAV_ICONS = {home:"home", route:"route", placement:"target", theory:"book", categories:"tag", phrasal:"puzzle", situations:"compass", expressions:"chat", falsefriends:"burst", howtosay:"search", vocabtopics:"flashcards", verbs:"books", exercises:"pencil", exams:"clock", profile:"user"};
 function resetSectionState(id){
-  if(id==="theory") activeTheoryTopic = null;
+  if(id==="theory"){ activeTheoryTopic = null; theoryReturnTo = null; }
   if(id==="phrasal") activePhrasalTheme = null;
   if(id==="situations") activeSituationTheme = null;
   if(id==="expressions") activeExpressionTheme = null;
@@ -19898,7 +20275,7 @@ function buildHeader(){
       currentLevel=lv;
       document.querySelectorAll(".level-chip").forEach(c=>c.classList.remove("active"));
       b.classList.add("active");
-      if(activeSection==="theory"){ activeTheoryTopic = null; renderTheory(); }
+      if(activeSection==="theory"){ activeTheoryTopic = null; theoryReturnTo = null; renderTheory(); }
       if(activeSection==="exercises") renderExercise(activeExercise, true);
       if(activeSection==="vocabtopics") renderVocabTopics();
     };
@@ -19936,6 +20313,7 @@ function goTo(sectionId){
     if(sectionId==="verbs") renderVerbs();
     if(sectionId==="exercises") renderExercise(activeExercise, false);
     if(sectionId==="practicehoy") renderPracticeHoy();
+    if(sectionId==="route") renderRoute();
     if(sectionId==="exams") renderExams();
     if(sectionId==="profile") renderProfile();
   }
@@ -20199,6 +20577,7 @@ function renderHome(){
   const greetName = userName || activeProfileName;
   const review = srsReviewSummary();
   const reviewN = review.due.length;
+  const routeCard = isSectionReadyForLang("route", currentLang) ? routeHomeCardHtml() : "";
   const reviewBreakdown = Object.keys(review.byType).map(t=> `${review.byType[t]} de ${(EX_TABS.find(x=>x.id===t)||{label:t}).label}`).join(" · ");
   const reviewCard = reviewN
     ? `<span class="dash-recommend-skill">${reviewN} por repasar</span>
@@ -20222,6 +20601,7 @@ function renderHome(){
             <h3 class="dash-card-title">🔁 Repaso de hoy</h3>
             ${reviewCard}
           </div>
+          ${routeCard}
           <div class="card dash-recommend-card landing-recommend-card">
             <h3 class="dash-card-title">Sesión recomendada hoy</h3>
             <span class="dash-recommend-skill">${weakLabel}</span>
@@ -20294,6 +20674,17 @@ function renderHome(){
   document.getElementById("placementCta").onclick = ()=> goTo("placement");
   const reviewStartBtn = document.getElementById("reviewStartBtn");
   if(reviewStartBtn) reviewStartBtn.onclick = ()=>{ practiceTodaySession = buildReviewSession(); goTo("practicehoy"); };
+  const routeHomeBtn = document.getElementById("routeHomeBtn");
+  if(routeHomeBtn) routeHomeBtn.onclick = ()=>{
+    routeSelectedLevel = routeCurrentLevel();
+    if(routeCurrentIndex(routeSelectedLevel) === -1){
+      const nl = ROUTE_LEVELS[ROUTE_LEVELS.indexOf(routeSelectedLevel) + 1];
+      if(nl) routeSelectedLevel = nl;
+    }
+    goTo("route");
+    const cur = routeCurrentIndex(routeSelectedLevel);
+    if(cur > 0) routeScrollTo(routeSelectedLevel, cur);
+  };
   document.getElementById("dashRecommendBtn").onclick = ()=>{
     activeExercise = weakId;
     goTo("exercises");
@@ -20310,10 +20701,12 @@ function renderHome(){
    THEORY (Gramática)
    ========================================================= */
 let activeTheoryTopic = null; // {level, index} | null (null = vista de lista)
-function openTheoryTopic(level, index){
+let theoryReturnTo = null;    // {id, label, unit} | null: a dónde vuelve el botón "Volver" si la teoría se abrió desde otra sección (ej. la Ruta)
+function openTheoryTopic(level, index, returnTo){
   currentLevel = level;
   document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent===level));
   activeTheoryTopic = {level, index};
+  theoryReturnTo = returnTo || null;
   goTo("theory");
 }
 function renderTheory(){
@@ -20354,7 +20747,7 @@ function drawTheoryDetail(lv, index){
   const t = LANG_PACKS[currentLang].THEORY[lv][index];
   const html = `
     <div class="section-head">
-      <button class="theory-back" id="theoryBackBtn">← Volver a Gramática</button>
+      <button class="theory-back" id="theoryBackBtn">← ${theoryReturnTo ? theoryReturnTo.label : "Volver a Gramática"}</button>
       <div class="eyebrow">Teoría · Nivel ${lv}</div>
       <h2>${t.title}</h2>
     </div>
@@ -20369,7 +20762,17 @@ function drawTheoryDetail(lv, index){
     </div>
   `;
   document.getElementById("panel-theory").innerHTML = html;
-  document.getElementById("theoryBackBtn").onclick = ()=>{ activeTheoryTopic = null; renderTheory(); window.scrollTo({top:0, behavior:"smooth"}); };
+  document.getElementById("theoryBackBtn").onclick = ()=>{
+    const back = theoryReturnTo;
+    activeTheoryTopic = null; theoryReturnTo = null;
+    if(back){
+      if(back.level) routeSelectedLevel = back.level;
+      goTo(back.id);
+      if(back.unit !== undefined) routeScrollTo(back.level, back.unit);
+      return;
+    }
+    renderTheory(); window.scrollTo({top:0, behavior:"smooth"});
+  };
   document.getElementById("theoryPracticeBtn").onclick = ()=>{
     currentLevel = lv;
     document.querySelectorAll(".level-chip").forEach(c=>{
@@ -21915,7 +22318,7 @@ function whyVocab(item, chosen){
   };
 }
 function whyGapfill(item, typed, lv){
-  const t = normalize(typed), ans = normalize(item.answer);
+  const t = normalizeEq(typed), ans = normalizeEq(item.answer);
   const hint = (item.sentence.match(/\(([^)]*)\)/)||[])[1];
   let diag = "";
   if(!t) diag = "Dejaste el espacio vacío. ";
@@ -21945,14 +22348,14 @@ function whyOrder(item, chosen){
   };
 }
 function whyTranslate(item, typed, lv){
-  const t = normalize(typed);
+  const t = normalizeEq(typed);
   let best = item.en[0], bestD = Infinity;
-  item.en.forEach(v=>{ const d = editDistance(t, normalize(v)); if(d<bestD){ bestD=d; best=v; } });
+  item.en.forEach(v=>{ const d = editDistance(t, normalizeEq(v)); if(d<bestD){ bestD=d; best=v; } });
   let diag = "";
   if(!t) diag = "Dejaste la respuesta vacía. ";
-  else if(bestD<=2 && normalize(best).length>=5) diag = "Estuviste muy cerca: revisa la ortografía o un detalle pequeño. ";
+  else if(bestD<=2 && normalizeEq(best).length>=5) diag = "Estuviste muy cerca: revisa la ortografía o un detalle pequeño. ";
   else{
-    const u = t.split(" "), c = normalize(best).split(" ");
+    const u = t.split(" "), c = normalizeEq(best).split(" ");
     const missing = c.filter(w=>!u.includes(w)), extra = u.filter(w=>!c.includes(w));
     if(missing.length) diag += `Te faltó: <b>${missing.map(escHtml).join(", ")}</b>. `;
     if(extra.length) diag += `Sobró o no encaja: <b>${extra.map(escHtml).join(", ")}</b>. `;
@@ -22125,12 +22528,12 @@ function drawGapfill(){
   const check = document.getElementById("gapfillCheck");
   const next = document.getElementById("gapfillNext");
   function doCheck(){
-    const userVal = normalize(input.value);
-    const justAnswer = normalize(item.answer);
-    // También se acepta la oración completa (hueco reemplazado, sin la pista entre paréntesis),
-    // porque es natural escribir la frase entera en vez de solo la palabra que falta.
-    const fullSentence = normalize(item.sentence.replace(/_+/, item.answer).replace(/\([^)]*\)/g, ""));
-    const ok = userVal === justAnswer || userVal === fullSentence;
+    const userVal = normalizeEq(input.value);
+    // Se acepta la palabra que falta o la oración completa (hueco reemplazado, sin la pista
+    // entre paréntesis). item.alt permite declarar respuestas válidas extra por pregunta.
+    const ok = [item.answer, ...(item.alt || [])].some(a =>
+      userVal === normalizeEq(a) ||
+      userVal === normalizeEq(item.sentence.replace(/_+/, a).replace(/\([^)]*\)/g, "")));
     srsUpdate(id, ok);
     if(ok) clearErrorIfMastered(id);
     else recordError(id, "gapfill", lv, item.sentence, item.answer, item.explain);
@@ -22842,7 +23245,7 @@ function drawTranslate(){
   const check = document.getElementById("translateCheck");
   const next = document.getElementById("translateNext");
   function doCheck(){
-    const ok = item.en.some(v=>normalize(v)===normalize(input.value));
+    const ok = item.en.some(v=>normalizeEq(v)===normalizeEq(input.value));
     srsUpdate(id, ok);
     if(ok) clearErrorIfMastered(id);
     else recordError(id, "translate", lv, item.es, item.en[0], item.explain);
@@ -23659,6 +24062,7 @@ function reviewWhenText(ts){
   return `en ${Math.round(hours/24)} días`;
 }
 function practiceTodayLabels(s){
+  if(s.mode==="unit") return {eyebrow:`🧭 Ruta ${s.level} · Unidad ${s.unit+1}`, exit:"← Salir del repaso de cierre", done:""};
   return s.mode==="review"
     ? {eyebrow:"🔁 Repaso de hoy", exit:"← Salir del repaso", done:"¡Repaso completado! 🎉"}
     : {eyebrow:"🎯 Práctica de hoy", exit:"← Salir de Práctica de hoy", done:"¡Práctica de hoy completada! 🎉"};
@@ -23710,7 +24114,7 @@ function renderPracticeHoy(){
     exPanel = document.getElementById("exPanel");
   }
   panel.appendChild(exPanel);
-  document.getElementById("practiceHoyExitBtn").onclick = ()=> goTo("home");
+  document.getElementById("practiceHoyExitBtn").onclick = ()=> goTo(s.mode==="unit" ? "route" : "home");
   practiceTodayLoadStep(entry);
   window.scrollTo({top:0, behavior:"smooth"});
 }
@@ -23751,6 +24155,7 @@ function practiceTodayAdvance(){
 function renderPracticeHoyComplete(){
   practiceTodayCleanup();
   const s = practiceTodaySession;
+  if(s.mode === "unit"){ renderUnitComplete(s); return; }
   const rows = Object.keys(s.byType).map(id=>{
     const label = (EX_TABS.find(t=>t.id===id)||{label:id}).label;
     const b = s.byType[id];
@@ -23793,13 +24198,311 @@ registerAnswer = function(id, ok){
     /* Un error vuelve a aparecer dos ejercicios más adelante (máx. una
        vez por ítem y 3 veces por sesión, para que no se haga interminable). */
     const failedId = !ok && current[id] && current[id].id;
-    if(failedId && PRACTICE_TODAY_TYPES.includes(id) && s.retries < 3 && !s.retried.has(failedId)){
+    if(s.mode === "unit" && !ok) s.missed.push(routeMissedLine(id, current[id]));
+    if(s.mode !== "unit" && failedId && PRACTICE_TODAY_TYPES.includes(id) && s.retries < 3 && !s.retried.has(failedId)){
       s.retried.add(failedId);
       s.retries++;
       s.queue.splice(Math.min(s.index+3, s.queue.length), 0, {type:id, forcedId:failedId});
     }
   }
 };
+
+/* =========================================================
+   RUTA DE APRENDIZAJE (solo inglés, A1–C2)
+   Cada unidad es un tema de teoría del nivel. Unidad = teoría + repaso de cierre de 6 preguntas
+   (se aprueba con 70%). Desbloqueo suave dentro de cada nivel: la unidad siguiente se abre al
+   aprobar la anterior, o con «Saltar»; todos los niveles están abiertos desde el inicio.
+   El cierre reutiliza la sesión de Práctica de hoy (modo "unit").
+   En A1 el cierre mezcla 2 preguntas de vocabulario; de A2 en adelante es solo gramática de la unidad.
+   C1 y C2 se muestran «en revisión» (contenido redactado por una IA, pendiente de revisión docente).
+   ========================================================= */
+const ROUTE_LEVELS = ["A1","A2","B1","B2","C1","C2"];
+const ROUTE_REVIEW_LEVELS = ["C1","C2"];
+const ROUTE_PASS_PCT = 70;
+const ROUTE_CLOSE_SIZE = 6;
+/* Preguntas asignadas a mano a cada unidad (índices en GRAMMAR, ORDER, TRANSLATE y, en A1, VOCAB).
+   El vínculo automático por texto casi no funcionaba, por eso se etiquetan a mano. El orden de las
+   unidades coincide con THEORY[nivel]. extra: preguntas de otro nivel que encajan en la unidad. A esto
+   se suman las preguntas nuevas de cada unidad (ROUTE_NEW_IDX). */
+const ROUTE_A1_UNITS = [
+  {gapfill:[0,3,4,13,14], order:[2,4,7,8,10,13], translate:[1,2,5,9], vocab:[12,13,24,25]},  // Verbo To Be
+  {gapfill:[1,2,11,12], order:[1,3,5,6,9,14], translate:[0,3,4,8], vocab:[30,31,32,33]},     // Presente simple
+  {gapfill:[15,16,17], order:[2,12], translate:[2], vocab:[1,3,4,21]},                         // Artículos y plurales
+  {gapfill:[5,6,18,19], order:[12], translate:[6], vocab:[4,5,6,7]},                           // There is / There are
+  {gapfill:[7,20,21], order:[0,6,7], translate:[1,7], vocab:[13,14,15,16,17]},                 // Adjetivos posesivos
+  {gapfill:[8,9,22,23], order:[12], translate:[6,7], vocab:[5,6,7,8]},                         // Preposiciones de lugar
+  {gapfill:[10,24,25,26], order:[11], translate:[], vocab:[12,13,14,15]},                      // Pronombres de objeto
+];
+const ROUTE_UNITS = {
+  A1: ROUTE_A1_UNITS,
+  A2:[
+    {"gapfill":[0,3,4],"order":[0,2,3,8,11,13],"translate":[0,2]},
+    {"gapfill":[1,5,6],"order":[1],"translate":[1,3]},
+    {"gapfill":[2,7,8],"order":[5,10],"translate":[4,5]},
+    {"gapfill":[9],"order":[4,12],"translate":[6]},
+    {"gapfill":[10,11],"order":[9,14],"translate":[7]},
+    {"gapfill":[12],"order":[7],"translate":[]},
+    {"gapfill":[13],"order":[],"translate":[8]},
+    {"gapfill":[10,11],"order":[9],"translate":[7]},
+    {"gapfill":[14],"order":[],"translate":[9]},
+    {"gapfill":[],"order":[],"translate":[],"extra":[["B1","gapfill",3]]},
+    {"gapfill":[],"order":[],"translate":[],"extra":[["B1","gapfill",4]]},
+  ],
+  B1:[
+    {"gapfill":[0,5],"order":[0,2,6,7,9,11,13],"translate":[0,2]},
+    {"gapfill":[1,13],"order":[4,12],"translate":[1]},
+    {"gapfill":[2,6,14],"order":[1,3,10,14],"translate":[3,8]},
+    {"gapfill":[7,8],"order":[],"translate":[7]},
+    {"gapfill":[9],"order":[],"translate":[6],"extra":[["B2","order",5],["B2","order",10]]},
+    {"gapfill":[10,11],"order":[],"translate":[4,5],"extra":[["C1","order",12]]},
+    {"gapfill":[12],"order":[],"translate":[9]},
+  ],
+  B2:[
+    {"gapfill":[0,3,4],"order":[0,2,6,9,12,14],"translate":[0,2]},
+    {"gapfill":[1,5,14],"order":[1,3,7,11],"translate":[1,8]},
+    {"gapfill":[2,6,7],"order":[4,8],"translate":[3]},
+    {"gapfill":[8,9],"order":[],"translate":[4,9],"extra":[["B1","order",8]]},
+    {"gapfill":[10],"order":[],"translate":[5],"extra":[["B1","order",5]]},
+    {"gapfill":[11],"order":[],"translate":[6],"extra":[["C1","order",13],["C2","gapfill",1]]},
+    {"gapfill":[13],"order":[],"translate":[]},
+  ],
+  C1:[
+    {"gapfill":[0,3,4,11],"order":[2],"translate":[0,2]},
+    {"gapfill":[1,5,14],"order":[1,5,10],"translate":[1,3,9],"extra":[["B2","order",13]]},
+    {"gapfill":[6,13],"order":[0,4,6,8,11,14],"translate":[8],"extra":[["C2","order",10],["C2","order",14]]},
+    {"gapfill":[7],"order":[],"translate":[4]},
+    {"gapfill":[8],"order":[],"translate":[5],"extra":[["C2","order",5],["C2","order",9]]},
+    {"gapfill":[9,12],"order":[],"translate":[7]},
+  ],
+  C2:[
+    {"gapfill":[0],"order":[0,2,8],"translate":[0],"extra":[["C1","gapfill",10],["C1","translate",6]]},
+    {"gapfill":[3,4],"order":[3],"translate":[2]},
+    {"gapfill":[2,11,12,13],"order":[1,4,13],"translate":[1,7,8],"extra":[["C1","order",7]]},
+    {"gapfill":[5,6],"order":[],"translate":[3]},
+    {"gapfill":[7,8],"order":[],"translate":[4]},
+    {"gapfill":[9,10,14],"order":[6,7,12],"translate":[5,6,9]},
+  ],
+};
+let routeSelectedLevel = null;
+function routeUnits(level){
+  return LANG_PACKS.en.THEORY[level].map((t,i)=>{
+    const u = (ROUTE_UNITS[level] || [])[i] || {};
+    const n = ((ROUTE_NEW_IDX[level] || {})[i]) || {};
+    const items = [], seen = new Set();
+    const add = (type, lv, idxs)=> (idxs||[]).forEach(ix=>{
+      const id = `${type}:en:${lv}:${ix}`;
+      if(!seen.has(id)){ seen.add(id); items.push({type, id}); }
+    });
+    ["gapfill","order","translate"].forEach(type=>{ add(type, level, u[type]); add(type, level, n[type]); });
+    (u.extra || []).forEach(([lv,type,ix])=> add(type, lv, [ix]));
+    const vocab = (u.vocab || []).map(ix=>({type:"vocab", id:`vocab:en:${level}:${ix}`}));
+    return {level, index:i, key:`${level}:${i}`, title:t.title, summary:t.summary, items, vocab};
+  });
+}
+function routeState(level, k){ return routeProgress[`${level}:${k}`] || {}; }
+function routeTouch(level, k){
+  const key = `${level}:${k}`;
+  const rp = routeProgress[key] || (routeProgress[key] = {});
+  rp.ts = Date.now();
+  return rp;
+}
+function routeIsOpen(level, k){ return k===0 || !!routeState(level,k-1).passed || !!routeState(level,k).skipped; }
+function routeCurrentIndex(level){
+  const n = routeUnits(level).length;
+  for(let k=0;k<n;k++) if(!routeState(level,k).passed && routeIsOpen(level,k)) return k;
+  return -1;
+}
+function routeLevelPassed(level){
+  return routeUnits(level).filter((_,k)=>routeState(level,k).passed).length;
+}
+/* Nivel con actividad más reciente en la Ruta (A1 si aún no hay actividad). */
+function routeCurrentLevel(){
+  let best = null, ts = -1;
+  Object.keys(routeProgress).forEach(key=>{
+    const t = routeProgress[key].ts || 0;
+    if(t > ts){ ts = t; best = key.split(":")[0]; }
+  });
+  return ROUTE_LEVELS.includes(best) ? best : "A1";
+}
+function buildUnitSession(level, k){
+  const u = routeUnits(level)[k];
+  const related = shuffle(u.items.map(x=>({type:x.type, forcedId:x.id})));
+  const vocab = shuffle(u.vocab.map(x=>({type:"vocab", forcedId:x.id})));
+  const wantVocab = Math.min(2, vocab.length);
+  const queue = [...related.slice(0, ROUTE_CLOSE_SIZE - wantVocab), ...vocab.slice(0, wantVocab)];
+  const used = new Set(queue.map(q=>q.forcedId));
+  const extra = [...related.slice(ROUTE_CLOSE_SIZE - wantVocab), ...vocab.slice(wantVocab)];
+  extra.forEach(q=>{ if(queue.length < ROUTE_CLOSE_SIZE && !used.has(q.forcedId)){ queue.push(q); used.add(q.forcedId); } });
+  const padSrc = LANG_PACKS.en.GRAMMAR[level].map((_,i)=>({type:"gapfill", forcedId:`gapfill:en:${level}:${i}`}));
+  if(level === "A1") padSrc.push(...LANG_PACKS.en.VOCAB[level].map((_,i)=>({type:"vocab", forcedId:`vocab:en:${level}:${i}`})));
+  shuffle(padSrc).forEach(q=>{ if(queue.length < ROUTE_CLOSE_SIZE && !used.has(q.forcedId)){ queue.push(q); used.add(q.forcedId); } });
+  return {mode:"unit", level, unit:k, queue:shuffle(queue), index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set()};
+}
+function routeMissedLine(type, cur){
+  const it = cur && cur.item;
+  if(!it) return {prompt:type, answer:""};
+  if(type==="gapfill") return {prompt:it.sentence, answer:it.answer};
+  if(type==="order") return {prompt:"Ordena la oración", answer:it.correct};
+  if(type==="translate") return {prompt:it.es, answer:it.en[0]};
+  if(type==="vocab") return {prompt:`"${it.en}"`, answer:it.es};
+  return {prompt:type, answer:""};
+}
+/* Después de volver a la Ruta, centra la unidad relevante (goTo ya sube al inicio con scroll suave). */
+function routeScrollTo(level, k){
+  setTimeout(()=>{
+    const el = document.getElementById(`route-unit-${level}-${k}`);
+    if(el) el.scrollIntoView({block:"center"});
+  }, 150);
+}
+function routeStartClose(level, k){
+  practiceTodaySession = buildUnitSession(level, k);
+  goTo("practicehoy");
+}
+function renderUnitComplete(s){
+  const level = s.level;
+  const units = routeUnits(level), u = units[s.unit];
+  const pct = s.answered ? Math.round(s.correct/s.answered*100) : 0;
+  const passed = pct >= ROUTE_PASS_PCT;
+  const rp = routeTouch(level, s.unit);
+  rp.attempts = (rp.attempts||0) + 1;
+  rp.best = Math.max(rp.best||0, pct);
+  if(passed) rp.passed = true;
+  saveProgress();
+  const hasNext = s.unit + 1 < units.length;
+  const nextLevel = ROUTE_LEVELS[ROUTE_LEVELS.indexOf(level) + 1];
+  const missed = s.missed.filter(Boolean);
+  const missedHtml = missed.length ? `
+    <div class="card" style="max-width:520px;margin:0 auto 22px;">
+      <h3 style="margin:0 0 6px;font-size:1rem;">Para repasar</h3>
+      ${missed.map(m=>`<div class="route-missed"><span>${escHtml(m.prompt)}</span><b>${escHtml(m.answer)}</b></div>`).join("")}
+    </div>` : "";
+  const html = `
+    <div class="section-head" style="text-align:center;">
+      <div style="width:88px;margin:0 auto 12px;">${mascotSVG(passed?"cheer":"",88)}</div>
+      <h2>${passed ? `¡Unidad ${s.unit+1} superada! 🎉` : `Casi: unidad ${s.unit+1} por reforzar`}</h2>
+      <p class="dash-card-sub">${escHtml(u.title)} · ${s.correct}/${s.answered} correctas (${pct}%)</p>
+      <p class="dash-card-sub">${passed
+        ? (hasNext ? `Se abrió la Unidad ${s.unit+2}.` : `¡Terminaste todas las unidades de ${level}!${nextLevel ? ` Puedes seguir con ${nextLevel}.` : ""}`)
+        : `Necesitas ${ROUTE_PASS_PCT}% para superarla. Repasa la teoría y reintenta cuando quieras.`}</p>
+    </div>
+    ${missedHtml}
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+      ${passed
+        ? `<button class="btn" id="routeBackBtn">Continuar con la Ruta →</button>`
+        : `<button class="btn" id="routeRetryBtn">Reintentar el cierre</button>
+           <button class="btn secondary" id="routeTheoryBtn">📖 Ver la teoría</button>
+           <button class="btn secondary" id="routeBackBtn">Volver a la Ruta</button>`}
+    </div>`;
+  document.getElementById("panel-practicehoy").innerHTML = html;
+  if(passed) fireConfetti();
+  document.getElementById("routeBackBtn").onclick = ()=>{
+    practiceTodaySession = null;
+    let target = s.unit;
+    if(passed && !hasNext && nextLevel){ routeSelectedLevel = nextLevel; target = 0; }
+    else{
+      routeSelectedLevel = level;
+      if(passed && routeCurrentIndex(level) !== -1) target = routeCurrentIndex(level);
+    }
+    goTo("route");
+    routeScrollTo(routeSelectedLevel, target);
+  };
+  const retry = document.getElementById("routeRetryBtn");
+  if(retry) retry.onclick = ()=>{ practiceTodaySession = buildUnitSession(level, s.unit); renderPracticeHoy(); };
+  const th = document.getElementById("routeTheoryBtn");
+  if(th) th.onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(level, s.unit, {id:"route", label:"Volver a la Ruta", level, unit:s.unit}); };
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function renderRoute(){
+  const level = routeSelectedLevel || routeCurrentLevel();
+  routeSelectedLevel = level;
+  const units = routeUnits(level);
+  const passedCount = routeLevelPassed(level);
+  const cur = routeCurrentIndex(level);
+  const inReview = ROUTE_REVIEW_LEVELS.includes(level);
+  const tabs = ROUTE_LEVELS.map(l=>`
+    <button class="route-tab${l===level?" active":""}" data-route-level="${l}" aria-pressed="${l===level}">${l}<span>${routeLevelPassed(l)}/${routeUnits(l).length}</span></button>`).join("");
+  const card = (u,k)=>{
+    const st = routeState(level,k), open = routeIsOpen(level,k);
+    const status = st.passed ? `✅ Superada · ${st.best}%`
+      : st.attempts ? `🔁 Por reforzar · mejor ${st.best}%`
+      : open ? (k===cur ? "⭐ Siguiente" : "Disponible")
+      : "🔒 Bloqueada";
+    const cls = "card route-unit" + (st.passed ? " done" : "") + (!open ? " locked" : "") + (k===cur ? " next" : "");
+    return `
+      <div class="${cls}" id="route-unit-${level}-${k}">
+        <div class="route-unit-head">
+          <span class="route-num">${st.passed ? "✓" : k+1}</span>
+          <div style="flex:1;min-width:0;">
+            <h3>${escHtml(u.title)}</h3>
+            <p>${escHtml(u.summary)}</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="score-pill">${status}</span>
+          ${st.theory ? `<span class="score-pill">📖 Teoría vista</span>` : ""}
+          ${inReview ? `<span class="score-pill" style="background:#FFF3C9;color:#5B4300;">🧪 En revisión</span>` : ""}
+        </div>
+        <div class="btn-row" style="margin-top:0;">
+          <button class="btn secondary" data-route-theory="${k}">📖 Teoría</button>
+          ${open
+            ? `<button class="btn" data-route-close="${k}">${st.attempts ? "Reintentar cierre" : "Repaso de cierre"}</button>`
+            : `<button class="btn secondary" data-route-skip="${k}">Saltar: ya lo sé</button>`}
+        </div>
+      </div>`;
+  };
+  const html = `
+    <div class="section-head">
+      <div class="eyebrow">Ruta de aprendizaje</div>
+      <h2>Ruta ${level}</h2>
+      <p>${units.length} unidades guiadas: primero la teoría y después un repaso de cierre de ${ROUTE_CLOSE_SIZE} preguntas (se aprueba con ${ROUTE_PASS_PCT}%). Al aprobar se abre la siguiente. ¿Ya dominas un tema? Usa «Saltar».</p>
+      <div class="route-tabs" role="group" aria-label="Nivel">${tabs}</div>
+      ${inReview ? `<p class="route-review-note">🧪 Las unidades de ${level} están <b>en revisión</b>: las preguntas y explicaciones las redactó una IA y todavía no las ha revisado un profesor. Si ves algún error, avísalo.</p>` : ""}
+      <div class="route-progress" role="progressbar" aria-valuemin="0" aria-valuemax="${units.length}" aria-valuenow="${passedCount}"><span style="width:${passedCount/units.length*100}%"></span></div>
+      <div class="dash-card-sub">${passedCount} de ${units.length} unidades superadas</div>
+    </div>
+    <div class="route-list">${units.map(card).join("")}</div>`;
+  const panel = document.getElementById("panel-route");
+  panel.innerHTML = html;
+  panel.querySelectorAll("[data-route-level]").forEach(b=>{
+    b.onclick = ()=>{ routeSelectedLevel = b.dataset.routeLevel; renderRoute(); window.scrollTo({top:0, behavior:"smooth"}); };
+  });
+  panel.querySelectorAll("[data-route-theory]").forEach(b=>{
+    b.onclick = ()=>{
+      const k = parseInt(b.dataset.routeTheory);
+      routeTouch(level, k).theory = true; saveProgress();
+      openTheoryTopic(level, k, {id:"route", label:"Volver a la Ruta", level, unit:k});
+    };
+  });
+  panel.querySelectorAll("[data-route-close]").forEach(b=>{ b.onclick = ()=> routeStartClose(level, parseInt(b.dataset.routeClose)); });
+  panel.querySelectorAll("[data-route-skip]").forEach(b=>{
+    b.onclick = ()=>{
+      const k = parseInt(b.dataset.routeSkip);
+      routeTouch(level, k).skipped = true; saveProgress();
+      renderRoute();
+    };
+  });
+}
+function routeHomeCardHtml(){
+  const level = routeCurrentLevel();
+  const units = routeUnits(level);
+  const passed = routeLevelPassed(level);
+  const cur = routeCurrentIndex(level);
+  const nextLevel = ROUTE_LEVELS[ROUTE_LEVELS.indexOf(level) + 1];
+  let body;
+  if(cur === -1){
+    body = `<span class="dash-recommend-skill">¡Ruta ${level} completa! 🎉</span>
+      <p class="dash-card-sub">Superaste las ${units.length} unidades.${nextLevel ? ` Siguiente: ${nextLevel}.` : ""}</p>
+      <button class="btn" id="routeHomeBtn" style="width:100%;">Ver la ruta →</button>`;
+  }else if(!Object.keys(routeProgress).length){
+    body = `<p class="dash-card-sub">Unidades guiadas de A1 a C2: teoría y repaso de cierre. Un camino claro para empezar.</p>
+      <button class="btn" id="routeHomeBtn" style="width:100%;">Empezar la Ruta →</button>`;
+  }else{
+    body = `<span class="dash-recommend-skill">Unidad ${cur+1}: ${escHtml(units[cur].title)}</span>
+      <p class="dash-card-sub">${passed} de ${units.length} unidades superadas en ${level}.</p>
+      <button class="btn" id="routeHomeBtn" style="width:100%;">Continuar →</button>`;
+  }
+  return `<div class="card dash-recommend-card landing-recommend-card"><h3 class="dash-card-title">🧭 Ruta ${level}</h3>${body}</div>`;
+}
 
 /* ---- MIS ERRORES (banco de errores persistente) ---- */
 function drawErrorBank(){
@@ -23844,7 +24547,7 @@ function drawErrorBank(){
    ========================================================= */
 function buildMain(){
   const main = document.getElementById("main");
-  ["home","placement","theory","categories","phrasal","situations","expressions","falsefriends","howtosay","vocabtopics","verbs","exercises","practicehoy","exams","profile"].forEach(id=>{
+  ["home","route","placement","theory","categories","phrasal","situations","expressions","falsefriends","howtosay","vocabtopics","verbs","exercises","practicehoy","exams","profile"].forEach(id=>{
     const div = document.createElement("div");
     div.className="section-panel" + (id===activeSection?" active":"");
     div.id = "panel-"+id;
