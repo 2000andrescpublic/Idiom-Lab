@@ -19625,6 +19625,825 @@ const ROUTE_NEW = {
     },
   },
 };
+/* =========================================================
+   EXPANSIÓN DE LA RUTA A 90 UNIDADES (inglés)
+   Los temas nuevos se agregan AL FINAL de THEORY[nivel] (así no cambian los índices de la prueba de nivel,
+   los exámenes ni el progreso guardado). El orden pedagógico lo define ROUTE_ORDER.
+   Las preguntas nuevas se agregan al final de GRAMMAR/ORDER/TRANSLATE (ids de repaso estables).
+   ========================================================= */
+const THEORY_NEW = {
+  A1:[
+    {"title":"Demostrativos: this, that, these, those","summary":"Sirven para señalar cosas: this/these para lo que está cerca y that/those para lo que está lejos; this/that van con singular y these/those con plural.","detail":"Los demostrativos cambian según dos cosas: la distancia y el número. Para algo cercano usamos 'this' (singular) o 'these' (plural); para algo lejano usamos 'that' (singular) o 'those' (plural). Pueden ir solos (This is my bag) o delante de un sustantivo (These shoes are new). Recuerda que el verbo 'be' debe concordar: this/that + is, these/those + are.","mindmap":{"center":"Demostrativos","branches":[{"label":"Cerca","items":["this = este/esta","these = estos/estas"]},{"label":"Lejos","items":["that = ese/aquel","those = esos/aquellos"]},{"label":"Con el verbo be","items":["This/That + is","These/Those + are"]}]},"examples":[{"en":"This is my phone.","es":"Este es mi teléfono."},{"en":"Those books are expensive.","es":"Esos libros son caros."},{"en":"Is that your car?","es":"¿Ese es tu carro?"},{"en":"These apples are fresh.","es":"Estas manzanas están frescas."}],"tip":"Truco: piensa en 'th-IS' (cerca, 'is' corto) y 'th-AT' (lejos). Y si es plural, cambia la vocal: this → these, that → those."},
+    {"title":"Have got y have (posesión)","summary":"Para decir lo que tienes se usa 'have' o 'have got'; con he/she/it cambia a 'has' o 'has got'. Las formas con 'got' son muy comunes en inglés británico.","detail":"'I have' y 'I have got' significan lo mismo: tener. Con he, she e it se usa 'has' / 'has got'. En negativo: 'I haven't got' o 'I don't have'. En preguntas: 'Have you got...?' o 'Do you have...?'. No mezcles las dos formas: si usas 'do', no uses 'got' (Do you have a pen?, no 'Do you have got a pen?').","mindmap":{"center":"Have / have got","branches":[{"label":"Afirmativo","items":["I/you/we/they have (got)","he/she/it has (got)"]},{"label":"Negativo","items":["haven't got / hasn't got","don't have / doesn't have"]},{"label":"Pregunta","items":["Have you got...?","Do you have...?"]}]},"examples":[{"en":"I have two brothers.","es":"Tengo dos hermanos."},{"en":"She has got a new laptop.","es":"Ella tiene una laptop nueva."},{"en":"They haven't got a car.","es":"Ellos no tienen carro."},{"en":"Does he have a sister?","es":"¿Él tiene una hermana?"}],"tip":"Truco: 'have got' ya trae el auxiliar 'have' dentro, por eso en preguntas se invierte (Have you got...?) sin usar 'do'."},
+    {"title":"Can / can't (habilidad)","summary":"'Can' expresa que alguien puede o sabe hacer algo; su negativo es 'can't' y va siempre seguido del verbo en forma base, sin 'to'.","detail":"'Can' es un verbo modal: no cambia con he/she/it (she can, no 'she cans') y el verbo que sigue va en base, sin 'to' (I can swim). El negativo es 'cannot' o 'can't'. En preguntas, 'can' pasa antes del sujeto: Can you swim? Además de habilidad, 'can' sirve para pedir permiso y hacer peticiones (Can I sit here?).","mindmap":{"center":"Can","branches":[{"label":"Forma","items":["I/you/he/she/we/they can","sin -s en he/she/it"]},{"label":"Negativo y pregunta","items":["can't / cannot","Can you...?"]},{"label":"Usos","items":["Habilidad: I can cook","Permiso: Can I go?"]}]},"examples":[{"en":"I can speak English.","es":"Sé hablar inglés."},{"en":"She can't drive.","es":"Ella no sabe manejar."},{"en":"Can you help me?","es":"¿Puedes ayudarme?"},{"en":"They can play the guitar.","es":"Ellos saben tocar la guitarra."}],"tip":"Truco: después de 'can' nunca pongas 'to' ni '-s': can + verbo base, siempre."},
+    {"title":"Preguntas con Wh-: what, where, who, when, why, how","summary":"Las palabras Wh- piden información concreta: what (qué), where (dónde), who (quién), when (cuándo), why (por qué) y how (cómo).","detail":"Una pregunta con Wh- empieza con la palabra interrogativa y luego lleva el auxiliar y el sujeto: What do you want? Where does she live? Con el verbo 'be' no se necesita 'do': Where is the station? La respuesta a 'why' suele empezar con 'because'. Ojo: 'who' pregunta por personas, 'what' por cosas.","mindmap":{"center":"Wh- questions","branches":[{"label":"Palabras","items":["what = qué","where = dónde","who = quién"]},{"label":"Más palabras","items":["when = cuándo","why = por qué","how = cómo"]},{"label":"Estructura","items":["Wh- + do/does + sujeto + verbo","Wh- + is/are + sujeto"]}]},"examples":[{"en":"Where do you live?","es":"¿Dónde vives?"},{"en":"What is your name?","es":"¿Cómo te llamas?"},{"en":"Why does he study English?","es":"¿Por qué él estudia inglés?"},{"en":"How are you?","es":"¿Cómo estás?"}],"tip":"Truco: en el presente simple el orden es Wh- + do/does + sujeto + verbo base. El 's' de he/she lo lleva 'does', no el verbo."},
+    {"title":"Presente simple: negativo y preguntas (do/does)","summary":"Para negar y preguntar en presente simple se usa el auxiliar do/does: don't/doesn't para negar, Do/Does al inicio para preguntar, y el verbo siempre queda en forma base.","detail":"En afirmativo el verbo cambia con he/she/it (works). Pero cuando aparece el auxiliar 'do' o 'does', el verbo vuelve a su forma base: She doesn't work, Does she work? La 's' ya la lleva 'does'. Las respuestas cortas repiten el auxiliar: Yes, she does. / No, she doesn't.","mindmap":{"center":"Do / does","branches":[{"label":"Negativo","items":["I/you/we/they don't + base","he/she/it doesn't + base"]},{"label":"Pregunta","items":["Do + I/you/we/they + base?","Does + he/she/it + base?"]},{"label":"Respuesta corta","items":["Yes, I do. / No, I don't.","Yes, she does. / No, she doesn't."]}]},"examples":[{"en":"I don't like coffee.","es":"No me gusta el café."},{"en":"She doesn't work on Sundays.","es":"Ella no trabaja los domingos."},{"en":"Do you live here?","es":"¿Vives aquí?"},{"en":"Does he speak Spanish?","es":"¿Él habla español?"}],"tip":"Truco: la 's' de la tercera persona solo aparece una vez. Si ya está en 'does', el verbo se queda sin 's'."},
+    {"title":"Adverbios de frecuencia y preposiciones de tiempo","summary":"Los adverbios de frecuencia (always, usually, often, sometimes, never) dicen cada cuánto ocurre algo y van antes del verbo principal; las preposiciones at, on, in sirven para situar el tiempo.","detail":"Los adverbios de frecuencia se colocan antes del verbo principal (I usually walk) pero después del verbo 'be' (She is always late). De más a menos frecuente: always, usually, often, sometimes, rarely, never. Para el tiempo: 'at' con horas (at 7:00), 'on' con días y fechas (on Monday), 'in' con meses, estaciones y años (in June, in 2020). Con 'never' no se usa otro negativo.","mindmap":{"center":"Frecuencia y tiempo","branches":[{"label":"Adverbios","items":["always, usually, often","sometimes, rarely, never"]},{"label":"Posición","items":["antes del verbo","después de be"]},{"label":"at / on / in","items":["at 7:00, at night","on Monday, in June"]}]},"examples":[{"en":"I always drink coffee in the morning.","es":"Siempre tomo café en la mañana."},{"en":"He is never late.","es":"Él nunca llega tarde."},{"en":"The class starts at nine.","es":"La clase empieza a las nueve."},{"en":"We travel in July.","es":"Viajamos en julio."}],"tip":"Truco: 'at' para relojes, 'on' para días, 'in' para periodos largos (meses, estaciones, años)."},
+    {"title":"Like, love, hate + verbo con -ing (y want to)","summary":"Después de like, love, enjoy y hate se suele usar el verbo con -ing para hablar de gustos; con 'want' se usa 'to + verbo'.","detail":"Para decir qué actividades nos gustan o no, usamos like/love/enjoy/hate + verbo-ing: I like reading. En cambio, 'want' va seguido de 'to' + verbo base: I want to travel. Con he/she/it, el cambio de tercera persona se hace en el primer verbo (She likes dancing). Para preguntar: Do you like swimming?","mindmap":{"center":"Gustos y deseos","branches":[{"label":"Gustos","items":["like / love / enjoy + -ing","hate + -ing"]},{"label":"Deseos","items":["want + to + verbo","would like + to + verbo"]},{"label":"Ejemplo","items":["I like cooking.","I want to cook."]}]},"examples":[{"en":"I love listening to music.","es":"Me encanta escuchar música."},{"en":"She hates waking up early.","es":"Ella odia levantarse temprano."},{"en":"We want to visit Peru.","es":"Queremos visitar Perú."},{"en":"Do you enjoy swimming?","es":"¿Disfrutas nadar?"}],"tip":"Truco: 'like/love/hate' + -ing para gustos generales; 'want' + to + verbo para lo que quieres hacer."},
+  ],
+  A2:[
+    {"title":"Was / were (pasado del verbo to be)","summary":"'Was' y 'were' son el pasado de 'am/is/are': was con I/he/she/it y were con you/we/they. Se niegan con wasn't/weren't y las preguntas invierten el verbo.","detail":"El verbo 'be' en pasado tiene solo dos formas: 'was' (I, he, she, it) y 'were' (you, we, they). No usa 'did': para negar se agrega 'not' (wasn't, weren't) y para preguntar se invierte (Was she at home?). Se usa para decir dónde o cómo estabas, o cómo era algo, en un momento del pasado.","mindmap":{"center":"Was / were","branches":[{"label":"Formas","items":["I/he/she/it was","you/we/they were"]},{"label":"Negativo","items":["wasn't","weren't"]},{"label":"Pregunta","items":["Was he...?","Were you...?"]}]},"examples":[{"en":"I was tired yesterday.","es":"Ayer estaba cansado."},{"en":"They were at the cinema.","es":"Ellos estaban en el cine."},{"en":"Was the film good?","es":"¿Estuvo buena la película?"},{"en":"We weren't at home last night.","es":"Anoche no estábamos en casa."}],"tip":"Truco: 'be' en pasado no usa 'did'. Solo cambia la forma: was/were."},
+    {"title":"Pasado simple: negativas y preguntas (did)","summary":"Para negar y preguntar en pasado simple se usa el auxiliar 'did': didn't para negar y Did al inicio para preguntar; el verbo principal vuelve a su forma base.","detail":"En afirmativo, el verbo va en pasado (worked, went). En negativo y en preguntas el pasado lo lleva 'did', así que el verbo se queda en forma base: I didn't go, Did you go? Esto vale para todas las personas. Las respuestas cortas repiten 'did': Yes, I did. / No, I didn't.","mindmap":{"center":"Did","branches":[{"label":"Negativo","items":["didn't + verbo base","I didn't call"]},{"label":"Pregunta","items":["Did + sujeto + verbo base?","Did you call?"]},{"label":"Respuesta corta","items":["Yes, I did.","No, I didn't."]}]},"examples":[{"en":"She didn't watch TV last night.","es":"Ella no vio televisión anoche."},{"en":"Did you finish your homework?","es":"¿Terminaste tu tarea?"},{"en":"We didn't go to the party.","es":"No fuimos a la fiesta."},{"en":"What did he say?","es":"¿Qué dijo él?"}],"tip":"Truco: el pasado se marca una sola vez. Si 'did' ya está, el verbo vuelve a base: didn't GO, no 'didn't went'."},
+    {"title":"Presente simple vs presente continuo","summary":"El presente simple habla de rutinas y hechos; el presente continuo habla de lo que pasa ahora o de algo temporal. Las palabras de tiempo ayudan a decidir.","detail":"Usamos el presente simple para hábitos y verdades generales (I work every day; Water boils at 100 °C) con palabras como always, usually, every day. Usamos el presente continuo para acciones en curso o temporales (I'm working now; She's staying with us this week) con now, at the moment, today, this week. Los verbos estativos (know, like, want) casi no se usan en continuo.","mindmap":{"center":"Simple vs continuo","branches":[{"label":"Presente simple","items":["rutinas y hechos","always, every day, usually"]},{"label":"Presente continuo","items":["ahora o temporal","now, at the moment, this week"]},{"label":"Ojo","items":["verbos estativos: no -ing","I know, no 'I am knowing'"]}]},"examples":[{"en":"I drink coffee every morning.","es":"Tomo café todas las mañanas."},{"en":"I'm drinking tea right now.","es":"Estoy tomando té ahora mismo."},{"en":"He usually walks, but today he is driving.","es":"Él suele caminar, pero hoy está manejando."},{"en":"She works in a bank.","es":"Ella trabaja en un banco."}],"tip":"Truco: 'every day / always / usually' → simple. 'now / at the moment / today / this week' → continuo."},
+    {"title":"Have to / don't have to (obligación)","summary":"'Have to' expresa obligación: es necesario hacer algo. 'Don't have to' no es prohibición, sino que algo NO es necesario.","detail":"'Have to' + verbo base indica obligación impuesta por una regla o una situación (I have to wear a uniform). Con he/she/it usa 'has to'. Para negar y preguntar usa 'do/does': I don't have to, Do you have to...? Ojo: 'don't have to' significa 'no es necesario', mientras que 'mustn't' significa 'está prohibido'.","mindmap":{"center":"Have to","branches":[{"label":"Obligación","items":["I/you/we/they have to","he/she/it has to"]},{"label":"No necesario","items":["don't have to","doesn't have to"]},{"label":"Pregunta","items":["Do you have to...?","Does she have to...?"]}]},"examples":[{"en":"I have to get up at six.","es":"Tengo que levantarme a las seis."},{"en":"She has to work on Saturday.","es":"Ella tiene que trabajar el sábado."},{"en":"You don't have to pay.","es":"No tienes que pagar."},{"en":"Do we have to wear a tie?","es":"¿Tenemos que usar corbata?"}],"tip":"Truco: 'don't have to' = no hace falta. Si quieres decir 'prohibido', usa 'mustn't' o 'can't'."},
+    {"title":"Would like, Can I y Shall we (pedir, ofrecer y sugerir)","summary":"'Would like' es una forma cortés de decir 'quiero'; 'Can I / Could I' sirven para pedir; y 'Shall we...?' o 'Let's' para sugerir planes.","detail":"'I'd like' + sustantivo o 'to' + verbo es más amable que 'I want' (I'd like a coffee; I'd like to sit here). Para ofrecer: Would you like some tea? Para pedir: Can I have the menu, please? Para sugerir: Shall we go? / Let's go. 'Would like' es igual para todas las personas (she would like, no 'she would likes').","mindmap":{"center":"Cortesía","branches":[{"label":"Querer","items":["I'd like + sustantivo","I'd like to + verbo"]},{"label":"Ofrecer y pedir","items":["Would you like...?","Can I have...?"]},{"label":"Sugerir","items":["Shall we...?","Let's + verbo"]}]},"examples":[{"en":"I'd like a glass of water, please.","es":"Quisiera un vaso de agua, por favor."},{"en":"Would you like some coffee?","es":"¿Quieres un café?"},{"en":"Can I have the bill, please?","es":"¿Me trae la cuenta, por favor?"},{"en":"Shall we go to the cinema?","es":"¿Vamos al cine?"}],"tip":"Truco: 'I want' suena directo. 'I'd like' suena educado; úsalo en restaurantes, tiendas y con desconocidos."},
+    {"title":"Adverbios de modo (quickly, well, hard)","summary":"Los adverbios de modo dicen cómo se hace una acción. Casi siempre se forman con adjetivo + -ly (slow → slowly), pero good → well es irregular.","detail":"Un adjetivo describe un sustantivo (a quick answer) y un adverbio describe un verbo (She answered quickly). Se forman añadiendo -ly (careful → carefully). Si el adjetivo acaba en -y, cambia a -ily (happy → happily). Irregulares: good → well; y hard, fast y late tienen la misma forma como adjetivo y adverbio (He works hard).","mindmap":{"center":"Adverbios de modo","branches":[{"label":"Regla","items":["adjetivo + -ly","slow → slowly"]},{"label":"Cambios","items":["-y → -ily: happy → happily","-le → -ly: gentle → gently"]},{"label":"Irregulares","items":["good → well","hard, fast, late igual"]}]},"examples":[{"en":"She speaks English very well.","es":"Ella habla inglés muy bien."},{"en":"He drives slowly.","es":"Él maneja despacio."},{"en":"They worked hard.","es":"Ellos trabajaron duro."},{"en":"Please listen carefully.","es":"Escucha con atención, por favor."}],"tip":"Truco: el adjetivo acompaña a un sustantivo (a good player); el adverbio acompaña a un verbo (plays well). Nunca 'plays good'."},
+    {"title":"Too, enough y very","summary":"'Very' intensifica; 'too' indica que hay demasiado y eso es un problema; 'enough' significa suficiente y va después del adjetivo pero antes del sustantivo.","detail":"'Very' solo aumenta la intensidad (It's very hot) y no implica problema. 'Too' significa 'más de lo necesario' y tiene un sentido negativo (It's too hot to play). 'Enough' va después del adjetivo (old enough, tall enough) y antes del sustantivo (enough money). Con 'not ... enough' expresamos insuficiencia: It isn't warm enough.","mindmap":{"center":"Too / enough / very","branches":[{"label":"very","items":["muy (intensidad)","very cold"]},{"label":"too","items":["demasiado (problema)","too expensive"]},{"label":"enough","items":["adjetivo + enough","enough + sustantivo"]}]},"examples":[{"en":"The coffee is very hot.","es":"El café está muy caliente."},{"en":"It's too hot to drink.","es":"Está demasiado caliente para tomarlo."},{"en":"She is old enough to drive.","es":"Ella tiene edad suficiente para manejar."},{"en":"We don't have enough time.","es":"No tenemos suficiente tiempo."}],"tip":"Truco: 'too' = más de lo necesario (problema). 'Enough' = suficiente y va DESPUÉS del adjetivo (good enough), pero ANTES del sustantivo (enough money)."},
+  ],
+  B1:[
+    {"title":"Presente perfecto vs pasado simple","summary":"El pasado simple habla de un momento terminado del pasado; el presente perfecto conecta el pasado con el presente (experiencias, resultados, 'for/since', 'ever/never', 'just/already/yet').","detail":"Usa el pasado simple cuando dices o se sabe CUÁNDO ocurrió (yesterday, in 2019, last week): I saw him yesterday. Usa el presente perfecto cuando el momento no importa o el periodo sigue abierto (ever, never, already, yet, just, for, since, this week): I have seen that film. Con 'for' se indica duración (for two years) y con 'since' el punto de inicio (since 2020).","mindmap":{"center":"PP vs pasado simple","branches":[{"label":"Pasado simple","items":["momento terminado","yesterday, last year, in 2019"]},{"label":"Presente perfecto","items":["experiencia o resultado","ever, never, already, yet, just"]},{"label":"Duración","items":["for + periodo (for 3 years)","since + inicio (since 2021)"]}]},"examples":[{"en":"I lived in Bogotá in 2015.","es":"Viví en Bogotá en 2015."},{"en":"I have lived here for five years.","es":"Vivo aquí desde hace cinco años."},{"en":"Have you ever been to Japan?","es":"¿Alguna vez has estado en Japón?"},{"en":"She has already finished.","es":"Ella ya terminó."}],"tip":"Truco: si aparece un momento terminado (yesterday, last week, in 2010), usa pasado simple. Si no aparece o es 'ever/never/already/yet/for/since', usa presente perfecto."},
+    {"title":"Pasado perfecto (past perfect)","summary":"El pasado perfecto (had + participio) describe una acción que ocurrió ANTES de otra acción también pasada; sirve para ordenar dos hechos del pasado.","detail":"Cuando cuentas dos acciones pasadas y quieres dejar claro cuál pasó primero, la anterior va en pasado perfecto: When I arrived, the film had started. Se forma con 'had' + participio para todas las personas. El negativo es 'hadn't' y la pregunta invierte 'had' (Had you left?). Palabras típicas: before, after, already, by the time, when.","mindmap":{"center":"Past perfect","branches":[{"label":"Forma","items":["had + participio","hadn't + participio"]},{"label":"Uso","items":["acción anterior a otra pasada","ordenar dos hechos"]},{"label":"Palabras","items":["before, after, already","by the time, when"]}]},"examples":[{"en":"When I arrived, the bus had left.","es":"Cuando llegué, el bus ya se había ido."},{"en":"She had eaten before we came.","es":"Ella había comido antes de que llegáramos."},{"en":"I hadn't seen him before.","es":"No lo había visto antes."},{"en":"Had they finished by then?","es":"¿Ya habían terminado para entonces?"}],"tip":"Truco: la acción más antigua va en pasado perfecto (had + participio) y la más reciente en pasado simple."},
+    {"title":"Conectores: because, so, although, however, despite","summary":"Los conectores unen ideas: because (porque), so (así que), although/but/however (contraste), despite/in spite of (a pesar de) y in order to (para).","detail":"'Because' introduce la causa (I stayed home because it rained) y 'so' la consecuencia (It rained, so I stayed home). Para contraste, 'although' + sujeto + verbo (Although it rained, we went out) y 'however' empieza una nueva oración con coma. 'Despite' e 'in spite of' van seguidos de un sustantivo o un verbo con -ing, no de una oración completa.","mindmap":{"center":"Conectores","branches":[{"label":"Causa y resultado","items":["because + causa","so + resultado"]},{"label":"Contraste","items":["although + oración","however, + oración"]},{"label":"A pesar de","items":["despite + sustantivo/-ing","in spite of + sustantivo/-ing"]}]},"examples":[{"en":"I was late because the bus broke down.","es":"Llegué tarde porque el bus se dañó."},{"en":"It was raining, so we stayed inside.","es":"Estaba lloviendo, así que nos quedamos dentro."},{"en":"Although he was tired, he kept working.","es":"Aunque estaba cansado, siguió trabajando."},{"en":"Despite the rain, we went out.","es":"A pesar de la lluvia, salimos."}],"tip":"Truco: 'although' va con sujeto + verbo; 'despite' va con sustantivo o -ing. Nunca uses 'but' junto con 'although' en la misma oración."},
+    {"title":"Phrasal verbs (separables e inseparables)","summary":"Un phrasal verb es un verbo + partícula (up, out, off...) con un significado propio. Algunos permiten separar la partícula del objeto (turn the light off) y otros no (look after a child).","detail":"El significado del phrasal verb suele diferir del verbo solo: 'give up' es rendirse, 'look up' es buscar en un diccionario. Los separables aceptan el objeto en medio (pick up the phone / pick the phone up); si el objeto es un pronombre, SIEMPRE va en medio (pick it up). Los inseparables no se separan (look after them).","mindmap":{"center":"Phrasal verbs","branches":[{"label":"Separables","items":["turn off the TV","turn it off"]},{"label":"Inseparables","items":["look after the kids","look after them"]},{"label":"Con pronombre","items":["objeto en medio","pick it up, no 'pick up it'"]}]},"examples":[{"en":"Please turn off the light.","es":"Por favor apaga la luz."},{"en":"Please turn it off.","es":"Por favor apágala."},{"en":"She looks after her little brother.","es":"Ella cuida a su hermanito."},{"en":"Don't give up!","es":"¡No te rindas!"}],"tip":"Truco: si el objeto es un pronombre (it, them, me), en los separables va SIEMPRE entre el verbo y la partícula: turn it off."},
+    {"title":"Comparaciones: as...as, less...than, the more...the more","summary":"'As + adjetivo + as' compara cosas iguales; 'less/not as...as' compara inferioridad; y 'the + comparativo..., the + comparativo' muestra que dos cosas cambian juntas.","detail":"Para decir que dos cosas son iguales: as tall as. Para inferioridad: not as tall as o less tall than (menos común). Para una relación proporcional: The harder you study, the better your grades. Para cantidades: as much as (incontables), as many as (contables). Recuerda que después de 'than' o 'as' se puede usar un pronombre de objeto informal: taller than me.","mindmap":{"center":"Comparaciones","branches":[{"label":"Igualdad","items":["as + adjetivo + as","as much / as many as"]},{"label":"Inferioridad","items":["not as + adjetivo + as","less + adjetivo + than"]},{"label":"Proporción","items":["the + comparativo, the + comparativo","The more, the better"]}]},"examples":[{"en":"She is as tall as her brother.","es":"Ella es tan alta como su hermano."},{"en":"This car is not as fast as that one.","es":"Este carro no es tan rápido como ese."},{"en":"The more you practice, the better you get.","es":"Cuanto más practicas, mejor te vuelves."},{"en":"I have as many books as you.","es":"Tengo tantos libros como tú."}],"tip":"Truco: 'as ... as' lleva el adjetivo en forma normal en medio (as tall as), sin -er ni more."},
+    {"title":"Preguntas indirectas","summary":"Las preguntas indirectas suenan más corteses (Could you tell me where the bank is?) y usan el orden de una oración afirmativa, sin 'do/does/did' ni inversión.","detail":"Una pregunta directa lleva inversión (Where is the bank?), pero una indirecta empieza con una frase cortés (Could you tell me..., Do you know..., I wonder...) y luego el orden es sujeto + verbo: ...where the bank is. Sin auxiliares 'do': Do you know what time it starts? Si no hay palabra Wh-, se usa 'if' o 'whether': Could you tell me if the shop is open?","mindmap":{"center":"Preguntas indirectas","branches":[{"label":"Inicio cortés","items":["Could you tell me...","Do you know..."]},{"label":"Orden","items":["sujeto + verbo","sin do/does/did"]},{"label":"Sí/No","items":["if / whether","...if the shop is open"]}]},"examples":[{"en":"Could you tell me where the station is?","es":"¿Podría decirme dónde está la estación?"},{"en":"Do you know what time it starts?","es":"¿Sabes a qué hora empieza?"},{"en":"I wonder if she is coming.","es":"Me pregunto si ella vendrá."},{"en":"Can you tell me how much it costs?","es":"¿Puede decirme cuánto cuesta?"}],"tip":"Truco: después de la frase cortés, el orden vuelve a ser el de una oración normal: 'where the bank IS', no 'where IS the bank'."},
+  ],
+  B2:[
+    {"title":"Modales de pasado: should have, could have, needn't have","summary":"'Should have' + participio expresa un consejo o reproche sobre el pasado; 'could have' una posibilidad que no ocurrió; y 'needn't have' algo que se hizo sin necesidad.","detail":"Estos modales miran hacia atrás: 'You should have called' (no llamaste, y era lo correcto); 'You shouldn't have shouted' (gritaste y estuvo mal). 'I could have won' significa que tuve la posibilidad pero no ocurrió. 'You needn't have come' significa que viniste, pero no era necesario. Todos se forman con modal + have + participio pasado.","mindmap":{"center":"Modales de pasado","branches":[{"label":"should have + participio","items":["debería haber (no lo hiciste)","shouldn't have (hiciste algo malo)"]},{"label":"could have + participio","items":["habría podido","posibilidad no realizada"]},{"label":"needn't have + participio","items":["no hacía falta","lo hiciste sin necesidad"]}]},"examples":[{"en":"You should have studied more.","es":"Deberías haber estudiado más."},{"en":"I could have passed the exam.","es":"Habría podido aprobar el examen."},{"en":"She shouldn't have said that.","es":"No debió haber dicho eso."},{"en":"We needn't have hurried.","es":"No hacía falta que nos apuráramos."}],"tip":"Truco: el modal + have + participio siempre habla de algo pasado que ya no se puede cambiar. En la pronunciación, 'have' suena como 'of', pero se escribe 'have'."},
+    {"title":"Alternativas a 'if': unless, as long as, provided that, in case","summary":"'Unless' significa 'a menos que'; 'as long as' y 'provided that' significan 'siempre que'; e 'in case' significa 'por si acaso'. Después de ellos, el verbo va en presente aunque hablemos del futuro.","detail":"'Unless' equivale a 'if ... not': Unless you hurry, you'll miss the train = If you don't hurry... 'As long as' y 'provided (that)' añaden una condición necesaria: You can borrow it as long as you return it. 'In case' no es lo mismo que 'if': indica precaución (Take an umbrella in case it rains, es decir, por si llueve).","mindmap":{"center":"Condiciones","branches":[{"label":"unless","items":["a menos que","= if ... not"]},{"label":"as long as / provided that","items":["siempre que","condición necesaria"]},{"label":"in case","items":["por si acaso","precaución"]}]},"examples":[{"en":"Unless you hurry, you'll be late.","es":"A menos que te apures, llegarás tarde."},{"en":"You can go as long as you finish your homework.","es":"Puedes ir siempre que termines la tarea."},{"en":"Take a coat in case it gets cold.","es":"Lleva un abrigo por si hace frío."},{"en":"Provided that it doesn't rain, we'll have the picnic.","es":"Siempre que no llueva, haremos el picnic."}],"tip":"Truco: después de 'unless' no uses otro negativo. 'Unless you don't study' es incorrecto; di 'Unless you study'."},
+    {"title":"Pasado perfecto continuo y tiempos narrativos","summary":"'Had been + verbo-ing' muestra que una acción llevaba tiempo en progreso antes de otro momento del pasado; junto con el pasado simple y continuo sirve para narrar historias.","detail":"Al narrar, combinamos: pasado simple para los hechos principales (He opened the door), pasado continuo para el fondo de la escena (It was raining) y pasado perfecto (continuo) para lo anterior (She had been waiting for an hour). El pasado perfecto continuo enfatiza la duración de algo que venía ocurriendo antes de un momento pasado: I was tired because I had been working all day.","mindmap":{"center":"Tiempos narrativos","branches":[{"label":"Pasado simple","items":["hechos principales","She opened the door."]},{"label":"Pasado continuo","items":["escena de fondo","It was raining."]},{"label":"Had been + -ing","items":["duración previa","She had been waiting."]}]},"examples":[{"en":"I was tired because I had been working all day.","es":"Estaba cansado porque llevaba todo el día trabajando."},{"en":"She had been waiting for an hour when he arrived.","es":"Ella llevaba una hora esperando cuando él llegó."},{"en":"It had been raining, so the ground was wet.","es":"Había estado lloviendo, así que el suelo estaba mojado."},{"en":"Had you been studying?","es":"¿Habías estado estudiando?"}],"tip":"Truco: 'had been + -ing' = 'llevaba + gerundio' en español (llevaba esperando)."},
+    {"title":"Both, either, neither, all, whole","summary":"'Both' es 'los dos'; 'either' es 'uno u otro'; 'neither' es 'ninguno de los dos'; y 'all' / 'whole' expresan 'todo(s)'. 'Neither' ya es negativo.","detail":"'Both' + plural: Both my parents work. 'Either' + singular (uno de dos): You can take either bus. 'Neither' + singular: Neither answer is correct; y ya contiene el sentido negativo, por eso el verbo va en afirmativo. 'All' se usa con plural o incontables (all the students, all the money) y 'whole' con singulares (the whole day = all day).","mindmap":{"center":"Cantidades","branches":[{"label":"De dos","items":["both = los dos","either = uno u otro","neither = ninguno"]},{"label":"Todo","items":["all + plural/incontable","the whole + singular"]},{"label":"Ojo","items":["neither ya es negativo","Neither of us knows."]}]},"examples":[{"en":"Both of my brothers live in Canada.","es":"Mis dos hermanos viven en Canadá."},{"en":"You can sit at either table.","es":"Puedes sentarte en cualquiera de las dos mesas."},{"en":"Neither of them was late.","es":"Ninguno de los dos llegó tarde."},{"en":"I studied the whole night.","es":"Estudié toda la noche."}],"tip":"Truco: 'neither' ya lleva el negativo; nunca lo combines con 'not'. 'Neither of us doesn't know' es incorrecto."},
+    {"title":"Verbos + gerundio o infinitivo: cambio de significado","summary":"Con verbos como remember, forget, stop, try y regret, el significado cambia según se use con gerundio (-ing) o con infinitivo (to + verbo).","detail":"'Stop doing' es dejar de hacer algo; 'stop to do' es detenerse para hacer algo. 'Remember doing' es recordar algo que ya hiciste; 'remember to do' es no olvidar hacerlo. 'Try doing' es probar como experimento; 'try to do' es intentar con esfuerzo. 'Regret doing' es lamentar lo que hiciste y 'regret to say' lamentar tener que decir algo.","mindmap":{"center":"Cambio de significado","branches":[{"label":"stop","items":["stop doing = dejar de","stop to do = detenerse para"]},{"label":"remember / forget","items":["+ -ing: acción pasada","+ to: acción pendiente"]},{"label":"try","items":["try doing = probar","try to do = intentar"]}]},"examples":[{"en":"He stopped smoking last year.","es":"Dejó de fumar el año pasado."},{"en":"He stopped to buy water.","es":"Se detuvo para comprar agua."},{"en":"I remember meeting her in 2019.","es":"Recuerdo haberla conocido en 2019."},{"en":"Remember to lock the door.","es":"Recuerda cerrar la puerta con llave."}],"tip":"Truco: -ing mira hacia lo que ya pasó o la actividad en sí; 'to + verbo' mira hacia el propósito o lo que falta por hacer."},
+    {"title":"Contraste y propósito: in spite of, whereas, so that, in order to","summary":"'Whereas' y 'while' comparan diferencias; 'in spite of' es a pesar de; y 'so that' / 'in order to' expresan propósito (para que / para).","detail":"'Whereas' contrasta dos hechos: I love cities, whereas my wife prefers the countryside. 'In spite of' equivale a 'despite' y va seguido de sustantivo o -ing. Para propósito: 'to + verbo' o 'in order to + verbo' (I study to pass), y 'so that' + oración cuando el sujeto es distinto (I left early so that she could rest).","mindmap":{"center":"Contraste y propósito","branches":[{"label":"Contraste","items":["whereas / while","in spite of + sustantivo/-ing"]},{"label":"Propósito (mismo sujeto)","items":["to + verbo","in order to + verbo"]},{"label":"Propósito (otro sujeto)","items":["so that + oración","so that she could rest"]}]},"examples":[{"en":"He is tall, whereas his brother is short.","es":"Él es alto, mientras que su hermano es bajo."},{"en":"In spite of the traffic, we arrived on time.","es":"A pesar del tráfico, llegamos a tiempo."},{"en":"I called in order to ask for information.","es":"Llamé para pedir información."},{"en":"Speak slowly so that everyone understands.","es":"Habla despacio para que todos entiendan."}],"tip":"Truco: 'so that' se usa cuando el sujeto de las dos partes es distinto o para expresar propósito con modal (so that we can...). Con el mismo sujeto es más natural 'to' o 'in order to'."},
+    {"title":"Futuro perfecto y futuro continuo","summary":"'Will be + -ing' describe algo en progreso en un momento futuro; 'will have + participio' describe algo que ya estará terminado para un momento futuro.","detail":"Futuro continuo: 'This time tomorrow I'll be flying to Lima' (estaré volando). Futuro perfecto: 'By June I'll have finished my degree' (ya habré terminado). También sirve para preguntar cortésmente por planes: Will you be using the car tonight? Palabras típicas del futuro perfecto: by, by the time, by next week.","mindmap":{"center":"Futuro avanzado","branches":[{"label":"Futuro continuo","items":["will be + -ing","en progreso en el futuro"]},{"label":"Futuro perfecto","items":["will have + participio","terminado para cierto momento"]},{"label":"Palabras clave","items":["by 2030, by the time","this time tomorrow"]}]},"examples":[{"en":"This time next week, I'll be lying on a beach.","es":"A esta hora la próxima semana estaré tumbado en una playa."},{"en":"By 2030, she will have graduated.","es":"Para 2030, ella ya se habrá graduado."},{"en":"Will you be using the computer tonight?","es":"¿Vas a estar usando la computadora esta noche?"},{"en":"They will have finished by six.","es":"Habrán terminado para las seis."}],"tip":"Truco: 'by + momento' anuncia el futuro perfecto (habrá terminado); 'this time tomorrow' anuncia el futuro continuo (estará haciendo)."},
+    {"title":"Preposiciones dependientes: adjetivos y verbos","summary":"Muchos adjetivos y verbos exigen una preposición concreta: afraid of, interested in, good at, depend on, apologize for. Hay que aprenderlos como bloque.","detail":"En inglés, cierta preposición acompaña a ciertas palabras y no siempre coincide con el español. Ejemplos con adjetivos: afraid of, interested in, good at, proud of, keen on. Con verbos: depend on, look forward to, apologize for, believe in, listen to. Después de la preposición va un sustantivo o un verbo con -ing, nunca un infinitivo: I'm interested in learning.","mindmap":{"center":"Preposiciones fijas","branches":[{"label":"Adjetivos","items":["afraid of, proud of","interested in, good at"]},{"label":"Verbos","items":["depend on, believe in","apologize for, listen to"]},{"label":"Después","items":["sustantivo","verbo con -ing"]}]},"examples":[{"en":"She is afraid of spiders.","es":"Ella le tiene miedo a las arañas."},{"en":"I'm interested in learning Italian.","es":"Me interesa aprender italiano."},{"en":"It depends on the weather.","es":"Depende del clima."},{"en":"He apologized for being late.","es":"Se disculpó por llegar tarde."}],"tip":"Truco: aprende el bloque completo (interested IN, good AT, depend ON) y recuerda que después de una preposición el verbo va con -ing."},
+  ],
+  C1:[
+    {"title":"Deducción en el pasado: must have, can't have, might have","summary":"Para deducir qué pasó antes se usa modal + have + participio: 'must have' (casi seguro), 'can't have' (imposible) y 'might/may/could have' (posible).","detail":"Estas formas expresan cuánta certeza tenemos sobre algo pasado según la evidencia. 'She must have left' = estoy casi seguro de que se fue. 'He can't have known' = es imposible que lo supiera. 'They might have missed the train' = quizá lo perdieron. Ojo: el negativo de 'must have' NO es 'mustn't have', sino 'can't have'.","mindmap":{"center":"Certeza sobre el pasado","branches":[{"label":"Casi seguro","items":["must have + participio","evidencia clara"]},{"label":"Imposible","items":["can't / couldn't have + participio","no es 'mustn't have'"]},{"label":"Posible","items":["might / may / could have + participio","no estoy seguro"]}]},"examples":[{"en":"The lights are off. They must have gone out.","es":"Las luces están apagadas. Deben de haber salido."},{"en":"He can't have finished already.","es":"No puede haber terminado ya."},{"en":"She might have forgotten our meeting.","es":"Quizá olvidó nuestra reunión."},{"en":"You must have been exhausted.","es":"Debes de haber estado agotado."}],"tip":"Truco: la negación de 'must have' (deducción) es 'can't have' o 'couldn't have', nunca 'mustn't have'."},
+    {"title":"Pasiva con verbos de opinión: it is said that, he is said to","summary":"Con verbos como say, believe, think, report, expect se puede formar la pasiva impersonal (It is said that...) o personal (He is said to be...) para presentar información sin decir quién la afirma.","detail":"Estas estructuras son frecuentes en noticias y textos formales. Con 'It': It is believed that the company will close. Con sujeto personal: The company is believed to close (infinitivo). Para hablar del pasado usamos el infinitivo perfecto: He is said to have left the country. Verbos típicos: say, believe, think, report, expect, know, consider.","mindmap":{"center":"Pasiva impersonal","branches":[{"label":"It + pasiva + that","items":["It is said that...","It is believed that..."]},{"label":"Sujeto + pasiva + to","items":["He is said to be rich","She is thought to know"]},{"label":"Pasado","items":["to have + participio","He is said to have left"]}]},"examples":[{"en":"It is said that the house is haunted.","es":"Se dice que la casa está embrujada."},{"en":"The politician is believed to be innocent.","es":"Se cree que el político es inocente."},{"en":"He is reported to have left the country.","es":"Se informa de que ha salido del país."},{"en":"They are expected to win.","es":"Se espera que ganen."}],"tip":"Truco: para hablar de algo anterior al momento actual usa 'to have + participio': is said to HAVE won."},
+    {"title":"Cláusulas de participio (participle clauses)","summary":"Reducen oraciones usando -ing o participio pasado para acortar y dar fluidez: Walking home, I met Ana (= While I was walking home...). El sujeto debe ser el mismo en ambas partes.","detail":"Con -ing expresamos acciones simultáneas o causa: Feeling tired, she went to bed. Con 'having + participio' expresamos una acción anterior: Having finished, he left. Con participio pasado, sentido pasivo: Written in 1900, the book is still popular. Ojo con el 'dangling participle': el sujeto de la cláusula debe ser el mismo que el de la principal.","mindmap":{"center":"Cláusulas de participio","branches":[{"label":"-ing","items":["acción simultánea o causa","Feeling tired, she left."]},{"label":"Having + participio","items":["acción anterior","Having eaten, we left."]},{"label":"Participio pasado","items":["sentido pasivo","Written in 1900, ..."]}]},"examples":[{"en":"Walking down the street, I saw an old friend.","es":"Caminando por la calle, vi a un viejo amigo."},{"en":"Having finished the report, she went home.","es":"Habiendo terminado el informe, se fue a casa."},{"en":"Built in 1920, the hotel is very old.","es":"Construido en 1920, el hotel es muy antiguo."},{"en":"Not knowing the answer, he stayed silent.","es":"Sin saber la respuesta, se quedó callado."}],"tip":"Truco: ambos verbos deben tener el mismo sujeto. 'Walking down the street, the bus hit me' es incorrecto: el bus no caminaba."},
+    {"title":"Conectores formales: nevertheless, moreover, consequently","summary":"En textos formales se usan conectores como moreover (además), nevertheless (sin embargo), consequently (por consiguiente), whereas y furthermore para organizar el argumento.","detail":"Adición: moreover, furthermore, in addition. Contraste: nevertheless, nonetheless, however, on the other hand. Consecuencia: consequently, therefore, as a result, hence. Suelen ir al inicio de la oración seguidos de coma, o después de un punto y coma. Ejemplo: The plan was expensive; nevertheless, it was approved.","mindmap":{"center":"Conectores formales","branches":[{"label":"Adición","items":["moreover, furthermore","in addition"]},{"label":"Contraste","items":["nevertheless, nonetheless","however"]},{"label":"Consecuencia","items":["consequently, therefore","as a result"]}]},"examples":[{"en":"The plan was costly; nevertheless, it was approved.","es":"El plan era costoso; sin embargo, fue aprobado."},{"en":"Moreover, the results were reliable.","es":"Además, los resultados eran fiables."},{"en":"Sales fell; consequently, the company closed.","es":"Las ventas cayeron; por consiguiente, la empresa cerró."},{"en":"The proposal is clear. Furthermore, it is realistic.","es":"La propuesta es clara. Además, es realista."}],"tip":"Truco: estos conectores no unen dos oraciones con coma sola. Usa punto o punto y coma antes de ellos."},
+    {"title":"Elipsis y sustitución (so, do so, one, not)","summary":"Para evitar repetir palabras se omiten (elipsis) o se reemplazan: I think so, He said he would, and she did too, the red one, I hope not.","detail":"La elipsis quita palabras que se entienden por contexto: 'She can swim, and he can [swim] too'. La sustitución las reemplaza: 'one/ones' para sustantivos (the blue one), 'so' / 'not' para oraciones (I think so; I hope not), 'do so' para acciones (He asked me to leave and I did so). Da fluidez y suena natural.","mindmap":{"center":"Evitar repeticiones","branches":[{"label":"Elipsis","items":["omitir lo obvio","and he can too"]},{"label":"Sustitución nominal","items":["one / ones","the red one"]},{"label":"Sustitución de oración","items":["so / not","I think so / I hope not"]}]},"examples":[{"en":"Which dress? The blue one.","es":"¿Qué vestido? El azul."},{"en":"Will it rain? I hope not.","es":"¿Lloverá? Espero que no."},{"en":"She wanted to leave, and so did I.","es":"Ella quería irse, y yo también."},{"en":"He asked me to help, and I did so.","es":"Me pidió ayuda, y lo hice."}],"tip":"Truco: después de 'hope', 'think', 'expect' usa 'so' para afirmar y 'not' para negar: I hope so / I hope not."},
+    {"title":"Lenguaje cauteloso (hedging)","summary":"El 'hedging' suaviza afirmaciones con verbos y expresiones como seems, appears, tends to, may, could, probably, it is likely that; es clave en textos académicos y profesionales.","detail":"En inglés académico y profesional se evita afirmar de forma absoluta. En lugar de 'This proves that...' se dice 'This suggests that...'. Recursos: verbos (seem, appear, suggest, tend to), modales (may, might, could), adverbios (probably, perhaps, apparently) y estructuras (It is likely that..., There is some evidence that...). Así se protege la precisión y se suena más profesional.","mindmap":{"center":"Hedging","branches":[{"label":"Verbos","items":["seem, appear, suggest","tend to"]},{"label":"Modales y adverbios","items":["may, might, could","probably, perhaps"]},{"label":"Estructuras","items":["It is likely that...","There is evidence that..."]}]},"examples":[{"en":"The results suggest that the method is effective.","es":"Los resultados sugieren que el método es eficaz."},{"en":"Students tend to learn faster with practice.","es":"Los estudiantes tienden a aprender más rápido practicando."},{"en":"It appears that sales will increase.","es":"Parece que las ventas aumentarán."},{"en":"This could indicate a problem.","es":"Esto podría indicar un problema."}],"tip":"Truco: cambia 'proves' por 'suggests', 'is' por 'appears to be' y 'always' por 'tends to'. Sonarás más preciso y profesional."},
+    {"title":"Infinitivo y gerundio perfectos (having done, to have done)","summary":"'Having + participio' y 'to have + participio' señalan que una acción ocurrió antes de la principal; se usan en registros formales y con verbos como admit, deny, appear, seem.","detail":"Para acción anterior con verbo de admisión: He denied having stolen the money (negó haberlo robado). Con seem/appear: She seems to have forgotten (parece haber olvidado). Con 'be glad, pleased, sorry': I'm sorry to have disturbed you. El gerundio perfecto aparece con admit, deny, regret, remember, recall: I regret not having asked.","mindmap":{"center":"Formas perfectas","branches":[{"label":"Gerundio perfecto","items":["having + participio","denied having stolen"]},{"label":"Infinitivo perfecto","items":["to have + participio","seems to have left"]},{"label":"Después de","items":["admit, deny, regret","seem, appear, be sorry"]}]},"examples":[{"en":"He denied having taken the money.","es":"Negó haber tomado el dinero."},{"en":"She seems to have forgotten.","es":"Parece haberlo olvidado."},{"en":"I regret not having studied more.","es":"Lamento no haber estudiado más."},{"en":"They are said to have won.","es":"Se dice que ganaron."}],"tip":"Truco: si la acción es anterior a la del verbo principal, usa la forma perfecta (having / to have + participio)."},
+    {"title":"Artículos: uso y omisión (the, a, sin artículo)","summary":"Se omite el artículo con plurales e incontables en sentido general (Life is hard), y se usa 'the' cuando es único o ya conocido; con instituciones (hospital, school) hay diferencias de sentido.","detail":"Sin artículo: hablar en general (Music is important), idiomas, deportes, comidas, la mayoría de países y ciudades. Con 'the': cosas únicas (the sun), ya mencionadas, ríos, océanos, cordilleras, países con 'Republic/Kingdom/States'. Instituciones: 'in hospital' (como paciente, inglés británico) vs 'in the hospital' (el edificio); 'go to school' (a estudiar) vs 'go to the school' (a otra cosa).","mindmap":{"center":"Artículos","branches":[{"label":"Sin artículo","items":["generalizaciones: Music","idiomas, deportes, comidas"]},{"label":"Con the","items":["únicos y ya mencionados","ríos, océanos, cordilleras"]},{"label":"Instituciones","items":["go to school (estudiar)","go to the school (edificio)"]}]},"examples":[{"en":"Life is beautiful.","es":"La vida es hermosa."},{"en":"The Amazon is the longest river in South America.","es":"El Amazonas es el río más largo de Sudamérica."},{"en":"My son goes to school by bus.","es":"Mi hijo va a la escuela en bus."},{"en":"I went to the school to meet the teacher.","es":"Fui a la escuela a reunirme con el profesor."}],"tip":"Truco: sin artículo cuando generalizas (Coffee is good); con 'the' cuando concretas (The coffee you made is good)."},
+    {"title":"Modificadores de grado: fairly, absolutely, utterly","summary":"Los adjetivos graduables (cold, good) aceptan very, quite, fairly; los no graduables o extremos (freezing, excellent) aceptan absolutely, utterly, totally. Mezclarlos suena mal.","detail":"Graduable: se puede tener más o menos (hot → very hot, quite hot, fairly hot). No graduable (extremo o absoluto): freezing, exhausted, perfect, impossible; se combina con absolutely, utterly, completely. 'Very' no se usa con no graduables: 'very freezing' es incorrecto. 'Quite' y 'fairly' matizan a la baja (fairly good = bastante bien).","mindmap":{"center":"Grado","branches":[{"label":"Graduables","items":["very, quite, fairly, rather","very tired, quite big"]},{"label":"Extremos","items":["absolutely, utterly, totally","absolutely freezing"]},{"label":"Cuidado","items":["no 'very freezing'","no 'absolutely tired'"]}]},"examples":[{"en":"The film was very good.","es":"La película fue muy buena."},{"en":"The film was absolutely fantastic.","es":"La película fue absolutamente fantástica."},{"en":"I'm utterly exhausted.","es":"Estoy completamente agotado."},{"en":"It's fairly cold today.","es":"Hace bastante frío hoy."}],"tip":"Truco: 'very' con adjetivos comunes (very good), 'absolutely' con adjetivos extremos (absolutely brilliant). No los cruces."},
+  ],
+  C2:[
+    {"title":"Would rather, had better, it's time (+ pasado)","summary":"'Would rather' expresa preferencia; 'had better' un consejo fuerte con advertencia; e 'it's time' + pasado dice que ya debería hacerse algo. Estas estructuras usan formas verbales especiales.","detail":"'Would rather + verbo base' (mismo sujeto): I'd rather stay home. Con otro sujeto se usa pasado: I'd rather you stayed home (prefiero que te quedes; pasado con valor de presente/futuro). 'Had better + base' (mejor que): You'd better leave now, or you'll miss the train. 'It's time + pasado': It's time we left (ya es hora de irnos). Son formas de pasado sin sentido de pasado.","mindmap":{"center":"Preferencia y urgencia","branches":[{"label":"Would rather","items":["mismo sujeto: + base","otro sujeto: + pasado"]},{"label":"Had better","items":["+ verbo base","consejo con advertencia"]},{"label":"It's time","items":["+ sujeto + pasado","It's time we left"]}]},"examples":[{"en":"I'd rather stay home tonight.","es":"Prefiero quedarme en casa esta noche."},{"en":"I'd rather you didn't smoke here.","es":"Prefiero que no fumes aquí."},{"en":"You'd better hurry up.","es":"Más te vale darte prisa."},{"en":"It's time we went home.","es":"Ya es hora de que nos vayamos a casa."}],"tip":"Truco: con 'would rather' y 'it's time', el pasado no habla del pasado; expresa algo hipotético o pendiente ahora."},
+    {"title":"Pasivas avanzadas: get-passive, pasiva con modales y perfecto","summary":"Además de 'be + participio', existe 'get + participio' (informal, para cambios o sucesos inesperados) y las pasivas con modales (must be done) y con tiempos perfectos (has been done).","detail":"Get-passive: He got fired; The vase got broken. Es informal y a menudo señala sucesos no deseados o cambios. Con modales: The report must be finished today (modal + be + participio). Perfecto: The bridge has been repaired. Continuo: The house is being painted. Infinitivo pasivo: I want to be told the truth. Gerundio pasivo: I hate being interrupted.","mindmap":{"center":"Pasivas","branches":[{"label":"Get-passive","items":["get + participio","informal, sucesos"]},{"label":"Con modales / perfecto","items":["must be done","has been repaired"]},{"label":"Formas no personales","items":["to be + participio","being + participio"]}]},"examples":[{"en":"He got promoted last year.","es":"Lo ascendieron el año pasado."},{"en":"The work must be finished by Friday.","es":"El trabajo debe terminarse para el viernes."},{"en":"The house is being renovated.","es":"Están renovando la casa."},{"en":"I hate being kept waiting.","es":"Odio que me hagan esperar."}],"tip":"Truco: 'get' + participio se prefiere en lenguaje hablado para cosas que suceden, sobre todo inesperadas; 'be' + participio es más neutral y formal."},
+    {"title":"Fronting y orden de palabras marcado","summary":"Colocar al inicio un elemento que normalmente iría después (Fronting) sirve para enfatizar o conectar la información: Attached is the report; Rarely have I seen such talent.","detail":"El orden normal es sujeto + verbo + objeto, pero se puede mover un elemento al inicio para dar énfasis o mejorar la cohesión. Adverbios: Here comes the bus. Complementos: Attached is my CV. Objeto: That book I have never read. Con adverbios negativos hay inversión (Never have I seen...). Se usa sobre todo en registros formales, literarios y en la escritura profesional.","mindmap":{"center":"Fronting","branches":[{"label":"Adverbios de lugar","items":["Here comes the bus.","Down came the rain."]},{"label":"Complementos","items":["Attached is the report.","Included are three files."]},{"label":"Objeto al inicio","items":["That book I never read.","Such a mistake I regret."]}]},"examples":[{"en":"Attached is a copy of my CV.","es":"Adjunto una copia de mi CV."},{"en":"Here comes the bus!","es":"¡Ahí viene el bus!"},{"en":"That question I cannot answer.","es":"Esa pregunta no puedo contestarla."},{"en":"Rarely have I seen such talent.","es":"Rara vez he visto tanto talento."}],"tip":"Truco: al mover un elemento al inicio, con adverbios negativos (never, rarely, seldom) hay inversión sujeto-auxiliar; con otros, a veces solo se invierte el verbo (Here comes...)."},
+    {"title":"Modales con matices: shall, ought to, dare, need","summary":"Los modales menos frecuentes tienen matices propios: 'shall' para ofertas o normas formales, 'ought to' para deber moral, 'dare' para atreverse y 'need' (needn't) para necesidad.","detail":"'Shall' con I/we para ofrecer o sugerir (Shall I help you?) y en textos legales (The tenant shall pay...). 'Ought to' es como 'should' pero algo más moral u objetivo: You ought to apologize. 'Dare' como modal se usa sobre todo en negativo/interrogativo: He daren't ask. 'Need' como modal: You needn't come (no hace falta) vs 'don't need to'. 'How dare you...' expresa indignación.","mindmap":{"center":"Modales de matiz","branches":[{"label":"Shall","items":["Shall I/we...? (oferta)","textos legales"]},{"label":"Ought to","items":["deber moral","You ought to apologize."]},{"label":"Dare / need","items":["daren't (no se atreve)","needn't = no hace falta"]}]},"examples":[{"en":"Shall I open the window?","es":"¿Abro la ventana?"},{"en":"You ought to see a doctor.","es":"Deberías ver a un médico."},{"en":"I daren't tell him the truth.","es":"No me atrevo a decirle la verdad."},{"en":"How dare you speak to me like that!","es":"¡Cómo te atreves a hablarme así!"}],"tip":"Truco: 'shall' es casi exclusivo de I/we en ofertas y sugerencias. En norma legal aparece con cualquier sujeto."},
+    {"title":"Registro formal e informal","summary":"El mismo mensaje cambia según el contexto: en formal se prefieren verbos de origen latino, pasiva y oraciones completas; en informal, phrasal verbs, contracciones y expresiones cortas.","detail":"Formal: I would be grateful if you could inform me... / We regret to inform you... Informal: Could you let me know? / Sorry, but... Phrasal verbs suelen ser informales (find out → ascertain), las contracciones se evitan en textos formales, y los conectores cambian (however vs but). Elegir el registro correcto es clave en correos, entrevistas y presentaciones.","mindmap":{"center":"Registro","branches":[{"label":"Formal","items":["ascertain, inform, request","sin contracciones"]},{"label":"Informal","items":["find out, let know, ask for","contracciones y phrasal verbs"]},{"label":"Contexto","items":["correo formal: I would be grateful","charla: Could you tell me?"]}]},"examples":[{"en":"I would be grateful if you could confirm receipt.","es":"Le agradecería que confirmara la recepción."},{"en":"Can you let me know when you get it?","es":"¿Me avisas cuando lo recibas?"},{"en":"We regret to inform you that the position has been filled.","es":"Lamentamos informarle que el puesto ya fue cubierto."},{"en":"Sorry, the job's gone.","es":"Lo siento, el puesto ya no está."}],"tip":"Truco: piensa en el destinatario. Al jefe, un cliente o un desconocido: registro formal. A amigos y familia: informal."},
+    {"title":"Cohesión y marcadores del discurso","summary":"Los marcadores organizan el discurso: para empezar (firstly), añadir (in addition), ejemplificar (for instance), reformular (in other words), concluir (to sum up) y reconocer una idea (admittedly).","detail":"Un texto cohesivo guía al lector. Orden: firstly / to begin with, secondly / next, finally. Ejemplos: for instance, such as. Reformulación: in other words, that is to say. Contraste con concesión: admittedly..., but...; while it is true that... Conclusión: to sum up, in conclusion, overall. Usa una variedad y no repitas el mismo marcador.","mindmap":{"center":"Marcadores","branches":[{"label":"Orden","items":["firstly, secondly, finally","to begin with"]},{"label":"Ejemplificar y aclarar","items":["for instance","in other words"]},{"label":"Concluir","items":["to sum up","in conclusion, overall"]}]},"examples":[{"en":"To begin with, the plan is too expensive.","es":"Para empezar, el plan es demasiado costoso."},{"en":"Many people, for instance, work from home.","es":"Muchas personas, por ejemplo, trabajan desde casa."},{"en":"It is late; in other words, we must leave.","es":"Es tarde; en otras palabras, debemos irnos."},{"en":"To sum up, the project was a success.","es":"En resumen, el proyecto fue un éxito."}],"tip":"Truco: no uses 'in conclusion' para cerrar un párrafo intermedio; reserva 'to sum up' e 'in conclusion' para el cierre."},
+    {"title":"Expresiones idiomáticas (idioms)","summary":"Los modismos tienen un significado que no se deduce de sus palabras: 'a piece of cake' (muy fácil), 'break the ice' (romper el hielo), 'hit the nail on the head' (dar en el clavo).","detail":"Un modismo funciona como bloque y suele no traducirse literalmente. Aprender modismos por categorías ayuda: dificultad (a piece of cake, a tough nut to crack), comunicación (break the ice, speak your mind), decisiones (make up your mind, sit on the fence), esfuerzo (go the extra mile, burn the midnight oil). Cuidado con el registro: la mayoría son informales o neutros.","mindmap":{"center":"Idioms","branches":[{"label":"Dificultad","items":["a piece of cake","a tough nut to crack"]},{"label":"Comunicación","items":["break the ice","hit the nail on the head"]},{"label":"Esfuerzo","items":["go the extra mile","burn the midnight oil"]}]},"examples":[{"en":"The exam was a piece of cake.","es":"El examen fue pan comido."},{"en":"A joke can break the ice.","es":"Un chiste puede romper el hielo."},{"en":"She hit the nail on the head.","es":"Dio en el clavo."},{"en":"He went the extra mile to help us.","es":"Se esforzó más de lo esperado para ayudarnos."}],"tip":"Truco: no traduzcas palabra por palabra. Aprende el modismo completo con su contexto y un ejemplo propio."},
+    {"title":"Formación de palabras: prefijos y sufijos","summary":"Conocer prefijos (un-, dis-, re-, mis-) y sufijos (-tion, -ness, -ment, -able) permite deducir el significado y crear palabras nuevas de una misma familia.","detail":"Prefijos de negación: un- (unhappy), in-/im- (impossible), dis- (disagree), mis- (misunderstand). Prefijos de repetición: re- (rewrite). Sufijos de sustantivo: -tion (decision), -ness (happiness), -ment (development), -ity (reality). Sufijos de adjetivo: -able (readable), -ful (careful), -less (careless). Sufijos de adverbio: -ly. Útil en exámenes de 'word formation'.","mindmap":{"center":"Familias de palabras","branches":[{"label":"Prefijos","items":["un-, dis-, mis-, re-","im-/in-/ir-"]},{"label":"Sufijos de sustantivo","items":["-tion, -ment","-ness, -ity"]},{"label":"Sufijos de adjetivo","items":["-able, -ful, -less","-ive, -al"]}]},"examples":[{"en":"His unhappiness was obvious.","es":"Su infelicidad era evidente."},{"en":"The development of the city is fast.","es":"El desarrollo de la ciudad es rápido."},{"en":"It's impossible to read; the writing is illegible.","es":"Es imposible de leer; la letra es ilegible."},{"en":"She rewrote the report.","es":"Ella reescribió el informe."}],"tip":"Truco: antes de una palabra desconocida, separa prefijo + raíz + sufijo. Casi siempre puedes deducir el significado."},
+    {"title":"However, whatever, no matter: concesión enfática","summary":"'However + adjetivo', 'whatever', 'whoever', 'wherever' y 'no matter how/what' expresan 'sin importar': However hard you try, you can't win.","detail":"Estas estructuras indican que algo ocurre o es cierto sin importar las circunstancias. 'However + adjetivo/adverbio + sujeto + verbo': However tired I am, I go running. 'Whatever/whoever/whichever' (lo que sea / quien sea): Whatever you decide, I'll support you. 'No matter + how/what/where/who' significa lo mismo y es más común en el habla: No matter what happens, stay calm. 'Wherever' = dondequiera, 'whenever' = cuandoquiera.","mindmap":{"center":"Concesión","branches":[{"label":"However","items":["however + adjetivo","However hard you try..."]},{"label":"Whatever / whoever","items":["lo que sea, quien sea","Whatever you decide..."]},{"label":"No matter","items":["no matter how/what/where","No matter what happens..."]}]},"examples":[{"en":"However hard I try, I can't do it.","es":"Por más que lo intento, no puedo."},{"en":"Whatever you decide, I'll support you.","es":"Decidas lo que decidas, te apoyaré."},{"en":"No matter where you go, I'll find you.","es":"No importa adónde vayas, te encontraré."},{"en":"Whoever called, tell them I'm busy.","es":"Quien haya llamado, diles que estoy ocupado."}],"tip":"Truco: 'however' aquí NO es un conector de contraste. Va pegado al adjetivo o adverbio (however hard) y se traduce como 'por más que'."},
+  ],
+};
+Object.keys(THEORY_NEW).forEach(lv=>{ THEORY_NEW[lv].forEach(t=> THEORY[lv].push(t)); });
+const ROUTE_EXPAND = {
+  A1:{
+    7:{
+      gapfill:[
+        {"sentence":"___ is my pen, here in my hand. (this/that)","answer":"This","explain":"El bolígrafo está en tu mano, es decir, cerca y en singular: 'this'."},
+        {"sentence":"Look at ___ mountains over there! (these/those)","answer":"those","explain":"'Over there' indica lejos y 'mountains' es plural: 'those'."},
+        {"sentence":"___ shoes here are very comfortable. (These/Those)","answer":"These","explain":"'Here' indica cerca y 'shoes' es plural: 'these'."},
+        {"sentence":"Who is ___ man near the door? (this/that)","answer":"that","explain":"El hombre está lejos (cerca de la puerta) y es singular: 'that'."},
+        {"sentence":"Are ___ your keys on the table next to me? (these/those)","answer":"these","explain":"Las llaves están cerca de ti y son plurales: 'these'."},
+      ],
+      order:[
+        {"words":["this","is","my","new","bag"],"correct":"This is my new bag.","explain":"Demostrativo + is + posesivo + adjetivo + sustantivo."},
+        {"words":["are","those","your","friends"],"correct":"Are those your friends?","explain":"En preguntas con 'be' se invierte el orden: Are + those + sustantivo."},
+      ],
+      translate:[
+        {"es":"Esos zapatos son nuevos.","en":["those shoes are new","those are new shoes"],"explain":"'Esos' (lejos, plural) se dice 'those' y va con 'are'."},
+      ],
+    },
+    8:{
+      gapfill:[
+        {"sentence":"She ___ two cats. (have)","answer":"has","explain":"Con she se usa 'has', la forma de tercera persona de 'have'."},
+        {"sentence":"I ___ got a big family. (have)","answer":"have","explain":"Con I se usa 'have got': I have got."},
+        {"sentence":"They ___ got a house. They live in an apartment. (not/have)","answer":"haven't","explain":"Negativo de 'have got' con they: haven't got."},
+        {"sentence":"___ you got a pen? (have)","answer":"Have","explain":"Pregunta con 'have got': se invierte 'have' y el sujeto."},
+        {"sentence":"He ___ have a car. (not)","answer":"doesn't","explain":"Con 'have' sin 'got', el negativo de he usa 'doesn't have'."},
+      ],
+      order:[
+        {"words":["she","has","got","two","sisters"],"correct":"She has got two sisters.","explain":"Sujeto + has got + cantidad + sustantivo."},
+        {"words":["do","you","have","a","pencil"],"correct":"Do you have a pencil?","explain":"Pregunta con do: Do + sujeto + have + complemento."},
+      ],
+      translate:[
+        {"es":"Mi hermano tiene un perro.","en":["my brother has a dog","my brother has got a dog"],"explain":"Con 'my brother' (he) se usa 'has' o 'has got'."},
+      ],
+    },
+    9:{
+      gapfill:[
+        {"sentence":"She ___ swim very well. (can/cans)","answer":"can","explain":"'Can' no cambia con she: she can."},
+        {"sentence":"I ___ play the piano. I never learned. (can/can't)","answer":"can't","explain":"'I never learned' indica que no sabe: can't."},
+        {"sentence":"___ you speak French? (Can/Do)","answer":"Can","explain":"Las preguntas con habilidad usan 'Can' al inicio: Can you speak French?"},
+        {"sentence":"He can ___ a bike. (ride)","answer":"ride","explain":"Después de 'can' va el verbo base, sin 'to' ni '-s'."},
+        {"sentence":"Birds ___ fly, but penguins can't. (can/can't)","answer":"can","explain":"La primera parte afirma la habilidad de los pájaros: 'can'."},
+      ],
+      order:[
+        {"words":["I","can","cook","pasta"],"correct":"I can cook pasta.","explain":"Sujeto + can + verbo base + complemento."},
+        {"words":["can","she","play","the","guitar"],"correct":"Can she play the guitar?","explain":"Pregunta: Can + sujeto + verbo base."},
+      ],
+      translate:[
+        {"es":"Ella no puede venir hoy.","en":["she can't come today","she cannot come today","she can not come today"],"explain":"El negativo de 'can' es can't o cannot, seguido del verbo base."},
+      ],
+    },
+    10:{
+      gapfill:[
+        {"sentence":"___ do you live? — In Lima. (What/Where)","answer":"Where","explain":"La respuesta es un lugar (In Lima), así que se pregunta con 'where'."},
+        {"sentence":"___ is your teacher? — Mr. Brown. (Who/When)","answer":"Who","explain":"Preguntamos por una persona: 'who'."},
+        {"sentence":"___ do you go to bed? — At ten. (When/What time)","answer":"When","alt":["What time"],"explain":"La respuesta es un momento (At ten): 'when' o 'what time'."},
+        {"sentence":"Why ___ she study English? (do/does)","answer":"does","explain":"Con she en presente simple la pregunta usa 'does'."},
+        {"sentence":"___ is the bathroom? — Over there. (What/Where)","answer":"Where","explain":"Se pregunta por un lugar: 'where'."},
+      ],
+      order:[
+        {"words":["what","do","you","want"],"correct":"What do you want?","explain":"Wh- + do + sujeto + verbo base."},
+        {"words":["where","does","she","work"],"correct":"Where does she work?","explain":"Wh- + does + sujeto + verbo base (sin -s)."},
+      ],
+      translate:[
+        {"es":"¿Dónde vive tu hermana?","en":["where does your sister live","where is your sister living"],"explain":"Pregunta con Wh-: Where + does + sujeto + verbo base."},
+      ],
+    },
+    11:{
+      gapfill:[
+        {"sentence":"She ___ like pizza. (not)","answer":"doesn't","explain":"Con she, el negativo del presente simple usa 'doesn't'."},
+        {"sentence":"We ___ work on Saturdays. (not)","answer":"don't","explain":"Con we, el negativo usa 'don't'."},
+        {"sentence":"___ he speak English? (Do/Does)","answer":"Does","explain":"Con he, la pregunta empieza con 'Does'."},
+        {"sentence":"Does she ___ in a bank? (work)","answer":"work","explain":"Después de 'does' el verbo va en forma base: work."},
+        {"sentence":"Do you like tea? — No, I ___. (do/don't)","answer":"don't","explain":"La respuesta corta negativa repite el auxiliar: No, I don't."},
+      ],
+      order:[
+        {"words":["they","don't","eat","meat"],"correct":"They don't eat meat.","explain":"Sujeto + don't + verbo base + complemento."},
+        {"words":["does","your","brother","play","football"],"correct":"Does your brother play football?","explain":"Does + sujeto + verbo base + complemento."},
+      ],
+      translate:[
+        {"es":"Ella no trabaja los domingos.","en":["she doesn't work on sundays","she does not work on sundays","she doesn't work on sunday"],"explain":"Negativo en tercera persona: doesn't + verbo base."},
+      ],
+    },
+    12:{
+      gapfill:[
+        {"sentence":"I ___ eat breakfast. It is the most important meal. (always/never)","answer":"always","explain":"Si es la comida más importante, tiene sentido decir que 'always' la comes."},
+        {"sentence":"She is ___ late. She always arrives on time. (never/always)","answer":"never","explain":"Llega siempre a tiempo, así que nunca llega tarde: 'never'."},
+        {"sentence":"The meeting is ___ 3:00. (at/on)","answer":"at","explain":"Con horas del reloj se usa 'at'."},
+        {"sentence":"My birthday is ___ March. (in/on)","answer":"in","explain":"Con meses se usa 'in'."},
+        {"sentence":"I have English class ___ Mondays. (on/in)","answer":"on","explain":"Con días de la semana se usa 'on'."},
+      ],
+      order:[
+        {"words":["I","usually","walk","to","work"],"correct":"I usually walk to work.","explain":"El adverbio de frecuencia va antes del verbo principal."},
+        {"words":["she","is","always","happy"],"correct":"She is always happy.","explain":"Con 'be', el adverbio va después: is + always."},
+      ],
+      translate:[
+        {"es":"Nunca como carne.","en":["i never eat meat"],"explain":"'Never' va antes del verbo y ya es negativo: I never eat meat."},
+      ],
+    },
+    13:{
+      gapfill:[
+        {"sentence":"I like ___ books. (read)","answer":"reading","explain":"Después de 'like' se usa el verbo con -ing para hablar de gustos."},
+        {"sentence":"She loves ___ in the sea. (swim)","answer":"swimming","explain":"'Love' + verbo con -ing; 'swim' duplica la 'm' al añadir -ing."},
+        {"sentence":"We want ___ to the beach. (go)","answer":"to go","explain":"Después de 'want' va 'to' + verbo base."},
+        {"sentence":"He hates ___ up early. (get)","answer":"getting","explain":"'Hate' + -ing; 'get' duplica la 't': getting."},
+        {"sentence":"Do you enjoy ___ ? (dance)","answer":"dancing","explain":"'Enjoy' va seguido de un verbo con -ing."},
+      ],
+      order:[
+        {"words":["I","like","watching","movies"],"correct":"I like watching movies.","explain":"Sujeto + like + verbo con -ing + complemento."},
+        {"words":["she","wants","to","buy","a","car"],"correct":"She wants to buy a car.","explain":"Sujeto + wants + to + verbo base + complemento."},
+      ],
+      translate:[
+        {"es":"Me gusta cocinar.","en":["i like cooking","i like to cook","i love cooking"],"explain":"'Like' + verbo con -ing (o 'to' + verbo) para hablar de gustos."},
+      ],
+    },
+  },
+  A2:{
+    11:{
+      gapfill:[
+        {"sentence":"I ___ at home last night. (be)","answer":"was","explain":"Con I, el pasado de 'be' es 'was'."},
+        {"sentence":"They ___ very happy at the party. (be)","answer":"were","explain":"Con they, el pasado de 'be' es 'were'."},
+        {"sentence":"She ___ at school yesterday. She was sick. (not/be)","answer":"wasn't","explain":"Negativo de 'was' con she: wasn't."},
+        {"sentence":"___ you at the concert last Friday? (be)","answer":"Were","explain":"Preguntas con 'you' en pasado empiezan con 'Were'."},
+        {"sentence":"The movie ___ boring, so we left early. (be)","answer":"was","explain":"Con 'the movie' (it) se usa 'was'."},
+      ],
+      order:[
+        {"words":["we","were","in","Paris","last","summer"],"correct":"We were in Paris last summer.","explain":"Sujeto + were + lugar + tiempo pasado."},
+        {"words":["was","he","at","work","yesterday"],"correct":"Was he at work yesterday?","explain":"Pregunta con was: Was + sujeto + complemento."},
+      ],
+      translate:[
+        {"es":"Ayer no estaba en casa.","en":["i wasn't at home yesterday","i was not at home yesterday","yesterday i wasn't at home","yesterday i was not at home"],"explain":"Negativo de 'be' en pasado con I: wasn't (was not)."},
+      ],
+    },
+    12:{
+      gapfill:[
+        {"sentence":"I ___ go to the gym yesterday. (not)","answer":"didn't","explain":"Negativo en pasado simple: didn't + verbo base."},
+        {"sentence":"___ she call you last night? (Do/Did)","answer":"Did","explain":"Pregunta en pasado simple: Did + sujeto + verbo base."},
+        {"sentence":"He didn't ___ the answer. (know)","answer":"know","explain":"Después de 'didn't', el verbo va en base."},
+        {"sentence":"Did they ___ to the party? (come)","answer":"come","explain":"Después de 'Did', el verbo va en base, no en pasado."},
+        {"sentence":"What ___ you do last weekend? (do/did)","answer":"did","explain":"Pregunta con Wh- en pasado: What + did + sujeto + verbo base."},
+      ],
+      order:[
+        {"words":["she","didn't","buy","a","new","phone"],"correct":"She didn't buy a new phone.","explain":"Sujeto + didn't + verbo base + complemento."},
+        {"words":["did","you","see","the","game","yesterday"],"correct":"Did you see the game yesterday?","explain":"Did + sujeto + verbo base + complemento."},
+      ],
+      translate:[
+        {"es":"No terminé el trabajo ayer.","en":["i didn't finish the work yesterday","i did not finish the work yesterday","i didn't finish my work yesterday","i didn't finish the job yesterday"],"explain":"Negativo en pasado: didn't + verbo base (finish)."},
+      ],
+    },
+    13:{
+      gapfill:[
+        {"sentence":"She usually ___ to work by bus. (go)","answer":"goes","explain":"'Usually' indica rutina: presente simple con -es en he/she/it."},
+        {"sentence":"Look! It ___ right now. (rain)","answer":"is raining","explain":"'Right now' indica acción en curso: presente continuo."},
+        {"sentence":"I ___ my grandmother every Sunday. (visit)","answer":"visit","explain":"'Every Sunday' indica rutina: presente simple."},
+        {"sentence":"They ___ football at the moment. (play)","answer":"are playing","explain":"'At the moment' indica acción en curso: presente continuo."},
+        {"sentence":"He ___ the answer. (know)","answer":"knows","explain":"'Know' es un verbo estativo: se usa en presente simple, nunca en continuo."},
+      ],
+      order:[
+        {"words":["I","usually","drink","tea","in","the","morning"],"correct":"I usually drink tea in the morning.","explain":"Rutina en presente simple: sujeto + adverbio + verbo + complemento."},
+        {"words":["she","is","studying","for","an","exam","today"],"correct":"She is studying for an exam today.","explain":"Acción temporal: sujeto + is + verbo-ing + complemento."},
+      ],
+      translate:[
+        {"es":"Normalmente camino al trabajo, pero hoy estoy manejando.","en":["i usually walk to work but today i am driving","i usually walk to work but today i'm driving","i normally walk to work but today i am driving","i normally walk to work but today i'm driving"],"explain":"Contraste: presente simple para la rutina y presente continuo para lo temporal de hoy."},
+      ],
+    },
+    14:{
+      gapfill:[
+        {"sentence":"I ___ get up early on weekdays. (obligación)","answer":"have to","explain":"'Have to' expresa una obligación con I."},
+        {"sentence":"She ___ work on Sundays. (obligación)","answer":"has to","explain":"Con she, 'have to' cambia a 'has to'."},
+        {"sentence":"You ___ bring food. We already have plenty. (no es necesario)","answer":"don't have to","explain":"No es necesario: don't have to (no significa que esté prohibido)."},
+        {"sentence":"___ we have to wear a uniform? (Do/Does)","answer":"Do","explain":"Con we la pregunta con 'have to' usa 'Do'."},
+        {"sentence":"He ___ have to pay. It's free. (not)","answer":"doesn't","explain":"Con he, el negativo de 'have to' usa 'doesn't have to'."},
+      ],
+      order:[
+        {"words":["I","have","to","finish","this","today"],"correct":"I have to finish this today.","explain":"Sujeto + have to + verbo base + complemento."},
+        {"words":["does","she","have","to","work","tomorrow"],"correct":"Does she have to work tomorrow?","explain":"Does + sujeto + have to + verbo base."},
+      ],
+      translate:[
+        {"es":"No tienes que venir mañana.","en":["you don't have to come tomorrow","you do not have to come tomorrow"],"explain":"'No tienes que' (no es necesario) = don't have to + verbo base."},
+      ],
+    },
+    15:{
+      gapfill:[
+        {"sentence":"I ___ like a coffee, please. (querer, cortés)","answer":"would","alt":["'d"],"explain":"La forma cortés es 'I would like' (I'd like), más amable que 'I want'."},
+        {"sentence":"___ you like some water? (Do/Would)","answer":"Would","explain":"Para ofrecer algo con cortesía se usa 'Would you like...?'."},
+        {"sentence":"I would like ___ book a table. (to/-)","answer":"to","explain":"'Would like' + to + verbo base para decir lo que quieres hacer."},
+        {"sentence":"___ we go to the park? (Shall/Do)","answer":"Shall","explain":"Para sugerir un plan se usa 'Shall we...?'."},
+        {"sentence":"___ I have the menu, please? (Can/Are)","answer":"Can","alt":["Could"],"explain":"Para pedir algo se usa 'Can I have...?' o 'Could I have...?'."},
+      ],
+      order:[
+        {"words":["i'd","like","a","cup","of","tea,","please"],"correct":"I'd like a cup of tea, please.","explain":"I'd like + sustantivo + please."},
+        {"words":["shall","we","have","lunch","together"],"correct":"Shall we have lunch together?","explain":"Shall we + verbo base + complemento."},
+      ],
+      translate:[
+        {"es":"Quisiera una mesa para dos, por favor.","en":["i'd like a table for two please","i would like a table for two please","i'd like a table for two, please"],"explain":"Petición cortés: I'd like + sustantivo + please."},
+      ],
+    },
+    16:{
+      gapfill:[
+        {"sentence":"She sings very ___. (good)","answer":"well","explain":"El adverbio de 'good' es 'well', porque modifica el verbo sings."},
+        {"sentence":"He drives very ___. (slow)","answer":"slowly","explain":"El adverbio se forma con adjetivo + -ly."},
+        {"sentence":"They worked ___ to finish on time. (duro)","answer":"hard","explain":"'Hard' es igual como adjetivo y adverbio; no existe 'hardly' con este sentido."},
+        {"sentence":"She opened the door ___. (quiet)","answer":"quietly","explain":"El adverbio de 'quiet' es 'quietly'."},
+        {"sentence":"He is a ___ driver. (cuidadoso)","answer":"careful","explain":"Antes de un sustantivo (driver) va un adjetivo, no un adverbio."},
+      ],
+      order:[
+        {"words":["she","speaks","English","very","well"],"correct":"She speaks English very well.","explain":"Sujeto + verbo + complemento + adverbio de modo."},
+        {"words":["he","walked","home","slowly"],"correct":"He walked home slowly.","explain":"Verbo + complemento + adverbio al final."},
+      ],
+      translate:[
+        {"es":"Ella conduce muy despacio.","en":["she drives very slowly","she drives really slowly","she is driving very slowly"],"explain":"Adverbio de modo: slow → slowly, después del verbo."},
+      ],
+    },
+    17:{
+      gapfill:[
+        {"sentence":"The bag is ___ heavy. I can't carry it. (very/too)","answer":"too","explain":"Hay un problema (no puedo cargarla): 'too heavy'."},
+        {"sentence":"He is tall ___ to reach the shelf. (enough/too)","answer":"enough","explain":"Con adjetivo, 'enough' va después: tall enough."},
+        {"sentence":"We don't have ___ money for a taxi. (enough/too)","answer":"enough","explain":"Con sustantivo, 'enough' va antes: enough money."},
+        {"sentence":"This soup is ___ good! I love it. (very/too)","answer":"very","explain":"Es algo positivo, sin problema: 'very good'."},
+        {"sentence":"It's ___ cold to swim today. (too/very)","answer":"too","explain":"Frío en exceso, que impide nadar: 'too cold'."},
+      ],
+      order:[
+        {"words":["it","is","too","cold","to","swim"],"correct":"It is too cold to swim.","explain":"Sujeto + be + too + adjetivo + to + verbo."},
+        {"words":["she","is","old","enough","to","vote"],"correct":"She is old enough to vote.","explain":"Adjetivo + enough + to + verbo."},
+      ],
+      translate:[
+        {"es":"No tengo suficiente dinero.","en":["i don't have enough money","i do not have enough money","i haven't got enough money"],"explain":"'Enough' va antes del sustantivo: enough money."},
+      ],
+    },
+  },
+  B1:{
+    7:{
+      gapfill:[
+        {"sentence":"I ___ to Paris last summer. (go)","answer":"went","explain":"'Last summer' es un momento terminado: pasado simple."},
+        {"sentence":"She has never ___ sushi. (eat)","answer":"eaten","explain":"'Never' con experiencia de vida: presente perfecto (has + participio); el participio de 'eat' es 'eaten'."},
+        {"sentence":"We have lived here ___ 2018. (for/since)","answer":"since","explain":"'Since' se usa con el punto de inicio (2018)."},
+        {"sentence":"I have worked here ___ three years. (for/since)","answer":"for","explain":"'For' se usa con un periodo de duración (three years)."},
+        {"sentence":"Have you finished your homework ___? (yet/already)","answer":"yet","explain":"'Yet' se usa en preguntas y negativos con presente perfecto."},
+      ],
+      order:[
+        {"words":["I","have","never","seen","snow"],"correct":"I have never seen snow.","explain":"Sujeto + have + never + participio pasado + complemento."},
+        {"words":["she","moved","to","Lima","in","2019"],"correct":"She moved to Lima in 2019.","explain":"Con año concreto se usa pasado simple."},
+      ],
+      translate:[
+        {"es":"He vivido aquí desde 2020.","en":["i have lived here since 2020","i've lived here since 2020"],"explain":"Duración desde un punto de inicio: presente perfecto + since."},
+      ],
+    },
+    8:{
+      gapfill:[
+        {"sentence":"When I got to the station, the train ___. (leave)","answer":"had left","alt":["had already left"],"explain":"La salida del tren ocurrió antes de que yo llegara: pasado perfecto (had + participio)."},
+        {"sentence":"She was tired because she ___ all day. (work)","answer":"had worked","explain":"El trabajo pasó antes del cansancio: pasado perfecto."},
+        {"sentence":"I had never ___ sushi before that day. (eat)","answer":"eaten","explain":"'Before that day' pide pasado perfecto: had + participio (eaten)."},
+        {"sentence":"They ___ finished dinner when we arrived. (already)","answer":"had already","explain":"La cena terminó antes de nuestra llegada: had already finished."},
+        {"sentence":"___ you seen the film before? (have/had)","answer":"Had","explain":"Pregunta en pasado perfecto: Had + sujeto + participio."},
+      ],
+      order:[
+        {"words":["she","had","left","before","I","arrived"],"correct":"She had left before I arrived.","explain":"Acción anterior (had left) + before + acción posterior en pasado simple."},
+        {"words":["I","hadn't","finished","my","homework"],"correct":"I hadn't finished my homework.","explain":"Negativo de pasado perfecto: hadn't + participio."},
+      ],
+      translate:[
+        {"es":"Cuando llegué, ellos ya se habían ido.","en":["when i arrived they had already left","when i arrived they had left","when i got there they had already left","when i got there they had left"],"explain":"Dos acciones pasadas: la anterior en pasado perfecto (had left)."},
+      ],
+    },
+    9:{
+      gapfill:[
+        {"sentence":"I stayed at home ___ I was sick. (because/so)","answer":"because","explain":"'Because' introduce la causa: estaba enfermo."},
+        {"sentence":"It was raining, ___ we took an umbrella. (because/so)","answer":"so","explain":"'So' introduce la consecuencia: por eso llevamos paraguas."},
+        {"sentence":"___ he was tired, he finished the report. (Although/Despite)","answer":"Although","explain":"Después va una oración completa (he was tired): 'although'."},
+        {"sentence":"___ the rain, we went to the park. (Although/Despite)","answer":"Despite","explain":"Después va un sustantivo (the rain): 'despite'."},
+        {"sentence":"He studied hard. ___, he failed the exam. (However/Because)","answer":"However","explain":"'However' introduce un contraste con la oración anterior."},
+      ],
+      order:[
+        {"words":["although","it","was","cold,","we","went","outside"],"correct":"Although it was cold, we went outside.","explain":"Although + sujeto + verbo, + oración principal."},
+        {"words":["she","stayed","home","because","she","was","ill"],"correct":"She stayed home because she was ill.","explain":"Oración principal + because + causa."},
+      ],
+      translate:[
+        {"es":"Aunque estaba cansado, terminó el trabajo.","en":["although he was tired he finished the work","although he was tired, he finished the work","though he was tired he finished the work","even though he was tired he finished the work"],"explain":"Contraste con 'although' + sujeto + verbo."},
+      ],
+    },
+    10:{
+      gapfill:[
+        {"sentence":"It's late. Please ___ the TV. (apagar)","answer":"turn off","alt":["switch off"],"explain":"'Turn off' significa apagar."},
+        {"sentence":"I can't find my keys. I'm going to ___ them. (buscar)","answer":"look for","explain":"'Look for' significa buscar algo."},
+        {"sentence":"Don't ___! You can do it. (rendirse)","answer":"give up","explain":"'Give up' significa rendirse."},
+        {"sentence":"She ___ her grandmother every weekend. (cuidar)","answer":"looks after","explain":"'Look after' significa cuidar a alguien."},
+        {"sentence":"Here is the form. Please fill it ___. (in/on)","answer":"in","explain":"'Fill in' (o 'fill out') significa completar un formulario."},
+      ],
+      order:[
+        {"words":["please","turn","it","off"],"correct":"Please turn it off.","explain":"Con pronombre, el objeto va entre el verbo y la partícula."},
+        {"words":["she","looks","after","her","brother"],"correct":"She looks after her brother.","explain":"Look after es inseparable: el objeto va después."},
+      ],
+      translate:[
+        {"es":"Recógelo, por favor.","en":["pick it up please","please pick it up","pick it up, please"],"explain":"El pronombre 'it' va entre el verbo y la partícula: pick it up."},
+      ],
+    },
+    11:{
+      gapfill:[
+        {"sentence":"He is as ___ as his father. (tall)","answer":"tall","explain":"En 'as...as' el adjetivo va en forma base, sin -er."},
+        {"sentence":"This bag isn't ___ expensive as that one. (as/so)","answer":"as","alt":["so"],"explain":"La estructura de inferioridad es 'not as + adjetivo + as'."},
+        {"sentence":"The more you study, the ___ you learn. (good)","answer":"better","explain":"Segunda parte de 'the + comparativo': good → better."},
+        {"sentence":"I don't have as ___ money as you. (much/many)","answer":"much","explain":"'Money' es incontable, así que se usa 'as much'."},
+        {"sentence":"The ___ you get up, the more tired you feel. (early)","answer":"earlier","explain":"Estructura proporcional: the + comparativo (earlier)."},
+      ],
+      order:[
+        {"words":["she","is","as","tall","as","her","sister"],"correct":"She is as tall as her sister.","explain":"as + adjetivo + as."},
+        {"words":["the","harder","you","work,","the","more","you","earn"],"correct":"The harder you work, the more you earn.","explain":"The + comparativo, the + comparativo."},
+      ],
+      translate:[
+        {"es":"Este libro es tan interesante como ese.","en":["this book is as interesting as that one","this book is as interesting as that","this book is as interesting as that book"],"explain":"Igualdad con as + adjetivo + as."},
+      ],
+    },
+    12:{
+      gapfill:[
+        {"sentence":"Could you tell me where the bank ___? (be)","answer":"is","explain":"En pregunta indirecta el orden es sujeto + verbo: where the bank is."},
+        {"sentence":"Do you know what time the film ___? (start)","answer":"starts","explain":"Sin 'does': what time the film starts."},
+        {"sentence":"I don't know where she ___. (live)","answer":"lives","explain":"Con pregunta indirecta no se usa 'does': where she lives."},
+        {"sentence":"Can you tell me ___ the shop is open? (if/that)","answer":"if","alt":["whether"],"explain":"Las preguntas de sí/no usan 'if' o 'whether'."},
+        {"sentence":"Do you know how much this ___? (cost)","answer":"costs","explain":"Sin 'does': how much this costs."},
+      ],
+      order:[
+        {"words":["could","you","tell","me","where","the","station","is"],"correct":"Could you tell me where the station is?","explain":"Frase cortés + Wh- + sujeto + verbo."},
+        {"words":["do","you","know","what","time","it","starts"],"correct":"Do you know what time it starts?","explain":"Do you know + Wh- + sujeto + verbo (sin do)."},
+      ],
+      translate:[
+        {"es":"¿Podría decirme dónde está el baño?","en":["could you tell me where the bathroom is","could you tell me where the toilet is","could you tell me where the restroom is","can you tell me where the bathroom is"],"explain":"Pregunta indirecta: el orden es sujeto + verbo (the bathroom is)."},
+      ],
+    },
+  },
+  B2:{
+    7:{
+      gapfill:[
+        {"sentence":"You ___ have called me. I was worried. (consejo/reproche)","answer":"should","explain":"'Should have' + participio expresa que era lo correcto y no ocurrió."},
+        {"sentence":"He could ___ the race, but he fell. (win)","answer":"have won","explain":"'Could have' + participio expresa una posibilidad que no se cumplió."},
+        {"sentence":"They shouldn't have ___ so late. (arrive)","answer":"arrived","explain":"Después de 'shouldn't have' va el participio pasado: arrived."},
+        {"sentence":"You needn't have ___ a taxi. I could have driven you. (take)","answer":"taken","explain":"'Needn't have' + participio: hiciste algo que no era necesario. Participio de take: taken."},
+        {"sentence":"It was impossible: I ___ have known. (imposible)","answer":"couldn't","alt":["could not"],"explain":"'Couldn't have' + participio expresa que era imposible."},
+      ],
+      order:[
+        {"words":["you","should","have","told","me","earlier"],"correct":"You should have told me earlier.","explain":"Sujeto + should have + participio + complemento."},
+        {"words":["she","could","have","won","the","prize"],"correct":"She could have won the prize.","explain":"Sujeto + could have + participio + complemento."},
+      ],
+      translate:[
+        {"es":"Deberías haber estudiado más.","en":["you should have studied more","you should have studied harder"],"explain":"Reproche sobre el pasado: should have + participio."},
+      ],
+    },
+    8:{
+      gapfill:[
+        {"sentence":"___ you hurry, you will miss the bus. (Unless/If)","answer":"Unless","explain":"'Unless' significa 'a menos que': equivale a 'if you don't hurry'."},
+        {"sentence":"You can borrow my car ___ you drive carefully. (as long as/unless)","answer":"as long as","explain":"'As long as' significa 'siempre que': es una condición necesaria."},
+        {"sentence":"Take an umbrella ___ it rains. (in case/unless)","answer":"in case","alt":["in case that"],"explain":"'In case' indica precaución: por si llueve."},
+        {"sentence":"I won't go ___ you come with me. (unless/as long as)","answer":"unless","explain":"'A menos que vengas conmigo': unless."},
+        {"sentence":"You will pass ___ that you study. (provided/unless)","answer":"provided","explain":"'Provided that' significa 'siempre que'."},
+      ],
+      order:[
+        {"words":["unless","you","hurry,","we'll","be","late"],"correct":"Unless you hurry, we'll be late.","explain":"Unless + presente, will + verbo base."},
+        {"words":["take","a","jacket","in","case","it","gets","cold"],"correct":"Take a jacket in case it gets cold.","explain":"Oración principal + in case + presente."},
+      ],
+      translate:[
+        {"es":"A menos que estudies, no aprobarás.","en":["unless you study you won't pass","unless you study, you won't pass","unless you study you will not pass","unless you study, you will not pass"],"explain":"'Unless' + presente, will + verbo base; no lleva doble negativo."},
+      ],
+    },
+    9:{
+      gapfill:[
+        {"sentence":"She was exhausted because she ___ all day. (work)","answer":"had been working","explain":"La duración previa al momento pasado pide pasado perfecto continuo: had been + -ing."},
+        {"sentence":"They ___ for two hours when the bus finally came. (wait)","answer":"had been waiting","explain":"La espera duró un tiempo antes de que llegara el bus."},
+        {"sentence":"His eyes were red because he ___. (cry)","answer":"had been crying","explain":"La causa (llorar) es anterior y duró un tiempo: had been + -ing."},
+        {"sentence":"It ___ all night, so the streets were wet. (rain)","answer":"had been raining","explain":"Lluvia continua antes del momento observado: had been raining."},
+        {"sentence":"How long ___ you been waiting when I arrived? (have/had)","answer":"had","explain":"Pregunta en pasado perfecto continuo: How long + had + sujeto + been + -ing."},
+      ],
+      order:[
+        {"words":["she","had","been","waiting","for","an","hour"],"correct":"She had been waiting for an hour.","explain":"Sujeto + had been + verbo-ing + for + duración."},
+        {"words":["I","was","tired","because","I","had","been","running"],"correct":"I was tired because I had been running.","explain":"Resultado en pasado simple + because + had been + -ing."},
+      ],
+      translate:[
+        {"es":"Llevaba dos horas esperando cuando llegó.","en":["i had been waiting for two hours when he arrived","i had been waiting for two hours when she arrived","i had been waiting two hours when he arrived"],"explain":"Duración previa a otro momento del pasado: had been + -ing."},
+      ],
+    },
+    10:{
+      gapfill:[
+        {"sentence":"___ of my parents speaks French; they both speak English only. (Both/Neither)","answer":"Neither","explain":"Ninguno de los dos habla francés: 'neither'."},
+        {"sentence":"I like ___ shirts, so I'll buy both. (both/neither)","answer":"both","explain":"'Both' significa los dos: me gustan las dos camisas."},
+        {"sentence":"You can take ___ road; they both lead to the beach. (either/neither)","answer":"either","explain":"'Either' significa cualquiera de las dos."},
+        {"sentence":"I spent the ___ day at the beach. (whole/all)","answer":"whole","alt":["all"],"explain":"Con 'the' + singular se usa 'whole': the whole day."},
+        {"sentence":"___ the students passed the exam. (Both/All)","answer":"All","explain":"Con más de dos personas se usa 'all'."},
+      ],
+      order:[
+        {"words":["both","of","my","sisters","are","teachers"],"correct":"Both of my sisters are teachers.","explain":"Both of + plural + verbo en plural."},
+        {"words":["neither","of","them","knows","the","answer"],"correct":"Neither of them knows the answer.","explain":"Neither of + pronombre + verbo en singular, sin negación adicional."},
+      ],
+      translate:[
+        {"es":"Ninguno de los dos habla francés.","en":["neither of them speaks french","neither of them speaks french","neither of the two speaks french","neither speaks french"],"explain":"'Neither' ya es negativo; el verbo va en afirmativo."},
+      ],
+    },
+    11:{
+      gapfill:[
+        {"sentence":"I stopped ___ coffee because it kept me awake. (drink)","answer":"drinking","explain":"'Stop + -ing' significa dejar de hacer algo."},
+        {"sentence":"We stopped ___ some water on the way. (buy)","answer":"to buy","explain":"'Stop + to' significa detenerse para hacer algo."},
+        {"sentence":"Remember ___ the door when you leave. (lock)","answer":"to lock","explain":"'Remember + to' es no olvidar hacer algo pendiente."},
+        {"sentence":"I remember ___ this song when I was a child. (hear)","answer":"hearing","explain":"'Remember + -ing' es recordar algo que ya pasó."},
+        {"sentence":"If you have a headache, try ___ some water. (drink)","answer":"drinking","explain":"'Try + -ing' es probar algo como experimento."},
+      ],
+      order:[
+        {"words":["he","stopped","smoking","two","years","ago"],"correct":"He stopped smoking two years ago.","explain":"Stop + -ing: dejar de hacer algo."},
+        {"words":["remember","to","call","your","mother"],"correct":"Remember to call your mother.","explain":"Remember + to + verbo: no olvidar hacer algo."},
+      ],
+      translate:[
+        {"es":"Dejé de fumar hace dos años.","en":["i stopped smoking two years ago","i quit smoking two years ago","i gave up smoking two years ago"],"explain":"'Stop + -ing' significa dejar de hacer algo."},
+      ],
+    },
+    12:{
+      gapfill:[
+        {"sentence":"My sister loves cats, ___ I prefer dogs. (whereas/because)","answer":"whereas","explain":"'Whereas' contrasta dos ideas opuestas."},
+        {"sentence":"___ the bad weather, we went for a walk. (In spite of/Because of)","answer":"In spite of","explain":"Después va un sustantivo (the bad weather): 'in spite of' expresa contraste."},
+        {"sentence":"She saved money ___ buy a car. (in order to/so that)","answer":"in order to","explain":"Con el mismo sujeto y un verbo base se usa 'in order to' (o 'to')."},
+        {"sentence":"I spoke slowly ___ everyone could understand. (so that/in order to)","answer":"so that","explain":"Con otro sujeto (everyone) y modal se usa 'so that'."},
+        {"sentence":"He is very outgoing, ___ his brother is shy. (whereas/despite)","answer":"whereas","explain":"'Whereas' compara dos hechos que contrastan."},
+      ],
+      order:[
+        {"words":["he","works","hard","in","order","to","save","money"],"correct":"He works hard in order to save money.","explain":"Sujeto + verbo + in order to + verbo base."},
+        {"words":["she","speaks","slowly","so","that","we","can","understand"],"correct":"She speaks slowly so that we can understand.","explain":"Oración + so that + sujeto + modal + verbo."},
+      ],
+      translate:[
+        {"es":"A pesar del tráfico, llegamos a tiempo.","en":["in spite of the traffic we arrived on time","despite the traffic we arrived on time","in spite of the traffic, we arrived on time","despite the traffic, we arrived on time"],"explain":"'In spite of' / 'despite' + sustantivo."},
+      ],
+    },
+    13:{
+      gapfill:[
+        {"sentence":"This time tomorrow, I ___ on a plane. (be/sit)","answer":"will be sitting","explain":"'This time tomorrow' pide futuro continuo: will be + -ing."},
+        {"sentence":"By the end of the year, she ___ her degree. (finish)","answer":"will have finished","explain":"'By the end of the year' pide futuro perfecto: will have + participio."},
+        {"sentence":"By 2030 they ___ the new bridge. (build)","answer":"will have built","explain":"Acción ya terminada para 2030: will have + participio (built)."},
+        {"sentence":"Don't call at eight; I ___ dinner. (have)","answer":"will be having","explain":"A las ocho estarás en pleno proceso de cenar: futuro continuo."},
+        {"sentence":"Will you ___ the car tonight? (use)","answer":"be using","explain":"Pregunta cortés con futuro continuo: Will + sujeto + be + -ing."},
+      ],
+      order:[
+        {"words":["by","June","I","will","have","finished","the","course"],"correct":"By June I will have finished the course.","explain":"By + fecha + will have + participio."},
+        {"words":["this","time","tomorrow","she","will","be","flying","to","Lima"],"correct":"This time tomorrow she will be flying to Lima.","explain":"This time + tomorrow + will be + -ing."},
+      ],
+      translate:[
+        {"es":"Para el viernes habré terminado el informe.","en":["by friday i will have finished the report","by friday i'll have finished the report","i will have finished the report by friday","i'll have finished the report by friday"],"explain":"Futuro perfecto: will have + participio con 'by'."},
+      ],
+    },
+    14:{
+      gapfill:[
+        {"sentence":"She is very good ___ playing tennis. (at/in)","answer":"at","explain":"'Good at' es el bloque fijo para habilidades."},
+        {"sentence":"I'm interested ___ learning Italian. (in/on)","answer":"in","explain":"'Interested in' es el bloque fijo."},
+        {"sentence":"It depends ___ the weather. (of/on)","answer":"on","explain":"'Depend on' es el bloque fijo del verbo."},
+        {"sentence":"He apologized ___ being late. (for/of)","answer":"for","explain":"'Apologize for' es el bloque fijo."},
+        {"sentence":"I'm looking forward ___ seeing you. (to/for)","answer":"to","explain":"'Look forward to' + -ing es el bloque fijo; aquí 'to' es preposición."},
+      ],
+      order:[
+        {"words":["she","is","afraid","of","flying"],"correct":"She is afraid of flying.","explain":"Adjetivo + preposición fija + -ing."},
+        {"words":["it","depends","on","the","weather"],"correct":"It depends on the weather.","explain":"Depend on + sustantivo."},
+      ],
+      translate:[
+        {"es":"Estoy interesado en aprender inglés.","en":["i am interested in learning english","i'm interested in learning english","i am interested in learning english","i'm interested in learning english"],"explain":"'Interested in' + verbo con -ing."},
+      ],
+    },
+  },
+  C1:{
+    6:{
+      gapfill:[
+        {"sentence":"The streets are wet. It ___ rained last night. (casi seguro)","answer":"must have","explain":"Evidencia clara y certeza casi total: must have + participio."},
+        {"sentence":"He ___ have seen me; he was in another city. (imposible)","answer":"can't","alt":["couldn't"],"explain":"Es imposible que me haya visto: can't have + participio."},
+        {"sentence":"She isn't answering. She ___ have lost her phone. (posible)","answer":"might","alt":["may"],"explain":"Es una posibilidad, no una certeza: might have + participio."},
+        {"sentence":"They must have ___ the wrong bus. (take)","answer":"taken","explain":"Después de 'must have' va el participio: taken."},
+        {"sentence":"You look terrible. You ___ have slept well. (imposible)","answer":"can't","explain":"Deducción negativa: 'can't have' (no 'mustn't have')."},
+      ],
+      order:[
+        {"words":["she","must","have","left","already"],"correct":"She must have left already.","explain":"Sujeto + must have + participio + complemento."},
+        {"words":["he","can't","have","forgotten","our","meeting"],"correct":"He can't have forgotten our meeting.","explain":"Sujeto + can't have + participio."},
+      ],
+      translate:[
+        {"es":"Debe de haber perdido el tren.","en":["he must have missed the train","she must have missed the train","he must have lost the train","she must have lost the train"],"explain":"Deducción casi segura sobre el pasado: must have + participio."},
+      ],
+    },
+    7:{
+      gapfill:[
+        {"sentence":"It ___ said that the museum will reopen. (be)","answer":"is","explain":"Pasiva impersonal: It + is said that."},
+        {"sentence":"She is believed ___ very rich. (be)","answer":"to be","explain":"Pasiva personal: is believed + infinitivo."},
+        {"sentence":"He is said ___ left the country last week. (have)","answer":"to have","explain":"Acción anterior: to have + participio."},
+        {"sentence":"The company is expected ___ profits next year. (announce)","answer":"to announce","explain":"Pasiva personal con infinitivo: is expected + to + verbo."},
+        {"sentence":"It is ___ that prices will rise. (think)","answer":"thought","explain":"Participio pasado de 'think': thought (It is thought that...)."},
+      ],
+      order:[
+        {"words":["it","is","said","that","he","is","very","rich"],"correct":"It is said that he is very rich.","explain":"It + is said + that + oración."},
+        {"words":["he","is","believed","to","have","left","the","country"],"correct":"He is believed to have left the country.","explain":"Sujeto + is believed + to have + participio."},
+      ],
+      translate:[
+        {"es":"Se dice que ella es muy inteligente.","en":["it is said that she is very intelligent","she is said to be very intelligent","it is said that she is very smart","she is said to be very smart"],"explain":"Pasiva de opinión: It is said that... o She is said to be..."},
+      ],
+    },
+    8:{
+      gapfill:[
+        {"sentence":"___ tired, she went to bed early. (feel)","answer":"Feeling","explain":"Cláusula de participio con -ing para expresar causa."},
+        {"sentence":"___ finished his work, he went home. (have)","answer":"Having","explain":"Acción anterior: having + participio."},
+        {"sentence":"___ in 1950, the church is very beautiful. (build)","answer":"Built","explain":"Sentido pasivo: participio pasado (built)."},
+        {"sentence":"___ the answer, she didn't reply. (not/know)","answer":"Not knowing","explain":"La negación va delante del participio: Not knowing."},
+        {"sentence":"___ from the top, the city looks tiny. (see)","answer":"Seen","explain":"Sentido pasivo: la ciudad es vista; participio pasado (seen)."},
+      ],
+      order:[
+        {"words":["walking","home,","I","met","an","old","friend"],"correct":"Walking home, I met an old friend.","explain":"Cláusula de participio + coma + oración principal con el mismo sujeto."},
+        {"words":["having","finished,","she","left","the","office"],"correct":"Having finished, she left the office.","explain":"Having + participio + coma + oración principal."},
+      ],
+      translate:[
+        {"es":"Sin saber qué hacer, llamó a su madre.","en":["not knowing what to do she called her mother","not knowing what to do, she called her mother","not knowing what to do he called his mother","not knowing what to do, he called his mother"],"explain":"Cláusula de participio negativa: Not knowing..."},
+      ],
+    },
+    9:{
+      gapfill:[
+        {"sentence":"The task was difficult. ___, she finished it. (Nevertheless/Moreover)","answer":"Nevertheless","alt":["Nonetheless"],"explain":"Contraste: a pesar de lo difícil, lo terminó."},
+        {"sentence":"The product is cheap. ___, it is very durable. (Moreover/However)","answer":"Moreover","alt":["Furthermore"],"explain":"Adición de un punto favorable: 'moreover' (además)."},
+        {"sentence":"Sales fell sharply; ___, the company laid off staff. (consequently/nevertheless)","answer":"consequently","alt":["therefore"],"explain":"Consecuencia: 'consequently' (por consiguiente)."},
+        {"sentence":"He was ill; ___, he went to work. (nonetheless/therefore)","answer":"nonetheless","alt":["nevertheless"],"explain":"Contraste: enfermo, pero aun así fue a trabajar."},
+        {"sentence":"The rent is high; ___, we decided to move. (as a result/nevertheless)","answer":"as a result","alt":["consequently"],"explain":"Causa y efecto: como resultado de un alquiler alto."},
+      ],
+      order:[
+        {"words":["the","plan","was","costly;","nevertheless,","it","was","approved"],"correct":"The plan was costly; nevertheless, it was approved.","explain":"Oración; conector, oración."},
+        {"words":["moreover,","the","results","were","reliable"],"correct":"Moreover, the results were reliable.","explain":"Conector + coma + oración."},
+      ],
+      translate:[
+        {"es":"Además, los resultados fueron muy claros.","en":["moreover the results were very clear","moreover, the results were very clear","furthermore the results were very clear","furthermore, the results were very clear"],"explain":"'Moreover' o 'furthermore' introducen una idea adicional."},
+      ],
+    },
+    10:{
+      gapfill:[
+        {"sentence":"Which bag do you prefer? The red ___. (sustituto de 'bag')","answer":"one","explain":"'One' sustituye al sustantivo ya mencionado: the red one."},
+        {"sentence":"Will she come? — I hope ___. (so/not)","answer":"so","explain":"Se responde afirmativamente sustituyendo la oración: I hope so."},
+        {"sentence":"Is it going to rain? — I hope ___. I want to go out. (so/not)","answer":"not","explain":"Quiere salir, así que espera lo contrario: I hope not."},
+        {"sentence":"She loves jazz, and ___ do I. (so/neither)","answer":"so","explain":"Elipsis con coincidencia afirmativa: so do I."},
+        {"sentence":"He asked me to help, and I ___ so. (do/did)","answer":"did","explain":"'Do so' sustituye a una acción ya mencionada; en pasado, 'did so'."},
+      ],
+      order:[
+        {"words":["I","think","so"],"correct":"I think so.","explain":"Think + so sustituye a toda la oración."},
+        {"words":["she","likes","tea,","and","so","do","I"],"correct":"She likes tea, and so do I.","explain":"Afirmación + and so + auxiliar + sujeto."},
+      ],
+      translate:[
+        {"es":"¿Va a llover? Espero que no.","en":["is it going to rain i hope not","will it rain i hope not","is it going to rain? i hope not","will it rain? i hope not"],"explain":"Sustitución de oración con 'not' después de 'hope'."},
+      ],
+    },
+    11:{
+      gapfill:[
+        {"sentence":"The data ___ that the treatment is effective. (suggest, no prove)","answer":"suggest","explain":"'Suggest' es más cauteloso que 'prove'."},
+        {"sentence":"Prices ___ to rise in winter. (tender a)","answer":"tend","explain":"'Tend to' expresa una tendencia, no una regla absoluta."},
+        {"sentence":"It ___ that the plan will work. (appear)","answer":"appears","explain":"'It appears that' introduce una afirmación con cautela."},
+        {"sentence":"This ___ indicate a serious problem. (posible)","answer":"could","alt":["may"],"explain":"'Could' o 'may' expresan posibilidad, no certeza."},
+        {"sentence":"It is ___ that the economy will recover. (probable)","answer":"likely","explain":"'It is likely that' expresa probabilidad."},
+      ],
+      order:[
+        {"words":["the","results","suggest","that","the","method","works"],"correct":"The results suggest that the method works.","explain":"Sujeto + verbo cauteloso + that + oración."},
+        {"words":["students","tend","to","learn","faster","with","practice"],"correct":"Students tend to learn faster with practice.","explain":"Sujeto + tend to + verbo base."},
+      ],
+      translate:[
+        {"es":"Parece que las ventas aumentarán.","en":["it appears that sales will increase","it seems that sales will increase","sales appear to increase","sales seem to increase","it appears that sales will rise","it seems that sales will rise"],"explain":"Hedging: appears/seems + that."},
+      ],
+    },
+    12:{
+      gapfill:[
+        {"sentence":"He denied ___ the window. (break)","answer":"having broken","explain":"Acción anterior a 'denied': having + participio (broken)."},
+        {"sentence":"She seems ___ forgotten our meeting. (have)","answer":"to have","explain":"Acción anterior a 'seems': to have + participio."},
+        {"sentence":"I regret not ___ more carefully. (listen)","answer":"having listened","alt":["listening"],"explain":"Acción anterior a 'regret': having + participio."},
+        {"sentence":"He admitted ___ the wrong answer. (give)","answer":"having given","alt":["giving"],"explain":"Acción anterior a 'admitted': having + participio (given)."},
+        {"sentence":"I'm sorry ___ you waiting. (keep)","answer":"to have kept","explain":"Acción anterior a 'I'm sorry': to have + participio (kept)."},
+      ],
+      order:[
+        {"words":["he","denied","having","stolen","the","car"],"correct":"He denied having stolen the car.","explain":"Verbo + having + participio + complemento."},
+        {"words":["she","seems","to","have","forgotten"],"correct":"She seems to have forgotten.","explain":"Seem + to have + participio."},
+      ],
+      translate:[
+        {"es":"Ella negó haber dicho eso.","en":["she denied having said that","she denied saying that","she denied having said it"],"explain":"Gerundio perfecto después de 'deny': having + participio."},
+      ],
+    },
+    13:{
+      gapfill:[
+        {"sentence":"I love listening to ___ music of Bach. (the/a)","answer":"the","explain":"Se habla de la música de un autor concreto (of Bach): se usa 'the'."},
+        {"sentence":"We sailed across ___ Atlantic. (the/-)","answer":"the","explain":"Los océanos llevan 'the'."},
+        {"sentence":"I'm looking for ___ book you lent me. (a/the)","answer":"the","explain":"El libro está identificado (el que me prestaste): se usa 'the'."},
+        {"sentence":"I need to go to ___ bank before it closes. (the/-)","answer":"the","explain":"Se refiere a un edificio concreto: 'the bank'."},
+        {"sentence":"___ sun rises in the east. (The/A)","answer":"The","explain":"Algo único: 'the sun'."},
+      ],
+      order:[
+        {"words":["the","Amazon","is","a","very","long","river"],"correct":"The Amazon is a very long river.","explain":"The + río + is + ..."},
+        {"words":["she","goes","to","school","by","bus"],"correct":"She goes to school by bus.","explain":"Go to school sin artículo cuando se habla de estudiar."},
+      ],
+      translate:[
+        {"es":"El Amazonas es un río muy largo.","en":["the amazon is a very long river","the amazon is a really long river","the amazon river is a very long river"],"explain":"Los ríos llevan 'the'."},
+      ],
+    },
+    14:{
+      gapfill:[
+        {"sentence":"The weather is ___ freezing today. (very/absolutely)","answer":"absolutely","explain":"'Freezing' es extremo: no admite 'very'."},
+        {"sentence":"She is ___ tired after the long trip. (very/absolutely)","answer":"very","alt":["quite"],"explain":"'Tired' es graduable: admite 'very'."},
+        {"sentence":"The food was ___ delicious! (absolutely/fairly)","answer":"absolutely","alt":["utterly"],"explain":"'Delicious' es extremo: 'absolutely delicious'."},
+        {"sentence":"It is ___ impossible to finish this today. (utterly/very)","answer":"utterly","alt":["absolutely"],"explain":"'Impossible' es absoluto: 'utterly' o 'absolutely'."},
+        {"sentence":"This restaurant is ___ good, but not great. (fairly/absolutely)","answer":"fairly","explain":"'Fairly' matiza a la baja: bastante bueno, sin ser genial."},
+      ],
+      order:[
+        {"words":["the","view","was","absolutely","amazing"],"correct":"The view was absolutely amazing.","explain":"Sujeto + be + absolutely + adjetivo extremo."},
+        {"words":["she","is","very","tired","today"],"correct":"She is very tired today.","explain":"Sujeto + be + very + adjetivo graduable."},
+      ],
+      translate:[
+        {"es":"La comida estaba absolutamente deliciosa.","en":["the food was absolutely delicious","the food was totally delicious","the food was utterly delicious"],"explain":"Adjetivo extremo (delicious) con 'absolutely'."},
+      ],
+    },
+  },
+  C2:{
+    6:{
+      gapfill:[
+        {"sentence":"I'd rather you ___ here. (not/smoke)","answer":"didn't smoke","alt":["did not smoke"],"explain":"Con otro sujeto, 'would rather' usa pasado: I'd rather you didn't smoke."},
+        {"sentence":"You'd better ___ now, or you'll be late. (leave)","answer":"leave","explain":"'Had better' va seguido de verbo base, sin 'to'."},
+        {"sentence":"It's time we ___ home. (go)","answer":"went","explain":"'It's time' + sujeto + pasado (valor de presente): It's time we went."},
+        {"sentence":"I'd rather ___ at home tonight. (stay)","answer":"stay","explain":"Con el mismo sujeto, 'would rather' + verbo base."},
+        {"sentence":"It's high time you ___ a decision. (make)","answer":"made","alt":["took"],"explain":"'It's high time' + pasado: made."},
+      ],
+      order:[
+        {"words":["i'd","rather","you","didn't","tell","anyone"],"correct":"I'd rather you didn't tell anyone.","explain":"Would rather + otro sujeto + pasado."},
+        {"words":["it's","time","we","left","the","party"],"correct":"It's time we left the party.","explain":"It's time + sujeto + pasado."},
+      ],
+      translate:[
+        {"es":"Prefiero que no fumes aquí.","en":["i'd rather you didn't smoke here","i would rather you didn't smoke here","i would rather you did not smoke here"],"explain":"Preferencia con otro sujeto: would rather + sujeto + pasado."},
+      ],
+    },
+    7:{
+      gapfill:[
+        {"sentence":"The window ___ broken during the storm. (get, pasado)","answer":"got","explain":"Get-passive en pasado: got + participio."},
+        {"sentence":"The report must ___ finished today. (auxiliar)","answer":"be","explain":"Modal + be + participio (pasiva con modal)."},
+        {"sentence":"The bridge has ___ repaired. (be)","answer":"been","explain":"Presente perfecto pasivo: has been + participio."},
+        {"sentence":"The house is ___ painted at the moment. (be)","answer":"being","explain":"Presente continuo pasivo: is being + participio."},
+        {"sentence":"I don't like ___ told what to do. (be)","answer":"being","explain":"Gerundio pasivo: being + participio."},
+      ],
+      order:[
+        {"words":["the","report","must","be","finished","today"],"correct":"The report must be finished today.","explain":"Sujeto + modal + be + participio."},
+        {"words":["the","house","is","being","painted"],"correct":"The house is being painted.","explain":"Sujeto + is being + participio."},
+      ],
+      translate:[
+        {"es":"Están renovando el edificio.","en":["the building is being renovated","the building is being renovated at the moment"],"explain":"Presente continuo pasivo: is being + participio."},
+      ],
+    },
+    8:{
+      gapfill:[
+        {"sentence":"___ is a copy of my CV. (Attach)","answer":"Attached","explain":"Fronting de un complemento: Attached is a copy of my CV."},
+        {"sentence":"Here ___ the bus! (come)","answer":"comes","explain":"Fronting de adverbio de lugar: Here comes + sujeto."},
+        {"sentence":"Never ___ I seen such a beautiful place. (have)","answer":"have","alt":["had"],"explain":"Adverbio negativo al inicio: inversión (Never have I seen)."},
+        {"sentence":"Down ___ the rain. (come, pasado)","answer":"came","explain":"Fronting narrativo: Down came the rain."},
+        {"sentence":"That song I have ___ heard before. (nunca)","answer":"never","explain":"Objeto al inicio con orden marcado: That song I have never heard."},
+      ],
+      order:[
+        {"words":["attached","is","a","copy","of","my","CV"],"correct":"Attached is a copy of my CV.","explain":"Complemento al inicio + verbo + sujeto."},
+        {"words":["here","comes","the","bus"],"correct":"Here comes the bus.","explain":"Adverbio + verbo + sujeto."},
+      ],
+      translate:[
+        {"es":"Adjunto el informe.","en":["attached is the report","attached you will find the report","enclosed is the report","attached please find the report"],"explain":"Fronting típico en correos formales: Attached is..."},
+      ],
+    },
+    9:{
+      gapfill:[
+        {"sentence":"___ I carry your bag? (Shall/Do)","answer":"Shall","alt":["Should"],"explain":"Oferta con I: Shall I...?"},
+        {"sentence":"You ___ to apologize. It was your fault. (deber moral)","answer":"ought","explain":"'Ought to' expresa deber moral."},
+        {"sentence":"You ___ come; I can do it myself. (no hace falta)","answer":"needn't","alt":["don't need to"],"explain":"'Needn't' expresa que no es necesario."},
+        {"sentence":"I ___ tell him the truth. I'm too afraid. (no me atrevo)","answer":"daren't","alt":["dare not"],"explain":"'Daren't' es el modal negativo de 'dare'."},
+        {"sentence":"How ___ you speak to me like that! (atreverse)","answer":"dare","explain":"'How dare you' expresa indignación."},
+      ],
+      order:[
+        {"words":["shall","I","help","you","with","that"],"correct":"Shall I help you with that?","explain":"Shall + I + verbo base."},
+        {"words":["you","ought","to","see","a","doctor"],"correct":"You ought to see a doctor.","explain":"Sujeto + ought to + verbo base."},
+      ],
+      translate:[
+        {"es":"No hace falta que vengas.","en":["you needn't come","you don't need to come","you don't have to come","you needn't come"],"explain":"'Needn't' (o don't need to) expresan ausencia de necesidad."},
+      ],
+    },
+    10:{
+      gapfill:[
+        {"sentence":"Formal version of 'find out': ___ (ascertain/discover)","answer":"ascertain","alt":["discover"],"explain":"'Ascertain' es el equivalente formal de 'find out'."},
+        {"sentence":"Formal version of 'ask for': ___ (request/demand)","answer":"request","explain":"'Request' es el equivalente formal de 'ask for'."},
+        {"sentence":"Informal 'Can you tell me?' → formal 'I ___ be grateful if you could tell me.' (would/will)","answer":"would","explain":"La forma cortés formal usa condicional: would be grateful."},
+        {"sentence":"In formal writing we avoid ___ like 'don't'. (contractions/phrasal)","answer":"contractions","explain":"En textos formales se evitan las contracciones (do not en lugar de don't)."},
+        {"sentence":"'We regret to ___ you that...' (inform/tell)","answer":"inform","alt":["notify"],"explain":"'Inform' es el verbo formal para comunicar noticias."},
+      ],
+      order:[
+        {"words":["I","would","be","grateful","if","you","could","confirm"],"correct":"I would be grateful if you could confirm.","explain":"Fórmula formal de petición cortés."},
+        {"words":["we","regret","to","inform","you","of","the","delay"],"correct":"We regret to inform you of the delay.","explain":"Fórmula formal para dar una mala noticia."},
+      ],
+      translate:[
+        {"es":"Le agradecería que confirmara su asistencia.","en":["i would be grateful if you could confirm your attendance","i would be grateful if you would confirm your attendance","i'd be grateful if you could confirm your attendance"],"explain":"Petición formal: I would be grateful if you could..."},
+      ],
+    },
+    11:{
+      gapfill:[
+        {"sentence":"___ , the project is too expensive. (To begin with/In conclusion)","answer":"To begin with","alt":["Firstly"],"explain":"Para introducir el primer argumento: 'to begin with'."},
+        {"sentence":"Many students, ___ instance, work part-time. (for/in)","answer":"for","explain":"'For instance' introduce un ejemplo."},
+        {"sentence":"It's expensive; in ___ words, we can't afford it. (other/another)","answer":"other","explain":"'In other words' reformula una idea."},
+        {"sentence":"___ , the results were positive. (Overall/Besides)","answer":"Overall","explain":"'Overall' resume la impresión general."},
+        {"sentence":"___, the plan is risky, but it is worth trying. (Admittedly/Firstly)","answer":"Admittedly","explain":"'Admittedly' reconoce una debilidad antes del contraste."},
+      ],
+      order:[
+        {"words":["to","sum","up,","the","project","was","a","success"],"correct":"To sum up, the project was a success.","explain":"Marcador + coma + oración."},
+        {"words":["for","instance,","many","people","work","from","home"],"correct":"For instance, many people work from home.","explain":"Marcador de ejemplo + coma + oración."},
+      ],
+      translate:[
+        {"es":"En resumen, el proyecto fue un éxito.","en":["to sum up the project was a success","to sum up, the project was a success","in conclusion the project was a success","in conclusion, the project was a success","overall the project was a success","overall, the project was a success"],"explain":"Marcador de cierre: to sum up / in conclusion / overall."},
+      ],
+    },
+    12:{
+      gapfill:[
+        {"sentence":"The test was a piece of ___. (very easy)","answer":"cake","explain":"'A piece of cake' significa algo muy fácil."},
+        {"sentence":"He hit the ___ on the head with his answer. (nail/hammer)","answer":"nail","explain":"'Hit the nail on the head' = acertar exactamente."},
+        {"sentence":"Let's break the ___ with a joke. (ice/glass)","answer":"ice","explain":"'Break the ice' = romper el hielo en una situación tensa."},
+        {"sentence":"She always goes the extra ___ for her clients. (mile/step)","answer":"mile","explain":"'Go the extra mile' = esforzarse más de lo esperado."},
+        {"sentence":"I'm feeling under the ___ today. (weather/sun)","answer":"weather","explain":"'Under the weather' = sentirse mal, algo enfermo."},
+      ],
+      order:[
+        {"words":["the","exam","was","a","piece","of","cake"],"correct":"The exam was a piece of cake.","explain":"Sujeto + be + modismo."},
+        {"words":["she","hit","the","nail","on","the","head"],"correct":"She hit the nail on the head.","explain":"Hit the nail on the head = acertar."},
+      ],
+      translate:[
+        {"es":"El examen fue pan comido.","en":["the exam was a piece of cake","the test was a piece of cake","the exam was easy as pie","the test was easy as pie"],"explain":"'A piece of cake' equivale a 'pan comido'."},
+      ],
+    },
+    13:{
+      gapfill:[
+        {"sentence":"He is very ___ with his job. (happy, negativo)","answer":"unhappy","explain":"El prefijo un- expresa lo contrario: unhappy."},
+        {"sentence":"Their ___ was clear: they wanted a new office. (decide)","answer":"decision","explain":"El sufijo -sion/-tion forma el sustantivo: decision."},
+        {"sentence":"It's ___ to read this handwriting. (possible, negativo)","answer":"impossible","explain":"El prefijo im- antes de p expresa lo contrario."},
+        {"sentence":"Her ___ made everyone smile. (kind)","answer":"kindness","explain":"El sufijo -ness convierte el adjetivo en sustantivo."},
+        {"sentence":"You must ___ the report. It has errors. (write, otra vez)","answer":"rewrite","explain":"El prefijo re- expresa repetición: rewrite."},
+      ],
+      order:[
+        {"words":["his","unhappiness","was","obvious"],"correct":"His unhappiness was obvious.","explain":"Sujeto con sustantivo formado por prefijo y sufijo + be + adjetivo."},
+        {"words":["the","development","of","the","city","is","fast"],"correct":"The development of the city is fast.","explain":"Sustantivo con sufijo -ment."},
+      ],
+      translate:[
+        {"es":"Su decisión fue muy difícil.","en":["his decision was very difficult","her decision was very difficult","his decision was really difficult","her decision was really difficult","his decision was very hard","her decision was very hard"],"explain":"Sustantivo derivado del verbo decide con el sufijo -sion."},
+      ],
+    },
+    14:{
+      gapfill:[
+        {"sentence":"___ hard I try, I can't understand it. (However/Whatever)","answer":"However","explain":"'However + adjetivo' = por más que: However hard I try."},
+        {"sentence":"___ you decide, I will support you. (Whatever/However)","answer":"Whatever","explain":"'Whatever' = lo que sea: Whatever you decide."},
+        {"sentence":"No ___ what happens, stay calm. (matter/mind)","answer":"matter","explain":"'No matter what' = pase lo que pase."},
+        {"sentence":"___ you go, remember your friends. (Wherever/Whatever)","answer":"Wherever","explain":"'Wherever' = dondequiera que."},
+        {"sentence":"___ called, tell them I'm busy. (Whoever/Whatever)","answer":"Whoever","explain":"'Whoever' = quienquiera que, se refiere a una persona."},
+      ],
+      order:[
+        {"words":["however","hard","I","try,","I","can't","do","it"],"correct":"However hard I try, I can't do it.","explain":"However + adjetivo + sujeto + verbo, oración principal."},
+        {"words":["whatever","you","decide,","I","will","support","you"],"correct":"Whatever you decide, I will support you.","explain":"Whatever + sujeto + verbo, oración principal."},
+      ],
+      translate:[
+        {"es":"Decidas lo que decidas, te apoyaré.","en":["whatever you decide i will support you","whatever you decide, i will support you","whatever you decide i'll support you","whatever you decide, i'll support you","no matter what you decide i will support you","no matter what you decide, i will support you"],"explain":"Concesión enfática: whatever / no matter what."},
+      ],
+    },
+  },
+};
+Object.keys(ROUTE_EXPAND).forEach(lv=>{ ROUTE_NEW[lv] = ROUTE_NEW[lv] || {}; Object.assign(ROUTE_NEW[lv], ROUTE_EXPAND[lv]); });
+
 const ROUTE_NEW_IDX = {};   // nivel -> unidad -> {gapfill:[índices], order:[...], translate:[...]}
 Object.keys(ROUTE_NEW).forEach(lv=>{
   ROUTE_NEW_IDX[lv] = {};
@@ -24283,25 +25102,37 @@ const ROUTE_UNITS = {
     {"gapfill":[9,10,14],"order":[6,7,12],"translate":[5,6,9]},
   ],
 };
+/* Orden pedagógico de la Ruta: [nivel donde vive el tema en THEORY, índice]. Un tema puede aparecer en otro nivel de la Ruta
+   (p. ej. «Imperativos» vive en A2 pero se enseña en A1). El progreso se guarda con la clave del tema, no de la posición. */
+const ROUTE_ORDER = {
+  A1:[["A1",0],["A1",7],["A1",2],["A1",4],["A1",6],["A1",3],["A1",5],["A1",8],["A1",1],["A1",11],["A1",12],["A1",10],["A1",9],["A1",13],["A2",8]],
+  A2:[["A2",11],["A2",0],["A2",12],["A2",5],["A2",1],["A2",13],["A2",2],["A2",16],["A2",7],["A2",4],["A2",17],["A2",15],["A2",3],["A2",14],["A2",6]],
+  B1:[["B1",0],["B1",7],["A2",9],["B1",2],["B1",1],["B1",3],["B1",5],["B1",4],["B1",6],["A2",10],["B1",8],["B1",9],["B1",10],["B1",11],["B1",12]],
+  B2:[["B2",0],["B2",1],["C1",0],["B2",9],["B2",3],["B2",7],["B2",2],["B2",4],["B2",5],["B2",8],["B2",13],["B2",10],["B2",11],["B2",12],["B2",14]],
+  C1:[["C1",1],["C1",2],["C1",3],["C1",4],["C1",5],["B2",6],["C1",6],["C1",7],["C1",8],["C1",9],["C1",10],["C1",11],["C1",12],["C1",13],["C1",14]],
+  C2:[["C2",0],["C2",1],["C2",2],["C2",3],["C2",4],["C2",5],["C2",6],["C2",7],["C2",8],["C2",9],["C2",10],["C2",11],["C2",12],["C2",13],["C2",14]]
+};
+function routeKey(level, k){ const e = (ROUTE_ORDER[level] || [])[k]; return e ? e[0]+":"+e[1] : level+":"+k; }
 let routeSelectedLevel = null;
 function routeUnits(level){
-  return LANG_PACKS.en.THEORY[level].map((t,i)=>{
-    const u = (ROUTE_UNITS[level] || [])[i] || {};
-    const n = ((ROUTE_NEW_IDX[level] || {})[i]) || {};
+  return (ROUTE_ORDER[level] || []).map(([home, i], pos)=>{
+    const t = LANG_PACKS.en.THEORY[home][i];
+    const u = (ROUTE_UNITS[home] || [])[i] || {};
+    const n = ((ROUTE_NEW_IDX[home] || {})[i]) || {};
     const items = [], seen = new Set();
     const add = (type, lv, idxs)=> (idxs||[]).forEach(ix=>{
       const id = `${type}:en:${lv}:${ix}`;
       if(!seen.has(id)){ seen.add(id); items.push({type, id}); }
     });
-    ["gapfill","order","translate"].forEach(type=>{ add(type, level, u[type]); add(type, level, n[type]); });
+    ["gapfill","order","translate"].forEach(type=>{ add(type, home, u[type]); add(type, home, n[type]); });
     (u.extra || []).forEach(([lv,type,ix])=> add(type, lv, [ix]));
-    const vocab = (u.vocab || []).map(ix=>({type:"vocab", id:`vocab:en:${level}:${ix}`}));
-    return {level, index:i, key:`${level}:${i}`, title:t.title, summary:t.summary, items, vocab};
+    const vocab = (u.vocab || []).map(ix=>({type:"vocab", id:`vocab:en:${home}:${ix}`}));
+    return {level, home, index:i, pos, key:`${home}:${i}`, title:t.title, summary:t.summary, items, vocab};
   });
 }
-function routeState(level, k){ return routeProgress[`${level}:${k}`] || {}; }
+function routeState(level, k){ return routeProgress[routeKey(level, k)] || {}; }
 function routeTouch(level, k){
-  const key = `${level}:${k}`;
+  const key = routeKey(level, k);
   const rp = routeProgress[key] || (routeProgress[key] = {});
   rp.ts = Date.now();
   return rp;
@@ -24320,7 +25151,7 @@ function routeCurrentLevel(){
   let best = null, ts = -1;
   Object.keys(routeProgress).forEach(key=>{
     const t = routeProgress[key].ts || 0;
-    if(t > ts){ ts = t; best = key.split(":")[0]; }
+    if(t > ts){ ts = t; best = ROUTE_LEVELS.find(l=> (ROUTE_ORDER[l]||[]).some(e=> e[0]+":"+e[1] === key)) || key.split(":")[0]; }
   });
   return ROUTE_LEVELS.includes(best) ? best : "A1";
 }
@@ -24333,8 +25164,8 @@ function buildUnitSession(level, k){
   const used = new Set(queue.map(q=>q.forcedId));
   const extra = [...related.slice(ROUTE_CLOSE_SIZE - wantVocab), ...vocab.slice(wantVocab)];
   extra.forEach(q=>{ if(queue.length < ROUTE_CLOSE_SIZE && !used.has(q.forcedId)){ queue.push(q); used.add(q.forcedId); } });
-  const padSrc = LANG_PACKS.en.GRAMMAR[level].map((_,i)=>({type:"gapfill", forcedId:`gapfill:en:${level}:${i}`}));
-  if(level === "A1") padSrc.push(...LANG_PACKS.en.VOCAB[level].map((_,i)=>({type:"vocab", forcedId:`vocab:en:${level}:${i}`})));
+  const padSrc = LANG_PACKS.en.GRAMMAR[u.home].map((_,i)=>({type:"gapfill", forcedId:`gapfill:en:${u.home}:${i}`}));
+  if(u.home === "A1") padSrc.push(...LANG_PACKS.en.VOCAB[u.home].map((_,i)=>({type:"vocab", forcedId:`vocab:en:${u.home}:${i}`})));
   shuffle(padSrc).forEach(q=>{ if(queue.length < ROUTE_CLOSE_SIZE && !used.has(q.forcedId)){ queue.push(q); used.add(q.forcedId); } });
   return {mode:"unit", level, unit:k, queue:shuffle(queue), index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set()};
 }
@@ -24409,7 +25240,7 @@ function renderUnitComplete(s){
   const retry = document.getElementById("routeRetryBtn");
   if(retry) retry.onclick = ()=>{ practiceTodaySession = buildUnitSession(level, s.unit); renderPracticeHoy(); };
   const th = document.getElementById("routeTheoryBtn");
-  if(th) th.onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(level, s.unit, {id:"route", label:"Volver a la Ruta", level, unit:s.unit}); };
+  if(th) th.onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(u.home, u.index, {id:"route", label:"Volver a la Ruta", level, unit:s.unit}); };
   window.scrollTo({top:0, behavior:"smooth"});
 }
 function renderRoute(){
@@ -24470,7 +25301,7 @@ function renderRoute(){
     b.onclick = ()=>{
       const k = parseInt(b.dataset.routeTheory);
       routeTouch(level, k).theory = true; saveProgress();
-      openTheoryTopic(level, k, {id:"route", label:"Volver a la Ruta", level, unit:k});
+      openTheoryTopic(units[k].home, units[k].index, {id:"route", label:"Volver a la Ruta", level, unit:k});
     };
   });
   panel.querySelectorAll("[data-route-close]").forEach(b=>{ b.onclick = ()=> routeStartClose(level, parseInt(b.dataset.routeClose)); });
