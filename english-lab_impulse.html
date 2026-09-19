@@ -730,6 +730,24 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .feedback.bad{background:#FCE6ED;border:1.5px solid var(--pink);color:#99123F;}
 .feedback strong{display:block;margin-bottom:4px;font-family:'Poppins',sans-serif;font-size:1.02rem;}
 
+.wr-issues{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px;}
+.wr-issue{padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);}
+.wr-issue-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.wr-code{font-size:0.75rem;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--purple-soft);color:var(--purple-dark);}
+.wr-issue-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.wr-mini{border:1px solid var(--line);background:var(--bg-soft);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+.wr-more{margin-top:8px;}
+.wr-hint,.wr-sol{margin-top:8px;font-size:0.85rem;line-height:1.45;}
+.wr-sol{color:#14803A;font-weight:600;}
+.wr-tip,.wr-progress{font-size:0.85rem;color:var(--ink-soft);margin-top:2px;}
+.wr-progress{color:#14803A;font-weight:700;}
+.wr-stats{margin-top:20px;}
+.wr-stats h3{margin:0 0 4px;font-size:1.05rem;}
+.wr-freq{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;}
+.wr-freq li{padding:10px 12px;border-radius:12px;background:var(--bg-soft);border:1px solid var(--line);}
+.wr-count{float:right;font-weight:800;color:var(--pink);}
+.wr-trend{margin:12px 0 0;font-size:0.88rem;font-weight:600;}
+.wr-trend.good{color:#14803A;}
 .wr-review{margin-top:14px;text-align:left;}
 .wr-review-h{font-weight:800;font-size:0.95rem;margin-bottom:8px;}
 .wr-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
@@ -19219,6 +19237,7 @@ let uiLangPref = "es";           // preferencia de idioma de interfaz (solo se g
 let dailyGoal = 10;               // meta diaria de ejercicios
 let notificationsEnabled = false; // recordatorios diarios (ajuste visual, sin backend de notificaciones)
 let userName = "";                // nombre del usuario, usado en el saludo del Dashboard
+const writingHistory = [];        // historial de errores de Writing (inglés): {ts, lv, words, n, ids, fixed?}, máx. 60
 const matchPairsBest = {};        // récord de "Une los pares" por duración: {t15, t30, t45} -> pares emparejados
 const routeProgress = {};         // progreso de la Ruta: "A1:0" -> {theory, best (%), attempts, passed, skipped}
 
@@ -20723,7 +20742,7 @@ function saveProgress(){
   try{
     localStorage.setItem(progressKeyFor(ACTIVE_PROFILE_ID, currentLang), JSON.stringify({
       stats, srs: SRS_DATA, errors: ERROR_BANK, level: currentLevel, ts: Date.now(),
-      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest, routeProgress
+      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest, routeProgress, writingHistory
     }));
   }catch(e){ /* almacenamiento no disponible: el progreso queda solo en esta sesión */ }
 }
@@ -20745,6 +20764,7 @@ function loadProgress(){
     if(data.dailyGoal) dailyGoal = data.dailyGoal;
     if(typeof data.notificationsEnabled === "boolean") notificationsEnabled = data.notificationsEnabled;
     if(typeof data.userName === "string") userName = data.userName;
+    if(Array.isArray(data.writingHistory)) writingHistory.splice(0, writingHistory.length, ...data.writingHistory.slice(-60));
     if(data.matchPairsBest && typeof data.matchPairsBest === "object") Object.assign(matchPairsBest, data.matchPairsBest);
     if(data.routeProgress && typeof data.routeProgress === "object") Object.assign(routeProgress, data.routeProgress);
   }catch(e){ /* datos corruptos: se ignoran y se empieza de cero */ }
@@ -20765,6 +20785,7 @@ function resetActiveProfileData(){
   dailyGoal = 10;
   notificationsEnabled = false;
   userName = "";
+  writingHistory.length = 0;
   Object.keys(matchPairsBest).forEach(k=> delete matchPairsBest[k]);
   Object.keys(routeProgress).forEach(k=> delete routeProgress[k]);
   saveProgress();
@@ -23583,31 +23604,38 @@ function newWritingQuestion(){
 }
 /* ---- WRITING: retroalimentación por reglas (sin IA) ----
    Revisa longitud, tema, errores frecuentes de hispanohablantes, conectores, repetición y puntuación.
+   Cada regla tiene id (para el historial), código (etiqueta de autocorrección) y prioridad
+   (1 = bloquea el sentido o muy frecuente, 2 = importante, 3 = de forma). Solo se muestran primero los más
+   importantes: la corrección selectiva es más útil que marcarlo todo.
    Las reglas de errores y conectores solo aplican al inglés; en otros idiomas se revisa longitud y tema. */
 const WRITING_RULES_EN = [
-  {re:/(?<![A-Za-z'’])i(?![A-Za-z'’])/g, msg:"El pronombre «I» siempre se escribe con mayúscula.", fix:()=>"I"},
-  {re:/(?<!\b(?:do|does|did|can|could|will|would|should|must|may|might|to|let|make|makes|made|help|helps|didn't|doesn't|don't|won't|can't|shall)\s)\b(he|she|it)\s+(have|do|go|like|want|need|live|work|play|eat|drink|study|watch|make|take|speak|love|know|think|say|get|come|help|use|feel)\b/gi, msg:"Con he/she/it el verbo lleva -s (likes, goes, has, does).", fix:m=>`${m[1]} ${({have:"has",do:"does",go:"goes",study:"studies",watch:"watches"})[m[2].toLowerCase()] || m[2].toLowerCase()+"s"}`},
-  {re:/\b(I|you|we|they)\s+(has|does|goes)\b/gi, msg:"Con I/you/we/they se usa have/do/go, no has/does/goes.", fix:m=>`${m[1]} ${({has:"have",does:"do",goes:"go"})[m[2].toLowerCase()]}`},
-  {re:/\b(he|she|it)\s+(don't|do not)\b/gi, msg:"Con he/she/it el negativo es doesn't.", fix:m=>`${m[1]} doesn't`},
-  {re:/\b(I|you|we|they)\s+doesn't\b/gi, msg:"Con I/you/we/they el negativo es don't.", fix:m=>`${m[1]} don't`},
-  {re:/\b(they|we|you)\s+is\b|\bI\s+(?:are|is)\b|\b(he|she|it)\s+are\b|\bpeople\s+(?:is|has|was|does)\b/gi, msg:"El verbo no concuerda con el sujeto (I am, he is, they are; «people» es plural: people are).", fix:null},
-  {re:/\bI\s+am\s+agree\b/gi, msg:"«Agree» es un verbo: se dice «I agree», sin «am».", fix:()=>"I agree"},
-  {re:/\bI\s+have\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty)(?:[- ]\w+)?\s+years?\b(?!\s+(?:old|of|ago|in|with|experience))/gi, msg:"La edad se dice con «be»: I am 20 years old (no «I have 20 years»).", fix:null},
-  {re:/\b(more|most)\s+(better|bigger|smaller|easier|faster|cheaper|worse|older|younger|taller|happier|harder|larger)\b/gi, msg:"Comparativo doble: ya no necesita «more/most» (better, bigger...).", fix:m=>m[2]},
-  {re:/\b(can|could|must|should|will|would|may|might)\s+to\b/gi, msg:"Después de un modal no se usa «to».", fix:m=>m[1]},
-  {re:/\b(didn't|did not)\s+(went|ate|saw|had|took|made|came|got|gave|said|bought|wrote|was|were|did|knew|thought|found|told)\b/gi, msg:"Después de didn't el verbo va en forma base (didn't go, no «didn't went»).", fix:null},
-  {re:/\b(doesn't|does not)\s+(likes|goes|has|works|plays|wants|needs|lives|eats|drinks|studies|watches|makes|takes|speaks|loves|knows)\b/gi, msg:"Después de doesn't el verbo va en forma base, sin -s.", fix:null},
-  {re:/\b[Aa]\s+(?!eu|one\b|once\b)([aeio]\w*|hour\w*|honest\w*|honou?r\w*|heir\w*)\b/g, msg:"Antes de un sonido de vocal se usa «an» (an apple, an hour).", fix:null},
-  {re:/\ban\s+(?!hour|honest|honou?r|heir)([bcdfgjklmnpqrstvwxyz][a-z]+)\b/g, msg:"Antes de un sonido de consonante se usa «a» (a book).", fix:null},
-  {re:/\b(I|we|you|they)\s+no\s+(like|want|have|speak|know|understand|go)\b/gi, msg:"El negativo del presente simple se forma con don't (I don't like).", fix:m=>`${m[1]} don't ${m[2]}`},
-  {re:/\b(explain|say)\s+me\b/gi, msg:"Se dice «explain to me» / «tell me».", fix:null},
-  {re:/\bdepends?\s+of\b/gi, msg:"Se dice «depend on».", fix:null},
-  {re:/\bmake\s+a\s+question\b/gi, msg:"Se dice «ask a question».", fix:null},
-  {re:/\b(?:(?:very|so|too)\s+)?much\s+(people|friends|things|cars|books|students|children)\b/gi, msg:"Con sustantivos contables se usa «many», no «much».", fix:null},
-  {re:/\bI\s+(?:very|much)\s+(like|love)\b/gi, msg:"No se dice «I very like»; usa «I really like» o «I like ... very much».", fix:m=>`I really ${m[1]}`},
-  {re:/\b(peoples|informations|advices|furnitures|homeworks)\b/gi, msg:"Esta palabra es incontable o ya es plural: people, information, advice, furniture, homework.", fix:null},
-  {re:/\b(go|going|went|come|came|arrive|arrived|arriving)\s+to\s+home\b/gi, msg:"Se dice «go home» (sin «to»).", fix:null},
+  {id:"cap-i", code:"Mayúscula", pri:3, re:/(?<![A-Za-z'’])i(?![A-Za-z'’])/g, msg:"El pronombre «I» siempre se escribe con mayúscula.", fix:()=>"I"},
+  {id:"sv-3rd", code:"Concordancia (-s)", pri:1, re:/(?<!\b(?:do|does|did|can|could|will|would|should|must|may|might|to|let|make|makes|made|help|helps|didn't|doesn't|don't|won't|can't|shall)\s)\b(he|she|it)\s+(have|do|go|like|want|need|live|work|play|eat|drink|study|watch|make|take|speak|love|know|think|say|get|come|help|use|feel)\b/gi, msg:"Con he/she/it el verbo lleva -s (likes, goes, has, does).", fix:m=>`${m[1]} ${({have:"has",do:"does",go:"goes",study:"studies",watch:"watches"})[m[2].toLowerCase()] || m[2].toLowerCase()+"s"}`},
+  {id:"sv-plural", code:"Concordancia", pri:1, re:/\b(I|you|we|they)\s+(has|does|goes)\b/gi, msg:"Con I/you/we/they se usa have/do/go, no has/does/goes.", fix:m=>`${m[1]} ${({has:"have",does:"do",goes:"go"})[m[2].toLowerCase()]}`},
+  {id:"aux-3rd", code:"Auxiliar (do/does)", pri:1, re:/\b(he|she|it)\s+(don't|do not)\b/gi, msg:"Con he/she/it el negativo es doesn't.", fix:m=>`${m[1]} doesn't`},
+  {id:"aux-plural", code:"Auxiliar (do/does)", pri:1, re:/\b(I|you|we|they)\s+doesn't\b/gi, msg:"Con I/you/we/they el negativo es don't.", fix:m=>`${m[1]} don't`},
+  {id:"be-agr", code:"Verbo «be»", pri:1, re:/\b(they|we|you)\s+is\b|\bI\s+(?:are|is)\b|\b(he|she|it)\s+are\b|\bpeople\s+(?:is|has|was|does)\b/gi, msg:"El verbo no concuerda con el sujeto (I am, he is, they are; «people» es plural: people are).", fix:null},
+  {id:"am-agree", code:"Verbo «agree»", pri:1, re:/\bI\s+am\s+agree\b/gi, msg:"«Agree» es un verbo: se dice «I agree», sin «am».", fix:()=>"I agree"},
+  {id:"age", code:"Edad (be)", pri:1, re:/\bI\s+have\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty)(?:[- ]\w+)?\s+years?\b(?!\s+(?:old|of|ago|in|with|experience))/gi, msg:"La edad se dice con «be»: I am 20 years old (no «I have 20 years»).", fix:null},
+  {id:"comp-double", code:"Comparativo", pri:2, re:/\b(more|most)\s+(better|bigger|smaller|easier|faster|cheaper|worse|older|younger|taller|happier|harder|larger)\b/gi, msg:"Comparativo doble: ya no necesita «more/most» (better, bigger...).", fix:m=>m[2]},
+  {id:"modal-to", code:"Modal + to", pri:1, re:/\b(can|could|must|should|will|would|may|might)\s+to\b/gi, msg:"Después de un modal no se usa «to».", fix:m=>m[1]},
+  {id:"did-past", code:"Verbo tras did", pri:1, re:/\b(didn't|did not)\s+(went|ate|saw|had|took|made|came|got|gave|said|bought|wrote|was|were|did|knew|thought|found|told)\b/gi, msg:"Después de didn't el verbo va en forma base (didn't go, no «didn't went»).", fix:null},
+  {id:"does-s", code:"Verbo tras does", pri:1, re:/\b(doesn't|does not)\s+(likes|goes|has|works|plays|wants|needs|lives|eats|drinks|studies|watches|makes|takes|speaks|loves|knows)\b/gi, msg:"Después de doesn't el verbo va en forma base, sin -s.", fix:null},
+  {id:"a-an", code:"Artículo a/an", pri:2, re:/\b[Aa]\s+(?!eu|one\b|once\b)([aeio]\w*|hour\w*|honest\w*|honou?r\w*|heir\w*)\b/g, msg:"Antes de un sonido de vocal se usa «an» (an apple, an hour).", fix:null},
+  {id:"an-a", code:"Artículo a/an", pri:2, re:/\ban\s+(?!hour|honest|honou?r|heir)([bcdfgjklmnpqrstvwxyz][a-z]+)\b/g, msg:"Antes de un sonido de consonante se usa «a» (a book).", fix:null},
+  {id:"no-neg", code:"Negación", pri:1, re:/\b(I|we|you|they)\s+no\s+(like|want|have|speak|know|understand|go)\b/gi, msg:"El negativo del presente simple se forma con don't (I don't like).", fix:m=>`${m[1]} don't ${m[2]}`},
+  {id:"explain-me", code:"Verbo + persona", pri:2, re:/\b(explain|say)\s+me\b/gi, msg:"Se dice «explain to me» / «tell me».", fix:null},
+  {id:"depend-of", code:"Preposición", pri:2, re:/\bdepends?\s+of\b/gi, msg:"Se dice «depend on».", fix:null},
+  {id:"make-question", code:"Colocación", pri:2, re:/\bmake\s+a\s+question\b/gi, msg:"Se dice «ask a question».", fix:null},
+  {id:"much-many", code:"Cuantificador", pri:2, re:/\b(?:(?:very|so|too)\s+)?much\s+(people|friends|things|cars|books|students|children)\b/gi, msg:"Con sustantivos contables se usa «many», no «much».", fix:null},
+  {id:"very-like", code:"Adverbio", pri:2, re:/\bI\s+(?:very|much)\s+(like|love)\b/gi, msg:"No se dice «I very like»; usa «I really like» o «I like ... very much».", fix:m=>`I really ${m[1]}`},
+  {id:"uncountable", code:"Sustantivo incontable", pri:2, re:/\b(peoples|informations|advices|furnitures|homeworks)\b/gi, msg:"Esta palabra es incontable o ya es plural: people, information, advice, furniture, homework.", fix:null},
+  {id:"go-home", code:"Preposición", pri:2, re:/\b(go|going|went|come|came|arrive|arrived|arriving)\s+to\s+home\b/gi, msg:"Se dice «go home» (sin «to»).", fix:null},
 ];
+const WRITING_RULE_INFO = {};
+WRITING_RULES_EN.forEach(r=>{ WRITING_RULE_INFO[r.id] = {code:r.code, msg:r.msg}; });
+WRITING_RULE_INFO["cap-sentence"] = {code:"Mayúscula", msg:"Cada oración empieza con mayúscula."};
+WRITING_RULE_INFO["repeat"] = {code:"Palabra repetida", msg:"Palabra repetida seguida."};
 const WRITING_CONNECTORS = ["because","so","and then","also","however","although","though","while","whereas","therefore","moreover","furthermore","nevertheless","nonetheless","in addition","on the other hand","for example","for instance","in conclusion","as a result","consequently","despite","in spite of","first","finally","unless","since","but","when","if"];
 const WRITING_CONNECTORS_BASIC = ["because","and then","but","so","also","when","if","first","finally"];
 const WRITING_CONNECTOR_TARGET = {A1:0, A2:1, B1:2, B2:3, C1:3, C2:4};
@@ -23616,6 +23644,7 @@ const WRITING_CONNECTOR_SUGGEST = {
   C1:"moreover, nevertheless, therefore, consequently", C2:"notwithstanding, hence, whereas, on the contrary"
 };
 const WRITING_STOPWORDS = new Set(["about","which","their","would","there","these","other","could","should","because","people","think","where","being","while","really","again"]);
+const WRITING_TOP_SHOWN = 3;
 function writingAnalyze(text, item, lv){
   const words = text.trim() ? text.trim().split(/\s+/) : [];
   const wordCount = words.length;
@@ -23631,7 +23660,7 @@ function writingAnalyze(text, item, lv){
       r.re.lastIndex = 0;
       let m;
       while((m = r.re.exec(text))){
-        raw.push({index:m.index, len:m[0].length, found:m[0], msg:r.msg, fix:r.fix ? r.fix(m) : null});
+        raw.push({id:r.id, code:r.code, pri:r.pri, index:m.index, len:m[0].length, found:m[0], msg:r.msg, fix:r.fix ? r.fix(m) : null});
         if(m[0].length === 0) r.re.lastIndex++;
       }
     });
@@ -23641,17 +23670,18 @@ function writingAnalyze(text, item, lv){
       const idx = cm.index + cm[0].length - 1;
       const word = (text.slice(idx).match(/^\S+/)||[""])[0];
       if(/^i(?![A-Za-z'’])/.test(word)) continue; // ya lo cubre la regla de «I»
-      raw.push({index:idx, len:word.length, found:word, msg:"Cada oración empieza con mayúscula.", fix:word.charAt(0).toUpperCase()+word.slice(1)});
+      raw.push({id:"cap-sentence", code:"Mayúscula", pri:3, index:idx, len:word.length, found:word, msg:WRITING_RULE_INFO["cap-sentence"].msg, fix:word.charAt(0).toUpperCase()+word.slice(1)});
     }
     const rep = /\b([A-Za-z']+)\s+\1\b/gi;
     let rm;
     while((rm = rep.exec(text))){
       if(/^(that|had)$/i.test(rm[1])) continue;
-      raw.push({index:rm.index, len:rm[0].length, found:rm[0], msg:"Palabra repetida seguida.", fix:rm[1]});
+      raw.push({id:"repeat", code:"Palabra repetida", pri:3, index:rm.index, len:rm[0].length, found:rm[0], msg:WRITING_RULE_INFO["repeat"].msg, fix:rm[1]});
     }
     raw.sort((x,y)=> x.index - y.index || y.len - x.len);
     let end = -1;
     raw.forEach(it=>{ if(it.index >= end){ a.issues.push(it); end = it.index + it.len; } });
+    a.issues.forEach((it,i)=>{ it.n = i; });
     const low = " " + norm + " ";
     const list = lv==="A1" || lv==="A2" ? WRITING_CONNECTORS_BASIC.concat(WRITING_CONNECTORS) : WRITING_CONNECTORS.filter(c=> !["and then","but","so","when","if","first"].includes(c));
     a.connectors = [...new Set(list.filter(c=> low.includes(" "+c+" ")))];
@@ -23661,33 +23691,58 @@ function writingAnalyze(text, item, lv){
   }
   return a;
 }
-function writingMarkedText(text, issues){
+/* Los errores más importantes primero (prioridad, luego orden de aparición). */
+function writingRanked(issues){
+  return issues.slice().sort((x,y)=> x.pri - y.pri || x.index - y.index);
+}
+function writingMarkedText(text, issues, shownSet){
   let out = "", pos = 0;
   issues.forEach(it=>{
     out += escHtml(text.slice(pos, it.index));
-    out += `<mark class="wr-mark" title="${escHtml(it.msg)}">${escHtml(it.found)}</mark>`;
+    out += shownSet.has(it.n)
+      ? `<mark class="wr-mark" title="${escHtml(it.code)}">${escHtml(it.found)}</mark>`
+      : escHtml(it.found);
     pos = it.index + it.len;
   });
   out += escHtml(text.slice(pos));
   return out.replace(/\n/g,"<br>");
 }
-function writingChecklistHTML(a, item, lv, text){
+function writingIssueRow(it){
+  return `<li class="wr-issue" data-n="${it.n}">
+    <div class="wr-issue-top"><span class="wr-code">${escHtml(it.code)}?</span><span class="wr-found">${escHtml(it.found)}</span></div>
+    <div class="wr-issue-btns">
+      <button type="button" class="wr-mini" data-hint="${it.n}">💡 Pista</button>
+      <button type="button" class="wr-mini" data-sol="${it.n}">Ver corrección</button>
+    </div>
+    <div class="wr-issue-reveal" id="wrReveal${it.n}"></div>
+  </li>`;
+}
+function writingChecklistHTML(a, item, lv, text, prevIssues){
   const rows = [];
-  const row = (ok, title, body)=> rows.push(`<li class="wr-item ${ok?"ok":"warn"}"><span class="wr-ic">${ok?"✅":"⚠️"}</span><div><b>${title}</b>${body?`<div class="wr-body">${body}</div>`:""}</div></li>`);
+  const row = (ok, title, body)=> rows.push(`<li class="wr-item ${ok?"ok":"warn"}"><span class="wr-ic">${ok?"✅":"⚠️"}</span><div style="flex:1;min-width:0;"><b>${title}</b>${body?`<div class="wr-body">${body}</div>`:""}</div></li>`);
   const lenOk = a.wordCount >= item.minWords;
   row(lenOk, "Longitud", lenOk ? `Escribiste ${a.wordCount} palabras (mínimo ${item.minWords}).` : `Escribiste ${a.wordCount}; te faltan ${item.minWords - a.wordCount} para llegar a ${item.minWords}. Desarrolla cada idea con un detalle o un ejemplo.`);
   const topicOk = a.found.length >= 1;
   row(topicOk, "Tema", topicOk
     ? `Tocaste ${a.found.length} de ${item.keywords.length} ideas clave (${a.found.slice(0,4).map(escHtml).join(", ")}).${a.missing.length ? ` Podrías añadir: <i>${a.missing.slice(0,3).map(escHtml).join(", ")}</i>.` : ""}`
     : `Tu texto no toca el tema pedido: incluye ideas como <i>${item.keywords.slice(0,4).map(escHtml).join(", ")}</i>.`);
+  const shown = new Set();
   if(a.isEn){
     if(a.issues.length){
-      const seen = new Set();
-      const uniq = a.issues.filter(it=>{ if(seen.has(it.msg)) return false; seen.add(it.msg); return true; }).slice(0,6);
+      const ranked = writingRanked(a.issues);
+      const top = ranked.slice(0, WRITING_TOP_SHOWN), rest = ranked.slice(WRITING_TOP_SHOWN);
+      top.forEach(it=> shown.add(it.n));
+      let fixedLine = "";
+      if(prevIssues && prevIssues.length){
+        const solved = prevIssues.filter(p=> !text.includes(p.found)).length;
+        fixedLine = `<div class="wr-progress">Corregiste <b>${solved}</b> de ${prevIssues.length} errores marcados antes.</div>`;
+      }
       row(false, `Gramática y ortografía (${a.issues.length} ${a.issues.length===1?"punto":"puntos"})`,
-        `<ul class="wr-sub">${uniq.map(it=>`<li><span class="wr-found">${escHtml(it.found)}</span> ${it.fix ? `→ <b>${escHtml(it.fix)}</b> · ` : "· "}${escHtml(it.msg)}</li>`).join("")}</ul>`);
+        `${fixedLine}<div class="wr-tip">Empieza por ${top.length===1?"este":"estos"} ${top.length===1?"":top.length+" "}(los más importantes). Intenta corregirlo${top.length===1?"":"s"} tú: pide una pista solo si te atascas.</div>
+        <ul class="wr-issues">${top.map(writingIssueRow).join("")}</ul>
+        ${rest.length ? `<button type="button" class="wr-mini wr-more" id="wrMore">Ver ${rest.length} ${rest.length===1?"punto más":"puntos más"}</button><ul class="wr-issues" id="wrRest" style="display:none;">${rest.map(writingIssueRow).join("")}</ul>` : ""}`);
     }else{
-      row(true, "Gramática y ortografía", "No encontré errores frecuentes. Ojo: esta revisión automática no detecta todos los errores.");
+      row(true, "Gramática y ortografía", `${prevIssues && prevIssues.length ? "¡Corregiste todo lo marcado! " : ""}No encontré errores frecuentes. Ojo: esta revisión automática no detecta todos los errores.`);
     }
     const tgt = WRITING_CONNECTOR_TARGET[lv] ?? 0;
     if(tgt > 0){
@@ -23698,8 +23753,64 @@ function writingChecklistHTML(a, item, lv, text){
     if(!a.endPunct && a.wordCount) row(false, "Puntuación", "Termina tu texto con un punto (o signo de cierre).");
   }
   let marked = "";
-  if(a.issues.length) marked = `<div class="wr-marked"><div class="wr-marked-h">Tu texto con marcas (toca o pasa el cursor sobre lo marcado)</div><p>${writingMarkedText(text, a.issues)}</p></div>`;
+  if(a.issues.length) marked = `<div class="wr-marked"><div class="wr-marked-h">Tu texto con los puntos principales marcados (pasa el cursor para ver el tipo)</div><p>${writingMarkedText(text, a.issues, shown)}</p></div>`;
   return `<ul class="wr-list">${rows.join("")}</ul>${marked}`;
+}
+/* Enlaza los botones de pista/corrección y «ver más» dentro del contenedor de feedback. */
+function writingWireIssues(root, issues){
+  const byN = {}; issues.forEach(it=> byN[it.n] = it);
+  const more = root.querySelector("#wrMore");
+  if(more) more.onclick = ()=>{ root.querySelector("#wrRest").style.display = ""; more.style.display = "none"; };
+  root.querySelectorAll("[data-hint]").forEach(b=>{
+    b.onclick = ()=>{
+      const it = byN[b.dataset.hint], box = root.querySelector("#wrReveal"+it.n);
+      if(!box.querySelector(".wr-hint")) box.insertAdjacentHTML("afterbegin", `<div class="wr-hint">💡 ${escHtml(it.msg)}</div>`);
+    };
+  });
+  root.querySelectorAll("[data-sol]").forEach(b=>{
+    b.onclick = ()=>{
+      const it = byN[b.dataset.sol], box = root.querySelector("#wrReveal"+it.n);
+      if(!box.querySelector(".wr-hint")) box.insertAdjacentHTML("afterbegin", `<div class="wr-hint">💡 ${escHtml(it.msg)}</div>`);
+      if(!box.querySelector(".wr-sol")) box.insertAdjacentHTML("beforeend", `<div class="wr-sol">${it.fix ? `Prueba con: <b>${escHtml(it.fix)}</b>` : "Aplica la regla de la pista para reescribirlo."}</div>`);
+    };
+  });
+}
+/* Historial: guarda los tipos de error de cada texto y resume tendencias. */
+function writingRecord(lv, an){
+  if(!an.isEn) return;
+  const ids = {};
+  an.issues.forEach(it=>{ ids[it.id] = (ids[it.id]||0) + 1; });
+  writingHistory.push({ts:Date.now(), lv, words:an.wordCount, n:an.issues.length, ids});
+  if(writingHistory.length > 60) writingHistory.splice(0, writingHistory.length - 60);
+  saveProgress();
+}
+function writingRecordFix(an, prevIssues, text){
+  const last = writingHistory[writingHistory.length - 1];
+  if(!last || !an.isEn) return;
+  last.fixed = prevIssues.filter(p=> !text.includes(p.found)).length;
+  saveProgress();
+}
+function writingProgressHTML(){
+  const H = writingHistory;
+  if(!H.length) return `<div class="card wr-stats"><h3>📈 Tus errores más frecuentes</h3><p class="dash-card-sub">Cuando escribas tus primeros textos en inglés, aquí verás qué errores repites y si van bajando.</p></div>`;
+  const recent = H.slice(-20);
+  const tot = {};
+  recent.forEach(h=> Object.keys(h.ids).forEach(id=>{ tot[id] = (tot[id]||0) + h.ids[id]; }));
+  const top = Object.keys(tot).sort((x,y)=> tot[y] - tot[x]).slice(0,5);
+  let trend = "";
+  if(H.length >= 6){
+    const last5 = H.slice(-5), prev5 = H.slice(-10, -5);
+    if(prev5.length >= 3){
+      const avg = arr => arr.reduce((s,h)=> s + h.n, 0) / arr.length;
+      const a1 = avg(prev5), a2 = avg(last5);
+      trend = a2 < a1 ? `<p class="wr-trend good">📉 Vas mejorando: promedio de ${a2.toFixed(1)} errores por texto (antes ${a1.toFixed(1)}).</p>`
+        : a2 > a1 ? `<p class="wr-trend">📈 Tus últimos textos tienen más errores por texto (${a2.toFixed(1)} frente a ${a1.toFixed(1)}): revisa los que más se repiten.</p>`
+        : `<p class="wr-trend">➡️ Se mantiene: ${a2.toFixed(1)} errores por texto.</p>`;
+    }
+  }
+  const body = top.length ? `<ul class="wr-freq">${top.map(id=>`<li><b>${escHtml((WRITING_RULE_INFO[id]||{code:id}).code)}</b> <span class="wr-count">${tot[id]}×</span><div class="wr-body">${escHtml((WRITING_RULE_INFO[id]||{msg:""}).msg)}</div></li>`).join("")}</ul>`
+    : `<p class="wr-trend good">🎉 Tus últimos ${recent.length} textos no tuvieron errores frecuentes.</p>`;
+  return `<div class="card wr-stats"><h3>📈 Tus errores más frecuentes</h3><p class="dash-card-sub">Según tus últimos ${recent.length} ${recent.length===1?"texto":"textos"}.</p>${body}${trend}</div>`;
 }
 
 function drawWriting(){
@@ -23718,12 +23829,13 @@ function drawWriting(){
         <button class="btn" id="writingCheck">Comprobar</button>
         <button class="btn secondary" id="writingNext" style="display:none;">Siguiente →</button>
       </div>
-    </div>`;
+    </div>
+    <div id="writingProgress">${writingProgressHTML()}</div>`;
   document.getElementById("exPanel").innerHTML = html;
   const input = document.getElementById("writingInput");
   const check = document.getElementById("writingCheck");
   const next = document.getElementById("writingNext");
-  let firstCheck = true;
+  let firstCheck = true, prevIssues = null;
   function doCheck(){
     const text = input.value.trim();
     const an = writingAnalyze(text, item, lv);
@@ -23734,6 +23846,9 @@ function drawWriting(){
       if(ok) clearErrorIfMastered(id);
       else recordError(id, "writing", lv, item.prompt, `Al menos ${item.minWords} palabras e ideas relacionadas con: ${item.keywords.slice(0,4).join(", ")}...`, "");
       registerAnswer("writing", ok);
+      writingRecord(lv, an);
+    }else if(prevIssues){
+      writingRecordFix(an, prevIssues, text);
     }
     input.disabled = true; check.disabled = true;
     const fb = document.getElementById("writingFeedback");
@@ -23749,14 +23864,18 @@ function drawWriting(){
           ].filter(Boolean).join(" "),
           tip: "Escribe frases completas y desarrolla cada idea con un detalle o ejemplo."
         }) : ""}`;
-    fb.innerHTML = head + `<div class="wr-review"><div class="wr-review-h">Revisión de tu texto</div>${writingChecklistHTML(an, item, lv, text)}</div>`;
+    fb.innerHTML = head + `<div class="wr-review"><div class="wr-review-h">Revisión de tu texto</div>${writingChecklistHTML(an, item, lv, text, prevIssues)}</div>`;
+    writingWireIssues(fb, an.issues);
     fb.insertAdjacentHTML("beforeend", `<div class="btn-row"><button class="btn secondary" id="writingFix" type="button">✏️ Corregir mi texto</button></div>`);
     document.getElementById("writingFix").onclick = ()=>{
+      prevIssues = an.issues.slice();
       firstCheck = false;
       input.disabled = false; check.disabled = false;
       fb.className = "feedback"; fb.innerHTML = "";
       input.focus();
     };
+    const prog = document.getElementById("writingProgress");
+    if(prog) prog.innerHTML = writingProgressHTML();
     next.style.display="inline-block";
   }
   check.onclick = doCheck;
