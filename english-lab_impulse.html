@@ -744,6 +744,13 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .why-btn:active{transform:scale(0.96);}
 @media(max-width:420px){.why-compare{grid-template-columns:1fr;}}
 
+.mp-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.mp-word{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:9px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.12);background:rgba(255,255,255,0.75);color:inherit;font:inherit;font-size:0.9rem;cursor:pointer;}
+.mp-word span{opacity:0.75;font-size:0.82rem;}
+.mp-word em{font-style:normal;font-size:0.82rem;opacity:0.85;}
+.mp-word:active{transform:scale(0.97);}
+@media(max-width:420px){.mp-compare{grid-template-columns:1fr;}}
+
 .reading-text{
   background:var(--bg-soft);border:1.5px solid var(--line);border-radius:14px;
   padding:18px 20px;margin-bottom:18px;font-size:0.98rem;line-height:1.65;
@@ -1032,6 +1039,7 @@ const EX_TABS = [
   {id:"readingcloze", icon:"search", label:"Lectura interactiva"},
   {id:"readingletters", icon:"keyboard", label:"Completa las letras"},
   {id:"listen", icon:"headphones", label:"Escucha"},
+  {id:"minimalpairs", icon:"link", label:"Pares mínimos"},
   {id:"dialogue", icon:"chat", label:"Diálogos"},
   {id:"translate", icon:"lightning", label:"Traducción"},
   {id:"phrasal", icon:"puzzle", label:"Phrasal Verbs"},
@@ -19129,7 +19137,7 @@ let currentLevel = "A1";
 let activeSection = "home";
 let activeExercise = "vocab";
 const stats = {};
-["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
+["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
 const current = {};
 const dailyStreak = {count:0, lastDate:null};   // racha diaria global, distinta de stats[id].streak
 const weeklyHistory = [];  // [{weekStart, exercisesDone, correct, correctRate}] — últimas 12 semanas
@@ -19506,7 +19514,30 @@ function bumpDailyActivity(id, ok){
 /* Selección con prioridad de repaso (Leitner simplificado):
    65% de las veces, si hay ítems "vencidos" (dueAt <= ahora), se elige el más urgente;
    el resto de las veces se elige un ítem cualquiera del conjunto (incluye ítems nuevos). */
+const SRS_INTERVAL_MIN = {1:6, 2:1440, 3:4320, 4:10080, 5:20160, 6:43200, 7:129600}; // minutos: 6min, 1d, 3d, 7d, 14d, 30d, 90d
+const SRS_MAX_BOX = 7;
+let SRS_TICK = 0;                 // cuenta cada pregunta pedida a srsPick, para saber "a los 3 ejercicios"
+const SRS_ITEM_CACHE = {};        // id -> ítem mostrado, para poder reinsertar un error
+const SRS_RETRY_QUEUE = [];       // errores que vuelven a aparecer a los ~3 ejercicios: {id, item, dueTick}
+const SRS_RETRY_SERVED = new Set();
+let SRS_FORCED_ID = null;         // id exacto a mostrar en la próxima pregunta (sesión de Repaso)
 function srsPick(pool, idPrefix){
+  SRS_TICK++;
+  const remember = (r)=>{ SRS_ITEM_CACHE[r.id] = r.item; LAST_PICKED_ID[idPrefix] = r.id; return r; };
+  if(SRS_FORCED_ID && SRS_FORCED_ID.startsWith(idPrefix+":")){
+    const i = parseInt(SRS_FORCED_ID.slice(idPrefix.length+1));
+    if(pool[i] !== undefined){
+      const id = SRS_FORCED_ID; SRS_FORCED_ID = null;
+      return remember({item:pool[i], id, review:true});
+    }
+  }
+  for(let k=SRS_RETRY_QUEUE.length-1;k>=0;k--) if(SRS_RETRY_QUEUE[k].dueTick + 12 < SRS_TICK) SRS_RETRY_QUEUE.splice(k,1);
+  const rIdx = SRS_RETRY_QUEUE.findIndex(r=> r.dueTick <= SRS_TICK && r.id.startsWith(idPrefix+":"));
+  if(rIdx >= 0){
+    const r = SRS_RETRY_QUEUE.splice(rIdx,1)[0];
+    SRS_RETRY_SERVED.add(r.id);
+    return remember({item:r.item, id:r.id, review:true});
+  }
   const withIds = pool.map((item,i)=>({item, id:`${idPrefix}:${i}`}));
   const now = Date.now();
   const due = withIds.filter(x=> SRS_DATA[x.id] && SRS_DATA[x.id].dueAt <= now)
@@ -19520,14 +19551,25 @@ function srsPick(pool, idPrefix){
     const pickd = candidates[Math.floor(Math.random()*candidates.length)];
     chosen = {item:pickd.item, id:pickd.id, review:false};
   }
-  LAST_PICKED_ID[idPrefix] = chosen.id;
-  return chosen;
+  return remember(chosen);
 }
 function srsUpdate(id, ok){
   const prev = SRS_DATA[id] || {box:0};
-  const box = ok ? Math.min(prev.box+1, 5) : 1;
-  const INTERVAL_MIN = {1:6, 2:1440, 3:4320, 4:10080, 5:20160}; // minutos: 6min, 1d, 3d, 7d, 14d
-  SRS_DATA[id] = {box, dueAt: Date.now() + INTERVAL_MIN[box]*60*1000, lastResult: ok};
+  const box = ok ? Math.min(prev.box+1, SRS_MAX_BOX) : 1;
+  SRS_DATA[id] = {box, dueAt: Date.now() + SRS_INTERVAL_MIN[box]*60*1000, lastResult: ok};
+  if(ok) SRS_RETRY_SERVED.delete(id); else srsQueueRetry(id);
+}
+/* Un error vuelve a aparecer a los ~3 ejercicios (una sola vez por error).
+   Las lecturas y Writing quedan fuera por ser largas, y dentro de una
+   sesión (Práctica/Repaso) la reinserción la maneja la propia sesión. */
+function srsQueueRetry(id){
+  if(typeof practiceTodaySession !== "undefined" && practiceTodaySession) return;
+  const type = id.split(":")[0];
+  if(type==="reading" || type==="writing" || type==="readingletters") return;
+  if(SRS_RETRY_SERVED.has(id)){ SRS_RETRY_SERVED.delete(id); return; }
+  const item = SRS_ITEM_CACHE[id];
+  if(item === undefined || SRS_RETRY_QUEUE.some(r=>r.id===id)) return;
+  SRS_RETRY_QUEUE.push({id, item, dueTick: SRS_TICK + 3});
 }
 function recordError(id, section, level, prompt, correct, explain){
   const idx = ERROR_BANK.findIndex(e=>e.id===id);
@@ -19564,7 +19606,15 @@ function clearErrorIfMastered(id){
 }
 
 function pickLevel(){
-  if(currentLevel === "Random") return LEVELS[Math.floor(Math.random()*LEVELS.length)];
+  if(SRS_FORCED_ID){
+    const forcedLv = SRS_FORCED_ID.split(":")[2];
+    if(LEVELS.includes(forcedLv)) return forcedLv;
+  }
+  if(currentLevel === "Random"){
+    const r = SRS_RETRY_QUEUE.find(x=> x.dueTick <= SRS_TICK+1 && LEVELS.includes(x.id.split(":")[2]));
+    if(r) return r.id.split(":")[2];
+    return LEVELS[Math.floor(Math.random()*LEVELS.length)];
+  }
   return currentLevel;
 }
 /* =========================================================
@@ -20020,7 +20070,7 @@ function renderRadarSVG(skills){
 const DAILY_ACTIVITY_CATS = [
   {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","wordclass","phrasal","order"]},
   {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics"]},
-  {label:"Listening", color:"var(--blue)", gradId:"gListening", from:"#2E9CDB", to:"#8DD0F5", ids:["listen","dialogue"]},
+  {label:"Listening", color:"var(--blue)", gradId:"gListening", from:"#2E9CDB", to:"#8DD0F5", ids:["listen","dialogue","minimalpairs"]},
   {label:"Reading", color:"var(--amber)", gradId:"gReading", from:"#F5A623", to:"#FBD38D", ids:["reading","readingcloze","readingletters"]},
   {label:"Writing", color:"var(--pink)", gradId:"gWriting", from:"#E0457A", to:"#F5A0BE", ids:["writing"]},
 ];
@@ -20121,6 +20171,17 @@ function renderHome(){
   const dailyChartData = computeDailyActivity(7);
   const activeProfileName = (getProfiles().find(p=>p.id===ACTIVE_PROFILE_ID) || {}).name || "";
   const greetName = userName || activeProfileName;
+  const review = srsReviewSummary();
+  const reviewN = review.due.length;
+  const reviewBreakdown = Object.keys(review.byType).map(t=> `${review.byType[t]} de ${(EX_TABS.find(x=>x.id===t)||{label:t}).label}`).join(" · ");
+  const reviewCard = reviewN
+    ? `<span class="dash-recommend-skill">${reviewN} por repasar</span>
+       <p class="dash-card-sub">${reviewBreakdown}. Repasar justo ahora, antes de olvidarlo, es lo que más fija la memoria.</p>
+       <button class="btn" id="reviewStartBtn" style="width:100%;">Repasar ahora (${Math.min(reviewN, REVIEW_SESSION_SIZE)}) →</button>`
+    : review.total
+      ? `<span class="dash-recommend-skill">Estás al día ✅</span>
+         <p class="dash-card-sub">No tienes nada vencido. Tu próximo repaso es ${reviewWhenText(review.nextAt)}.</p>`
+      : `<p class="dash-card-sub">Cuando practiques Vocabulario, Gramática, Escucha y más, aquí verás qué te toca repasar cada día.</p>`;
   const html = `
     <div class="landing-hero">
       ${auroraBackgroundSVG()}
@@ -20131,6 +20192,10 @@ function renderHome(){
           <button id="placementCta" class="landing-cta">🎯 ¿No sabes tu nivel? Descúbrelo en 5 minutos →</button>
         </div>
         <div class="landing-recommend-stack">
+          <div class="card dash-recommend-card landing-recommend-card">
+            <h3 class="dash-card-title">🔁 Repaso de hoy</h3>
+            ${reviewCard}
+          </div>
           <div class="card dash-recommend-card landing-recommend-card">
             <h3 class="dash-card-title">Sesión recomendada hoy</h3>
             <span class="dash-recommend-skill">${weakLabel}</span>
@@ -20201,6 +20266,8 @@ function renderHome(){
     </div>`;
   document.getElementById("panel-home").innerHTML = html;
   document.getElementById("placementCta").onclick = ()=> goTo("placement");
+  const reviewStartBtn = document.getElementById("reviewStartBtn");
+  if(reviewStartBtn) reviewStartBtn.onclick = ()=>{ practiceTodaySession = buildReviewSession(); goTo("practicehoy"); };
   document.getElementById("dashRecommendBtn").onclick = ()=>{
     activeExercise = weakId;
     goTo("exercises");
@@ -21690,8 +21757,8 @@ function renderExercise(id, forceNew){
     renderExerciseComingSoon();
     return;
   }
-  const DRAW = {vocab:drawVocab, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank};
-  const NEWQ = {vocab:newVocabQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
+  const DRAW = {vocab:drawVocab, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank};
+  const NEWQ = {vocab:newVocabQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
   if(forceNew || !current[id]) NEWQ[id]();
   else DRAW[id]();
 }
@@ -22583,14 +22650,15 @@ if(window.speechSynthesis){
   refreshVoices();
   window.speechSynthesis.onvoiceschanged = refreshVoices;
 }
-function speak(text){
+function speak(text, rate, lang){
   if(!("speechSynthesis" in window)){ alert("Tu navegador no soporta síntesis de voz."); return; }
   window.speechSynthesis.cancel();
+  const lg = lang || voiceAccent;
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = voiceAccent;
-  const voice = _voicesCache.find(v=>v.lang===voiceAccent) || _voicesCache.find(v=>v.lang && v.lang.startsWith(voiceAccent.slice(0,2)));
+  u.lang = lg;
+  const voice = _voicesCache.find(v=>v.lang===lg) || _voicesCache.find(v=>v.lang && v.lang.startsWith(lg.slice(0,2)));
   if(voice) u.voice = voice;
-  u.rate = 0.92;
+  u.rate = rate || 0.92;
   window.speechSynthesis.speak(u);
 }
 /* =========================================================
@@ -23025,6 +23093,148 @@ function drawWordClass(){
   document.getElementById("wordclassNext").onclick = newWordClassQuestion;
 }
 
+/* ---- PARES MÍNIMOS (discriminación auditiva; solo inglés) ----
+   Dos palabras que se diferencian en un solo sonido. Se reproduce una y
+   hay que elegir cuál se oyó. Los contrastes son los que más cuestan a
+   hispanohablantes. Cada par: [palabra A, IPA A, significado A, B, IPA B, significado B].
+   Usa la voz sintética del dispositivo (siempre en-US, para que coincida
+   con el IPA mostrado). Solo inglés: no está en LANG_EXERCISE_READY.pt. */
+const MINIMAL_PAIR_CONTRASTS = [
+  {id:"ih", title:"i corta /ɪ/ vs i larga /iː/",
+   tip:"La /iː/ es larga y tensa (labios estirados, como sonriendo). La /ɪ/ es corta y relajada, a medio camino entre la «i» y la «e» del español. En español solo existe una «i», por eso cuesta oír la diferencia.",
+   raw:[["ship","ʃɪp","barco","sheep","ʃiːp","oveja"],["live","lɪv","vivir","leave","liːv","irse / dejar"],["sit","sɪt","sentarse","seat","siːt","asiento"],["bit","bɪt","pedacito","beat","biːt","golpear / ganar"],["fill","fɪl","llenar","feel","fiːl","sentir"],["hit","hɪt","golpear","heat","hiːt","calor"],["chip","tʃɪp","ficha / papa frita","cheap","tʃiːp","barato"],["lip","lɪp","labio","leap","liːp","saltar"],["mill","mɪl","molino","meal","miːl","comida"],["pill","pɪl","pastilla","peel","piːl","pelar"],["grin","ɡrɪn","sonrisa amplia","green","ɡriːn","verde"]]},
+  {id:"bv", title:"b vs v",
+   tip:"En inglés la /v/ se hace apoyando los dientes de arriba sobre el labio de abajo y soplando con voz; la /b/ se hace juntando los dos labios. En español ambas suenan casi igual, por eso se confunden.",
+   raw:[["berry","ˈbɛri","baya","very","ˈvɛri","muy"],["bat","bæt","bate","vat","væt","tina"],["ban","bæn","prohibir","van","væn","camioneta"],["boat","boʊt","bote","vote","voʊt","votar"],["best","bɛst","mejor","vest","vɛst","chaleco"],["curb","kɝːb","bordillo","curve","kɝːv","curva"],["marble","ˈmɑːrbəl","canica","marvel","ˈmɑːrvəl","maravilla"],["dub","dʌb","doblar","dove","dʌv","paloma"],["bale","beɪl","fardo","veil","veɪl","velo"]]},
+  {id:"thv", title:"th sonora /ð/ vs d",
+   tip:"La /ð/ se hace con la punta de la lengua entre los dientes y la voz encendida. La /d/ inglesa toca detrás de los dientes de arriba, sin sacar la lengua.",
+   raw:[["then","ðɛn","entonces","den","dɛn","guarida"],["they","ðeɪ","ellos","day","deɪ","día"],["those","ðoʊz","esos","doze","doʊz","dormitar"],["though","ðoʊ","aunque","dough","doʊ","masa"],["breathe","briːð","respirar","breed","briːd","criar"]]},
+  {id:"thu", title:"th sorda /θ/ vs s / t",
+   tip:"La /θ/ se hace con la punta de la lengua entre los dientes, soplando suave y sin voz. No es una /s/ (lengua detrás de los dientes) ni una /t/ (golpe de lengua).",
+   raw:[["think","θɪŋk","pensar","sink","sɪŋk","hundir"],["thin","θɪn","delgado","sin","sɪn","pecado"],["three","θriː","tres","tree","triː","árbol"],["thank","θæŋk","agradecer","tank","tæŋk","tanque"],["mouth","maʊθ","boca","mouse","maʊs","ratón"],["thought","θɔːt","pensó","taught","tɔːt","enseñó"],["path","pæθ","sendero","pass","pæs","pasar"]]},
+  {id:"shch", title:"sh /ʃ/ vs ch /tʃ/",
+   tip:"La /ʃ/ es un soplido continuo, como pedir silencio: «shhh». La /tʃ/ empieza con un golpe corto de lengua, como la «ch» del español.",
+   raw:[["wash","wɑːʃ","lavar","watch","wɑːtʃ","mirar / reloj"],["share","ʃɛr","compartir","chair","tʃɛr","silla"],["cash","kæʃ","efectivo","catch","kætʃ","atrapar"],["mash","mæʃ","machacar","match","mætʃ","fósforo / partido"],["shin","ʃɪn","espinilla","chin","tʃɪn","barbilla"],["shop","ʃɑːp","tienda","chop","tʃɑːp","cortar"]]},
+  {id:"vow", title:"vocales /æ/ /ɛ/ /ʌ/",
+   tip:"El español no tiene /æ/ ni /ʌ/. La /æ/ abre la boca más que la «a» (entre «a» y «e»); la /ɛ/ es la «e» normal; la /ʌ/ es corta y relajada, entre «a» y «o».",
+   raw:[["bad","bæd","malo","bed","bɛd","cama"],["man","mæn","hombre","men","mɛn","hombres"],["pan","pæn","sartén","pen","pɛn","bolígrafo"],["cap","kæp","gorra","cup","kʌp","taza"],["hat","hæt","sombrero","hut","hʌt","cabaña"],["cat","kæt","gato","cut","kʌt","cortar"],["lack","læk","falta","luck","lʌk","suerte"],["ran","ræn","corrió","run","rʌn","correr"]]},
+  {id:"sz", title:"s /s/ vs z /z/",
+   tip:"En /z/ vibra la garganta (toca tu cuello mientras lo dices y lo sentirás); en /s/ no vibra. El español casi no usa /z/, por eso se pierde la diferencia.",
+   raw:[["price","praɪs","precio","prize","praɪz","premio"],["ice","aɪs","hielo","eyes","aɪz","ojos"],["peace","piːs","paz","peas","piːz","arvejas"],["rice","raɪs","arroz","rise","raɪz","subir"],["bus","bʌs","autobús","buzz","bʌz","zumbido"],["loose","luːs","suelto","lose","luːz","perder"],["face","feɪs","cara","phase","feɪz","fase"]]},
+  {id:"jy", title:"j /dʒ/ vs y /j/",
+   tip:"La /dʒ/ empieza con un golpe de lengua y lleva voz, como una «ch» sonora. La /j/ es la «y» suave de «yo», sin golpe inicial.",
+   raw:[["jet","dʒɛt","avión a reacción","yet","jɛt","todavía"],["jam","dʒæm","mermelada","yam","jæm","ñame / camote"],["joke","dʒoʊk","chiste","yolk","joʊk","yema"],["jeer","dʒɪr","abuchear","year","jɪr","año"]]},
+].map(c=>({...c, pairs:c.raw.map(r=>({a:r[0], aIpa:r[1], aEs:r[2], b:r[3], bIpa:r[4], bEs:r[5]}))}));
+let minimalPairFilter = "all";
+function pickMinimalPairContrast(){
+  if(minimalPairFilter !== "all"){
+    const c = MINIMAL_PAIR_CONTRASTS.find(x=>x.id===minimalPairFilter);
+    if(c) return c;
+  }
+  const retry = SRS_RETRY_QUEUE.find(r=> r.dueTick <= SRS_TICK+1 && r.id.startsWith("minimalpairs:en:"));
+  if(retry){
+    const rc = MINIMAL_PAIR_CONTRASTS.find(x=> retry.id.startsWith(`minimalpairs:en:${x.id}:`));
+    if(rc) return rc;
+  }
+  const now = Date.now();
+  const dueContrasts = MINIMAL_PAIR_CONTRASTS.filter(c=> c.pairs.some((_,i)=>{
+    const e = SRS_DATA[`minimalpairs:en:${c.id}:${i}`];
+    return e && e.dueAt <= now;
+  }));
+  if(dueContrasts.length && Math.random() < 0.65) return pick(dueContrasts);
+  return pick(MINIMAL_PAIR_CONTRASTS);
+}
+function newMinimalPairQuestion(){
+  const c = pickMinimalPairContrast();
+  const {item, id, review} = srsPick(c.pairs, `minimalpairs:en:${c.id}`);
+  const target = Math.random() < 0.5 ? "a" : "b";
+  const slow = current.minimalpairs ? !!current.minimalpairs.slow : false;
+  current.minimalpairs = {c, item, id, review, target, slow, opts: shuffle([item.a, item.b])};
+  drawMinimalPair();
+}
+function minimalPairCompareHtml(item){
+  const btn = (w, ipa, es)=> `<button type="button" class="mp-word" data-mp-say="${escHtml(w)}">🔊 <b>${escHtml(w)}</b> <span>/${escHtml(ipa)}/</span><em>${escHtml(es)}</em></button>`;
+  return `<div class="mp-compare">${btn(item.a, item.aIpa, item.aEs)}${btn(item.b, item.bIpa, item.bEs)}</div>`;
+}
+document.addEventListener("click", (e)=>{
+  const w = e.target.closest("[data-mp-say]");
+  if(w) speak(w.dataset.mpSay, 0.75, "en-US");
+});
+function drawMinimalPair(){
+  const {c, item, id, review, target, slow, opts} = current.minimalpairs;
+  const word = item[target];
+  const html = `
+    <div class="card">
+      ${scoreRowHtml("minimalpairs")}
+      <div class="q-top">
+        <span class="badge-level">PM</span>
+        <div class="q-text">Escucha y elige la palabra que oyes</div>
+        ${reviewBadge(review)}
+      </div>
+      <div class="listen-box">
+        <button class="speak-btn" id="mpPlay" type="button" aria-label="Reproducir palabra">🔊</button>
+        <span class="speak-hint">Puedes escucharla varias veces</span>
+        <div style="display:flex;gap:6px;margin-left:auto;">
+          <button class="accent-btn ${slow?"active":""}" id="mpSlow" type="button" aria-pressed="${slow}">🐢 Lento</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin:0 0 14px;flex-wrap:wrap;">
+        <label for="mpFilter" style="font-size:0.82rem;color:var(--ink-soft);font-weight:700;">Contraste:</label>
+        <select id="mpFilter" class="text-input" style="width:auto;max-width:100%;padding:6px 10px;font-size:0.85rem;">
+          <option value="all">Todos</option>
+          ${MINIMAL_PAIR_CONTRASTS.map(x=>`<option value="${x.id}" ${x.id===minimalPairFilter?"selected":""}>${x.title}</option>`).join("")}
+        </select>
+      </div>
+      <div class="options" id="mpOpts">
+        ${opts.map(o=>`<button class="opt-btn" data-val="${escHtml(o)}">${escHtml(o)}</button>`).join("")}
+      </div>
+      <p style="font-size:0.78rem;color:var(--ink-soft);margin:12px 0 0;">La voz depende de tu dispositivo. Si dos palabras te suenan igual, prueba 🐢 Lento o repite la palabra.</p>
+      <div class="feedback" id="mpFeedback"></div>
+      <div class="btn-row"><button class="btn" id="mpNext" style="display:none;">Siguiente →</button></div>
+    </div>`;
+  document.getElementById("exPanel").innerHTML = html;
+  const play = ()=> speak(word, current.minimalpairs.slow ? 0.55 : 0.85, "en-US");
+  document.getElementById("mpPlay").onclick = play;
+  document.getElementById("mpSlow").onclick = (e)=>{
+    current.minimalpairs.slow = !current.minimalpairs.slow;
+    e.currentTarget.classList.toggle("active", current.minimalpairs.slow);
+    e.currentTarget.setAttribute("aria-pressed", String(current.minimalpairs.slow));
+    play();
+  };
+  document.getElementById("mpFilter").onchange = (e)=>{
+    minimalPairFilter = e.target.value;
+    newMinimalPairQuestion();
+  };
+  const opts_el = document.querySelectorAll("#mpOpts .opt-btn");
+  opts_el.forEach(b=>{
+    b.onclick = ()=>{
+      opts_el.forEach(o=>o.disabled=true);
+      const chosen = b.dataset.val;
+      const ok = chosen === word;
+      const correctBtn = [...opts_el].find(o=>o.dataset.val===word);
+      if(ok){ b.classList.add("correct"); popHighlight(correctBtn, "#22C55E"); }
+      else { b.classList.add("wrong","shake"); correctBtn.classList.add("correct"); }
+      srsUpdate(id, ok);
+      if(ok) clearErrorIfMastered(id);
+      else recordError(id, "minimalpairs", "PM", `Pares mínimos: ¿"${item.a}" o "${item.b}"? (escucha)`, word, c.tip);
+      registerAnswer("minimalpairs", ok);
+      const fb = document.getElementById("mpFeedback");
+      fb.className = "feedback show " + (ok?"ok":"bad");
+      const compare = minimalPairCompareHtml(item);
+      fb.innerHTML = ok
+        ? `<strong>¡Correcto! 🎉</strong>Oíste <b>${escHtml(word)}</b>. Toca cada palabra para compararlas:${compare}`
+        : `<strong>Casi 😉</strong>${whyFailedHTML({
+            yours: chosen, correct: word,
+            why: `Oíste <b>${escHtml(word)}</b> y elegiste <b>${escHtml(chosen)}</b>. Las dos palabras solo cambian en un sonido: ${escHtml(c.title)}.`,
+            tip: escHtml(c.tip)
+          })}Toca cada palabra para compararlas:${compare}`;
+      document.getElementById("mpNext").style.display = "inline-block";
+    };
+  });
+  document.getElementById("mpNext").onclick = newMinimalPairQuestion;
+  setTimeout(play, 300);
+}
+
 /* =========================================================
    PRÁCTICA DE HOY (sesión orquestada de 10 ejercicios variados)
    Reutiliza los new*Question() originales de los 8 tipos "rápidos"
@@ -23058,16 +23268,73 @@ function buildPracticeTodaySession(){
     }
   });
   const boostCount = weakId ? (Math.random()<0.5 ? 2 : 3) : 0;
-  const queue = [];
-  for(let i=0;i<boostCount;i++) queue.push(weakId);
-  while(queue.length < N) queue.push(pick(pool));
-  return {queue: shuffle(queue), index:0, answered:0, correct:0, byType:{}, weakId};
+  const types = [];
+  for(let i=0;i<boostCount;i++) types.push(weakId);
+  while(types.length < N) types.push(pick(pool));
+  return {mode:"today", queue: shuffle(types).map(type=>({type})), index:0, answered:0, correct:0, byType:{}, weakId, retries:0, retried:new Set()};
+}
+/* ---- REPASO DE HOY: solo lo que la repetición espaciada dice que toca ya ---- */
+const REVIEW_SESSION_SIZE = 10;
+function srsPoolFor(type, p){
+  const L = LANG_PACKS[currentLang];
+  switch(type){
+    case "vocab":     return (L.VOCAB||{})[p[2]];
+    case "gapfill":   return (L.GRAMMAR||{})[p[2]];
+    case "order":     return (L.ORDER||{})[p[2]];
+    case "listen":    return (L.LISTEN||{})[p[2]];
+    case "translate": return (L.TRANSLATE||{})[p[2]];
+    case "phrasal":   return ALL_PHRASAL;
+    case "verbforms": return currentLang==="pt" ? VERB_FORM_POOL_PT : VERB_FORM_POOL;
+    case "wordclass": return currentLang==="pt" ? CATEGORY_PRACTICE_PT : CATEGORY_PRACTICE;
+  }
+  return null;
+}
+/* Ítems con repaso programado del idioma actual, solo de los 8 tipos
+   cortos y solo si el ítem sigue existiendo en su banco de preguntas. */
+function srsReviewEntries(){
+  const out = [];
+  Object.keys(SRS_DATA).forEach(id=>{
+    const p = id.split(":"), type = p[0];
+    if(!PRACTICE_TODAY_TYPES.includes(type) || !isExerciseReadyForLang(type, currentLang)) return;
+    if(type!=="phrasal" && p[1]!==currentLang) return;
+    const pool = srsPoolFor(type, p);
+    if(!pool || pool[parseInt(p[p.length-1])] === undefined) return;
+    out.push({id, type, box:SRS_DATA[id].box, dueAt:SRS_DATA[id].dueAt});
+  });
+  return out;
+}
+function srsReviewSummary(){
+  const now = Date.now(), all = srsReviewEntries();
+  const due = all.filter(e=>e.dueAt<=now).sort((a,b)=> (a.box-b.box) || (a.dueAt-b.dueAt));
+  const upcoming = all.filter(e=>e.dueAt>now).sort((a,b)=>a.dueAt-b.dueAt);
+  const byType = {};
+  due.forEach(e=>{ byType[e.type] = (byType[e.type]||0)+1; });
+  return {due, byType, total:all.length, nextAt: upcoming.length ? upcoming[0].dueAt : null};
+}
+function buildReviewSession(){
+  const {due} = srsReviewSummary();
+  const queue = due.slice(0, REVIEW_SESSION_SIZE).map(e=>({type:e.type, forcedId:e.id}));
+  return {mode:"review", queue, index:0, answered:0, correct:0, byType:{}, retries:0, retried:new Set()};
+}
+function reviewWhenText(ts){
+  const mins = Math.max(1, Math.round((ts-Date.now())/60000));
+  if(mins < 60) return `en ${mins} min`;
+  const hours = Math.round(mins/60);
+  if(hours < 24) return `en ${hours} h`;
+  if(hours < 48) return "mañana";
+  return `en ${Math.round(hours/24)} días`;
+}
+function practiceTodayLabels(s){
+  return s.mode==="review"
+    ? {eyebrow:"🔁 Repaso de hoy", exit:"← Salir del repaso", done:"¡Repaso completado! 🎉"}
+    : {eyebrow:"🎯 Práctica de hoy", exit:"← Salir de Práctica de hoy", done:"¡Práctica de hoy completada! 🎉"};
 }
 function renderPracticeHoy(){
   if(!practiceTodaySession) practiceTodaySession = buildPracticeTodaySession();
   const s = practiceTodaySession;
   if(s.index >= s.queue.length){ renderPracticeHoyComplete(); return; }
-  const type = s.queue[s.index];
+  const entry = s.queue[s.index];
+  const labels = practiceTodayLabels(s);
   const panel = document.getElementById("panel-practicehoy");
   /* Tanto #exPanel como la barra de progreso son nodos persistentes que se
      reutilizan paso a paso (en vez de recrearse en el innerHTML de abajo):
@@ -23082,8 +23349,8 @@ function renderPracticeHoy(){
   if(progressBar && progressBar.parentElement === panel) panel.removeChild(progressBar);
   panel.innerHTML = `
     <div class="section-head">
-      <button class="theory-back" id="practiceHoyExitBtn">← Salir de Práctica de hoy</button>
-      <div class="eyebrow">🎯 Práctica de hoy</div>
+      <button class="theory-back" id="practiceHoyExitBtn">${labels.exit}</button>
+      <div class="eyebrow">${labels.eyebrow}</div>
     </div>
   `;
   if(!progressBar){
@@ -23091,12 +23358,13 @@ function renderPracticeHoy(){
     progressBar.className = "practice-hoy-progress";
     progressBar.id = "practiceHoyProgress";
     progressBar.setAttribute("role", "img");
-    for(let i=0;i<s.queue.length;i++){
-      const seg = document.createElement("span");
-      seg.className = "practice-hoy-seg";
-      progressBar.appendChild(seg);
-    }
   }
+  while(progressBar.children.length < s.queue.length){
+    const seg = document.createElement("span");
+    seg.className = "practice-hoy-seg";
+    progressBar.appendChild(seg);
+  }
+  while(progressBar.children.length > s.queue.length) progressBar.removeChild(progressBar.lastChild);
   panel.querySelector(".section-head").after(progressBar);
   progressBar.querySelectorAll(".practice-hoy-seg").forEach((seg,i)=>{
     seg.classList.toggle("done", i < s.index);
@@ -23109,10 +23377,11 @@ function renderPracticeHoy(){
   }
   panel.appendChild(exPanel);
   document.getElementById("practiceHoyExitBtn").onclick = ()=> goTo("home");
-  practiceTodayLoadStep(type);
+  practiceTodayLoadStep(entry);
   window.scrollTo({top:0, behavior:"smooth"});
 }
-function practiceTodayLoadStep(type){
+function practiceTodayLoadStep(entry){
+  const type = entry.type;
   practiceTodayRestorePatch();
   /* El swap tiene que pasar ANTES de renderizar: cada draw<Tipo>() hace
      `next.onclick = new<Tipo>Question` de forma síncrona durante el propio
@@ -23121,7 +23390,9 @@ function practiceTodayLoadStep(type){
      quedó apuntando a la función original y el swap no tiene efecto. */
   window[PRACTICE_TODAY_FN_NAMES[type]] = practiceTodayAdvance;
   _practiceTodayPatchedType = type;
+  SRS_FORCED_ID = entry.forcedId || null;
   PRACTICE_TODAY_ORIGINALS[type]();
+  SRS_FORCED_ID = null;
 }
 function practiceTodayRestorePatch(){
   if(_practiceTodayPatchedType){
@@ -23151,10 +23422,12 @@ function renderPracticeHoyComplete(){
     const b = s.byType[id];
     return `<tr><td>${label}</td><td>${b.correct}/${b.total}</td></tr>`;
   }).join("");
+  const labels = practiceTodayLabels(s);
+  const moreDue = s.mode==="review" ? srsReviewSummary().due.length : 0;
   const html = `
     <div class="section-head" style="text-align:center;">
       <div style="width:88px;margin:0 auto 12px;">${mascotSVG("cheer",88)}</div>
-      <h2>¡Práctica de hoy completada! 🎉</h2>
+      <h2>${labels.done}</h2>
       <p class="dash-card-sub">${s.correct}/${s.answered} respuestas correctas</p>
     </div>
     <div class="card" style="max-width:420px;margin:0 auto 22px;overflow:auto;">
@@ -23163,22 +23436,34 @@ function renderPracticeHoyComplete(){
         <tbody>${rows}</tbody>
       </table>
     </div>
-    <button class="btn" id="practiceHoyDoneBtn" style="display:block;margin:0 auto;">Volver a Inicio →</button>
+    ${moreDue ? `<button class="btn" id="practiceHoyMoreBtn" style="display:block;margin:0 auto 12px;">Repasar ${Math.min(moreDue, REVIEW_SESSION_SIZE)} más →</button>` : ""}
+    <button class="btn ${moreDue?"secondary":""}" id="practiceHoyDoneBtn" style="display:block;margin:0 auto;">Volver a Inicio →</button>
   `;
   document.getElementById("panel-practicehoy").innerHTML = html;
   fireConfetti();
   document.getElementById("practiceHoyDoneBtn").onclick = ()=>{ practiceTodaySession = null; goTo("home"); };
+  const moreBtn = document.getElementById("practiceHoyMoreBtn");
+  if(moreBtn) moreBtn.onclick = ()=>{ practiceTodaySession = buildReviewSession(); renderPracticeHoy(); };
   window.scrollTo({top:0, behavior:"smooth"});
 }
 const _practiceTodayOrigRegisterAnswer = registerAnswer;
 registerAnswer = function(id, ok){
   _practiceTodayOrigRegisterAnswer(id, ok);
-  if(practiceTodaySession){
-    practiceTodaySession.answered++;
-    if(ok) practiceTodaySession.correct++;
-    if(!practiceTodaySession.byType[id]) practiceTodaySession.byType[id] = {correct:0, total:0};
-    practiceTodaySession.byType[id].total++;
-    if(ok) practiceTodaySession.byType[id].correct++;
+  const s = practiceTodaySession;
+  if(s){
+    s.answered++;
+    if(ok) s.correct++;
+    if(!s.byType[id]) s.byType[id] = {correct:0, total:0};
+    s.byType[id].total++;
+    if(ok) s.byType[id].correct++;
+    /* Un error vuelve a aparecer dos ejercicios más adelante (máx. una
+       vez por ítem y 3 veces por sesión, para que no se haga interminable). */
+    const failedId = !ok && current[id] && current[id].id;
+    if(failedId && PRACTICE_TODAY_TYPES.includes(id) && s.retries < 3 && !s.retried.has(failedId)){
+      s.retried.add(failedId);
+      s.retries++;
+      s.queue.splice(Math.min(s.index+3, s.queue.length), 0, {type:id, forcedId:failedId});
+    }
   }
 };
 
