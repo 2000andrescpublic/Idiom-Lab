@@ -766,6 +766,20 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .e2p-exc .wr-body,.e2p-warn .wr-body{color:inherit;opacity:.85;}
 .e2p-rule:last-child{margin-bottom:16px;}
 .e2p-tip{margin-bottom:0;}
+.wr-progress-bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin:8px 0 10px;}
+.wr-progress-bar span{display:block;height:100%;background:var(--grad-teal);}
+.listen-modes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.listen-opts{margin:0 0 12px;font-size:0.85rem;color:var(--ink-soft);}
+.listen-opts summary{cursor:pointer;font-weight:700;}
+.listen-opt{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.cloze-line{font-size:1.15rem;line-height:2.4;margin:6px 0 14px;}
+.cloze-inp{display:inline-block;width:auto;min-width:4.5em;padding:4px 8px;margin:0 2px;text-align:center;}
+.cloze-ok{border-color:var(--teal)!important;background:#E3FBEA!important;color:#14532D!important;}
+.cloze-typo{border-color:#F5C26B!important;background:#FFF3C9!important;color:#5B4300!important;}
+.cloze-bad{border-color:var(--pink)!important;background:#FCE6ED!important;color:#7A1338!important;}
+.listen-after{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);}
+.listen-after-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;}
+.listen-shadow{display:inline-flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:700;}
 .wr-review{margin-top:14px;text-align:left;}
 .wr-review-h{font-weight:800;font-size:0.95rem;margin-bottom:8px;}
 .wr-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
@@ -20698,6 +20712,31 @@ const DIALOGUES_EXTRA = {
 });
 
 
+/* =========================================================
+   ESCUCHA: 12 frases nuevas por nivel (42 en total), traducciones, "Habla real" y textos de comprensión (inglés)
+   ========================================================= */
+const LISTEN_EXTRA2 = {
+  A1:["I can swim.","Where do you live?","The sun is hot.","My mother cooks dinner.","Do you like music?","It is my birthday today.","We play football on Sunday.","Please sit down.","How many apples do you have?","She is not at school.","I want a glass of water.","The bus is late."],
+  A2:["I have two brothers and one sister.","The film starts at seven thirty.","Can I have some water, please?","She is not going to come tonight.","We are having lunch at the moment.","I have to get up early tomorrow.","Which is your favourite season?","He didn't like the food at all.","My phone is on the kitchen table.","There isn't much milk left.","They are the best players in the team.","Shall we go for a walk after dinner?"],
+  B1:["I haven't seen her since last year.","What would you do if you won the lottery?","The meeting has been cancelled.","She told me she was leaving the next day.","I'm not used to this kind of weather.","He asked me where I had bought my shoes.","Whoever finishes first can go home.","We must have taken the wrong road.","I would rather stay at home tonight.","They have been studying English for two years.","It was so cold that we stayed inside.","Could you turn the music down a little?"],
+  B2:["Had it not been for your help, I would have failed.","She is said to have moved abroad.","I'd rather you didn't mention it to anyone.","The house is being renovated at the moment.","They asked whether the flight had been delayed.","It's no use complaining about it now.","The more he thought about it, the less he liked it.","We could have avoided the problem if we had planned ahead.","He can't have finished already; he only started an hour ago.","Despite feeling exhausted, she carried on working.","I'm looking for someone who can fix my laptop.","By the end of the week, we will have finished the project."],
+  C1:["Seldom does she miss an opportunity to learn something new.","What I need is a long holiday.","The findings, though preliminary, are encouraging.","Were I in your position, I would think twice.","It is essential that everyone arrive on time.","The film, which I saw last week, left a lasting impression.","Only after the meeting did I realize my mistake.","He is believed to be living somewhere abroad.","Whatever you decide, I will support you.","Having been warned twice, he had no excuse.","The more complex the task, the more time it requires.","I would have called you had I had your number."],
+  C2:["The initiative, albeit well-intentioned, was doomed from the outset.","Hardly had the speech begun when the audience started to leave.","His reticence to speak publicly is hardly surprising.","The findings lend credence to the long-standing hypothesis.","Not until the final chapter does the plot come together.","The tenant is required to give a month's notice.","That the policy was ill-conceived is beyond dispute.","Rather than resign, he opted to fight the decision.","The sheer scale of the operation defies comprehension.","Little was known about the disease at the time.","She has a knack for defusing tense situations.","Suffice it to say that the outcome was disappointing."],
+};
+Object.keys(LISTEN_EXTRA2).forEach(lv=> LISTEN_EXTRA2[lv].forEach(s=> LISTEN[lv].push(s)));
+const LISTEN_ES = {};
+const LISTEN_ES_RAW = {
+  A1:[["I have a dog.","Tengo un perro."],["She is my sister.","Ella es mi hermana."],["We are happy.","Estamos felices."],["He is my brother.","Él es mi hermano."],["They have a cat.","Ellos tienen un gato."],["I am happy today.","Hoy estoy feliz."],["She has two children.","Ella tiene dos hijos."],["We live in a small house.","Vivimos en una casa pequeña."],["My name is Anna.","Me llamo Anna."],["This is my book.","Este es mi libro."],["He likes pizza.","A él le gusta la pizza."],["I am a student.","Soy estudiante."],["I get up at seven o'clock.","Me levanto a las siete."],["She works in a school.","Ella trabaja en una escuela."],["Where is the bathroom?","¿Dónde está el baño?"],["We have breakfast at eight.","Desayunamos a las ocho."],["He does not like coffee.","A él no le gusta el café."],["My father is a doctor.","Mi padre es médico."],["Can you help me, please?","¿Puedes ayudarme, por favor?"],["The cat is under the table.","El gato está debajo de la mesa."],["They are my friends.","Ellos son mis amigos."],["I do not speak French.","No hablo francés."],["What time is it?","¿Qué hora es?"],["Our house has three rooms.","Nuestra casa tiene tres habitaciones."],["She drinks water every day.","Ella bebe agua todos los días."],["Open the door, please.","Abre la puerta, por favor."],["I like red apples.","Me gustan las manzanas rojas."],["There is a park near my house.","Hay un parque cerca de mi casa."],["How old are you?","¿Cuántos años tienes?"],["He goes to work by bus.","Él va al trabajo en autobús."],["I can swim.","Sé nadar."],["Where do you live?","¿Dónde vives?"],["The sun is hot.","El sol está caliente."],["My mother cooks dinner.","Mi madre prepara la cena."],["Do you like music?","¿Te gusta la música?"],["It is my birthday today.","Hoy es mi cumpleaños."],["We play football on Sunday.","Jugamos fútbol el domingo."],["Please sit down.","Siéntate, por favor."],["How many apples do you have?","¿Cuántas manzanas tienes?"],["She is not at school.","Ella no está en la escuela."],["I want a glass of water.","Quiero un vaso de agua."],["The bus is late.","El autobús está retrasado."]],
+  A2:[["I visited my grandma last weekend.","Visité a mi abuela el fin de semana pasado."],["It is raining outside.","Está lloviendo afuera."],["This book is more interesting.","Este libro es más interesante."],["We went to the beach last summer.","Fuimos a la playa el verano pasado."],["She was tired after work.","Ella estaba cansada después del trabajo."],["I am going to visit my friend.","Voy a visitar a mi amigo."],["He can't swim very well.","Él no sabe nadar muy bien."],["Did you finish your homework?","¿Terminaste tu tarea?"],["My brother is taller than me.","Mi hermano es más alto que yo."],["They didn't go to the party.","Ellos no fueron a la fiesta."],["How much does this cost?","¿Cuánto cuesta esto?"],["We were watching TV when you called.","Estábamos viendo la tele cuando llamaste."],["I was at home last night.","Anoche estuve en casa."],["She is watching TV in the living room.","Ella está viendo la tele en la sala."],["We are going to travel next month.","Vamos a viajar el próximo mes."],["Did she call you last night?","¿Ella te llamó anoche?"],["He can play the guitar very well.","Él toca muy bien la guitarra."],["There are not any eggs in the fridge.","No hay huevos en el refrigerador."],["I would like a cup of tea, please.","Quisiera una taza de té, por favor."],["This bag is cheaper than that one.","Esta bolsa es más barata que aquella."],["They went to the beach yesterday.","Ayer fueron a la playa."],["Do you have to work on Saturday?","¿Tienes que trabajar el sábado?"],["The train leaves at half past nine.","El tren sale a las nueve y media."],["She always drinks coffee in the morning.","Ella siempre toma café por la mañana."],["I bought a new jacket last week.","La semana pasada compré una chaqueta nueva."],["How much does this shirt cost?","¿Cuánto cuesta esta camisa?"],["We do not have enough time.","No tenemos suficiente tiempo."],["It is too cold to swim today.","Hoy hace demasiado frío para nadar."],["He drove slowly because of the rain.","Manejó despacio por la lluvia."],["Turn left at the corner and walk straight.","Gira a la izquierda en la esquina y sigue derecho."],["I have two brothers and one sister.","Tengo dos hermanos y una hermana."],["The film starts at seven thirty.","La película empieza a las siete y media."],["Can I have some water, please?","¿Me das un poco de agua, por favor?"],["She is not going to come tonight.","Ella no va a venir esta noche."],["We are having lunch at the moment.","Ahora estamos almorzando."],["I have to get up early tomorrow.","Tengo que levantarme temprano mañana."],["Which is your favourite season?","¿Cuál es tu estación favorita?"],["He didn't like the food at all.","A él no le gustó nada la comida."],["My phone is on the kitchen table.","Mi teléfono está en la mesa de la cocina."],["There isn't much milk left.","No queda mucha leche."],["They are the best players in the team.","Ellos son los mejores jugadores del equipo."],["Shall we go for a walk after dinner?","¿Vamos a caminar después de la cena?"]],
+  B1:[["I have never been to Paris.","Nunca he estado en París."],["You should drink more water.","Deberías beber más agua."],["If it rains, I will stay home.","Si llueve, me quedaré en casa."],["I have already finished my homework.","Ya terminé mi tarea."],["You must wear a seatbelt.","Debes usar el cinturón de seguridad."],["She enjoys reading mystery novels.","Ella disfruta leer novelas de misterio."],["I decided to study medicine.","Decidí estudiar medicina."],["This is the man who helped me.","Este es el hombre que me ayudó."],["I think it will rain tomorrow.","Creo que lloverá mañana."],["We are going to travel next month.","Vamos a viajar el próximo mes."],["He used to play soccer every day.","Él jugaba fútbol todos los días."],["If I have time, I will help you.","Si tengo tiempo, te ayudaré."],["I have lived in this city for five years.","He vivido en esta ciudad durante cinco años."],["If it rains tomorrow, we will stay at home.","Si llueve mañana, nos quedaremos en casa."],["She has never been to Japan.","Ella nunca ha estado en Japón."],["You should see a doctor about that cough.","Deberías ir al médico por esa tos."],["The man who lives next door is a pilot.","El hombre que vive al lado es piloto."],["Could you tell me where the station is?","¿Podría decirme dónde está la estación?"],["I used to play football when I was a child.","Yo jugaba fútbol cuando era niño."],["He said that he would call me later.","Dijo que me llamaría más tarde."],["We have been waiting for over an hour.","Llevamos esperando más de una hora."],["Although it was late, they kept working.","Aunque era tarde, siguieron trabajando."],["I am looking forward to seeing you again.","Tengo ganas de volver a verte."],["She asked me if I wanted some help.","Me preguntó si quería ayuda."],["By the time we arrived, the film had started.","Cuando llegamos, la película ya había empezado."],["This is the best restaurant I have ever visited.","Este es el mejor restaurante que he visitado."],["He is interested in learning Italian.","Él está interesado en aprender italiano."],["You do not have to pay; it is free.","No tienes que pagar; es gratis."],["The report has to be finished by Friday.","El informe tiene que estar terminado para el viernes."],["I will call you as soon as I get home.","Te llamaré en cuanto llegue a casa."],["I haven't seen her since last year.","No la veo desde el año pasado."],["What would you do if you won the lottery?","¿Qué harías si ganaras la lotería?"],["The meeting has been cancelled.","La reunión ha sido cancelada."],["She told me she was leaving the next day.","Me dijo que se iba al día siguiente."],["I'm not used to this kind of weather.","No estoy acostumbrado a este tipo de clima."],["He asked me where I had bought my shoes.","Me preguntó dónde había comprado mis zapatos."],["Whoever finishes first can go home.","Quien termine primero puede irse a casa."],["We must have taken the wrong road.","Debimos de haber tomado el camino equivocado."],["I would rather stay at home tonight.","Prefiero quedarme en casa esta noche."],["They have been studying English for two years.","Llevan dos años estudiando inglés."],["It was so cold that we stayed inside.","Hacía tanto frío que nos quedamos dentro."],["Could you turn the music down a little?","¿Podrías bajar un poco la música?"]],
+  B2:[["The letter was written by her.","La carta fue escrita por ella."],["If I were you, I would apologize.","Yo en tu lugar me disculparía."],["She said she was tired.","Dijo que estaba cansada."],["English is spoken in many countries.","El inglés se habla en muchos países."],["He told me he would be busy.","Me dijo que estaría ocupado."],["She must have forgotten our appointment.","Debe de haberse olvidado de nuestra cita."],["When I was a child, I used to play outside.","Cuando era niño, solía jugar afuera."],["If they had left earlier, they wouldn't have missed the train.","Si hubieran salido antes, no habrían perdido el tren."],["I didn't realize how late it was.","No me di cuenta de lo tarde que era."],["If he studied harder, he would pass the exam.","Si estudiara más, aprobaría el examen."],["She can't have known about the surprise.","No puede haber sabido de la sorpresa."],["The report was written by the team last month.","El informe fue escrito por el equipo el mes pasado."],["If I had more time, I would learn another language.","Si tuviera más tiempo, aprendería otro idioma."],["The new bridge was built in only two years.","El puente nuevo se construyó en solo dos años."],["She must have forgotten about our meeting.","Debe de haberse olvidado de nuestra reunión."],["I wish I had studied harder at school.","Ojalá hubiera estudiado más en la escuela."],["He told me that he had already seen the film.","Me dijo que ya había visto la película."],["Unless you hurry, you will miss the last train.","A menos que te apures, perderás el último tren."],["They had been arguing for hours before they made a decision.","Llevaban horas discutiendo antes de tomar una decisión."],["You should have told me the truth from the start.","Deberías haberme dicho la verdad desde el principio."],["I am not used to getting up so early.","No estoy acostumbrado a levantarme tan temprano."],["Neither of my parents speaks a foreign language.","Ninguno de mis padres habla un idioma extranjero."],["By this time next year, I will have graduated.","Para esta época el próximo año, ya me habré graduado."],["The company is planning to open three new offices.","La empresa planea abrir tres oficinas nuevas."],["In spite of the traffic, we arrived on time.","A pesar del tráfico, llegamos a tiempo."],["She suggested that we take a different route.","Sugirió que tomáramos una ruta diferente."],["The more you practice, the easier it becomes.","Cuanto más practicas, más fácil se vuelve."],["I would rather stay in tonight than go out.","Prefiero quedarme en casa esta noche que salir."],["It depends on how much time we have.","Depende de cuánto tiempo tengamos."],["He apologized for being late to the meeting.","Se disculpó por llegar tarde a la reunión."],["Had it not been for your help, I would have failed.","Sin tu ayuda, habría fracasado."],["She is said to have moved abroad.","Se dice que se mudó al extranjero."],["I'd rather you didn't mention it to anyone.","Prefiero que no se lo menciones a nadie."],["The house is being renovated at the moment.","La casa se está renovando en este momento."],["They asked whether the flight had been delayed.","Preguntaron si el vuelo se había retrasado."],["It's no use complaining about it now.","No sirve de nada quejarse ahora."],["The more he thought about it, the less he liked it.","Cuanto más lo pensaba, menos le gustaba."],["We could have avoided the problem if we had planned ahead.","Podríamos haber evitado el problema si hubiéramos planeado con antelación."],["He can't have finished already; he only started an hour ago.","No puede haber terminado ya; empezó hace solo una hora."],["Despite feeling exhausted, she carried on working.","A pesar de sentirse agotada, siguió trabajando."],["I'm looking for someone who can fix my laptop.","Busco a alguien que pueda arreglar mi laptop."],["By the end of the week, we will have finished the project.","Para el final de la semana, habremos terminado el proyecto."]],
+  C1:[["I have been living here for ten years.","Llevo diez años viviendo aquí."],["I wish I knew the answer.","Ojalá supiera la respuesta."],["Never have I seen such chaos.","Nunca había visto tanto caos."],["I have already read that book, but I haven't watched the movie.","Ya leí ese libro, pero no he visto la película."],["If only I had more free time.","Ojalá tuviera más tiempo libre."],["My brother, who lives in Canada, is visiting us.","Mi hermano, que vive en Canadá, nos está visitando."],["It was Maria who solved the problem.","Fue María quien resolvió el problema."],["He had his roof repaired after the storm.","Le repararon el techo después de la tormenta."],["She denied taking the money.","Ella negó haber tomado el dinero."],["Not only did he arrive late, but he also forgot the documents.","No solo llegó tarde, sino que además olvidó los documentos."],["I wish I hadn't said that to her.","Ojalá no le hubiera dicho eso."],["By the time we arrived, the movie had already started.","Cuando llegamos, la película ya había empezado."],["Not only did she win the race, but she also broke the record.","No solo ganó la carrera, sino que además rompió el récord."],["Had I known about the problem, I would have acted sooner.","De haber sabido del problema, habría actuado antes."],["It is widely believed that the economy will recover next year.","Se cree ampliamente que la economía se recuperará el próximo año."],["The proposal, which was submitted last month, has been rejected.","La propuesta, que se presentó el mes pasado, ha sido rechazada."],["What surprised me most was how quickly they reached an agreement.","Lo que más me sorprendió fue lo rápido que llegaron a un acuerdo."],["Having finished the report, she left the office early.","Habiendo terminado el informe, salió temprano de la oficina."],["He denied having taken the money from the safe.","Negó haber tomado el dinero de la caja fuerte."],["Rarely have I seen such dedication in a young athlete.","Rara vez he visto tanta dedicación en un joven deportista."],["It was the manager who made the final decision.","Fue el gerente quien tomó la decisión final."],["The results seem to suggest that the treatment is effective.","Los resultados parecen sugerir que el tratamiento es eficaz."],["Nevertheless, the committee decided to go ahead with the plan.","Sin embargo, el comité decidió seguir adelante con el plan."],["She might have missed the train, which would explain the delay.","Podría haber perdido el tren, lo cual explicaría el retraso."],["No sooner had we sat down than the lights went out.","Apenas nos habíamos sentado cuando se apagaron las luces."],["They are said to have negotiated a very favorable deal.","Se dice que negociaron un trato muy favorable."],["However carefully you plan, something can always go wrong.","Por más cuidadosamente que planifiques, algo siempre puede salir mal."],["The company is under pressure to reduce its carbon emissions.","La empresa está bajo presión para reducir sus emisiones de carbono."],["I would appreciate it if you could send me the details.","Le agradecería que me enviara los detalles."],["Under no circumstances should you open this door.","Bajo ninguna circunstancia debes abrir esta puerta."],["Seldom does she miss an opportunity to learn something new.","Rara vez desaprovecha la oportunidad de aprender algo nuevo."],["What I need is a long holiday.","Lo que necesito son unas vacaciones largas."],["The findings, though preliminary, are encouraging.","Los hallazgos, aunque preliminares, son alentadores."],["Were I in your position, I would think twice.","Si yo estuviera en tu lugar, lo pensaría dos veces."],["It is essential that everyone arrive on time.","Es fundamental que todos lleguen a tiempo."],["The film, which I saw last week, left a lasting impression.","La película, que vi la semana pasada, me dejó una impresión duradera."],["Only after the meeting did I realize my mistake.","Solo después de la reunión me di cuenta de mi error."],["He is believed to be living somewhere abroad.","Se cree que vive en algún lugar del extranjero."],["Whatever you decide, I will support you.","Decidas lo que decidas, te apoyaré."],["Having been warned twice, he had no excuse.","Habiendo sido advertido dos veces, no tenía excusa."],["The more complex the task, the more time it requires.","Cuanto más compleja es la tarea, más tiempo requiere."],["I would have called you had I had your number.","Te habría llamado si hubiera tenido tu número."]],
+  C2:[["I had my car repaired yesterday.","Ayer me repararon el carro."],["If she had studied, she would pass now.","Si hubiera estudiado, aprobaría ahora."],["I can't put up with this noise.","No soporto este ruido."],["If she had studied harder, she would be a doctor now.","Si hubiera estudiado más, ahora sería médica."],["The committee insists that the report be submitted by Friday.","El comité insiste en que el informe se entregue el viernes."],["There has been a considerable improvement in performance.","Ha habido una mejora considerable en el rendimiento."],["Had I known about the meeting, I would have attended.","De haber sabido de la reunión, habría asistido."],["Were she to apply, she would certainly get the job.","Si ella se presentara, sin duda conseguiría el puesto."],["He finally managed to come to terms with his failure.","Por fin logró aceptar su fracaso."],["The negotiations eventually fell through due to a lack of funding.","Las negociaciones acabaron fracasando por falta de financiación."],["She is known for her ability to think outside the box.","Es conocida por su capacidad de pensar de forma creativa."],["Should you need any assistance, do not hesitate to contact us.","Si necesita ayuda, no dude en contactarnos."],["Were it not for your support, I would never have made it this far.","De no ser por tu apoyo, nunca habría llegado tan lejos."],["It is high time the government took decisive action on housing.","Ya es hora de que el gobierno tome medidas decisivas sobre la vivienda."],["The discovery, though initially dismissed, has since transformed the field.","El descubrimiento, aunque al principio se descartó, ha transformado el campo desde entonces."],["Should you require any further assistance, please do not hesitate to contact us.","Si necesita más ayuda, no dude en contactarnos."],["Little did they realize that the decision would change their lives forever.","No se imaginaban que la decisión cambiaría sus vidas para siempre."],["Whatever the outcome, we must remain committed to our principles.","Sea cual sea el resultado, debemos mantenernos fieles a nuestros principios."],["The author's use of irony subtly undermines the narrator's credibility.","El uso de la ironía por parte del autor socava sutilmente la credibilidad del narrador."],["He was reluctant to commit himself to any particular course of action.","Era reacio a comprometerse con cualquier curso de acción en particular."],["Attached is a detailed breakdown of the projected expenditure.","Adjunto un desglose detallado del gasto proyectado."],["Such was the demand that tickets sold out within minutes.","Fue tal la demanda que las entradas se agotaron en minutos."],["The negotiations, by all accounts, were protracted and acrimonious.","Las negociaciones, según todos los indicios, fueron prolongadas y ásperas."],["One cannot help but admire her unwavering resolve.","No se puede evitar admirar su firme determinación."],["It would appear that the initial estimates were somewhat optimistic.","Parece que las estimaciones iniciales eran algo optimistas."],["No matter how hard they tried, the outcome was already sealed.","Por mucho que lo intentaron, el resultado ya estaba decidido."],["Notwithstanding the setbacks, the project was completed on schedule.","A pesar de los contratiempos, el proyecto se completó a tiempo."],["The regulations stipulate that all applicants be interviewed in person.","La normativa estipula que todos los solicitantes sean entrevistados en persona."],["Her remarks were taken out of context, to say the least.","Sus comentarios se sacaron de contexto, por decir lo menos."],["At no point did the management acknowledge the scale of the problem.","En ningún momento la dirección reconoció la magnitud del problema."],["The initiative, albeit well-intentioned, was doomed from the outset.","La iniciativa, aunque bienintencionada, estaba condenada desde el principio."],["Hardly had the speech begun when the audience started to leave.","Apenas había empezado el discurso cuando el público comenzó a marcharse."],["His reticence to speak publicly is hardly surprising.","Su reticencia a hablar en público no sorprende en absoluto."],["The findings lend credence to the long-standing hypothesis.","Los hallazgos dan credibilidad a la hipótesis de larga data."],["Not until the final chapter does the plot come together.","Solo en el último capítulo la trama cobra sentido."],["The tenant is required to give a month's notice.","El inquilino debe avisar con un mes de antelación."],["That the policy was ill-conceived is beyond dispute.","Que la política estaba mal concebida es indiscutible."],["Rather than resign, he opted to fight the decision.","En lugar de dimitir, optó por combatir la decisión."],["The sheer scale of the operation defies comprehension.","La magnitud de la operación es difícil de comprender."],["Little was known about the disease at the time.","En ese momento se sabía poco de la enfermedad."],["She has a knack for defusing tense situations.","Tiene un don para calmar situaciones tensas."],["Suffice it to say that the outcome was disappointing.","Baste decir que el resultado fue decepcionante."]],
+};
+Object.keys(LISTEN_ES_RAW).forEach(lv=> LISTEN_ES_RAW[lv].forEach(([en, es])=>{ LISTEN_ES[normalize(en)] = es; }));
+const LISTEN_REAL = {"A1":[{"say":"I'm not hungry.","written":"I am not hungry.","es":"No tengo hambre.","note":"I'm = I am; se pronuncia muy corto"},{"say":"She's my teacher.","written":"She is my teacher.","es":"Ella es mi profesora.","note":"She's = she is"},{"say":"What's your name?","written":"What is your name?","es":"¿Cómo te llamas?","note":"What's = what is"},{"say":"They're at home.","written":"They are at home.","es":"Ellos están en casa.","note":"They're = they are"}],"A2":[{"say":"I'm gonna call you tonight.","written":"I am going to call you tonight.","es":"Te voy a llamar esta noche.","note":"gonna = going to"},{"say":"I wanna go home now.","written":"I want to go home now.","es":"Quiero irme a casa ahora.","note":"wanna = want to"},{"say":"I gotta leave now.","written":"I have got to leave now.","es":"Me tengo que ir ya.","note":"gotta = got to / have to"},{"say":"Lemme see the menu.","written":"Let me see the menu.","es":"Déjame ver el menú.","note":"lemme = let me"},{"say":"Gimme a minute.","written":"Give me a minute.","es":"Dame un minuto.","note":"gimme = give me"},{"say":"It's kinda cold today.","written":"It is kind of cold today.","es":"Hoy hace un poco de frío.","note":"kinda = kind of"}],"B1":[{"say":"What are you gonna do tomorrow?","written":"What are you going to do tomorrow?","es":"¿Qué vas a hacer mañana?","note":"gonna = going to"},{"say":"Do you wanna come with us?","written":"Do you want to come with us?","es":"¿Quieres venir con nosotros?","note":"wanna = want to"},{"say":"I've gotta finish this report.","written":"I have got to finish this report.","es":"Tengo que terminar este informe.","note":"gotta = got to"},{"say":"I dunno what to say.","written":"I do not know what to say.","es":"No sé qué decir.","note":"dunno = don't know"},{"say":"Lemme know if you need help.","written":"Let me know if you need help.","es":"Avísame si necesitas ayuda.","note":"lemme = let me"},{"say":"She's got a lot of work.","written":"She has got a lot of work.","es":"Ella tiene mucho trabajo.","note":"She's got = she has got"}],"B2":[{"say":"I shoulda called you.","written":"I should have called you.","es":"Debí haberte llamado.","note":"shoulda = should have"},{"say":"He coulda won the race.","written":"He could have won the race.","es":"Podría haber ganado la carrera.","note":"coulda = could have"},{"say":"You musta been tired.","written":"You must have been tired.","es":"Debes de haber estado cansado.","note":"musta = must have"},{"say":"I woulda helped if I'd known.","written":"I would have helped if I had known.","es":"Habría ayudado si lo hubiera sabido.","note":"woulda = would have; I'd = I had"},{"say":"I'm not sure what he's gonna say.","written":"I am not sure what he is going to say.","es":"No estoy seguro de qué va a decir él.","note":"gonna = going to"},{"say":"Kinda hard to explain, y'know.","written":"Kind of hard to explain, you know.","es":"Es un poco difícil de explicar, ya sabes.","note":"kinda = kind of; y'know = you know"}],"C1":[{"say":"We could've avoided this if we'd planned ahead.","written":"We could have avoided this if we had planned ahead.","es":"Podríamos haberlo evitado si hubiéramos planeado.","note":"could've = could have; we'd = we had"},{"say":"He would've come if he'd been invited.","written":"He would have come if he had been invited.","es":"Habría venido si lo hubieran invitado.","note":"would've / he'd (had)"},{"say":"It might've been a mistake.","written":"It might have been a mistake.","es":"Puede que haya sido un error.","note":"might've = might have"},{"say":"We'd better get going.","written":"We had better get going.","es":"Más vale que nos vayamos.","note":"'d better = had better"},{"say":"There's gotta be another way.","written":"There has got to be another way.","es":"Tiene que haber otra manera.","note":"gotta = got to"},{"say":"That's kinda what I meant.","written":"That is kind of what I meant.","es":"Eso es más o menos lo que quería decir.","note":"kinda = kind of"}],"C2":[{"say":"I couldn't've done it without you.","written":"I could not have done it without you.","es":"No habría podido hacerlo sin ti.","note":"couldn't've = could not have"},{"say":"She oughta know better by now.","written":"She ought to know better by now.","es":"Ya debería saberlo mejor.","note":"oughta = ought to"},{"say":"It's not like I'm gonna lose any sleep over it.","written":"It is not like I am going to lose any sleep over it.","es":"No es que vaya a perder el sueño por eso.","note":"gonna = going to"},{"say":"Y'know, it's kinda hard to say.","written":"You know, it is kind of hard to say.","es":"Sabes, es un poco difícil de decir.","note":"y'know = you know; kinda = kind of"},{"say":"I hadn't the faintest idea what he'd meant.","written":"I had not the faintest idea what he had meant.","es":"No tenía ni la menor idea de lo que había querido decir.","note":"he'd = he had (aquí)"},{"say":"You shouldn't've told him.","written":"You should not have told him.","es":"No deberías habérselo dicho.","note":"shouldn't've = should not have"}]};
+const LISTEN_PASS = {"A1":[{"title":"Tom","text":"Tom is a student. He lives in a small house with his mother. Every morning he eats bread and drinks milk.","es":"Tom es estudiante. Vive en una casa pequeña con su madre. Cada mañana come pan y bebe leche.","qs":[{"q":"Where does Tom live?","opts":["In a big house","In a small house","In a school"],"a":1,"explain":"El texto dice «a small house»."},{"q":"What does Tom drink in the morning?","opts":["Coffee","Water","Milk"],"a":2,"explain":"Dice «drinks milk»."}]},{"title":"The cat","text":"Anna has a cat. The cat is black and white. It sleeps on the sofa all day.","es":"Anna tiene un gato. El gato es blanco y negro. Duerme en el sofá todo el día.","qs":[{"q":"What color is the cat?","opts":["Black and white","Red","Brown"],"a":0,"explain":"«Black and white» = blanco y negro."},{"q":"Where does the cat sleep?","opts":["On the bed","On the sofa","In the garden"],"a":1,"explain":"Duerme «on the sofa»."}]},{"title":"School day","text":"Today is Monday. I go to school by bus. School starts at eight o'clock. I like my English class.","es":"Hoy es lunes. Voy a la escuela en autobús. La escuela empieza a las ocho. Me gusta mi clase de inglés.","qs":[{"q":"How does the speaker go to school?","opts":["By car","By bus","On foot"],"a":1,"explain":"«by bus» = en autobús."},{"q":"What time does school start?","opts":["Seven","Eight","Nine"],"a":1,"explain":"«at eight o'clock» = a las ocho."}]},{"title":"My grandmother","text":"We have a big family. My grandmother is sixty years old. She likes to cook for us on Sundays.","es":"Tenemos una familia grande. Mi abuela tiene sesenta años. Le gusta cocinar para nosotros los domingos.","qs":[{"q":"How old is the grandmother?","opts":["Fifty","Sixty","Seventy"],"a":1,"explain":"«sixty years old»."},{"q":"When does she cook for the family?","opts":["On Saturdays","On Sundays","Every day"],"a":1,"explain":"«on Sundays» = los domingos."}]}],"A2":[{"title":"A day at the beach","text":"Last weekend, Maria went to the beach with her friends. The weather was sunny, so they swam and played volleyball. In the evening they ate pizza and went home late.","es":"El fin de semana pasado, María fue a la playa con sus amigos. Hacía sol, así que nadaron y jugaron voleibol. Por la tarde comieron pizza y volvieron tarde a casa.","qs":[{"q":"Why did they swim and play volleyball?","opts":["The weather was sunny","It was raining","They had a party"],"a":0,"explain":"«The weather was sunny, so...» indica la causa."},{"q":"What did they eat in the evening?","opts":["Fish","Pizza","Salad"],"a":1,"explain":"Comieron pizza."}]},{"title":"Ben's trip","text":"Ben is going to travel to Spain next month. He is going to stay in a small hotel near the sea. He doesn't speak Spanish, so he is learning some words every day.","es":"Ben va a viajar a España el próximo mes. Se va a alojar en un hotel pequeño cerca del mar. No habla español, así que está aprendiendo algunas palabras cada día.","qs":[{"q":"Where is Ben going to stay?","opts":["With friends","In a hotel near the sea","In a big city"],"a":1,"explain":"«a small hotel near the sea»."},{"q":"Why is he learning words?","opts":["He doesn't speak Spanish","He works there","His friend is Spanish"],"a":0,"explain":"«He doesn't speak Spanish, so...»."}]},{"title":"The phone call","text":"I was watching TV when the phone rang. It was my sister. She wanted to know if I could help her move to a new apartment on Saturday. I said yes.","es":"Estaba viendo la tele cuando sonó el teléfono. Era mi hermana. Quería saber si podía ayudarla a mudarse a un apartamento nuevo el sábado. Dije que sí.","qs":[{"q":"What was the speaker doing?","opts":["Cooking","Watching TV","Sleeping"],"a":1,"explain":"«I was watching TV»."},{"q":"What does the sister need?","opts":["Help moving","Some money","A new phone"],"a":0,"explain":"Necesita ayuda para mudarse."}]},{"title":"Two cafés","text":"This café is cheaper than the one near my house, but the coffee is better there. I usually go there on Fridays because there are not many people.","es":"Esta cafetería es más barata que la que está cerca de mi casa, pero allá el café es mejor. Suelo ir allá los viernes porque no hay mucha gente.","qs":[{"q":"What is better at the other café?","opts":["The coffee","The price","The music"],"a":0,"explain":"«the coffee is better there»."},{"q":"Why does the speaker go on Fridays?","opts":["It is cheaper","There are few people","It is near home"],"a":1,"explain":"«there are not many people»."}]}],"B1":[{"title":"A new city","text":"I have lived in this city for six years. At first, I found it difficult to make friends, but I joined a running club, and now I have met many people. If you ever visit, I will show you my favorite park.","es":"Llevo seis años viviendo en esta ciudad. Al principio me costó hacer amigos, pero me uní a un club de running y ahora he conocido a mucha gente. Si alguna vez visitas, te mostraré mi parque favorito.","qs":[{"q":"How did the speaker make friends?","opts":["By joining a running club","By working late","By moving house"],"a":0,"explain":"«I joined a running club»."},{"q":"What will the speaker do if you visit?","opts":["Show you a park","Cook dinner","Lend you a car"],"a":0,"explain":"«I will show you my favorite park»."}]},{"title":"Missed meeting","text":"The train was delayed for almost an hour, so I missed my meeting. My boss said it wasn't a problem, but I felt terrible. Next time, I will leave home earlier.","es":"El tren se retrasó casi una hora, así que perdí mi reunión. Mi jefe dijo que no era un problema, pero me sentí fatal. La próxima vez saldré de casa más temprano.","qs":[{"q":"Why did the speaker miss the meeting?","opts":["The train was late","The car broke down","He overslept"],"a":0,"explain":"«The train was delayed»."},{"q":"What will he do next time?","opts":["Take a taxi","Leave home earlier","Cancel it"],"a":1,"explain":"«I will leave home earlier»."}]},{"title":"The farm","text":"When I was a child, I used to spend the summers at my grandparents' farm. We would wake up at dawn to feed the animals. I have never forgotten the smell of fresh bread in the kitchen.","es":"Cuando era niño, solía pasar los veranos en la granja de mis abuelos. Nos despertábamos al amanecer para dar de comer a los animales. Nunca he olvidado el olor del pan recién hecho en la cocina.","qs":[{"q":"Where did the speaker spend the summers?","opts":["At a farm","By the sea","In a city"],"a":0,"explain":"«my grandparents' farm»."},{"q":"What does he remember?","opts":["The smell of bread","The sound of rain","A red bicycle"],"a":0,"explain":"«the smell of fresh bread»."}]},{"title":"Restaurant tip","text":"You should try the new Italian restaurant downtown. I have already been twice, and the pasta is amazing. You must book a table because it is always full on weekends.","es":"Deberías probar el nuevo restaurante italiano del centro. Ya he ido dos veces y la pasta es increíble. Tienes que reservar mesa porque siempre está lleno los fines de semana.","qs":[{"q":"How many times has the speaker been there?","opts":["Once","Twice","Never"],"a":1,"explain":"«already been twice»."},{"q":"Why should you book a table?","opts":["It is always full on weekends","It is very cheap","It closes early"],"a":0,"explain":"«always full on weekends»."}]}],"B2":[{"title":"Closed museum","text":"If I had known the museum was closed on Mondays, I would have gone on Tuesday instead. We wasted the whole morning waiting outside, and by the time we found another activity, it had started to rain.","es":"Si hubiera sabido que el museo cierra los lunes, habría ido el martes. Perdimos toda la mañana esperando afuera y, para cuando encontramos otra actividad, ya había empezado a llover.","qs":[{"q":"Why did they wait outside?","opts":["The museum was closed","The museum was full","It was raining"],"a":0,"explain":"No sabían que cerraba los lunes."},{"q":"What had happened by the time they found another activity?","opts":["It had started to rain","They had lost the tickets","The museum had opened"],"a":0,"explain":"«it had started to rain»."}]},{"title":"Extra hours","text":"The manager told us that the project would be finished by the end of the month. However, some of the equipment hadn't arrived, so she suggested that we work extra hours. Nobody was happy about it, but we agreed.","es":"La gerente nos dijo que el proyecto estaría terminado a fin de mes. Sin embargo, parte del equipo no había llegado, así que sugirió que trabajáramos horas extra. A nadie le gustó, pero aceptamos.","qs":[{"q":"What did the manager suggest?","opts":["Working extra hours","Cancelling the project","Hiring more people"],"a":0,"explain":"«she suggested that we work extra hours»."},{"q":"Why wasn't the project ready?","opts":["Some equipment hadn't arrived","There were no workers","The deadline was changed"],"a":0,"explain":"«some of the equipment hadn't arrived»."}]},{"title":"A tired colleague","text":"She must have been very tired, because she fell asleep during the meeting. It can't have been easy to work two jobs while studying at night. Even so, she never complained.","es":"Debía de estar muy cansada, porque se quedó dormida durante la reunión. No puede haber sido fácil trabajar en dos empleos y estudiar de noche. Aun así, nunca se quejó.","qs":[{"q":"Why does the speaker think she fell asleep?","opts":["She was very tired","She was bored","She was ill"],"a":0,"explain":"«She must have been very tired»."},{"q":"What does the speaker say about her attitude?","opts":["She never complained","She complained a lot","She was rude"],"a":0,"explain":"«she never complained»."}]},{"title":"City traffic","text":"Unless the city reduces traffic, air pollution will keep getting worse. Many experts recommend building more cycle lanes so that people can leave their cars at home. In spite of the cost, several towns have already started.","es":"A menos que la ciudad reduzca el tráfico, la contaminación del aire seguirá empeorando. Muchos expertos recomiendan construir más ciclovías para que la gente pueda dejar el carro en casa. A pesar del costo, varias ciudades ya han empezado.","qs":[{"q":"What do many experts recommend?","opts":["Building more cycle lanes","Banning all cars","Raising bus prices"],"a":0,"explain":"«building more cycle lanes»."},{"q":"What have several towns done?","opts":["Started building them","Cancelled the idea","Reduced taxes"],"a":0,"explain":"«several towns have already started»."}]}],"C1":[{"title":"Ignored residents","text":"Had the committee consulted the residents earlier, the protests could have been avoided. Instead, the plan was announced without warning, which is why so many people felt ignored.","es":"Si el comité hubiera consultado antes a los vecinos, se habrían evitado las protestas. En cambio, el plan se anunció sin previo aviso, por lo que tantas personas se sintieron ignoradas.","qs":[{"q":"What could have avoided the protests?","opts":["Consulting the residents earlier","Cancelling the plan","Raising taxes"],"a":0,"explain":"«Had the committee consulted the residents earlier...»."},{"q":"Why did people feel ignored?","opts":["The plan was announced without warning","The plan was too expensive","The plan was secret for years"],"a":0,"explain":"«announced without warning»."}]},{"title":"Company results","text":"Not only did the company exceed its targets, but it also managed to cut costs by fifteen percent. It is widely believed that the new CEO's strategy, which focuses on automation, was the deciding factor.","es":"La empresa no solo superó sus objetivos, sino que además logró reducir costos en un quince por ciento. Se cree ampliamente que la estrategia del nuevo director, centrada en la automatización, fue el factor decisivo.","qs":[{"q":"By how much did the company cut costs?","opts":["Five percent","Fifteen percent","Fifty percent"],"a":1,"explain":"«fifteen percent»."},{"q":"What is believed to be the deciding factor?","opts":["The CEO's automation strategy","Lower salaries","A new logo"],"a":0,"explain":"«strategy, which focuses on automation»."}]},{"title":"Coming home","text":"Having spent years abroad, she found it strange to return home. What surprised her most was how little had changed, whereas she herself felt like a different person.","es":"Tras pasar años en el extranjero, le resultó extraño volver a casa. Lo que más la sorprendió fue lo poco que había cambiado todo, mientras que ella se sentía otra persona.","qs":[{"q":"What surprised her most?","opts":["How little had changed","How much everything had changed","How expensive it was"],"a":0,"explain":"«how little had changed»."},{"q":"How did she feel about herself?","opts":["Like a different person","Exactly the same","Ashamed"],"a":0,"explain":"«felt like a different person»."}]},{"title":"Exercise and memory","text":"The study suggests that regular exercise may improve memory, though the evidence is not conclusive. Researchers stress that further trials are needed before doctors can make firm recommendations.","es":"El estudio sugiere que el ejercicio regular puede mejorar la memoria, aunque la evidencia no es concluyente. Los investigadores subrayan que hacen falta más ensayos antes de que los médicos puedan dar recomendaciones firmes.","qs":[{"q":"How strong is the evidence?","opts":["Not conclusive","Completely certain","Non-existent"],"a":0,"explain":"«the evidence is not conclusive»."},{"q":"What do researchers say is needed?","opts":["Further trials","New doctors","More funding for gyms"],"a":0,"explain":"«further trials are needed»."}]}],"C2":[{"title":"The archive","text":"Were it not for the tireless efforts of a handful of volunteers, the archive would have been lost. Little did the trustees realize that the collection, which had been dismissed as worthless, would later be considered a national treasure.","es":"De no ser por el esfuerzo incansable de un puñado de voluntarios, el archivo se habría perdido. Los administradores no imaginaban que la colección, que se había descartado por carecer de valor, se consideraría más tarde un tesoro nacional.","qs":[{"q":"Who saved the archive?","opts":["A handful of volunteers","The government","The trustees"],"a":0,"explain":"«a handful of volunteers»."},{"q":"How was the collection first seen?","opts":["As worthless","As a national treasure","As dangerous"],"a":0,"explain":"«dismissed as worthless»."}]},{"title":"Out of context","text":"The minister's remarks, taken out of context, sparked considerable controversy. Notwithstanding her subsequent clarification, several newspapers continued to portray her position as inflexible.","es":"Las declaraciones de la ministra, sacadas de contexto, provocaron una considerable polémica. A pesar de su posterior aclaración, varios periódicos siguieron presentando su postura como inflexible.","qs":[{"q":"Why was there controversy?","opts":["Her remarks were taken out of context","She resigned","She lied"],"a":0,"explain":"«taken out of context»."},{"q":"What did several newspapers do after her clarification?","opts":["Kept calling her position inflexible","Apologized","Ignored the story"],"a":0,"explain":"«continued to portray her position as inflexible»."}]},{"title":"Independent review","text":"It would appear that the initial estimates were somewhat optimistic. Whatever the outcome, the board insists that the project be reviewed independently, lest similar miscalculations recur.","es":"Parece que las estimaciones iniciales eran algo optimistas. Sea cual sea el resultado, la junta insiste en que el proyecto sea revisado de forma independiente, para que no se repitan errores de cálculo similares.","qs":[{"q":"What does the board insist on?","opts":["An independent review","Cancelling the project","Changing the manager"],"a":0,"explain":"«reviewed independently»."},{"q":"Why does it want this?","opts":["To avoid similar miscalculations","To save money","To delay the deadline"],"a":0,"explain":"«lest similar miscalculations recur» = para que no se repitan."}]},{"title":"A subtle detail","text":"One cannot help but admire the author's restraint: rather than spelling out the protagonist's grief, she lets a single, unremarkable detail, an unwashed cup, carry the weight of the entire chapter.","es":"No se puede evitar admirar la contención de la autora: en lugar de explicar el dolor del protagonista, deja que un único detalle sin importancia, una taza sin lavar, cargue con todo el peso del capítulo.","qs":[{"q":"What does the speaker admire?","opts":["The author's restraint","The length of the book","The ending"],"a":0,"explain":"«the author's restraint»."},{"q":"What carries the weight of the chapter?","opts":["An unwashed cup","A long speech","A letter"],"a":0,"explain":"«an unwashed cup»."}]}]};
+
 const LANG_PACKS = {
   en: { VOCAB, GRAMMAR, THEORY, CATEGORIES, CATEGORY_EXAMPLES, VERBS, SITUATION_THEMES, EXPRESSION_THEMES, FALSE_FRIENDS, HOW_TO_SAY, ORDER, LISTEN, TRANSLATE, READING, READING_CLOZE, READING_LETTERS, DIALOGUES, WRITING_PROMPTS, PLACEMENT_BANK },
   pt: { VOCAB: VOCAB_PT, GRAMMAR: GRAMMAR_PT, THEORY: THEORY_PT, CATEGORIES: CATEGORIES_PT, CATEGORY_EXAMPLES: CATEGORY_EXAMPLES_PT, VERBS: VERBS_PT,
@@ -24379,7 +24418,7 @@ function speak(text, rate, lang){
   const lg = lang || voiceAccent;
   const u = new SpeechSynthesisUtterance(text);
   u.lang = lg;
-  const voice = _voicesCache.find(v=>v.lang===lg) || _voicesCache.find(v=>v.lang && v.lang.startsWith(lg.slice(0,2)));
+  const voice = listenPickVoice(lg);
   if(voice) u.voice = voice;
   u.rate = rate || 0.92;
   window.speechSynthesis.speak(u);
@@ -24441,12 +24480,6 @@ document.addEventListener("click", (e)=>{
   const mmBtn = e.target.closest(".mm-speak");
   if(mmBtn) speak(mmBtn.dataset.say);
 });
-function newListenQuestion(){
-  const lv = pickLevel();
-  const {item, id, review} = srsPick(LANG_PACKS[currentLang].LISTEN[lv], `listen:${currentLang}:${lv}`);
-  current.listen = {lv, sentence:item, id, review};
-  drawListen();
-}
 function diffWords(guess, correct){
   const g = normalize(guess).split(" ");
   const c = normalize(correct).split(" ");
@@ -24458,23 +24491,386 @@ function diffWords(guess, correct){
   }
   return out.join(" ");
 }
+/* =========================================================
+   ESCUCHA — modos, opciones de audio, traducción y repetir en voz alta
+   Modos (solo en inglés, en la sección Ejercicios): Dictado, Habla real (reducciones: gonna, wanna...),
+   Elige lo que oíste, Completa el hueco y Comprensión (texto corto + preguntas).
+   En Práctica de hoy y en portugués Escucha sigue siendo dictado.
+   ========================================================= */
+let listenMode = "dictation";   // dictation | real | choose | cloze | comp
+const LISTEN_MODES = [["dictation","✍️ Dictado"],["real","🗣️ Habla real"],["choose","🎯 Elige"],["cloze","🧩 Completa"],["comp","📖 Comprensión"]];
+const LISTEN_PREF_KEY = "impulse_listen_prefs";
+let listenPrefs = {autoplay:true, voice:""};
+try{ Object.assign(listenPrefs, JSON.parse(localStorage.getItem(LISTEN_PREF_KEY) || "{}")); }catch(e){}
+function saveListenPrefs(){ try{ localStorage.setItem(LISTEN_PREF_KEY, JSON.stringify(listenPrefs)); }catch(e){} }
+function listenModeActive(){ return (activeSection === "exercises" && currentLang === "en") ? listenMode : "dictation"; }
+function listenTranslation(sentence){ return currentLang === "en" ? (LISTEN_ES[normalize(sentence)] || "") : ""; }
+function listenPickVoice(lg){
+  const pref = listenPrefs.voice ? _voicesCache.find(v=> v.name === listenPrefs.voice && v.lang === lg) : null;
+  return pref || _voicesCache.find(v=>v.lang===lg) || _voicesCache.find(v=>v.lang && v.lang.startsWith(lg.slice(0,2)));
+}
+let _listenChunkToken = 0;
+function listenSpeakChunks(text){
+  if(!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const token = ++_listenChunkToken;
+  const words = text.trim().split(/\s+/), chunks = [];
+  for(let i = 0; i < words.length; i += 3) chunks.push(words.slice(i, i + 3).join(" "));
+  const lg = voiceAccent;
+  const say = (k)=>{
+    if(token !== _listenChunkToken || k >= chunks.length) return;
+    const u = new SpeechSynthesisUtterance(chunks[k]);
+    u.lang = lg; const v = listenPickVoice(lg); if(v) u.voice = v;
+    u.rate = 0.8;
+    u.onend = ()=> setTimeout(()=> say(k + 1), 450);
+    window.speechSynthesis.speak(u);
+  };
+  say(0);
+}
+/* Opciones de audio (voz y reproducción automática) y selector de modo. */
+function listenHeaderHTML(){
+  const modes = (currentLang === "en" && activeSection === "exercises")
+    ? `<div class="listen-modes" role="tablist" aria-label="Tipo de escucha">${LISTEN_MODES.map(([id,l])=>`<button type="button" class="ex-tab${id===listenMode?" active":""}" data-listen-mode="${id}"><span>${l}</span></button>`).join("")}</div>` : "";
+  const voices = _voicesCache.filter(v=> v.lang && v.lang.slice(0,2) === (currentLang==="pt" ? "pt" : "en"));
+  return `${modes}
+    <details class="listen-opts"><summary>⚙️ Opciones de audio</summary>
+      <label class="listen-opt"><input type="checkbox" id="listenAutoplay" ${listenPrefs.autoplay?"checked":""}> Reproducir automáticamente al empezar</label>
+      <label class="listen-opt">Voz:
+        <select id="listenVoice" class="text-input" style="max-width:260px;padding:6px 10px;">
+          <option value="">Automática</option>
+          ${voices.map(v=>`<option value="${escHtml(v.name)}" ${v.name===listenPrefs.voice?"selected":""}>${escHtml(v.name)} (${escHtml(v.lang)})</option>`).join("")}
+        </select>
+      </label>
+      ${voices.length ? "" : `<div class="wr-body">Tu navegador no muestra voces distintas: se usará la voz predeterminada.</div>`}
+    </details>`;
+}
+function listenWireHeader(root){
+  root.querySelectorAll("[data-listen-mode]").forEach(b=>{
+    b.onclick = ()=>{ listenMode = b.dataset.listenMode; newListenQuestion(); };
+  });
+  const ap = root.querySelector("#listenAutoplay");
+  if(ap) ap.onchange = ()=>{ listenPrefs.autoplay = ap.checked; saveListenPrefs(); };
+  const sel = root.querySelector("#listenVoice");
+  if(sel) sel.onchange = ()=>{
+    listenPrefs.voice = sel.value; saveListenPrefs();
+    const v = _voicesCache.find(x=>x.name===sel.value);
+    if(v && (v.lang==="en-US" || v.lang==="en-GB")) voiceAccent = v.lang;
+    const cur = current.listen;
+    if(cur) speak(cur.sentence || cur.text || "");
+  };
+}
+function listenAutoplay(text){ if(listenPrefs.autoplay) setTimeout(()=>speak(text), 300); }
+/* Después de responder: traducción, escuchar de nuevo (normal, lento, por partes) y repetir en voz alta. */
+function listenAfterHTML(sentence, es, note){
+  return `<div class="listen-after">
+    ${es ? `<div class="wr-body"><b>Significa:</b> ${escHtml(es)}</div>` : ""}
+    ${note ? `<div class="wr-body"><b>Ojo:</b> ${escHtml(note)}</div>` : ""}
+    <div class="listen-after-btns">
+      <button type="button" class="wr-mini" data-la="normal">🔊 Normal</button>
+      <button type="button" class="wr-mini" data-la="slow">🐢 Lento</button>
+      <button type="button" class="wr-mini" data-la="chunks">✂️ Por partes</button>
+      <span class="listen-shadow">Repite en voz alta: ${micButtonHTML(sentence)}</span>
+    </div>
+  </div>`;
+}
+function listenWireAfter(root, sentence){
+  root.querySelectorAll("[data-la]").forEach(b=>{
+    b.onclick = ()=>{
+      if(b.dataset.la === "normal") speak(sentence);
+      else if(b.dataset.la === "slow") speak(sentence, 0.55);
+      else listenSpeakChunks(sentence);
+    };
+  });
+}
+/* ---- análisis del dictado ---- */
+function listenAnalyze(sentence, typed, alt){
+  const variants = [sentence].concat(alt ? [alt] : []);
+  const uw = normalizeEq(typed).split(" ").filter(Boolean);
+  let best = null;
+  variants.forEach(sv=>{
+    const cw = normalizeEq(sv).split(" ").filter(Boolean);
+    const mc = lcsWordMatch(cw, uw), mu = lcsWordMatch(uw, cw);
+    const free = uw.filter((_,i)=> !mu.matched[i]);
+    const cmatch = mc.matched.slice(), typos = [];
+    cw.forEach((w,i)=>{
+      if(cmatch[i] || w.length < 4) return;
+      const k = free.findIndex(x=> x.length >= 4 && editDistance(x, w) === 1);
+      if(k >= 0){ typos.push({typed:free[k], correct:w}); free.splice(k, 1); cmatch[i] = true; }
+    });
+    const heard = cmatch.filter(Boolean).length;
+    const exact = mc.lcsLength === cw.length && uw.length === cw.length;
+    const allowed = Math.max(1, Math.floor(cw.length / 5));
+    const nearly = !exact && typos.length > 0 && typos.length <= allowed && heard === cw.length && uw.length === cw.length;
+    const r = {sv, cw, uw, mc, cmatch, typos, heard, total:cw.length, exact, nearly};
+    if(!best || (r.exact && !best.exact) || (r.nearly && !best.exact && !best.nearly) || (!best.exact && !best.nearly && r.heard > best.heard)) best = r;
+  });
+  return best;
+}
+function listenDiffHTML(sentence, an){
+  let idx = 0;
+  return an.sv.trim().split(/\s+/).map(tok=>{
+    const n = normalizeEq(tok).split(" ").filter(Boolean).length || 1;
+    let all = true, typo = false;
+    for(let k = 0; k < n; k++){
+      const i = idx + k;
+      if(!an.mc.matched[i]){ if(an.cmatch[i]) typo = true; else all = false; }
+    }
+    idx += n;
+    return all ? (typo ? `<span style="color:#B45309;text-decoration:underline dotted;">${escHtml(tok)}</span>` : `<span style="color:#14803A;">${escHtml(tok)}</span>`)
+               : `<span style="color:#99123F;text-decoration:underline;">${escHtml(tok)}</span>`;
+  }).join(" ");
+}
+function listenHintText(sentence, level){
+  const words = sentence.trim().split(/\s+/);
+  if(level === 1) return `Son <b>${words.length}</b> palabras: ${words.map(w=>"▢".repeat(Math.min(w.replace(/[^A-Za-z]/g,"").length, 3))).join(" ")}`;
+  return `Empiezan con: <b>${words.map(w=>{
+    const clean = w.replace(/[^A-Za-z'’]/g,"");
+    return escHtml(clean.charAt(0)) + "_".repeat(Math.max(0, Math.min(clean.length - 1, 4)));
+  }).join(" ")}</b>`;
+}
+/* ---- selección de la pregunta según el modo ---- */
+function newListenQuestion(){
+  const mode = listenModeActive();
+  const lv = pickLevel();
+  if(mode === "real"){
+    const pool = LISTEN_REAL[lv];
+    const {item, id, review} = srsPick(pool, `listenreal:${currentLang}:${lv}`);
+    current.listen = {mode, lv, item, id, review, sentence:item.say};
+  }else if(mode === "comp"){
+    const {item, id, review} = srsPick(LISTEN_PASS[lv], `listencomp:${currentLang}:${lv}`);
+    current.listen = {mode, lv, item, id, review, sentence:item.text};
+  }else{
+    const {item, id, review} = srsPick(LANG_PACKS[currentLang].LISTEN[lv], `listen:${currentLang}:${lv}`);
+    current.listen = {mode, lv, sentence:item, id, review};
+    if(mode === "choose") current.listen.opts = listenBuildOptions(item, lv);
+    if(mode === "cloze") current.listen.blanks = listenPickBlanks(item, lv);
+  }
+  drawListen();
+}
+const LISTEN_CONFUSE = [["a","the"],["is","are"],["was","were"],["he","she"],["can","can't"],["do","does"],["has","have"],["his","her"],["they","we"],["in","on"],["at","in"],["to","for"],["this","that"],["these","those"],["will","would"],["did","do"],["and","but"],["than","then"],["your","you're"],["its","it's"],["their","there"],["been","being"],["my","me"],["them","him"],["had","has"],["never","ever"],["some","any"],["much","many"],["must","should"],["left","right"],["seven","eleven"],["morning","evening"],["like","likes"],["work","works"],["want","won't"],["should","shouldn't"],["would","wouldn't"],["did","didn't"],["is","isn't"],["are","aren't"],["have","haven't"]];
+/* Un distractor debe sonar parecido pero ser gramaticalmente posible; si no, se elige por gramática y no por oído. */
+const LISTEN_BAD_EXTRA = /\b(we|you|they)\s+was\b|\bthere\s+are\s+(a|an|one)\b|\b(I|you|we|they)\s+(likes|works|wants|lives|goes|plays|needs|does|has)\b|\b(he|she|it)\s+(don't|have|do)\b|\bdoes\s+(you|I|we|they)\b|\bdo\s+(he|she|it)\b/i;
+function listenBadGrammar(c){
+  if(LISTEN_BAD_EXTRA.test(c)) return true;
+  return WRITING_RULES_EN.some(r=>{ r.re.lastIndex = 0; const bad = r.re.test(c); r.re.lastIndex = 0; return bad && r.id !== "cap-i"; });
+}
+function listenBuildOptions(sentence, lv){
+  const toks = sentence.split(" ");
+  const cands = [];
+  const keep = (orig, rep)=>{
+    const m = orig.match(/^([^A-Za-z']*)([A-Za-z']+)([^A-Za-z']*)$/);
+    if(!m) return rep;
+    const r = m[2].charAt(0) === m[2].charAt(0).toUpperCase() ? rep.charAt(0).toUpperCase() + rep.slice(1) : rep;
+    return m[1] + r + m[3];
+  };
+  toks.forEach((t, i)=>{
+    const core = (t.match(/[A-Za-z']+/) || [""])[0].toLowerCase();
+    if(!core) return;
+    LISTEN_CONFUSE.forEach(([a, b])=>{
+      const rep = core === a ? b : core === b ? a : null;
+      if(rep) cands.push(toks.slice(0, i).concat(keep(t, rep), toks.slice(i + 1)).join(" "));
+    });
+    if(core === "not") cands.push(toks.slice(0, i).concat(toks.slice(i + 1)).join(" "));
+  });
+  const seen = new Set([normalizeEq(sentence)]);
+  const uniq = shuffle(cands).filter(c=>{ if(listenBadGrammar(c)) return false; const k = normalizeEq(c); if(seen.has(k)) return false; seen.add(k); return true; });
+  const out = uniq.slice(0, 3);
+  if(out.length < 3){
+    // Sin más variantes gramaticales posibles: se completan con frases del banco que comparten más palabras (menos obvias).
+    const mine = new Set(normalizeEq(sentence).split(" "));
+    const score = s=> normalizeEq(s).split(" ").filter(w=> mine.has(w)).length + Math.random() * 0.5;
+    const pool = LANG_PACKS[currentLang].LISTEN[lv].filter(s=> !seen.has(normalizeEq(s))).map(s=>[score(s), s]).sort((a, b)=> b[0] - a[0]).map(x=> x[1]);
+    pool.slice(0, 3 - out.length).forEach(s=> out.push(s));
+  }
+  return shuffle([sentence].concat(out));
+}
+function listenPickBlanks(sentence, lv){
+  const toks = sentence.split(" ");
+  const ok = [];
+  toks.forEach((t, i)=>{
+    const m = t.match(/^([^A-Za-z]*)([A-Za-z]+)([^A-Za-z]*)$/);
+    if(m && m[2].length >= 3) ok.push(i);
+  });
+  const want = (["A1","A2","B1"].includes(lv) || toks.length < 8) ? 1 : 2;
+  const pickIdx = shuffle(ok).slice(0, Math.min(want, ok.length)).sort((a, b)=> a - b);
+  return pickIdx.map(i=>{ const m = toks[i].match(/^([^A-Za-z]*)([A-Za-z]+)([^A-Za-z]*)$/); return {i, pre:m[1], word:m[2], post:m[3]}; });
+}
 function drawListen(){
-  const {lv,sentence,id,review} = current.listen;
+  const m = (current.listen && current.listen.mode) || "dictation";
+  if(m === "choose") return drawListenChoose();
+  if(m === "cloze") return drawListenCloze();
+  if(m === "comp") return drawListenComp();
+  return drawListenDictation();
+}
+function listenBoxHTML(){
+  return `<div class="listen-box">
+    <button class="speak-btn" id="listenPlay" title="Escuchar" aria-label="Escuchar">🔊</button>
+    <button class="accent-btn" id="listenSlow" type="button" title="Escuchar más despacio" aria-label="Escuchar más despacio">🐢 Lento</button>
+    <span class="speak-hint">Puedes escucharlo varias veces</span>
+    <div style="display:flex;gap:6px;margin-left:auto;">
+      ${currentLang==="en" ? `
+        <button class="accent-btn ${voiceAccent==='en-US'?'active':''}" data-accent="en-US">🇺🇸 US</button>
+        <button class="accent-btn ${voiceAccent==='en-GB'?'active':''}" data-accent="en-GB">🇬🇧 UK</button>
+      ` : `<span class="accent-btn active" style="cursor:default;">${LANG_META[currentLang].flag} ${LANG_META[currentLang].label}</span>`}
+    </div>
+  </div>`;
+}
+function listenWireBox(getText){
+  document.getElementById("listenPlay").onclick = ()=>speak(getText());
+  document.getElementById("listenSlow").onclick = ()=>speak(getText(), 0.55);
+  document.querySelectorAll(".accent-btn[data-accent]").forEach(b=>{
+    b.onclick = ()=>{
+      voiceAccent = b.dataset.accent;
+      document.querySelectorAll(".accent-btn[data-accent]").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      speak(getText());
+    };
+  });
+}
+/* ---- Dictado y Habla real ---- */
+function drawListenDictation(){
+  const cur = current.listen, {lv, id, review} = cur;
+  const isReal = cur.mode === "real";
+  const sentence = cur.sentence;                       // lo que se escucha
+  const target = isReal ? cur.item.written : sentence; // forma estándar aceptada además de la oída
+  const es = isReal ? cur.item.es : listenTranslation(sentence);
   const html = `
     <div class="card">
       ${scoreRowHtml("listen")}
-      <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">Presiona el botón y escribe lo que escuchas:</div>${reviewBadge(review)}</div>
-      <div class="listen-box">
-        <button class="speak-btn" id="listenPlay">🔊</button>
-        <span class="speak-hint">Puedes escucharlo varias veces</span>
-        <div style="display:flex;gap:6px;margin-left:auto;">
-          ${currentLang==="en" ? `
-            <button class="accent-btn ${voiceAccent==='en-US'?'active':''}" data-accent="en-US">🇺🇸 US</button>
-            <button class="accent-btn ${voiceAccent==='en-GB'?'active':''}" data-accent="en-GB">🇬🇧 UK</button>
-          ` : `<span class="accent-btn active" style="cursor:default;">${LANG_META[currentLang].flag} ${LANG_META[currentLang].label}</span>`}
-        </div>
-      </div>
+      ${listenHeaderHTML()}
+      <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">${isReal ? "Escucha cómo suena en la vida real y escribe lo que oyes (vale la forma hablada o la escrita):" : "Presiona el botón y escribe lo que escuchas:"}</div>${reviewBadge(review)}</div>
+      ${listenBoxHTML()}
       <input class="text-input" id="listenInput" placeholder="Escribe la frase en ${LANG_META[currentLang].label.toLowerCase()}..." autocomplete="off">
+      <div class="wr-tip" id="listenHint" style="margin:8px 0 0;"></div>
+      <div class="feedback" id="listenFeedback"></div>
+      <div class="btn-row">
+        <button class="btn" id="listenCheck">Comprobar</button>
+        <button class="btn secondary" id="listenHintBtn" type="button">💡 Pista</button>
+        <button class="btn secondary" id="listenNext" style="display:none;">Siguiente →</button>
+      </div>
+    </div>`;
+  document.getElementById("exPanel").innerHTML = html;
+  listenWireHeader(document.getElementById("exPanel"));
+  listenWireBox(()=>sentence);
+  const input = document.getElementById("listenInput");
+  const check = document.getElementById("listenCheck");
+  const next = document.getElementById("listenNext");
+  const hintBtn = document.getElementById("listenHintBtn");
+  const hintBox = document.getElementById("listenHint");
+  let hints = 0;
+  hintBtn.onclick = ()=>{
+    if(hints >= 2) return;
+    hints++;
+    hintBox.innerHTML = "💡 " + listenHintText(target, hints);
+    hintBtn.textContent = hints >= 2 ? "💡 Sin más pistas" : "💡 Otra pista";
+    if(hints >= 2) hintBtn.disabled = true;
+    input.focus();
+  };
+  function doCheck(){
+    const an = listenAnalyze(sentence, input.value, isReal ? target : "");
+    const ok = an.exact || an.nearly;
+    // Con la pista 2 (primeras letras) la frase no se da por dominada: vuelve pronto al repaso.
+    srsUpdate(id, ok && hints < 2);
+    if(ok) clearErrorIfMastered(id);
+    else if(!isReal) recordError(id, "listen", lv, "Dictado (escucha y escribe)", sentence, `La frase correcta era: "${sentence}".`);
+    registerAnswer("listen", ok);
+    input.disabled = true; check.disabled = true; hintBtn.disabled = true;
+    const fb = document.getElementById("listenFeedback");
+    fb.className = "feedback show " + (ok?"ok":"bad");
+    const hintNote = ok && hints >= 2 ? `<div class="wr-body" style="margin-top:6px;">Usaste la pista de las primeras letras, así que esta frase volverá pronto a tu repaso.</div>` : "";
+    if(an.exact){
+      fb.innerHTML = `<strong>¡Perfecto! 🎉</strong>Escuchaste correctamente: "${escHtml(isReal && normalizeEq(input.value)===normalizeEq(target) ? target : sentence)}"${hintNote}`;
+    }else if(an.nearly){
+      fb.innerHTML = `<strong>¡Casi perfecto! 👏</strong>Entendiste toda la frase; solo revisa la ortografía: ${an.typos.map(t=>`<span style="color:#99123F;text-decoration:line-through;">${escHtml(t.typed)}</span> → <b>${escHtml(t.correct)}</b>`).join(", ")}.<div class="wr-body" style="margin-top:6px;">${listenDiffHTML(sentence, an)}</div>${hintNote}`;
+    }else{
+      const pct = an.total ? Math.round(an.heard / an.total * 100) : 0;
+      const wrongWords = an.cw.filter((_,i)=> !an.cmatch[i]);
+      const why = !an.uw.length ? "No escribiste nada. "
+        : `Acertaste <b>${an.heard} de ${an.total}</b> palabras (${pct}%). ${wrongWords.length ? `Te costaron: <b>${wrongWords.map(escHtml).join(", ")}</b>. ` : ""}${an.typos.length ? "Algunas estaban casi bien (ortografía). " : ""}`;
+      fb.innerHTML = `<strong>${pct >= 60 ? "Casi 😉" : "Sigue practicando"}</strong>
+        <div class="wr-progress-bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
+        Comparación palabra por palabra: ${listenDiffHTML(sentence, an)}${whyFailedHTML({
+          yours: input.value, correct: an.sv, why,
+          tip: "Prueba con el botón 🐢 Lento y fíjate en las palabras cortas (a, the, to), que se pronuncian muy suaves.",
+          speak: an.sv
+        })}`;
+    }
+    fb.insertAdjacentHTML("beforeend", listenAfterHTML(target, es, isReal ? cur.item.note : ""));
+    listenWireAfter(fb, target);
+    next.style.display="inline-block";
+  }
+  check.onclick = doCheck;
+  input.addEventListener("keydown", e=>{ if(e.key==="Enter" && !check.disabled) doCheck(); });
+  next.onclick = newListenQuestion;
+  listenAutoplay(sentence);
+}
+/* ---- Elige lo que oíste ---- */
+function drawListenChoose(){
+  const cur = current.listen, {lv, id, review, sentence, opts} = cur;
+  const html = `
+    <div class="card">
+      ${scoreRowHtml("listen")}
+      ${listenHeaderHTML()}
+      <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">Escucha y elige la frase que oíste:</div>${reviewBadge(review)}</div>
+      ${listenBoxHTML()}
+      <div class="options" id="listenOpts">${opts.map((o,i)=>`<button class="opt-btn" data-i="${i}">${escHtml(o)}</button>`).join("")}</div>
+      <div class="feedback" id="listenFeedback"></div>
+      <div class="btn-row"><button class="btn secondary" id="listenNext" style="display:none;">Siguiente →</button></div>
+    </div>`;
+  document.getElementById("exPanel").innerHTML = html;
+  listenWireHeader(document.getElementById("exPanel"));
+  listenWireBox(()=>sentence);
+  const btns = [...document.querySelectorAll("#listenOpts .opt-btn")];
+  btns.forEach(b=>{
+    b.onclick = ()=>{
+      btns.forEach(x=> x.disabled = true);
+      const picked = opts[+b.dataset.i], ok = picked === sentence;
+      const correctBtn = btns.find(x=> opts[+x.dataset.i] === sentence);
+      b.classList.add(ok ? "correct" : "wrong");
+      if(!ok) correctBtn.classList.add("correct");
+      srsUpdate(id, ok);
+      if(ok) clearErrorIfMastered(id);
+      else recordError(id, "listen", lv, "Dictado (escucha y escribe)", sentence, `La frase correcta era: "${sentence}".`);
+      registerAnswer("listen", ok);
+      const fb = document.getElementById("listenFeedback");
+      fb.className = "feedback show " + (ok?"ok":"bad");
+      if(ok){
+        fb.innerHTML = `<strong>¡Perfecto! 🎉</strong>Era: "${escHtml(sentence)}"`;
+      }else{
+        const an = listenAnalyze(sentence, picked);
+        const diff = an.cw.filter((_,i)=> !an.cmatch[i]);
+        fb.innerHTML = `<strong>Casi 😉</strong>Elegiste «${escHtml(picked)}». ${whyFailedHTML({
+          yours: picked, correct: sentence,
+          why: diff.length ? `La diferencia está en: <b>${diff.map(escHtml).join(", ")}</b>.` : "Las dos frases se parecen mucho: fíjate en las palabras cortas.",
+          tip: "Prueba con el botón 🐢 Lento: las palabras cortas (a, the, is/are) se pronuncian muy suaves.",
+          speak: sentence
+        })}`;
+      }
+      fb.insertAdjacentHTML("beforeend", listenAfterHTML(sentence, listenTranslation(sentence), ""));
+      listenWireAfter(fb, sentence);
+      document.getElementById("listenNext").style.display = "inline-block";
+    };
+  });
+  document.getElementById("listenNext").onclick = newListenQuestion;
+  listenAutoplay(sentence);
+}
+/* ---- Completa el hueco ---- */
+function drawListenCloze(){
+  const cur = current.listen, {lv, id, review, sentence, blanks} = cur;
+  const toks = sentence.split(" ");
+  const line = toks.map((t, i)=>{
+    const bi = blanks.findIndex(b=> b.i === i);
+    if(bi < 0) return escHtml(t);
+    const b = blanks[bi];
+    return `${escHtml(b.pre)}<input class="text-input cloze-inp" data-b="${bi}" size="${Math.max(4, b.word.length + 1)}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Palabra ${bi + 1}">${escHtml(b.post)}`;
+  }).join(" ");
+  const html = `
+    <div class="card">
+      ${scoreRowHtml("listen")}
+      ${listenHeaderHTML()}
+      <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">Escucha y completa ${blanks.length === 1 ? "la palabra que falta" : "las palabras que faltan"}:</div>${reviewBadge(review)}</div>
+      ${listenBoxHTML()}
+      <div class="cloze-line">${line}</div>
       <div class="feedback" id="listenFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="listenCheck">Comprobar</button>
@@ -24482,36 +24878,97 @@ function drawListen(){
       </div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
-  document.getElementById("listenPlay").onclick = ()=>speak(sentence);
-  document.querySelectorAll(".accent-btn[data-accent]").forEach(b=>{
-    b.onclick = ()=>{
-      voiceAccent = b.dataset.accent;
-      document.querySelectorAll(".accent-btn[data-accent]").forEach(x=>x.classList.remove("active"));
-      b.classList.add("active");
-      speak(sentence);
-    };
-  });
-  const input = document.getElementById("listenInput");
+  listenWireHeader(document.getElementById("exPanel"));
+  listenWireBox(()=>sentence);
+  const inputs = [...document.querySelectorAll(".cloze-inp")];
   const check = document.getElementById("listenCheck");
-  const next = document.getElementById("listenNext");
   function doCheck(){
-    const ok = normalize(input.value) === normalize(sentence);
+    const res = blanks.map((b, k)=>{
+      const v = normalizeEq(inputs[k].value), w = normalizeEq(b.word);
+      const exact = v === w;
+      const typo = !exact && w.length >= 4 && v.length >= 4 && editDistance(v, w) === 1;
+      return {b, exact, typo, ok: exact || typo, typed: inputs[k].value.trim()};
+    });
+    const ok = res.every(r=> r.ok);
     srsUpdate(id, ok);
     if(ok) clearErrorIfMastered(id);
     else recordError(id, "listen", lv, "Dictado (escucha y escribe)", sentence, `La frase correcta era: "${sentence}".`);
     registerAnswer("listen", ok);
-    input.disabled=true; check.disabled=true;
+    inputs.forEach((x, k)=>{ x.disabled = true; x.classList.add(res[k].exact ? "cloze-ok" : res[k].typo ? "cloze-typo" : "cloze-bad"); });
+    check.disabled = true;
     const fb = document.getElementById("listenFeedback");
     fb.className = "feedback show " + (ok?"ok":"bad");
-    fb.innerHTML = ok
-      ? `<strong>¡Perfecto! 🎉</strong>Escuchaste correctamente: "${sentence}"`
-      : `<strong>Casi 😉</strong>Comparación palabra por palabra: ${diffWords(input.value, sentence)}${whyFailedHTML(whyListen(sentence, input.value))}`;
-    next.style.display="inline-block";
+    const typoNote = res.filter(r=> r.typo).map(r=>`<span style="color:#99123F;text-decoration:line-through;">${escHtml(r.typed)}</span> → <b>${escHtml(r.b.word)}</b>`).join(", ");
+    if(ok){
+      fb.innerHTML = `<strong>${typoNote ? "¡Casi perfecto! 👏" : "¡Perfecto! 🎉"}</strong>${typoNote ? `Revisa la ortografía: ${typoNote}. ` : ""}Era: "${escHtml(sentence)}"`;
+    }else{
+      const bad = res.filter(r=> !r.ok);
+      fb.innerHTML = `<strong>Casi 😉</strong>${whyFailedHTML({
+        yours: res.map(r=> r.typed || "—").join(" / "), correct: res.map(r=> r.b.word).join(" / "),
+        why: `Faltaba: ${bad.map(r=>`<b>${escHtml(r.b.word)}</b>`).join(", ")}. La frase completa era: «${escHtml(sentence)}».`,
+        tip: "Escúchala otra vez con 🐢 Lento y fíjate en la palabra justo antes y después del hueco.",
+        speak: sentence
+      })}`;
+    }
+    fb.insertAdjacentHTML("beforeend", listenAfterHTML(sentence, listenTranslation(sentence), ""));
+    listenWireAfter(fb, sentence);
+    document.getElementById("listenNext").style.display = "inline-block";
   }
   check.onclick = doCheck;
-  input.addEventListener("keydown", e=>{ if(e.key==="Enter" && !check.disabled) doCheck(); });
-  next.onclick = newListenQuestion;
-  setTimeout(()=>speak(sentence), 300);
+  inputs.forEach(x=> x.addEventListener("keydown", e=>{ if(e.key==="Enter" && !check.disabled) doCheck(); }));
+  document.getElementById("listenNext").onclick = newListenQuestion;
+  if(inputs[0]) inputs[0].focus();
+  listenAutoplay(sentence);
+}
+/* ---- Comprensión: texto corto + preguntas ---- */
+function drawListenComp(){
+  const cur = current.listen, {lv, id, review, item} = cur;
+  const answers = new Array(item.qs.length).fill(null);
+  const html = `
+    <div class="card">
+      ${scoreRowHtml("listen")}
+      ${listenHeaderHTML()}
+      <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">Escucha el texto y responde las preguntas:</div>${reviewBadge(review)}</div>
+      ${listenBoxHTML()}
+      <div id="lcQs">${item.qs.map((q, qi)=>`
+        <div class="lc-q" data-qi="${qi}">
+          <div class="q-text" style="font-size:1rem;margin:14px 0 10px;">${qi + 1}. ${escHtml(q.q)}</div>
+          <div class="options">${q.opts.map((o, oi)=>`<button class="opt-btn" data-qi="${qi}" data-oi="${oi}">${escHtml(o)}</button>`).join("")}</div>
+          <div class="feedback" id="lcFb${qi}"></div>
+        </div>`).join("")}
+      </div>
+      <div class="feedback" id="listenFeedback"></div>
+      <div class="btn-row"><button class="btn secondary" id="listenNext" style="display:none;">Siguiente texto →</button></div>
+    </div>`;
+  document.getElementById("exPanel").innerHTML = html;
+  listenWireHeader(document.getElementById("exPanel"));
+  listenWireBox(()=>item.text);
+  document.querySelectorAll("#lcQs .opt-btn").forEach(b=>{
+    b.onclick = ()=>{
+      const qi = +b.dataset.qi, oi = +b.dataset.oi, q = item.qs[qi];
+      document.querySelectorAll(`#lcQs .opt-btn[data-qi="${qi}"]`).forEach(x=> x.disabled = true);
+      const ok = oi === q.a;
+      answers[qi] = ok;
+      b.classList.add(ok ? "correct" : "wrong");
+      if(!ok) document.querySelector(`#lcQs .opt-btn[data-qi="${qi}"][data-oi="${q.a}"]`).classList.add("correct");
+      registerAnswer("listen", ok);
+      const fb = document.getElementById("lcFb" + qi);
+      fb.className = "feedback show " + (ok ? "ok" : "bad");
+      fb.innerHTML = `<strong>${ok ? "¡Correcto!" : "Casi"}</strong>${escHtml(q.explain)}`;
+      if(answers.every(a=> a !== null)){
+        const all = answers.every(Boolean);
+        srsUpdate(id, all);
+        const done = document.getElementById("listenFeedback");
+        done.className = "feedback show " + (all ? "ok" : "bad");
+        done.innerHTML = `<strong>${all ? "¡Entendiste todo! 🎉" : "Sigue practicando"}</strong>Este es el texto que escuchaste:<div class="wr-body" style="margin-top:6px;">${escHtml(item.text)}</div>`;
+        done.insertAdjacentHTML("beforeend", listenAfterHTML(item.text, item.es, ""));
+        listenWireAfter(done, item.text);
+        document.getElementById("listenNext").style.display = "inline-block";
+      }
+    };
+  });
+  document.getElementById("listenNext").onclick = newListenQuestion;
+  listenAutoplay(item.text);
 }
 
 /* ---- TRANSLATION ---- */
