@@ -730,6 +730,20 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .feedback.bad{background:#FCE6ED;border:1.5px solid var(--pink);color:#99123F;}
 .feedback strong{display:block;margin-bottom:4px;font-family:'Poppins',sans-serif;font-size:1.02rem;}
 
+.why-failed{margin-top:12px;padding:12px 14px;background:rgba(255,255,255,0.72);border:1px solid rgba(153,18,63,0.22);border-radius:10px;color:#4A0D24;font-size:0.9rem;line-height:1.5;}
+.why-head{font-family:'Poppins',sans-serif;font-weight:700;font-size:0.95rem;color:#99123F;margin-bottom:8px;}
+.why-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.why-compare>div{padding:7px 10px;border-radius:8px;min-width:0;overflow-wrap:anywhere;}
+.why-compare .why-yours{background:#FBD5E0;}
+.why-compare .why-right{background:#D3F3DE;color:#14603A;}
+.why-compare span{display:block;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;opacity:0.75;}
+.why-body{margin:0 0 6px;}
+.why-tip{background:#FFF3C9;color:#5B4300;border-radius:8px;padding:7px 10px;margin-top:6px;}
+.why-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.why-btn{border:1.5px solid rgba(153,18,63,0.35);background:#fff;color:#99123F;border-radius:999px;padding:6px 13px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;}
+.why-btn:active{transform:scale(0.96);}
+@media(max-width:420px){.why-compare{grid-template-columns:1fr;}}
+
 .reading-text{
   background:var(--bg-soft);border:1.5px solid var(--line);border-radius:14px;
   padding:18px 20px;margin-bottom:18px;font-size:0.98rem;line-height:1.65;
@@ -21255,7 +21269,7 @@ function drawVocabTopicQuiz(topicId){
       fb.className = "feedback show " + (ok?"ok":"bad");
       fb.innerHTML = ok
         ? `<strong>¡Correcto! 🎉</strong>"${item.en}" significa "${item.es}".`
-        : `<strong>Casi 😉</strong>"${item.en}" significa "<b>${item.es}</b>".`;
+        : `<strong>Casi 😉</strong>${whyFailedHTML(whyVocab(item, b.dataset.val))}`;
       document.getElementById("vtQuizNext").style.display = "inline-block";
     };
   });
@@ -21712,6 +21726,221 @@ function registerAnswer(id, ok){
   saveProgress();
 }
 
+/* =========================================================
+   POR QUÉ FALLASTE — panel de diagnóstico tras cada error
+   ========================================================= */
+function escHtml(s){
+  return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function editDistance(a, b){
+  const m=a.length, n=b.length;
+  if(!m) return n;
+  if(!n) return m;
+  let prev = Array.from({length:n+1}, (_,j)=>j);
+  for(let i=1;i<=m;i++){
+    const cur = [i];
+    for(let j=1;j<=n;j++){
+      cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1] + (a[i-1]===b[j-1]?0:1));
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+const WHY_STOPWORDS = new Set(["de","del","la","el","los","las","y","o","en","con","para","por","uso","usos","a","un","una","e","u","da","do","das","dos","na","no","um","uma"]);
+function _whyStem(w){
+  return w.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/s$/,"");
+}
+function _whyTokens(s){
+  return String(s).toLowerCase().replace(/<[^>]*>/g," ").split(/[^a-záéíóúüñãõâêôç]+/i).filter(Boolean).map(_whyStem).filter(Boolean);
+}
+/* Busca un tema de Teoría cuyo título (sin lo que va entre paréntesis)
+   aparezca completo en el texto de la pregunta/explicación. Devuelve
+   null si no hay coincidencia clara: mejor no ofrecer enlace que uno
+   equivocado. */
+function findTheoryTopic(text, preferredLevel){
+  const packs = LANG_PACKS[currentLang].THEORY;
+  const hay = new Set(_whyTokens(text));
+  const levels = packs[preferredLevel] ? [preferredLevel, ...LEVELS.filter(l=>l!==preferredLevel)] : LEVELS;
+  let best = null, bestTokens = 0;
+  levels.forEach(L=>{
+    (packs[L]||[]).forEach((t,i)=>{
+      const toks = _whyTokens(t.title.replace(/\([^)]*\)/g,"")).filter(w=>!WHY_STOPWORDS.has(w));
+      if(!toks.length) return;
+      if(toks.every(w=>hay.has(w)) && toks.length > bestTokens){
+        best = {level:L, index:i}; bestTokens = toks.length;
+      }
+    });
+  });
+  return best;
+}
+/* o: {yours, correct, why, tip, theory:{level,index}, go:{id,label}, speak, head}
+   Las acciones que sacan al usuario de la pantalla (teoría, otras
+   secciones) se omiten dentro de "Práctica de hoy" para no perder la sesión. */
+function whyFailedHTML(o){
+  const inSession = typeof practiceTodaySession !== "undefined" && !!practiceTodaySession;
+  const actions = [];
+  if(o.speak) actions.push(`<button type="button" class="why-btn" data-why-speak="${escHtml(o.speak)}">🔊 Escuchar otra vez</button>`);
+  if(!inSession && o.theory) actions.push(`<button type="button" class="why-btn" data-why-theory="${o.theory.level}|${o.theory.index}">📖 Ver teoría</button>`);
+  if(!inSession && o.go) actions.push(`<button type="button" class="why-btn" data-why-go="${o.go.id}">${o.go.label}</button>`);
+  return `<div class="why-failed">
+    <div class="why-head">${o.head || "🔍 ¿Por qué fallaste?"}</div>
+    ${o.correct!=null ? `<div class="why-compare">
+      <div class="why-yours"><span>Tu respuesta</span><b>${o.yours!=null && String(o.yours).trim()!=="" ? escHtml(o.yours) : "(vacío)"}</b></div>
+      <div class="why-right"><span>Correcta</span><b>${escHtml(o.correct)}</b></div>
+    </div>` : ""}
+    ${o.why ? `<p class="why-body">${o.why}</p>` : ""}
+    ${o.tip ? `<div class="why-tip">💡 ${o.tip}</div>` : ""}
+    ${actions.length ? `<div class="why-actions">${actions.join("")}</div>` : ""}
+  </div>`;
+}
+document.addEventListener("click", (e)=>{
+  const th = e.target.closest("[data-why-theory]");
+  if(th){
+    const [lv, idx] = th.dataset.whyTheory.split("|");
+    openTheoryTopic(lv, parseInt(idx));
+    return;
+  }
+  const go = e.target.closest("[data-why-go]");
+  if(go){ resetSectionState(go.dataset.whyGo); goTo(go.dataset.whyGo); return; }
+  const sp = e.target.closest("[data-why-speak]");
+  if(sp) speak(sp.dataset.whySpeak);
+});
+function _langName(){ return LANG_META[currentLang].label.toLowerCase(); }
+function whyVocab(item, chosen){
+  const pool = Object.values(LANG_PACKS[currentLang].VOCAB).flat();
+  const other = pool.find(w=> w.es===chosen && w.en!==item.en);
+  const ff = (LANG_PACKS[currentLang].FALSE_FRIENDS||[]).find(f=> f.en.toLowerCase()===item.en.toLowerCase());
+  return {
+    yours: chosen, correct: item.es,
+    why: other
+      ? `«${escHtml(chosen)}» se dice <b>${escHtml(other.en)}</b> en ${_langName()}. La palabra <b>${escHtml(item.en)}</b> significa «${escHtml(item.es)}».`
+      : `Elegiste «${escHtml(chosen)}», pero <b>${escHtml(item.en)}</b> significa «${escHtml(item.es)}».`,
+    tip: ff
+      ? `Falso amigo: <b>${escHtml(item.en)}</b> se parece a «${escHtml(ff.looksLike)}», pero significa «${escHtml(ff.real)}».`
+      : (item.example ? `Ejemplo: ${escHtml(item.example)}${item.esExample ? " — "+escHtml(item.esExample) : ""}` : ""),
+    go: ff ? {id:"falsefriends", label:"⚠️ Ver falsos amigos"} : null
+  };
+}
+function whyGapfill(item, typed, lv){
+  const t = normalize(typed), ans = normalize(item.answer);
+  const hint = (item.sentence.match(/\(([^)]*)\)/)||[])[1];
+  let diag = "";
+  if(!t) diag = "Dejaste el espacio vacío. ";
+  else if(hint && t===normalize(hint)) diag = `Escribiste el verbo tal cual («${escHtml(hint)}»): hay que cambiarle la forma para que encaje. `;
+  else if(ans.length>=4 && editDistance(t,ans)<=1) diag = "Estuviste muy cerca: parece un error de ortografía. ";
+  return {
+    yours: typed, correct: item.answer,
+    why: diag + escHtml(item.explain || ""),
+    theory: findTheoryTopic(`${item.explain||""} ${item.sentence}`, lv)
+  };
+}
+function whyOrder(item, chosen){
+  const target = item.correct.trim().replace(/\.$/,"").replace(/([?!])$/," $1").split(/\s+/);
+  let why = "";
+  if(!chosen.length) why = "No colocaste ninguna palabra. ";
+  else{
+    let k = 0;
+    while(k<chosen.length && k<target.length && chosen[k].toLowerCase()===target[k].toLowerCase()) k++;
+    if(k<chosen.length && k<target.length) why = `Las primeras ${k} palabras van bien; la palabra ${k+1} debía ser <b>${escHtml(target[k])}</b> y pusiste <b>${escHtml(chosen[k])}</b>. `;
+    else if(chosen.length<target.length) why = `Tu orden va bien hasta donde llegaste, pero faltó usar todas las fichas (siguiente: <b>${escHtml(target[chosen.length])}</b>). `;
+  }
+  return {
+    yours: chosen.join(" "), correct: item.correct,
+    why: why + escHtml(item.explain || ""),
+    tip: "Empieza por el sujeto, luego el verbo, y al final el resto de la frase.",
+    theory: findTheoryTopic(`${item.explain||""}`, current.order && current.order.lv)
+  };
+}
+function whyTranslate(item, typed, lv){
+  const t = normalize(typed);
+  let best = item.en[0], bestD = Infinity;
+  item.en.forEach(v=>{ const d = editDistance(t, normalize(v)); if(d<bestD){ bestD=d; best=v; } });
+  let diag = "";
+  if(!t) diag = "Dejaste la respuesta vacía. ";
+  else if(bestD<=2 && normalize(best).length>=5) diag = "Estuviste muy cerca: revisa la ortografía o un detalle pequeño. ";
+  else{
+    const u = t.split(" "), c = normalize(best).split(" ");
+    const missing = c.filter(w=>!u.includes(w)), extra = u.filter(w=>!c.includes(w));
+    if(missing.length) diag += `Te faltó: <b>${missing.map(escHtml).join(", ")}</b>. `;
+    if(extra.length) diag += `Sobró o no encaja: <b>${extra.map(escHtml).join(", ")}</b>. `;
+  }
+  const alt = item.en.filter(v=>v!==item.en[0]);
+  return {
+    yours: typed, correct: item.en[0],
+    why: diag + escHtml(item.explain || ""),
+    tip: alt.length ? `También se acepta: ${alt.map(escHtml).join(" / ")}` : "",
+    theory: findTheoryTopic(`${item.explain||""}`, lv)
+  };
+}
+function whyListen(sentence, typed){
+  const c = normalize(sentence).split(" "), u = normalize(typed).split(" ").filter(Boolean);
+  const {matched, lcsLength} = lcsWordMatch(c, u);
+  const wrong = c.filter((_,i)=>!matched[i]);
+  const close = wrong.filter(w=> u.some(x=> !c.includes(x) && editDistance(x,w)<=2));
+  let why = !u.length ? "No escribiste nada. " : `Acertaste ${lcsLength} de ${c.length} palabras. `;
+  if(wrong.length) why += `Te costaron: <b>${wrong.map(escHtml).join(", ")}</b>. `;
+  if(close.length) why += "Algunas estaban casi bien (ortografía). ";
+  return {
+    yours: typed, correct: sentence, why,
+    tip: "Escúchala otra vez sin mirar la respuesta y fíjate en las palabras cortas (a, the, to), que se pronuncian muy suaves.",
+    speak: sentence
+  };
+}
+function whyPhrasal(item, chosen){
+  const other = ALL_PHRASAL.find(x=> x.es===chosen && x.phrase!==item.phrase);
+  const parts = item.phrase.split(" ");
+  return {
+    yours: chosen, correct: item.es,
+    why: other
+      ? `«${escHtml(chosen)}» es lo que significa <b>${escHtml(other.phrase)}</b>, no <b>${escHtml(item.phrase)}</b>.`
+      : `Elegiste «${escHtml(chosen)}», pero <b>${escHtml(item.phrase)}</b> significa «${escHtml(item.es)}».`,
+    tip: parts.length>1
+      ? `El significado de un phrasal verb no sale de sus partes: <b>${escHtml(parts[0])}</b> cambia de sentido con <b>${escHtml(parts.slice(1).join(" "))}</b>. Apréndelo completo con un ejemplo: ${escHtml(item.example)}`
+      : `Ejemplo: ${escHtml(item.example)}`,
+    go: {id:"phrasal", label:"🧩 Ver phrasal verbs"}
+  };
+}
+function whyVerbForm(v, target, correct, chosen, ruleNote){
+  const f = VERB_FORM_FIELDS.find(x=> x.field!==target.field && v[x.field]===chosen);
+  return {
+    yours: chosen, correct,
+    why: f
+      ? `«${escHtml(chosen)}» es la forma de <b>${f.label}</b> de <b>${escHtml(v.base)}</b>, pero aquí se pedía: <b>${target.label}</b>.`
+      : `«${escHtml(chosen)}» no es la forma que se pedía (<b>${target.label}</b>) de <b>${escHtml(v.base)}</b>, que es «${escHtml(correct)}».`,
+    tip: escHtml(ruleNote),
+    go: v.type!=="Regular" ? {id:"verbs", label:"📚 Ver tabla de verbos"} : null
+  };
+}
+function _firstSentence(s){
+  const m = String(s||"").match(/^.*?[.!?](?=\s|$)/);
+  return m ? m[0] : String(s||"");
+}
+function whyWordClass(item, chosen, catObj){
+  const chosenObj = LANG_PACKS[currentLang].CATEGORIES.find(c=>c.name===chosen);
+  return {
+    yours: chosen, correct: item.correct,
+    why: `En esta oración, <b>${escHtml(item.word)}</b> cumple la función de ${escHtml(item.correct.toLowerCase())}${catObj ? ": "+escHtml(_firstSentence(catObj.def)) : "."}`
+      + (chosenObj ? ` Elegiste <b>${escHtml(chosen)}</b>: ${escHtml(_firstSentence(chosenObj.def))}` : ""),
+    tip: "Pregúntate qué hace la palabra en la frase: ¿nombra algo, describe, indica una acción, conecta ideas?",
+    go: {id:"categories", label:"🏷️ Ver categorías"}
+  };
+}
+function whyDialogue(chosen, correctOpt){
+  return {
+    yours: chosen.text, correct: correctOpt.text,
+    why: escHtml(chosen.explain || "Esa opción no responde de forma natural a lo que dijo el interlocutor."),
+    tip: "Lee la última frase del interlocutor y piensa qué respuesta esperaría recibir."
+  };
+}
+function whyReading(q, chosenText, lv){
+  return {
+    yours: chosenText, correct: q.opts[q.correct],
+    why: escHtml(q.explain || ""),
+    tip: "Vuelve al texto y busca la frase exacta que responde la pregunta antes de elegir.",
+    theory: findTheoryTopic(q.explain||"", lv)
+  };
+}
+
 /* ---- VOCAB ---- */
 function newVocabQuestion(){
   const lv = pickLevel();
@@ -21763,7 +21992,7 @@ function drawVocab(){
       fb.className = "feedback show " + (ok?"ok":"bad");
       fb.innerHTML = ok
         ? `<strong>¡Correcto! 🎉</strong>"${item.en}" significa "${item.es}".`
-        : `<strong>Casi 😉</strong>"${item.en}" significa "<b>${item.es}</b>", no "${b.dataset.val}". Piensa en el contexto en que usarías esa palabra para recordarla mejor.`;
+        : `<strong>Casi 😉</strong>${whyFailedHTML(whyVocab(item, b.dataset.val))}`;
       if(ok){
         setTimeout(newVocabQuestion, 1100);
       }else{
@@ -21818,7 +22047,7 @@ function drawGapfill(){
     fb.className = "feedback show " + (ok?"ok":"bad");
     fb.innerHTML = ok
       ? `<strong>¡Correcto! 🎉</strong>${item.explain}`
-      : `<strong>Respuesta correcta: "${item.answer}"</strong>${item.explain}`;
+      : `<strong>Casi 😉</strong>${whyFailedHTML(whyGapfill(item, input.value, lv))}`;
     next.style.display="inline-block";
   }
   check.onclick = doCheck;
@@ -21869,7 +22098,15 @@ function drawWriting(){
     fb.className = "feedback show " + (ok?"ok":"bad");
     fb.innerHTML = ok
       ? `<strong>¡Buen trabajo! 🎉</strong>Escribiste ${wordCount} palabras y tocaste el tema pedido.`
-      : `<strong>Sigue practicando</strong>Escribiste ${wordCount}/${item.minWords} palabras mínimas. Intenta incluir ideas relacionadas con: ${item.keywords.slice(0,4).join(", ")}...`;
+      : `<strong>Sigue practicando</strong>${whyFailedHTML({
+          yours: `${wordCount} ${wordCount===1?"palabra":"palabras"}`,
+          correct: `mínimo ${item.minWords} palabras sobre el tema`,
+          why: [
+            wordCount < item.minWords ? `Te ${item.minWords-wordCount===1?"faltó":"faltaron"} <b>${item.minWords - wordCount}</b> ${item.minWords-wordCount===1?"palabra":"palabras"} para llegar al mínimo.` : "",
+            keywordHits < 1 ? `Tu texto no toca el tema pedido: incluye ideas como <b>${item.keywords.slice(0,4).map(escHtml).join(", ")}</b>.` : ""
+          ].filter(Boolean).join(" "),
+          tip: "Escribe frases completas y desarrolla cada idea con un detalle o ejemplo."
+        })}`;
     next.style.display="inline-block";
   }
   check.onclick = doCheck;
@@ -21946,7 +22183,7 @@ function checkOrder(){
     </div>` : "";
   fb.innerHTML = ok
     ? `<strong>¡Correcto! 🎉</strong>${item.explain}${translationRow}`
-    : `<strong>Orden correcto: "${item.correct}"</strong>${item.explain}`;
+    : `<strong>Casi 😉</strong>${whyFailedHTML(whyOrder(item, current.order.chosen))}`;
   if(ok && item.es){
     document.getElementById("orderSpeakBtn").onclick = ()=> speak(item.correct);
   }
@@ -22101,7 +22338,7 @@ function drawReading(){
         registerAnswer("reading", ok);
         const fb = document.getElementById(`readingFb${qi}`);
         fb.className = "feedback show " + (ok?"ok":"bad");
-        fb.innerHTML = ok ? `<strong>¡Correcto! 🎉</strong>${q.explain}` : `<strong>Respuesta correcta: "${q.opts[q.correct]}"</strong>${q.explain}`;
+        fb.innerHTML = ok ? `<strong>¡Correcto! 🎉</strong>${q.explain}` : `<strong>Casi 😉</strong>${whyFailedHTML(whyReading(q, btn.textContent, lv))}`;
       };
     });
   });
@@ -22185,7 +22422,11 @@ function drawReadingCloze(){
       ${checked ? `
       <div class="feedback show ${correctCount===item.blanks.length?"ok":"bad"}" style="margin-top:16px;">
         <strong>${correctCount===item.blanks.length ? "¡Perfecto! 🎉" : `Acertaste ${correctCount} de ${item.blanks.length}`}</strong>
-        ${item.blanks.map((b,i)=> answers[i]!==b.correct ? `<div style="margin-top:8px;">${i+1}. <b>${b.correct}</b> — ${b.explain}</div>` : "").join("")}
+        ${item.blanks.map((b,i)=> answers[i]!==b.correct ? whyFailedHTML({
+          head: `🔍 Espacio ${i+1}: ¿por qué fallaste?`,
+          yours: answers[i], correct: b.correct, why: escHtml(b.explain || ""),
+          theory: findTheoryTopic(b.explain||"", lv)
+        }) : "").join("")}
       </div>` : ""}
       <div class="btn-row" style="margin-top:16px;">
         ${!checked
@@ -22298,7 +22539,18 @@ function drawReadingLetters(){
       ${checked ? `
       <div class="feedback show ${correctCount===item.blanks.length?"ok":"bad"}" style="margin-top:16px;">
         <strong>${correctCount===item.blanks.length ? "¡Perfecto! 🎉" : `Acertaste ${correctCount} de ${item.blanks.length}`}</strong>
-        ${item.blanks.map((b,i)=> !_rlWordOk(b, answers[i]) ? `<div style="margin-top:8px;"><b>${b.correct}</b> — ${b.explain}</div>` : "").join("")}
+        ${item.blanks.map((b,i)=>{
+          if(_rlWordOk(b, answers[i])) return "";
+          const typedWord = b.correct.slice(0,b.hintLen) + answers[i].join("");
+          const wrongLetters = answers[i].filter((ch,j)=> ch.toLowerCase() !== b.correct[b.hintLen+j].toLowerCase()).length;
+          return whyFailedHTML({
+            head: `🔍 Palabra ${i+1}: ¿por qué fallaste?`,
+            yours: typedWord, correct: b.correct,
+            why: `Fallaste en <b>${wrongLetters}</b> de ${answers[i].length} ${answers[i].length===1?"letra":"letras"}. ${escHtml(b.explain || "")}`,
+            tip: b.clue ? `Pista: ${escHtml(b.clue)}` : "",
+            theory: findTheoryTopic(b.explain||"", lv)
+          });
+        }).join("")}
       </div>` : ""}
       <div class="btn-row" style="margin-top:16px;">
         ${!checked
@@ -22462,7 +22714,7 @@ function drawListen(){
     fb.className = "feedback show " + (ok?"ok":"bad");
     fb.innerHTML = ok
       ? `<strong>¡Perfecto! 🎉</strong>Escuchaste correctamente: "${sentence}"`
-      : `<strong>Casi 😉</strong>La frase correcta era: "${sentence}". Comparación palabra por palabra: ${diffWords(input.value, sentence)}`;
+      : `<strong>Casi 😉</strong>Comparación palabra por palabra: ${diffWords(input.value, sentence)}${whyFailedHTML(whyListen(sentence, input.value))}`;
     next.style.display="inline-block";
   }
   check.onclick = doCheck;
@@ -22506,7 +22758,7 @@ function drawTranslate(){
     fb.className = "feedback show " + (ok?"ok":"bad");
     fb.innerHTML = ok
       ? `<strong>¡Correcto! 🎉</strong>${item.explain}`
-      : `<strong>Respuesta esperada: "${item.en[0]}"</strong>${item.explain}`;
+      : `<strong>Casi 😉</strong>${whyFailedHTML(whyTranslate(item, input.value, lv))}`;
     next.style.display="inline-block";
   }
   check.onclick = doCheck;
@@ -22570,7 +22822,7 @@ function drawDialogue(){
       fb.className = "feedback show " + (ok?"ok":"bad");
       fb.innerHTML = ok
         ? `<strong>¡Muy natural! 🎉</strong>Esa es la respuesta más apropiada en este contexto.`
-        : `<strong>Mejor opción: "${correctOpt.text}"</strong>${chosen.explain||""}`;
+        : `<strong>Casi 😉</strong>${whyFailedHTML(whyDialogue(chosen, correctOpt))}`;
       current.dialogue.history.push({aText: turn.a, bText: correctOpt.text});
       document.getElementById("dialogueNextTurnBtn").style.display = "inline-block";
     };
@@ -22640,7 +22892,7 @@ function drawPhrasal(){
       fb.className = "feedback show " + (ok?"ok":"bad");
       fb.innerHTML = ok
         ? `<strong>¡Correcto! 🎉</strong>"${item.phrase}" significa "${item.es}". Ejemplo: ${wz(item.example)}`
-        : `<strong>Casi 😉</strong>"${item.phrase}" significa "<b>${item.es}</b>". Ejemplo: ${wz(item.example)}`;
+        : `<strong>Casi 😉</strong>${whyFailedHTML(whyPhrasal(item, b.dataset.val))}`;
     };
   });
   document.getElementById("phrasalNext").onclick = newPhrasalQuestion;
@@ -22710,7 +22962,7 @@ function drawVerbForm(){
       fb.className = "feedback show " + (ok?"ok":"bad");
       fb.innerHTML = ok
         ? `<strong>¡Correcto! 🎉</strong>${ruleNote}`
-        : `<strong>Respuesta correcta: "${correct}"</strong>${ruleNote}`;
+        : `<strong>Casi 😉</strong>${whyFailedHTML(whyVerbForm(v, target, correct, b.dataset.val, ruleNote))}`;
     };
   });
   document.getElementById("verbformNext").onclick = newVerbFormQuestion;
@@ -22767,7 +23019,7 @@ function drawWordClass(){
       fb.className = "feedback show " + (ok?"ok":"bad");
       fb.innerHTML = ok
         ? `<strong>¡Correcto! 🎉</strong>"${item.word}" es un(a) ${item.correct.toLowerCase()}.`
-        : `<strong>Respuesta correcta: ${item.correct}</strong>"${item.word}" es un(a) ${item.correct.toLowerCase()}. ${catObj ? catObj.def : ""}`;
+        : `<strong>Casi 😉</strong>${whyFailedHTML(whyWordClass(item, b.dataset.val, catObj))}`;
     };
   });
   document.getElementById("wordclassNext").onclick = newWordClassQuestion;
