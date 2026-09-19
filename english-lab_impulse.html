@@ -748,6 +748,24 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .wr-count{float:right;font-weight:800;color:var(--pink);}
 .wr-trend{margin:12px 0 0;font-size:0.88rem;font-weight:600;}
 .wr-trend.good{color:#14803A;}
+.e2p-group{margin:22px 0 10px;font-size:1.05rem;}
+.e2p-group span{display:block;font-size:0.8rem;font-weight:500;color:var(--ink-soft);margin-top:2px;}
+.e2p-rule{padding:0;margin-bottom:10px;overflow:hidden;}
+.e2p-rule summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:14px 16px;cursor:pointer;list-style:none;}
+.e2p-rule summary::-webkit-details-marker{display:none;}
+.e2p-rule[open] summary{border-bottom:1px solid var(--line);}
+.e2p-rule-title{font-weight:800;font-size:1.02rem;color:var(--purple-dark);}
+.e2p-rule-ex{font-size:0.82rem;color:var(--ink-soft);}
+.e2p-rule > :not(summary){margin-left:16px;margin-right:16px;}
+.e2p-rule > .e2p-explain{margin-top:12px;font-size:0.92rem;line-height:1.55;}
+.e2p-table td{padding:6px 8px;vertical-align:top;}
+.e2p-table td:nth-child(2){color:var(--ink-soft);width:24px;text-align:center;}
+.e2p-exc,.e2p-warn{margin-top:12px;padding:10px 12px;border-radius:12px;font-size:0.9rem;}
+.e2p-exc{background:#FFF3C9;color:#5B4300;}
+.e2p-warn{background:#FCE6ED;color:#7A1338;}
+.e2p-exc .wr-body,.e2p-warn .wr-body{color:inherit;opacity:.85;}
+.e2p-rule:last-child{margin-bottom:16px;}
+.e2p-tip{margin-bottom:0;}
 .wr-review{margin-top:14px;text-align:left;}
 .wr-review-h{font-weight:800;font-size:0.95rem;margin-bottom:8px;}
 .wr-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
@@ -1095,6 +1113,7 @@ const NAV = [
     {id:"falsefriends", label:"Falsos Amigos"},
     {id:"howtosay", label:"Cómo se dice"},
     {id:"vocabtopics", label:"Vocabulario por Temas"},
+    {id:"es2pt", label:"Español → Portugués", only:"pt"},
   ]},
   {group:"test-group", label:"Test", icon:"target", items:[
     {id:"placement", label:"Prueba de Nivel"},
@@ -19227,7 +19246,7 @@ let currentLevel = "A1";
 let activeSection = "home";
 let activeExercise = "vocab";
 const stats = {};
-["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
+["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
 const current = {};
 const dailyStreak = {count:0, lastDate:null};   // racha diaria global, distinta de stats[id].streak
 const weeklyHistory = [];  // [{weekStart, exercisesDone, correct, correctRate}] — últimas 12 semanas
@@ -21205,7 +21224,7 @@ document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); }
 /* =========================================================
    HEADER: nav + level bar
    ========================================================= */
-const NAV_ICONS = {home:"home", route:"route", placement:"target", theory:"book", categories:"tag", phrasal:"puzzle", situations:"compass", expressions:"chat", falsefriends:"burst", howtosay:"search", vocabtopics:"flashcards", verbs:"books", exercises:"pencil", exams:"clock", profile:"user"};
+const NAV_ICONS = {home:"home", route:"route", placement:"target", theory:"book", categories:"tag", phrasal:"puzzle", situations:"compass", expressions:"chat", falsefriends:"burst", howtosay:"search", vocabtopics:"flashcards", es2pt:"shuffle", verbs:"books", exercises:"pencil", exams:"clock", profile:"user"};
 function resetSectionState(id){
   if(id==="theory"){ activeTheoryTopic = null; theoryReturnTo = null; }
   if(id==="phrasal") activePhrasalTheme = null;
@@ -21220,7 +21239,8 @@ function buildHeader(){
     if(s.group){
       const wrap = document.createElement("div");
       wrap.className = "nav-dropdown";
-      wrap.dataset.groupIds = s.items.map(it=>it.id).join(",");
+      const navItems = s.items.filter(it=> !it.only || it.only === currentLang);
+      wrap.dataset.groupIds = navItems.map(it=>it.id).join(",");
       const toggle = document.createElement("button");
       toggle.type = "button";
       toggle.className = "nav-link nav-dropdown-toggle";
@@ -21239,7 +21259,7 @@ function buildHeader(){
       const menuInner = document.createElement("div");
       menuInner.className = "nav-dropdown-menu-inner";
       menu.appendChild(menuInner);
-      s.items.forEach(it=>{
+      navItems.forEach(it=>{
         const item = document.createElement("button");
         item.type = "button";
         item.className = "nav-dropdown-item" + (it.id===activeSection?" active":"");
@@ -21354,6 +21374,7 @@ function goTo(sectionId){
     if(sectionId==="falsefriends") renderFalseFriends();
     if(sectionId==="howtosay") renderHowToSay();
     if(sectionId==="vocabtopics") renderVocabTopics();
+    if(sectionId==="es2pt") renderEs2pt();
     if(sectionId==="verbs") renderVerbs();
     if(sectionId==="exercises") renderExercise(activeExercise, false);
     if(sectionId==="practicehoy") renderPracticeHoy();
@@ -21517,7 +21538,7 @@ function renderRadarSVG(skills){
    que el radar no cubre pero sí cuentan como ejercicios hechos). */
 const DAILY_ACTIVITY_CATS = [
   {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","wordclass","phrasal","order"]},
-  {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics","matchpairs"]},
+  {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics","matchpairs","es2pt"]},
   {label:"Listening", color:"var(--blue)", gradId:"gListening", from:"#2E9CDB", to:"#8DD0F5", ids:["listen","dialogue","minimalpairs"]},
   {label:"Reading", color:"var(--amber)", gradId:"gReading", from:"#F5A623", to:"#FBD38D", ids:["reading","readingcloze","readingletters"]},
   {label:"Writing", color:"var(--pink)", gradId:"gWriting", from:"#E0457A", to:"#F5A0BE", ids:["writing"]},
@@ -25828,11 +25849,322 @@ function drawErrorBank(){
 }
 
 /* =========================================================
+   ESPAÑOL → PORTUGUÉS (Utilidades, solo modo portugués de Brasil)
+   Guía de reglas de equivalencia entre las dos lenguas (inspirada en un video de @enzi.torres) y tres prácticas:
+   convertir la palabra, detectar la regla y unir pares. Son TENDENCIAS, no leyes: cada regla lista sus excepciones.
+   Repaso espaciado propio (ids es2pt:pt:<regla>:<n>); no entra a Práctica de hoy ni a Para repasar.
+   ========================================================= */
+const ES2PT_GROUPS = [
+  {id:"ends",   label:"Terminaciones", icon:"🔚", sub:"Sufijos que cambian de forma casi siempre igual"},
+  {id:"sounds", label:"Sonidos y letras", icon:"🔤", sub:"Letras y diptongos que se transforman"},
+  {id:"words",  label:"Palabras y verbos", icon:"🧩", sub:"Lo que no sigue regla y los falsos amigos"},
+];
+const ES2PT_RULES_RAW = [{"id":"cion","g":"ends","from":"-ción","to":"-ção","explain":"Es la regla más rentable: casi todas las palabras en -ción terminan en -ção (se pronuncia «sao» nasal). El plural es -ções (canciones → canções).","pairs":"canción=canção|acción=ação|nación=nação|información=informação|situación=situação|educación=educação|comunicación=comunicação|estación=estação|solución=solução|relación=relação|atención=atenção","exc":"lección=lição (no «leção»)|elección=eleição (no «eleção»)","warn":"","alts":[["ção","ción"],["ção","são"],["ção","cão"]]},{"id":"sion","g":"ends","from":"-sión","to":"-são","explain":"Las palabras en -sión terminan en -são. Ojo con la ortografía: a veces se duplica la s (misión → missão) o cambia a -ss-/x.","pairs":"televisión=televisão|decisión=decisão|invasión=invasão|conclusión=conclusão|versión=versão|división=divisão|explosión=explosão|revisión=revisão|profesión=profissão","exc":"misión=missão (doble s)|pasión=paixão (cambia a -ix-)|comisión=comissão (doble s)|expresión=expressão (doble s)","warn":"","alts":[["são","sión"],["são","ção"],["são","zão"]]},{"id":"on","g":"ends","from":"-ón","to":"-ão","explain":"Muchas palabras terminadas en -ón pasan a -ão (nasal). El plural cambia: razões, corações, botões, limões.","pairs":"razón=razão|corazón=coração|botón=botão|limón=limão|melón=melão|pulmón=pulmão|montón=montão|salón=salão|Japón=Japão","exc":"camión=caminhão (aparece nh)|jabón=sabão (j→s)|ratón=rato (cambia la palabra)","warn":"","alts":[["ão","ón"],["ão","om"],["ão","ao"]]},{"id":"ion","g":"ends","from":"-ión","to":"-ião","explain":"Las palabras en -ión pasan a -ião. Ojo: millón no sigue la regla (milhão).","pairs":"opinión=opinião|región=região|unión=união|religión=religião|campeón=campeão|avión=avião|reunión=reunião","exc":"millón=milhão (ll→lh y termina en -ão)","warn":"","alts":[["ião","ión"],["ião","ão"],["ião","ion"]]},{"id":"dad","g":"ends","from":"-dad","to":"-dade","explain":"Las terminaciones -dad se convierten en -dade: se agrega una -e final. Es una de las reglas más regulares.","pairs":"ciudad=cidade|verdad=verdade|realidad=realidade|universidad=universidade|felicidad=felicidade|capacidad=capacidade|actividad=atividade|necesidad=necessidade|oportunidad=oportunidade|facilidad=facilidade","exc":"libertad=liberdade (t→d)|amistad=amizade (cambia la raíz)|calidad=qualidade (qu-)|cantidad=quantidade (qu-)|edad=idade|mitad=metade","warn":"","alts":[["dade","dad"],["dade","de"],["dade","date"]]},{"id":"an","g":"ends","from":"-án","to":"-ão","explain":"Las palabras agudas terminadas en -án suelen terminar en -ão: pan → pão, alemán → alemão.","pairs":"pan=pão|alemán=alemão|capitán=capitão|sultán=sultão|catalán=catalão|charlatán=charlatão|sacristán=sacristão|volcán=vulcão","exc":"","warn":"","alts":[["ão","án"],["ão","an"],["ão","ano"]]},{"id":"ano","g":"ends","from":"-ano","to":"-ão","explain":"En varias palabras la terminación -ano pasa a -ão: hermano → irmão. Pero no en todas: humano y americano se quedan igual.","pairs":"hermano=irmão|verano=verão|mano=mão|cristiano=cristão|ciudadano=cidadão|anciano=ancião|aldeano=aldeão|pagano=pagão","exc":"humano=humano (no cambia)|americano=americano (no cambia)|urbano=urbano (no cambia)|castellano=castelhano (mantiene -ano; ll→lh)","warn":"","alts":[["ão","ano"],["ão","an"],["ão","ao"]]},{"id":"aje","g":"ends","from":"-aje","to":"-agem","explain":"Las palabras en -aje terminan en -agem en portugués (se pronuncia «ajen»).","pairs":"viaje=viagem|paisaje=paisagem|mensaje=mensagem|garaje=garagem|aprendizaje=aprendizagem|lenguaje=linguagem|personaje=personagem|masaje=massagem|homenaje=homenagem|coraje=coragem","exc":"peaje=pedágio (otra palabra)|equipaje=bagagem (otra palabra)","warn":"","alts":[["agem","aje"],["agem","agen"],["agem","ajem"]]},{"id":"ble","g":"ends","from":"-ble","to":"-vel","explain":"Las terminaciones -ble (adjetivos) pasan a -vel, con acento en la vogal anterior: amable → amável, posible → possível.","pairs":"amable=amável|terrible=terrível|posible=possível|imposible=impossível|increíble=incrível|responsable=responsável|agradable=agradável|notable=notável|estable=estável|razonable=razoável|confortable=confortável","exc":"cable=cabo (otra palabra)|doble=dobro / duplo (según el uso)","warn":"","alts":[["vel","ble"],["vel","bel"],["vel","ble"]]},{"id":"ero","g":"ends","from":"-ero","to":"-eiro","explain":"Los oficios y ordinales en -ero terminan en -eiro: cocinero → cozinheiro, primero → primeiro. A veces también cambia una consonante (z→s, ñ→nh).","pairs":"cocinero=cozinheiro|panadero=padeiro|primero=primeiro|dinero=dinheiro|tercero=terceiro|ingeniero=engenheiro|extranjero=estrangeiro|febrero=fevereiro|compañero=companheiro|zapatero=sapateiro|librero=livreiro","exc":"enero=janeiro (cambia la palabra)|cero=zero (c→z)|pero=mas (otra palabra)","warn":"","alts":[["eiro","ero"],["eiro","eira"],["eiro","eiros"]]},{"id":"eria","g":"ends","from":"-ería","to":"-aria","explain":"Los nombres de tiendas en -ería suelen terminar en -aria: panadería → padaria, librería → livraria.","pairs":"panadería=padaria|librería=livraria|pastelería=pastelaria|zapatería=sapataria|relojería=relojoaria","exc":"joyería=joalheria (queda -eria)|cafetería=cafeteria (queda -eria)|lavandería=lavanderia (queda -eria)|carnicería=açougue (otra palabra)","warn":"librería=livraria (¡es una tienda de libros, no «biblioteca»!)","alts":[["aria","ería"],["aria","eria"],["aria","area"]]},{"id":"tud","g":"ends","from":"-tud","to":"-tude","explain":"Como con -dad, las palabras en -tud reciben una -e final: actitud → atitude, juventud → juventude.","pairs":"actitud=atitude|juventud=juventude|virtud=virtude|latitud=latitude|longitud=longitude|altitud=altitude|magnitud=magnitude","exc":"multitud=multidão (otra terminación)|esclavitud=escravidão (otra terminación)","warn":"","alts":[["tude","tud"],["tude","ted"],["tude","tuda"]]},{"id":"miento","g":"ends","from":"-miento","to":"-mento","explain":"Se pierde la -i-: -miento → -mento. Es muy regular en sustantivos derivados de verbos.","pairs":"pensamiento=pensamento|sentimiento=sentimento|movimiento=movimento|conocimiento=conhecimento|tratamiento=tratamento|crecimiento=crescimento|nacimiento=nascimento|casamiento=casamento|sufrimiento=sofrimento","exc":"","warn":"","alts":[["mento","miento"],["mento","mente"],["mento","mienta"]]},{"id":"encia","g":"ends","from":"-encia / -ancia","to":"-ência / -ância","explain":"Se mantiene la terminación, pero con acento circunflejo: importancia → importância, paciencia → paciência.","pairs":"importancia=importância|distancia=distância|ausencia=ausência|paciencia=paciência|experiencia=experiência|ciencia=ciência|violencia=violência|consecuencia=consequência","exc":"diferencia=diferença (cambia a -ença)|presencia=presença (cambia a -ença)","warn":"","alts":[["ência","encia"],["ância","ancia"],["ência","ença"]]},{"id":"ito","g":"ends","from":"-ito / -ita","to":"-inho / -inha","explain":"Los diminutivos: -ito → -inho, -ita → -inha (como en el título del video: «agrega -inho a todo»). Si la palabra termina en vocal tónica o consonante, se usa -zinho: café → cafezinho, irmão → irmãozinho.","pairs":"gatito=gatinho|casita=casinha|poquito=pouquinho|momentito=momentinho|cafecito=cafezinho|librito=livrinho|amiguito=amiguinho|hermanito=irmãozinho","exc":"","warn":"","alts":[["inho","ito"],["inha","ita"],["zinho","cinho"]]},{"id":"jlh","g":"sounds","from":"j","to":"lh","explain":"El sonido /x/ del español (j) suele ser lh /ʎ/ en portugués: mujer → mulher, ojo → olho.","pairs":"mujer=mulher|ojo=olho|oreja=orelha|ajo=alho|abeja=abelha|paja=palha|hoja=folha|conejo=coelho|trabajo=trabalho|espejo=espelho|viejo=velho|consejo=conselho","exc":"caja=caixa (j→ix)|bajo=baixo (j→ix)|reloj=relógio (otra palabra)|rojo=vermelho (otra palabra)|dejar=deixar (j→x)","warn":"","alts":[["lh","j"],["lh","ll"],["lh","l"]]},{"id":"llch","g":"sounds","from":"ll","to":"ch","explain":"En muchas palabras de la familia latina en «pl-, cl-, fl-», el español dice ll y el portugués ch: llamar → chamar, llave → chave.","pairs":"llamar=chamar|llave=chave|llegar=chegar|lluvia=chuva|llorar=chorar|lleno=cheio|llama=chama|llover=chover","exc":"caballo=cavalo (ll→l)|gallo=galo (ll→l)|bello=belo (ll→l)|amarillo=amarelo (ll→l)|calle=rua (otra palabra)|silla=cadeira (otra palabra)|pollo=frango (otra palabra)","warn":"","alts":[["ch","ll"],["ch","x"],["ch","c"]]},{"id":"ny","g":"sounds","from":"ñ","to":"nh","explain":"La ñ del español se escribe nh en portugués: uña → unha, baño → banho. Suenan casi igual.","pairs":"uña=unha|cariño=carinho|baño=banho|montaña=montanha|araña=aranha|España=Espanha|señor=senhor|sueño=sonho|cuñado=cunhado|extraño=estranho|campaña=campanha|leña=lenha","exc":"año=ano (se pierde la ñ)|otoño=outono (se pierde la ñ)|pequeño=pequeno (se pierde la ñ)|niño=menino (otra palabra)","warn":"","alts":[["nh","ñ"],["nh","n"],["nh","ny"]]},{"id":"ie","g":"sounds","from":"ie","to":"e","explain":"El diptongo ie del español suele ser una e simple en portugués: fiesta → festa, tierra → terra, siempre → sempre.","pairs":"fiesta=festa|tierra=terra|siempre=sempre|viento=vento|miel=mel|hierro=ferro|diente=dente|tiempo=tempo|cierto=certo|piedra=pedra|pierna=perna|siete=sete|ciento=cento","exc":"cielo=céu (cambia la palabra)|hielo=gelo (h→g)|hierba=erva (cae la h)","warn":"tienda=loja (¡no «tenda», que en portugués es una carpa!)","alts":[["e","ie"],["ê","ie"],["e","ei"]]},{"id":"ue","g":"sounds","from":"ue","to":"o","explain":"El diptongo ue del español suele ser o en portugués: fuego → fogo, puerta → porta, nuevo → novo. Cuando hay h delante, también cae: huevo → ovo.","pairs":"fuego=fogo|puerta=porta|nuevo=novo|huevo=ovo|muerte=morte|fuerte=forte|dueño=dono|cuerpo=corpo|puente=ponte|escuela=escola|fuente=fonte|cuenta=conta","exc":"bueno=bom (otra forma)|cuatro=quatro (cu→qua)|cuero=couro (ue→ou)","warn":"sueño=sonho (lo que sueñas) o sono (ganas de dormir): en portugués son dos palabras","alts":[["o","ue"],["o","ua"],["o","uo"]]},{"id":"hf","g":"sounds","from":"h","to":"f","explain":"Muchas palabras latinas con f- pasaron a h- en español (se dejó de pronunciar), pero el portugués conservó la f: hacer → fazer, hablar → falar, harina → farinha.","pairs":"hacer=fazer|harina=farinha|humo=fumo|hijo=filho|hablar=falar|hermoso=formoso|hambre=fome|higo=figo|horno=forno|hilo=fio|hierro=ferro","exc":"hombre=homem (h se pierde)|hora=hora (h se pierde)|hotel=hotel|huevo=ovo (h se pierde)|hermano=irmão (h se pierde, ¡no «hermão»!)|hola=olá|hoy=hoje","warn":"","alts":[["f","h"],["v","h"],["f","g"]]},{"id":"zc","g":"sounds","from":"z","to":"ç","explain":"La z del español se escribe ç (c con cedilla) en portugués delante de a, o, u: cabeza → cabeça, pieza → peça, fuerza → força.","pairs":"cabeza=cabeça|pieza=peça|fuerza=força|esperanza=esperança|danza=dança|plaza=praça|azúcar=açúcar|abrazo=abraço|brazo=braço|empezar=começar|lanza=lança","exc":"luz=luz (z final no cambia)|voz=voz (z final no cambia)|paz=paz (z final no cambia)|vez=vez (z final no cambia)|nariz=nariz (z final no cambia)|cruz=cruz (z final no cambia)","warn":"","alts":[["ç","z"],["ç","c"],["ç","s"]]},{"id":"chit","g":"sounds","from":"ch","to":"it","explain":"En muchas palabras el español ch corresponde a it en portugués: noche → noite, leche → leite, ocho → oito, mucho → muito, hecho → feito.","pairs":"noche=noite|leche=leite|ocho=oito|mucho=muito|hecho=feito|derecho=direito|pecho=peito|estrecho=estreito|provecho=proveito|lecho=leito","exc":"techo=teto (ch→t)|coche=carro (otra palabra)|mochila=mochila (no cambia)","warn":"","alts":[["it","ch"],["it","ct"],["t","ch"]]},{"id":"ct","g":"sounds","from":"ct","to":"it / t / ut","explain":"El grupo ct del español se simplifica en portugués: a veces es it (efecto → efeito), a veces solo t (acto → ato) y a veces ut (doctor → doutor).","pairs":"efecto=efeito|perfecto=perfeito|concepto=conceito|respecto=respeito|directo=direto|director=diretor|acto=ato|actor=ator|doctor=doutor|octubre=outubro|lectura=leitura","exc":"contacto=contato (solo t)|proyecto=projeto (solo t)","warn":"","alts":[["it","ct"],["t","ct"],["ut","ct"]]},{"id":"blbr","g":"sounds","from":"bl / pl / gl / cl","to":"br / pr / gr / cr","explain":"Los grupos con l del español suelen tener r en portugués: blanco → branco, plata → prata, iglesia → igreja, regla → regra, clavo → cravo.","pairs":"blanco=branco|blando=brando|plata=prata|plato=prato|plaza=praça|iglesia=igreja|regla=regra|clavo=cravo|playa=praia","exc":"flor=flor (no cambia)|pluma=pluma (no cambia)|planta=planta (no cambia)|plan=plano (agrega -o)|clase=classe (cl se mantiene)","warn":"","alts":[["br","bl"],["pr","pl"],["gr","gl"]]},{"id":"verbos","g":"words","from":"verbos irregulares","to":"formas propias","explain":"Estos verbos muy frecuentes no siguen ninguna regla: hay que memorizarlos. Los que empiezan por h- cambian a f- (hacer → fazer).","pairs":"tener=ter|venir=vir|poner=pôr|decir=dizer|hacer=fazer|salir=sair|oír=ouvir|caer=cair|traer=trazer|leer=ler|creer=crer","exc":"","warn":"","alts":[["ter","tener"],["dizer","decir"],["sair","salir"]]},{"id":"cortas","g":"words","from":"palabras cortas","to":"formas propias","explain":"Palabras de uso diario que cambian bastante: memorízalas en bloque. Ojo con mañana, que en portugués son dos palabras distintas.","pairs":"pero=mas|muy=muito|ahora=agora|hoy=hoje|ayer=ontem|mañana=amanhã|después=depois|casi=quase|también=também|entonces=então|mismo=mesmo|otro=outro|todavía=ainda","exc":"","warn":"mañana=amanhã (el día siguiente) vs manhã (la mañana): en portugués son dos palabras distintas","alts":[["mas","pero"],["muito","muy"],["agora","ahora"]]},{"id":"falsos","g":"words","from":"falsos amigos","to":"palabra distinta","explain":"Palabras que se parecen mucho pero significan otra cosa. Aquí la regla es: no te fíes del parecido.","pairs":"exquisito=delicioso (esquisito en portugués significa «raro»)|embarazada=grávida (embaraçada en portugués significa «apenada»)|oficina=escritório (oficina en portugués es un taller)|largo=longo (largo en portugués significa «ancho»)|ancho=largo (largo en español es longo)|vaso=copo|taza=xícara|apellido=sobrenome|borracha=bêbada (borracha en portugués es la goma de borrar)","exc":"","warn":"","alts":[["copo","vaso"],["xícara","taza"],["sobrenome","apellido"]]}];
+function es2ptParse(str){
+  return (str||"").split("|").map(x=>x.trim()).filter(Boolean).map(x=>{
+    const m = x.match(/^(.+?)=(.+?)(?:\s*\((.+)\))?$/);
+    return m ? {es:m[1].trim(), pt:m[2].trim(), note:m[3]||""} : null;
+  }).filter(Boolean);
+}
+const ES2PT_RULES = ES2PT_RULES_RAW.map(r=>({
+  id:r.id, g:r.g, from:r.from, to:r.to, explain:r.explain, alts:r.alts,
+  pairs: es2ptParse(r.pairs).map(p=>({...p, rule:r.id, kind:"rule"})),
+  exc:   es2ptParse(r.exc).map(p=>({...p, rule:r.id, kind:"exc"})),
+  warn:  es2ptParse(r.warn).map(p=>({...p, rule:r.id, kind:"warn"})),
+}));
+/* Conjunto de práctica por regla: las palabras que siguen la regla + las excepciones (mismo orden siempre: solo se agrega al final). */
+ES2PT_RULES.forEach(r=>{ r.pool = r.pairs.concat(r.exc); });
+const ES2PT_BY_ID = {}; ES2PT_RULES.forEach(r=> ES2PT_BY_ID[r.id] = r);
+let es2ptTab = "guide";        // guide | convert | detect | match
+let es2ptRuleFilter = "";      // "" = todas las reglas
+let es2ptMode = "options";     // options | type  (Convierte la palabra)
+let es2ptSearch = "";
+const es2ptState = {};         // convert / detect / match: pregunta actual
+
+function es2ptRuleLabel(r){ return `${r.from} → ${r.to}`; }
+function es2ptNoAccent(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim(); }
+function es2ptVoice(text){ try{ speak(text, 0.9, "pt-BR"); }catch(e){} }
+/* Elige una regla para practicar: con el filtro, esa; si no, la de la palabra más urgente de repaso (65%) o una al azar. */
+function es2ptPickRule(prefix, poolKey){
+  if(es2ptRuleFilter && ES2PT_BY_ID[es2ptRuleFilter]) return ES2PT_BY_ID[es2ptRuleFilter];
+  const usable = ES2PT_RULES.filter(r=> r[poolKey].length >= 2);
+  if(Math.random() < 0.65){
+    const now = Date.now(), due = [];
+    usable.forEach(r=>{
+      for(let i=0;i<r[poolKey].length;i++){
+        const e = SRS_DATA[`${prefix}:${r.id}:${i}`];
+        if(e && e.dueAt <= now) due.push({r, box:e.box, dueAt:e.dueAt});
+      }
+    });
+    if(due.length){ due.sort((a,b)=> (a.box-b.box) || (a.dueAt-b.dueAt)); return due[0].r; }
+  }
+  return usable[Math.floor(Math.random()*usable.length)];
+}
+/* Opciones incorrectas para «convierte la palabra»: el español sin cambiar, errores plausibles de la propia regla y, si faltan, otras palabras. */
+function es2ptDistractors(item, rule){
+  const out = [], add = (w)=>{ if(w && w !== item.pt && !out.includes(w)) out.push(w); };
+  if(es2ptNoAccent(item.es) !== es2ptNoAccent(item.pt)) add(item.es);
+  (rule.alts||[]).forEach(([from,to])=>{ if(item.pt.includes(from)) add(item.pt.replace(from,to)); });
+  if(/[áàâãéêíóôõúç]/.test(item.pt)) add(item.pt.normalize("NFD").replace(/[̀-ͯ]/g,""));
+  shuffle(rule.pool.filter(x=>x.pt !== item.pt)).forEach(x=>{ if(out.length<3) add(x.pt); });
+  return out.slice(0,3);
+}
+function es2ptSummaryPill(){
+  return `<span class="score-pill" style="background:#FFF3C9;color:#5B4300;">🧪 En revisión</span>`;
+}
+function renderEs2pt(){
+  if(currentLang !== "pt"){ document.getElementById("panel-es2pt").innerHTML = `<div class="card"><p style="margin:0;">Esta sección es solo para el modo portugués.</p></div>`; return; }
+  const tabs = [["guide","📖 Guía"],["convert","✏️ Convierte"],["detect","🔎 Detecta la regla"],["match","🔗 Une los pares"]];
+  document.getElementById("panel-es2pt").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Utilidades</div>
+      <h2>Español → Portugués</h2>
+      <p>Muchas palabras cambian siguiendo patrones: aprende las reglas y podrás «adivinar» cientos de palabras. Son <b>tendencias, no leyes</b>: cada regla trae sus excepciones. ${es2ptSummaryPill()}</p>
+      <div class="route-review-note">🧪 Este contenido lo redactó una IA con base en un video y en material educativo; todavía no lo ha revisado un profesor. Si ves algún error, avísalo.</div>
+    </div>
+    <div class="exercise-subnav" id="e2pTabs">
+      ${tabs.map(([id,l])=>`<button type="button" class="ex-tab${id===es2ptTab?" active":""}" data-e2p-tab="${id}"><span>${l}</span></button>`).join("")}
+    </div>
+    <div id="e2pBody"></div>`;
+  document.querySelectorAll("[data-e2p-tab]").forEach(b=>{
+    b.onclick = ()=>{ es2ptTab = b.dataset.e2pTab; renderEs2pt(); };
+  });
+  if(es2ptTab==="guide") es2ptDrawGuide();
+  else if(es2ptTab==="convert") es2ptNewConvert();
+  else if(es2ptTab==="detect") es2ptNewDetect();
+  else es2ptNewMatch();
+}
+function es2ptFilterBar(extra){
+  return `<div class="mp-toolbar" style="margin-bottom:14px;">
+    <label for="e2pRule" style="font-size:0.82rem;color:var(--ink-soft);font-weight:700;">Regla:</label>
+    <select id="e2pRule" class="text-input" style="width:auto;max-width:100%;padding:6px 10px;font-size:0.85rem;">
+      <option value="">Todas las reglas</option>
+      ${ES2PT_GROUPS.map(g=>`<optgroup label="${g.label}">${ES2PT_RULES.filter(r=>r.g===g.id).map(r=>`<option value="${r.id}" ${r.id===es2ptRuleFilter?"selected":""}>${escHtml(es2ptRuleLabel(r))}</option>`).join("")}</optgroup>`).join("")}
+    </select>${extra||""}
+  </div>`;
+}
+function es2ptWireFilter(reload){
+  const sel = document.getElementById("e2pRule");
+  if(sel) sel.onchange = ()=>{ es2ptRuleFilter = sel.value; reload(); };
+}
+/* ---- GUÍA ---- */
+function es2ptRuleCard(r){
+  const row = (p, cls)=>`<tr class="${cls||""}"><td>${escHtml(p.es)}</td><td>→</td><td><b>${escHtml(p.pt)}</b> <button type="button" class="speak-btn-sm" data-e2p-speak="${escHtml(p.pt)}" title="Escuchar (portugués de Brasil)" style="width:24px;height:24px;">${svgIcon("headphones",13)}</button>${p.note?`<div class="wr-body">${escHtml(p.note)}</div>`:""}</td></tr>`;
+  return `<details class="card e2p-rule" data-e2p-rule="${r.id}">
+    <summary><span class="e2p-rule-title">${escHtml(es2ptRuleLabel(r))}</span><span class="e2p-rule-ex">${escHtml(r.pairs.slice(0,2).map(p=>`${p.es} → ${p.pt}`).join(" · "))}</span></summary>
+    <p class="e2p-explain">${escHtml(r.explain)}</p>
+    <table class="data-table e2p-table"><tbody>${r.pairs.map(p=>row(p)).join("")}</tbody></table>
+    ${r.exc.length ? `<div class="e2p-exc"><b>⚠️ Excepciones</b><table class="data-table e2p-table"><tbody>${r.exc.map(p=>row(p)).join("")}</tbody></table></div>` : ""}
+    ${r.warn.length ? `<div class="e2p-warn"><b>🕵️ Ojo, falso amigo</b><table class="data-table e2p-table"><tbody>${r.warn.map(p=>row(p)).join("")}</tbody></table></div>` : ""}
+    <div class="btn-row" style="margin-top:10px;"><button type="button" class="btn secondary" data-e2p-practice="${r.id}" style="font-size:0.85rem;padding:8px 16px;">✏️ Practicar esta regla</button></div>
+  </details>`;
+}
+function es2ptDrawGuide(){
+  const q = es2ptNoAccent(es2ptSearch);
+  const match = r=> !q || [r.from, r.to, r.explain, ...r.pairs.map(p=>p.es+" "+p.pt), ...r.exc.map(p=>p.es+" "+p.pt)].some(t=> es2ptNoAccent(t).includes(q));
+  const total = ES2PT_RULES.reduce((n,r)=> n + r.pairs.length + r.exc.length, 0);
+  const body = ES2PT_GROUPS.map(g=>{
+    const rules = ES2PT_RULES.filter(r=> r.g===g.id && match(r));
+    if(!rules.length) return "";
+    return `<h3 class="e2p-group">${g.icon} ${g.label}<span>${escHtml(g.sub)}</span></h3>${rules.map(es2ptRuleCard).join("")}`;
+  }).join("");
+  document.getElementById("e2pBody").innerHTML = `
+    <div class="card e2p-tip">
+      <b>Cómo usar esta guía</b>
+      <p style="margin:6px 0 0;">${ES2PT_RULES.length} reglas y ${total} palabras. Abre una regla, escucha los ejemplos en portugués de Brasil y, cuando la entiendas, practícala. Si una palabra no encaja, revisa sus excepciones.</p>
+    </div>
+    <input id="e2pSearch" class="text-input" type="search" placeholder="Buscar una regla o una palabra (por ejemplo: canción, -dad, ñ)…" value="${escHtml(es2ptSearch)}" style="margin:12px 0 4px;">
+    ${body || `<p class="dash-card-sub" style="margin-top:14px;">No encontré reglas con «${escHtml(es2ptSearch)}».</p>`}`;
+  const s = document.getElementById("e2pSearch");
+  s.oninput = ()=>{ es2ptSearch = s.value; const pos = s.selectionStart; es2ptDrawGuide(); const n = document.getElementById("e2pSearch"); n.focus(); n.setSelectionRange(pos,pos); };
+  document.querySelectorAll("[data-e2p-speak]").forEach(b=>{ b.onclick = (e)=>{ e.preventDefault(); es2ptVoice(b.dataset.e2pSpeak); }; });
+  document.querySelectorAll("[data-e2p-practice]").forEach(b=>{
+    b.onclick = ()=>{ es2ptRuleFilter = b.dataset.e2pPractice; es2ptTab = "convert"; renderEs2pt(); };
+  });
+}
+/* ---- CONVIERTE LA PALABRA ---- */
+function es2ptNewConvert(){
+  const rule = es2ptPickRule("es2pt:pt", "pool");
+  const {item, id, review} = srsPick(rule.pool, `es2pt:pt:${rule.id}`);
+  es2ptState.convert = {rule, item, id, review, opts: shuffle([item.pt, ...es2ptDistractors(item, rule)]), answered:false};
+  es2ptDrawConvert();
+}
+function es2ptFeedbackHtml(ok, item, rule, note){
+  const isExc = item.kind === "exc";
+  return `<div class="feedback show ${ok?"ok":"bad"}">
+    <strong>${ok ? "¡Correcto! 🎉" : "Casi"}</strong>
+    <b>${escHtml(item.es)}</b> → <b>${escHtml(item.pt)}</b>${note ? `<br>${note}` : ""}
+    <div class="wr-body" style="margin-top:6px;">${isExc ? `⚠️ Es una <b>excepción</b> de la regla ${escHtml(es2ptRuleLabel(rule))}${item.note ? `: ${escHtml(item.note)}` : "."}` : `Regla <b>${escHtml(es2ptRuleLabel(rule))}</b>. ${escHtml(rule.explain)}`}</div>
+  </div>`;
+}
+function es2ptDrawConvert(){
+  const st = es2ptState.convert, {rule, item, review} = st;
+  const typeBtn = `<button type="button" class="accent-btn${es2ptMode==="type"?" active":""}" id="e2pMode" style="margin-left:auto;">${es2ptMode==="type"?"⌨️ Escribir":"🔘 Opciones"}</button>`;
+  document.getElementById("e2pBody").innerHTML = `
+    <div class="card">
+      ${scoreRowHtml("es2pt")}
+      ${es2ptFilterBar(typeBtn)}
+      <div class="q-top">
+        <span class="badge-level">${item.kind==="exc"?"EXC":"ES→PT"}</span>
+        <div class="q-text">¿Cómo se dice <b>«${escHtml(item.es)}»</b> en portugués?</div>
+        ${review ? reviewBadge(true) : ""}
+      </div>
+      ${es2ptMode==="type"
+        ? `<input class="text-input" id="e2pInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Escribe la palabra en portugués…">
+           <div class="btn-row"><button class="btn" id="e2pCheck" type="button">Comprobar</button></div>`
+        : `<div class="options" id="e2pOpts">${st.opts.map(o=>`<button class="opt-btn" data-val="${escHtml(o)}">${escHtml(o)}</button>`).join("")}</div>`}
+      <div id="e2pFb"></div>
+      <div class="btn-row"><button class="btn" id="e2pNext" style="display:none;">Siguiente →</button></div>
+    </div>`;
+  es2ptWireFilter(es2ptNewConvert);
+  document.getElementById("e2pMode").onclick = ()=>{ es2ptMode = es2ptMode==="type" ? "options" : "type"; es2ptDrawConvert(); };
+  const finish = (ok, note)=>{
+    if(st.answered) return; st.answered = true;
+    srsUpdate(st.id, ok); registerAnswer("es2pt", ok);
+    document.getElementById("e2pFb").innerHTML = es2ptFeedbackHtml(ok, item, rule, note);
+    es2ptVoice(item.pt);
+    const nx = document.getElementById("e2pNext"); nx.style.display = "inline-block"; nx.onclick = es2ptNewConvert;
+    const c = document.getElementById("e2pCheck"); if(c) c.disabled = true;
+    const inp = document.getElementById("e2pInput"); if(inp) inp.disabled = true;
+    document.querySelectorAll("#e2pOpts .opt-btn").forEach(b=>{ b.disabled = true; if(b.dataset.val===item.pt) b.classList.add("correct"); });
+  };
+  document.querySelectorAll("#e2pOpts .opt-btn").forEach(b=>{
+    b.onclick = ()=>{ const ok = b.dataset.val === item.pt; if(!ok) b.classList.add("wrong"); finish(ok); };
+  });
+  const chk = document.getElementById("e2pCheck");
+  if(chk){
+    const doCheck = ()=>{
+      const v = document.getElementById("e2pInput").value.trim();
+      if(!v) return;
+      const exact = v.toLowerCase() === item.pt.toLowerCase();
+      const loose = !exact && es2ptNoAccent(v) === es2ptNoAccent(item.pt);
+      finish(exact || loose, loose ? "Ojo con los acentos y la cedilla: se escribe <b>" + escHtml(item.pt) + "</b>." : "");
+    };
+    chk.onclick = doCheck;
+    document.getElementById("e2pInput").onkeydown = (e)=>{ if(e.key==="Enter" && !st.answered) doCheck(); };
+    document.getElementById("e2pInput").focus();
+  }
+}
+/* ---- DETECTA LA REGLA ---- */
+function es2ptNewDetect(){
+  const rule = es2ptPickRule("es2pt:rule", "pairs");
+  const {item, id, review} = srsPick(rule.pairs, `es2pt:rule:${rule.id}`);
+  const same = ES2PT_RULES.filter(r=> r.id!==rule.id && r.g===rule.g && r.pairs.length>=2);
+  const others = shuffle(same).slice(0,3);
+  if(others.length < 3) shuffle(ES2PT_RULES.filter(r=> r.id!==rule.id && !others.includes(r) && r.pairs.length>=2)).slice(0,3-others.length).forEach(r=> others.push(r));
+  es2ptState.detect = {rule, item, id, review, opts: shuffle([rule, ...others]), answered:false};
+  es2ptDrawDetect();
+}
+function es2ptDrawDetect(){
+  const st = es2ptState.detect, {rule, item, review} = st;
+  document.getElementById("e2pBody").innerHTML = `
+    <div class="card">
+      ${scoreRowHtml("es2pt")}
+      ${es2ptFilterBar("")}
+      <div class="q-top">
+        <span class="badge-level">REGLA</span>
+        <div class="q-text">¿Qué regla se aplicó en <b>${escHtml(item.es)} → ${escHtml(item.pt)}</b>?</div>
+        ${review ? reviewBadge(true) : ""}
+        <button class="speak-btn-sm" type="button" id="e2pSpeak" title="Escuchar" aria-label="Escuchar">🔊</button>
+      </div>
+      <div class="options" id="e2pOpts">${st.opts.map(r=>`<button class="opt-btn" data-val="${r.id}">${escHtml(r.id==="falsos" ? "Falso amigo (palabra distinta)" : es2ptRuleLabel(r))}</button>`).join("")}</div>
+      <div id="e2pFb"></div>
+      <div class="btn-row"><button class="btn" id="e2pNext" style="display:none;">Siguiente →</button></div>
+    </div>`;
+  es2ptWireFilter(es2ptNewDetect);
+  document.getElementById("e2pSpeak").onclick = ()=> es2ptVoice(item.pt);
+  document.querySelectorAll("#e2pOpts .opt-btn").forEach(b=>{
+    b.onclick = ()=>{
+      if(st.answered) return; st.answered = true;
+      const ok = b.dataset.val === rule.id;
+      srsUpdate(st.id, ok); registerAnswer("es2pt", ok);
+      document.querySelectorAll("#e2pOpts .opt-btn").forEach(o=>{ o.disabled = true; if(o.dataset.val===rule.id) o.classList.add("correct"); });
+      if(!ok) b.classList.add("wrong");
+      document.getElementById("e2pFb").innerHTML = es2ptFeedbackHtml(ok, item, rule, "");
+      const nx = document.getElementById("e2pNext"); nx.style.display = "inline-block"; nx.onclick = es2ptNewDetect;
+    };
+  });
+}
+/* ---- UNE LOS PARES ---- */
+function es2ptNewMatch(){
+  const pairs = [], usedRules = new Set();
+  const tries = 40;
+  for(let k=0; k<tries && pairs.length<5; k++){
+    const rule = es2ptPickRule("es2pt:pt", "pool");
+    if(!es2ptRuleFilter && usedRules.has(rule.id) && usedRules.size < ES2PT_RULES.length && k < tries-10) continue;
+    const {item, id, review} = srsPick(rule.pool, `es2pt:pt:${rule.id}`);
+    if(pairs.some(p=>p.pt===item.pt || p.es===item.es)) continue;
+    usedRules.add(rule.id);
+    pairs.push({es:item.es, pt:item.pt, id, review, item, rule, done:false, mistakes:0});
+  }
+  const idx = pairs.map((_,i)=>i);
+  es2ptState.match = {pairs, left:shuffle(idx), right:shuffle(idx), selL:null, selR:null, finished:false};
+  es2ptDrawMatch();
+}
+function es2ptDrawMatch(){
+  const st = es2ptState.match;
+  const btn = (side,i)=>{
+    const p = st.pairs[i], sel = (side==="L"?st.selL:st.selR)===i && !p.done;
+    return `<button type="button" class="mp-pair-btn${p.done?" done":""}${sel?" selected":""}" data-side="${side}" data-i="${i}" ${p.done?"disabled":""}>${p.done?"✓ ":""}${escHtml(side==="L"?p.es:p.pt)}</button>`;
+  };
+  const done = st.pairs.filter(p=>p.done).length;
+  document.getElementById("e2pBody").innerHTML = `
+    <div class="card">
+      ${scoreRowHtml("es2pt")}
+      ${es2ptFilterBar("")}
+      <div class="q-top">
+        <span class="badge-level">PARES</span>
+        <div class="q-text">Une cada palabra en español con su forma en portugués</div>
+        <span class="score-pill" style="margin-left:auto;">Emparejados: <b>${done}/${st.pairs.length}</b></span>
+      </div>
+      <div class="mp-pair-grid" id="e2pGrid">
+        <div class="mp-pair-col">${st.left.map(i=>btn("L",i)).join("")}</div>
+        <div class="mp-pair-col">${st.right.map(i=>btn("R",i)).join("")}</div>
+      </div>
+      <div id="e2pFb">${st.finished ? es2ptMatchSummary(st) : ""}</div>
+      <div class="btn-row"><button class="btn" id="e2pNext" style="display:${st.finished?"inline-block":"none"};">Siguiente ronda →</button></div>
+    </div>`;
+  es2ptWireFilter(es2ptNewMatch);
+  const nx = document.getElementById("e2pNext"); if(nx) nx.onclick = es2ptNewMatch;
+  document.querySelectorAll("#e2pGrid .mp-pair-btn").forEach(b=>{
+    b.onclick = ()=>{
+      if(st.finished) return;
+      const i = +b.dataset.i;
+      if(b.dataset.side==="L") st.selL = (st.selL===i ? null : i); else st.selR = (st.selR===i ? null : i);
+      if(st.selL!==null && st.selR!==null){
+        const l = st.selL, r = st.selR;
+        if(l === r){
+          const p = st.pairs[l]; p.done = true; st.selL = st.selR = null;
+          es2ptVoice(p.pt);
+          if(st.pairs.every(x=>x.done)){
+            st.pairs.forEach(x=>{ const ok = x.mistakes===0; srsUpdate(x.id, ok); registerAnswer("es2pt", ok); });
+            st.finished = true;
+          }
+          es2ptDrawMatch();
+        }else{
+          st.pairs[l].mistakes++; st.pairs[r].mistakes++;
+          const gridEl = document.getElementById("e2pGrid");
+          gridEl.querySelectorAll(`[data-side="L"][data-i="${l}"], [data-side="R"][data-i="${r}"]`).forEach(x=> x.classList.add("bad"));
+          st.selL = st.selR = null;
+          setTimeout(()=>{ if(es2ptState.match === st && document.getElementById("e2pGrid") === gridEl) es2ptDrawMatch(); }, 450);
+        }
+      }else es2ptDrawMatch();
+    };
+  });
+}
+function es2ptMatchSummary(st){
+  const bad = st.pairs.filter(p=>p.mistakes>0);
+  if(!bad.length) return `<div class="feedback show ok" style="margin-top:16px;"><strong>¡Perfecto! 🎉</strong>${st.pairs.length}/${st.pairs.length} a la primera.</div>`;
+  return `<div class="feedback show bad" style="margin-top:16px;"><strong>Casi 😉</strong>${bad.length} ${bad.length===1?"par tuvo":"pares tuvieron"} confusiones. Repásalos:
+    ${bad.map(p=>`<div class="wr-body" style="margin-top:6px;"><b>${escHtml(p.es)}</b> → <b>${escHtml(p.pt)}</b> · regla ${escHtml(es2ptRuleLabel(p.rule))}</div>`).join("")}</div>`;
+}
+
+/* =========================================================
    INIT
    ========================================================= */
 function buildMain(){
   const main = document.getElementById("main");
-  ["home","route","placement","theory","categories","phrasal","situations","expressions","falsefriends","howtosay","vocabtopics","verbs","exercises","practicehoy","exams","profile"].forEach(id=>{
+  ["home","route","placement","theory","categories","phrasal","situations","expressions","falsefriends","howtosay","vocabtopics","es2pt","verbs","exercises","practicehoy","exams","profile"].forEach(id=>{
     const div = document.createElement("div");
     div.className="section-panel" + (id===activeSection?" active":"");
     div.id = "panel-"+id;
