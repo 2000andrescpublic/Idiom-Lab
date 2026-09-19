@@ -744,6 +744,28 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .why-btn:active{transform:scale(0.96);}
 @media(max-width:420px){.why-compare{grid-template-columns:1fr;}}
 
+.mp-pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 4px;}
+.mp-pair-col{display:flex;flex-direction:column;gap:10px;min-width:0;}
+.mp-pair-btn{
+  text-align:center;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:12px 10px;min-height:54px;border-radius:12px;font-size:0.98rem;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:transform .12s ease, border-color .12s ease, background-color .12s ease;
+  overflow-wrap:anywhere;
+}
+.mp-pair-btn:hover:not(:disabled){border-color:var(--purple);}
+.mp-pair-btn:active:not(:disabled){transform:scale(0.97);}
+.mp-pair-btn.selected{border-color:var(--purple);background:var(--purple-soft);color:var(--purple-dark);}
+.mp-pair-btn.done{border-color:var(--teal);background:rgba(34,197,94,0.14);color:var(--teal);cursor:default;}
+.mp-pair-btn.bad{border-color:var(--pink);background:#FCE6ED;color:#7A1338;animation:shake .35s ease;}
+.mp-toolbar{display:flex;align-items:center;gap:8px;margin:0 0 14px;flex-wrap:wrap;}
+.mp-timer{display:flex;align-items:center;gap:10px;margin:0 0 12px;}
+.mp-timer-track{flex:1;height:10px;border-radius:999px;background:var(--bg-soft);border:1px solid var(--line);overflow:hidden;}
+.mp-timer-bar{height:100%;width:100%;background:var(--grad-purple);border-radius:999px;}
+.mp-timer-bar.low{background:var(--pink);}
+.mp-timer-label{min-width:2.6em;text-align:right;font-weight:800;font-variant-numeric:tabular-nums;}
+.mp-ready{text-align:center;padding:26px 8px 10px;}
+.mp-ready p{color:var(--ink-soft);margin:0 0 16px;line-height:1.55;}
+.mp-count{font-family:'Poppins',sans-serif;font-weight:800;font-size:4.2rem;line-height:1;color:var(--purple);margin-bottom:8px;}
 .mp-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
 .mp-word{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:9px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.12);background:rgba(255,255,255,0.75);color:inherit;font:inherit;font-size:0.9rem;cursor:pointer;}
 .mp-word span{opacity:0.75;font-size:0.82rem;}
@@ -1033,6 +1055,7 @@ const NAV = [
 
 const EX_TABS = [
   {id:"vocab", icon:"flashcards", label:"Vocabulario"},
+  {id:"matchpairs", icon:"burst", label:"Une los pares"},
   {id:"gapfill", icon:"pencil", label:"Gramática"},
   {id:"order", icon:"shuffle", label:"Ordena"},
   {id:"reading", icon:"book", label:"Lectura"},
@@ -19137,7 +19160,7 @@ let currentLevel = "A1";
 let activeSection = "home";
 let activeExercise = "vocab";
 const stats = {};
-["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
+["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
 const current = {};
 const dailyStreak = {count:0, lastDate:null};   // racha diaria global, distinta de stats[id].streak
 const weeklyHistory = [];  // [{weekStart, exercisesDone, correct, correctRate}] — últimas 12 semanas
@@ -19147,6 +19170,7 @@ let uiLangPref = "es";           // preferencia de idioma de interfaz (solo se g
 let dailyGoal = 10;               // meta diaria de ejercicios
 let notificationsEnabled = false; // recordatorios diarios (ajuste visual, sin backend de notificaciones)
 let userName = "";                // nombre del usuario, usado en el saludo del Dashboard
+const matchPairsBest = {};        // récord de "Une los pares" por duración: {t15, t30, t45} -> pares emparejados
 
 /* ---- Idioma que se está aprendiendo (distinto de uiLangPref, que es
    el idioma de la interfaz). Cada perfil guarda su propio learningLang;
@@ -19243,7 +19267,7 @@ function isSectionReadyForLang(sectionId, lang){
 /* Dentro de "exercises", cada tipo de ejercicio se habilita por
    separado, porque el banco de preguntas se autora tipo por tipo. */
 const LANG_EXERCISE_READY = {
-  pt: {vocab:true, gapfill:true, order:true, listen:true, translate:true, verbforms:true, wordclass:true, errorbank:true, reading:true, dialogue:true, writing:true, readingcloze:true, readingletters:true},
+  pt: {vocab:true, matchpairs:true, gapfill:true, order:true, listen:true, translate:true, verbforms:true, wordclass:true, errorbank:true, reading:true, dialogue:true, writing:true, readingcloze:true, readingletters:true},
 };
 function isExerciseReadyForLang(exId, lang){
   if(lang==="en") return true;
@@ -19315,7 +19339,7 @@ function saveProgress(){
   try{
     localStorage.setItem(progressKeyFor(ACTIVE_PROFILE_ID, currentLang), JSON.stringify({
       stats, srs: SRS_DATA, errors: ERROR_BANK, level: currentLevel, ts: Date.now(),
-      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName
+      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest
     }));
   }catch(e){ /* almacenamiento no disponible: el progreso queda solo en esta sesión */ }
 }
@@ -19337,6 +19361,7 @@ function loadProgress(){
     if(data.dailyGoal) dailyGoal = data.dailyGoal;
     if(typeof data.notificationsEnabled === "boolean") notificationsEnabled = data.notificationsEnabled;
     if(typeof data.userName === "string") userName = data.userName;
+    if(data.matchPairsBest && typeof data.matchPairsBest === "object") Object.assign(matchPairsBest, data.matchPairsBest);
   }catch(e){ /* datos corruptos: se ignoran y se empieza de cero */ }
 }
 /* Reinicia el progreso del perfil activo a sus valores por defecto
@@ -19355,6 +19380,7 @@ function resetActiveProfileData(){
   dailyGoal = 10;
   notificationsEnabled = false;
   userName = "";
+  Object.keys(matchPairsBest).forEach(k=> delete matchPairsBest[k]);
   saveProgress();
 }
 
@@ -20069,7 +20095,7 @@ function renderRadarSVG(skills){
    que el radar no cubre pero sí cuentan como ejercicios hechos). */
 const DAILY_ACTIVITY_CATS = [
   {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","wordclass","phrasal","order"]},
-  {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics"]},
+  {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics","matchpairs"]},
   {label:"Listening", color:"var(--blue)", gradId:"gListening", from:"#2E9CDB", to:"#8DD0F5", ids:["listen","dialogue","minimalpairs"]},
   {label:"Reading", color:"var(--amber)", gradId:"gReading", from:"#F5A623", to:"#FBD38D", ids:["reading","readingcloze","readingletters"]},
   {label:"Writing", color:"var(--pink)", gradId:"gWriting", from:"#E0457A", to:"#F5A0BE", ids:["writing"]},
@@ -21757,8 +21783,8 @@ function renderExercise(id, forceNew){
     renderExerciseComingSoon();
     return;
   }
-  const DRAW = {vocab:drawVocab, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank};
-  const NEWQ = {vocab:newVocabQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
+  const DRAW = {vocab:drawVocab, matchpairs:drawMatchPairs, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank};
+  const NEWQ = {vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
   if(forceNew || !current[id]) NEWQ[id]();
   else DRAW[id]();
 }
@@ -23233,6 +23259,314 @@ function drawMinimalPair(){
   });
   document.getElementById("mpNext").onclick = newMinimalPairQuestion;
   setTimeout(play, 300);
+}
+
+/* ---- UNE LOS PARES (emparejar; modos Vocabulario y Phrasal verbs) ----
+   Tablero de 5 pares: significado en español (izquierda) ↔ palabra o
+   phrasal verb (derecha). Usa los mismos ids de repaso espaciado que
+   Vocabulario y Phrasal Verbs, así que acertar aquí también avanza ese repaso.
+   Práctica por cantidad (5 o 10 palabras): un par cuenta como acierto solo si
+   no hubo ninguna confusión en él antes de emparejarlo; equivocarse marca error
+   en los dos pares implicados. Práctica por tiempo (15/30/45 s): cada par
+   acertado se reemplaza por uno nuevo hasta que se acaba el reloj; los aciertos
+   limpios avanzan el repaso, pero un error por prisa NO baja de caja ni entra
+   al banco de errores (solo aparece en el resultado). */
+const MATCH_PAIRS_N = 5;
+const MATCH_PRACTICES = [
+  {id:"n5",  label:"5 palabras",   total:5},
+  {id:"n10", label:"10 palabras",  total:10},
+  {id:"t15", label:"15 segundos",  seconds:15},
+  {id:"t30", label:"30 segundos",  seconds:30},
+  {id:"t45", label:"45 segundos",  seconds:45},
+];
+let matchPairsMode = "vocab";
+let matchPairsPractice = "n5";
+let matchPairsVoice = true;        // voz en la práctica por cantidad
+let matchPairsVoiceTimed = false;  // voz en la práctica por tiempo (apagada por defecto: se solapa con la velocidad)
+function matchPairsModes(){
+  const modes = [{id:"vocab", label:"Vocabulario"}];
+  if(isExerciseReadyForLang("phrasal", currentLang)) modes.push({id:"phrasal", label:"Phrasal verbs"}, {id:"all", label:"Todos"});
+  return modes;
+}
+function mpPractice(){ return MATCH_PRACTICES.find(p=>p.id===matchPairsPractice) || MATCH_PRACTICES[0]; }
+function mpClearTimers(st){
+  if(!st) return;
+  clearInterval(st.timer); clearInterval(st.cdTimer);
+  st.timer = null; st.cdTimer = null;
+}
+function mpNewPair(st){
+  const slotPairs = st.leftOrder.map(i=>st.pairs[i]);
+  const ids = new Set(slotPairs.map(p=>p.id));
+  const lefts = new Set(slotPairs.map(p=>p.left));
+  const rights = new Set(slotPairs.map(p=>p.right));
+  /* En "Todos" se mantiene una mezcla pareja: cada par nuevo es del tipo
+     que menos aparece en el tablero (al azar si empatan). */
+  const pickSource = ()=>{
+    if(st.sources.length === 1) return st.sources[0];
+    const counts = st.sources.map(s=> slotPairs.filter(p=>p.kind===s.kind).length);
+    const min = Math.min(...counts);
+    return pick(st.sources.filter((s,i)=>counts[i]===min));
+  };
+  for(let tries=0; tries<40; tries++){
+    const src = pickSource();
+    const {item, id, review} = srsPick(src.pool, src.prefix);
+    const left = item.es, right = src.kind==="phrasal" ? item.phrase : item.en;
+    if(ids.has(id) || lefts.has(left) || rights.has(right)) continue;
+    if(st.usedIds.has(id) && !review && tries < 30) continue;
+    st.usedIds.add(id);
+    return {id, item, review, left, right, kind:src.kind, lv:src.lv, mistakes:0, done:false};
+  }
+  return null;
+}
+function mpFillBoard(st){
+  const first = st.practice.total ? Math.min(MATCH_PAIRS_N, st.practice.total) : MATCH_PAIRS_N;
+  while(st.leftOrder.length < first){
+    const p = mpNewPair(st);
+    if(!p) break;
+    st.pairs.push(p);
+    st.leftOrder.push(st.pairs.length-1);
+  }
+  const n = st.leftOrder.length;
+  let right = shuffle([...st.leftOrder]);
+  for(let k=0; k<6 && n>1 && right.every((v,i)=>v===st.leftOrder[i]); k++) right = shuffle([...st.leftOrder]);
+  st.rightOrder = right;
+  st.leftOrder = shuffle([...st.leftOrder]);
+}
+function newMatchPairsQuestion(){
+  if(current.matchpairs) mpClearTimers(current.matchpairs);
+  if(!matchPairsModes().some(m=>m.id===matchPairsMode)) matchPairsMode = "vocab";
+  const mode = matchPairsMode, practice = mpPractice();
+  const sources = [];
+  let lv = null;
+  if(mode !== "phrasal"){
+    lv = pickLevel();
+    sources.push({kind:"vocab", lv, pool: LANG_PACKS[currentLang].VOCAB[lv], prefix: `vocab:${currentLang}:${lv}`});
+  }
+  if(mode !== "vocab") sources.push({kind:"phrasal", lv:null, pool: ALL_PHRASAL, prefix: "phrasal"});
+  const timed = !!practice.seconds;
+  const st = {mode, lv, sources, practice, pairs:[], leftOrder:[], rightOrder:[], selL:null, selR:null, events:[],
+              usedIds:new Set(), phase: timed ? "ready" : "running", finished:false, endAt:0, count:3, timer:null, cdTimer:null, record:null};
+  current.matchpairs = st;
+  if(!timed) mpFillBoard(st);
+  drawMatchPairs();
+}
+function mpConfusionPanels(st){
+  const seen = new Set(), panels = [];
+  st.events.forEach(e=>{
+    const key = `${e.i}-${e.j}`;
+    if(seen.has(key) || panels.length >= 4) return;
+    seen.add(key);
+    const target = st.pairs[e.j], wrongEs = st.pairs[e.i].left;
+    const info = target.kind==="phrasal" ? whyPhrasal(target.item, wrongEs) : whyVocab(target.item, wrongEs);
+    panels.push(whyFailedHTML({...info, head:`🔍 Confundiste <b>${escHtml(target.right)}</b> con «${escHtml(wrongEs)}»`}));
+  });
+  return panels.join("");
+}
+function mpSummaryHtml(st){
+  if(st.practice.seconds){
+    const {matched, prev, isNew} = st.record;
+    const errs = st.events.length;
+    const rec = isNew ? (prev ? `🏆 ¡Nuevo récord! (antes: ${prev})` : "🏆 ¡Primer récord!") : `Tu récord: ${prev}`;
+    return `<div class="feedback show ${errs?"bad":"ok"}" style="margin-top:6px;">
+      <strong>¡Tiempo! ⏱️ ${matched} ${matched===1?"par":"pares"} en ${st.practice.seconds} s</strong>
+      ${rec}<br>${errs ? `Confusiones: ${errs}. Estas no bajaron tus palabras de caja.` : "Sin confusiones."}
+      ${errs ? `Repásalas:${mpConfusionPanels(st)}` : ""}
+    </div>`;
+  }
+  const total = st.pairs.length;
+  if(!st.events.length) return `<div class="feedback show ok" style="margin-top:16px;"><strong>¡Perfecto! 🎉</strong>${total}/${total} a la primera.</div>`;
+  const wrongPairs = st.pairs.filter(p=>p.mistakes>0).length;
+  return `<div class="feedback show bad" style="margin-top:16px;"><strong>Casi 😉</strong>${wrongPairs} ${wrongPairs===1?"par tuvo":"pares tuvieron"} confusiones. Repásalos:${mpConfusionPanels(st)}</div>`;
+}
+function mpFinishTimed(st){
+  if(st.finished) return;
+  st.finished = true; st.phase = "finished";
+  mpClearTimers(st);
+  const matched = st.pairs.filter(p=>p.done).length;
+  const key = st.practice.id, prev = matchPairsBest[key] || 0;
+  st.record = {matched, prev, isNew: matched > prev};
+  if(matched > prev){ matchPairsBest[key] = matched; saveProgress(); }
+}
+function mpStartTimer(st){
+  clearInterval(st.timer);
+  const tick = ()=>{
+    if(current.matchpairs !== st || st.phase !== "running"){ clearInterval(st.timer); st.timer = null; return; }
+    const bar = document.getElementById("mtchTimerBar"), label = document.getElementById("mtchTime");
+    if(!bar){ clearInterval(st.timer); st.timer = null; return; }
+    const left = Math.max(0, st.endAt - Date.now());
+    bar.style.width = (left / (st.practice.seconds*1000) * 100) + "%";
+    bar.classList.toggle("low", left <= 5000);
+    label.textContent = Math.ceil(left/1000) + " s";
+    if(left <= 0){ mpFinishTimed(st); drawMatchPairs(); }
+  };
+  st.timer = setInterval(tick, 100);
+  tick();
+}
+function mpStartCountdown(st){
+  clearInterval(st.cdTimer);
+  st.cdTimer = setInterval(()=>{
+    const el = document.getElementById("mtchCd");
+    if(current.matchpairs !== st || st.phase !== "countdown" || !el){ clearInterval(st.cdTimer); st.cdTimer = null; return; }
+    st.count--;
+    if(st.count > 0){ el.textContent = st.count; return; }
+    clearInterval(st.cdTimer); st.cdTimer = null;
+    st.pairs = []; st.leftOrder = []; st.rightOrder = []; st.usedIds = new Set(); st.events = [];
+    mpFillBoard(st);
+    st.phase = "running";
+    st.endAt = Date.now() + st.practice.seconds*1000;
+    drawMatchPairs();
+  }, 1000);
+}
+function drawMatchPairs(){
+  const st = current.matchpairs;
+  const {practice, mode, lv} = st;
+  const timed = !!practice.seconds;
+  if(timed && st.phase==="running" && Date.now() >= st.endAt) mpFinishTimed(st);
+  const modes = matchPairsModes();
+  const voiceOn = ()=> timed ? matchPairsVoiceTimed : matchPairsVoice;
+  const doneCount = ()=> st.pairs.filter(p=>p.done).length;
+  const btn = (side, idx)=>{
+    const p = st.pairs[idx], txt = side==="L" ? p.left : p.right;
+    const cls = "mp-pair-btn" + (p.done ? " done" : "") + ((side==="L"?st.selL:st.selR)===idx && !p.done ? " selected" : "");
+    return `<button type="button" class="${cls}" data-side="${side}" data-i="${idx}" ${p.done?"disabled":""}>${p.done?"✓ ":""}${escHtml(txt)}</button>`;
+  };
+  const countHtml = ()=> timed ? `Pares: <b>${doneCount()}</b>` : `Emparejados: <b>${doneCount()}/${practice.total}</b>`;
+  const toolbar = `
+    <div class="mp-toolbar">
+      ${modes.length > 1 ? `
+        <label for="mtchMode" style="font-size:0.82rem;color:var(--ink-soft);font-weight:700;">Modo:</label>
+        <select id="mtchMode" class="text-input" style="width:auto;max-width:100%;padding:6px 10px;font-size:0.85rem;">
+          ${modes.map(m=>`<option value="${m.id}" ${m.id===mode?"selected":""}>${m.label}</option>`).join("")}
+        </select>` : ""}
+      <label for="mtchPractice" style="font-size:0.82rem;color:var(--ink-soft);font-weight:700;">Práctica:</label>
+      <select id="mtchPractice" class="text-input" style="width:auto;max-width:100%;padding:6px 10px;font-size:0.85rem;">
+        ${MATCH_PRACTICES.map(x=>`<option value="${x.id}" ${x.id===practice.id?"selected":""}>${x.label}</option>`).join("")}
+      </select>
+      <button class="accent-btn ${voiceOn()?"active":""}" id="mtchVoice" type="button" aria-pressed="${voiceOn()}" style="margin-left:auto;">🔊 Voz</button>
+    </div>`;
+  let body = "";
+  if(st.phase === "ready"){
+    const best = matchPairsBest[practice.id];
+    body = `<div class="mp-ready">
+      <p>Une todos los pares que puedas en <b>${practice.seconds} segundos</b>. Cada vez que aciertes, entra un par nuevo.${best ? ` Tu récord: <b>${best}</b>.` : ""}</p>
+      <button class="btn" id="mtchStart">¡Empezar!</button>
+    </div>`;
+  }else if(st.phase === "countdown"){
+    body = `<div class="mp-ready"><div class="mp-count" id="mtchCd">${st.count}</div><p>¡Prepárate!</p></div>`;
+  }else{
+    const left = Math.max(0, st.endAt - Date.now());
+    const timerHtml = timed && !st.finished ? `
+      <div class="mp-timer">
+        <div class="mp-timer-track"><div class="mp-timer-bar${left<=5000?" low":""}" id="mtchTimerBar" style="width:${left/(practice.seconds*1000)*100}%"></div></div>
+        <span id="mtchTime" class="mp-timer-label">${Math.ceil(left/1000)} s</span>
+      </div>` : "";
+    const gridHtml = timed && st.finished ? "" : `
+      <div class="mp-pair-grid" id="mtchGrid">
+        <div class="mp-pair-col">${st.leftOrder.map(i=>btn("L",i)).join("")}</div>
+        <div class="mp-pair-col">${st.rightOrder.map(i=>btn("R",i)).join("")}</div>
+      </div>`;
+    body = `${timerHtml}${gridHtml}<div id="mtchSummary">${st.finished ? mpSummaryHtml(st) : ""}</div>
+      <div class="btn-row"><button class="btn" id="mtchNext" style="display:${st.finished?"inline-block":"none"};">${timed?"Otra vez":"Siguiente ronda →"}</button></div>`;
+  }
+  const html = `
+    <div class="card">
+      ${scoreRowHtml("matchpairs")}
+      <div class="q-top">
+        <span class="badge-level">${mode==="phrasal" ? "PV" : mode==="all" ? "MIX" : lv}</span>
+        <div class="q-text">Une cada significado con su palabra</div>
+        ${st.pairs.some(p=>p.review) ? reviewBadge(true) : ""}
+        ${st.phase==="running" || st.phase==="finished" ? `<span class="score-pill" id="mtchCount" style="margin-left:auto;">${countHtml()}</span>` : ""}
+      </div>
+      ${toolbar}
+      ${body}
+    </div>`;
+  document.getElementById("exPanel").innerHTML = html;
+  const grid = document.getElementById("mtchGrid");
+  const updateCount = ()=>{ const c = document.getElementById("mtchCount"); if(c) c.innerHTML = countHtml(); };
+  const refreshSel = ()=>{
+    grid.querySelectorAll(".mp-pair-btn").forEach(b=>{
+      const idx = parseInt(b.dataset.i), sel = b.dataset.side==="L" ? st.selL : st.selR;
+      b.classList.toggle("selected", sel===idx && !st.pairs[idx].done);
+    });
+  };
+  const modeSel = document.getElementById("mtchMode");
+  if(modeSel) modeSel.onchange = (e)=>{ matchPairsMode = e.target.value; newMatchPairsQuestion(); };
+  document.getElementById("mtchPractice").onchange = (e)=>{ matchPairsPractice = e.target.value; newMatchPairsQuestion(); };
+  document.getElementById("mtchVoice").onclick = (e)=>{
+    if(timed) matchPairsVoiceTimed = !matchPairsVoiceTimed; else matchPairsVoice = !matchPairsVoice;
+    e.currentTarget.classList.toggle("active", voiceOn());
+    e.currentTarget.setAttribute("aria-pressed", String(voiceOn()));
+  };
+  const startBtn = document.getElementById("mtchStart");
+  if(startBtn) startBtn.onclick = ()=>{ st.phase = "countdown"; st.count = 3; drawMatchPairs(); };
+  const nextBtn = document.getElementById("mtchNext");
+  if(nextBtn) nextBtn.onclick = ()=>{
+    newMatchPairsQuestion();
+    const s = document.getElementById("mtchStart");
+    if(timed && s) s.click();
+  };
+  if(!grid){
+    if(st.phase==="countdown" && !st.cdTimer) mpStartCountdown(st);
+    return;
+  }
+  const resolvePair = (i, j)=>{
+    const lBtn = grid.querySelector(`.mp-pair-btn[data-side="L"][data-i="${i}"]`);
+    const rBtn = grid.querySelector(`.mp-pair-btn[data-side="R"][data-i="${j}"]`);
+    if(i === j){
+      const p = st.pairs[i];
+      p.done = true; st.selL = st.selR = null;
+      [lBtn, rBtn].forEach(b=>{ b.classList.remove("selected"); b.classList.add("done"); b.disabled = true; b.textContent = "✓ " + b.textContent; });
+      const clean = p.mistakes === 0;
+      if(timed){
+        if(clean){ srsUpdate(p.id, true); clearErrorIfMastered(p.id); }
+      }else{
+        srsUpdate(p.id, clean);
+        if(clean) clearErrorIfMastered(p.id);
+        else if(p.kind==="phrasal") recordError(p.id, "phrasal", "PV", `¿Qué significa "${p.item.phrase}"?`, p.item.es, `Ejemplo: ${p.item.example} (${p.item.esExample})`);
+        else recordError(p.id, "vocab", p.lv, `¿Qué significa "${p.item.en}"?`, p.item.es, `"${p.item.en}" significa "${p.item.es}".`);
+      }
+      registerAnswer("matchpairs", clean);
+      if(voiceOn()) speak(p.kind==="phrasal" ? p.item.phrase : p.item.en);
+      updateCount();
+      const canReplace = timed || st.pairs.length < practice.total;
+      const np = canReplace ? mpNewPair(st) : null;
+      if(np){
+        st.pairs.push(np);
+        const ni = st.pairs.length - 1;
+        st.leftOrder[st.leftOrder.indexOf(i)] = ni;
+        st.rightOrder[st.rightOrder.indexOf(i)] = ni;
+        setTimeout(()=>{
+          if(current.matchpairs !== st || st.finished || document.getElementById("mtchGrid") !== grid) return;
+          [[lBtn, "L"], [rBtn, "R"]].forEach(([b, side])=>{
+            b.dataset.i = ni; b.className = "mp-pair-btn"; b.disabled = false;
+            b.textContent = side==="L" ? np.left : np.right;
+          });
+        }, 240);
+      }
+      if(st.pairs.every(x=>x.done) && (!canReplace || !np)){
+        if(timed){ mpFinishTimed(st); drawMatchPairs(); return; }
+        st.finished = true; st.phase = "finished";
+        document.getElementById("mtchSummary").innerHTML = mpSummaryHtml(st);
+        document.getElementById("mtchNext").style.display = "inline-block";
+      }
+    }else{
+      st.pairs[i].mistakes++; st.pairs[j].mistakes++;
+      st.events.push({i, j});
+      st.selL = st.selR = null;
+      [lBtn, rBtn].forEach(b=>{ b.classList.remove("selected"); b.classList.add("bad"); });
+      setTimeout(()=>{ [lBtn, rBtn].forEach(b=>b.classList.remove("bad")); }, 450);
+    }
+  };
+  grid.onclick = (e)=>{
+    const b = e.target.closest(".mp-pair-btn");
+    if(!b || b.disabled || st.finished || st.phase !== "running") return;
+    const idx = parseInt(b.dataset.i);
+    if(b.dataset.side === "L") st.selL = (st.selL===idx ? null : idx);
+    else st.selR = (st.selR===idx ? null : idx);
+    refreshSel();
+    if(st.selL !== null && st.selR !== null) resolvePair(st.selL, st.selR);
+  };
+  if(timed && st.phase==="running" && !st.finished && !st.timer) mpStartTimer(st);
 }
 
 /* =========================================================
