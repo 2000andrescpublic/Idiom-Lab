@@ -19322,6 +19322,7 @@ const dialogueProgress = {};      // {"nivel:índice": {attempts, best, done, pe
 const dialogueMeta = {streak:0, best:0};
 const writingHistory = [];        // historial de errores de Writing (inglés): {ts, lv, words, n, ids, fixed?}, máx. 60
 const matchPairsBest = {};        // récord de "Une los pares" por duración: {t15, t30, t45} -> pares emparejados
+let placementSeen = {};          // preguntas de la Prueba de nivel ya mostradas (clave → veces), para no repetirlas entre intentos
 let placementResult = null;      // último resultado de la Prueba de nivel: {level, beginner, score, confidence, date, asked}
 const routeProgress = {};         // progreso de la Ruta: "A1:0" -> {theory, best (%), attempts, passed, skipped}
 
@@ -21140,8 +21141,8 @@ Object.keys(READING_EXTRA_QS.en).forEach(lv=>{ READING_EXTRA_QS.en[lv].forEach((
 Object.keys(READING_EXTRA_QS.pt).forEach(lv=>{ READING_EXTRA_QS.pt[lv].forEach((qs, i)=>{ if(READING_PT[lv][i] && READING_PT[lv][i].qs.length < 5) READING_PT[lv][i].qs.push(...qs); }); });
 /* READING-EXTRA:END */
 /* PLACEMENT-EXTRA:BEGIN
-   Prueba de nivel adaptativa: 8 preguntas nuevas por nivel e idioma (se suman a PLACEMENT_BANK). */
-const PLACEMENT_EXTRA = {"en":{"A1":[["There ___ two books on the table.","are",["is","be","am"],3],["This is ___ book.  (I)","my",["I","me","mine"],4],["The keys are ___ the table.","on",["at","of","to"],5],["She can ___ the piano.","play",["plays","to play","playing"],9],["___ is your teacher?","Who",["What","Where","When"],10],["He ___ like coffee.","doesn't",["don't","isn't","not"],11],["I ___ have breakfast at home.","never",["am never","don't never","never am"],12],["I like ___ to music.","listening",["listen","to listen","listens"],13]],"A2":[["Yesterday we ___ to the cinema.","went",["go","goes","going"],0],["Look! It ___ right now.","is raining",["rains","rain","rained"],1],["This bag is ___ than that one.","cheaper",["more cheap","cheapest","the cheaper"],2],["We ___ visit Rome next summer.","are going to",["going to","will to","are go to"],3],["There isn't ___ milk in the fridge.","any",["some","many","a"],4],["When I called, she ___ dinner.","was cooking",["cooked","cooks","is cooking"],5],["___ you like a cup of tea?","Would",["Do","Are","Will"],15],["She speaks English very ___.","well",["good","goodly","best"],16]],"B1":[["I ___ in London since 2019.","have lived",["lived","live","was living"],0],["If it rains tomorrow, we ___ at home.","will stay",["stay","would stay","stayed"],1],["You ___ wear a seat belt; it's the law.","must",["should","can","might"],2],["The woman ___ lives next door is a doctor.","who",["which","whose","what"],4],["She enjoys ___ novels.","reading",["to read","read","reads"],5],["You're tired, ___?","aren't you",["are you","don't you","isn't it"],6],["When we arrived, the film ___.","had already started",["already started","has already started","already start"],8],["___ it was raining, we went for a walk.","Although",["Because","So","Despite"],9]],"B2":[["The bridge ___ in 1932.","was built",["built","has built","is building"],0],["If I ___ more time, I would learn the piano.","had",["have","would have","having"],1],["She said she ___ the next day.","would come",["will come","comes","came"],2],["He ___ be at home; his car is outside.","must",["can't","mustn't","needn't"],3],["If she had studied, she ___ the exam.","would have passed",["would pass","will pass","passed"],5],["You ___ told me earlier! I would have helped.","should have",["must have","might","would have"],7],["You can borrow my car ___ you drive carefully.","as long as",["unless","in case","although"],8],["By next June, they ___ the house.","will have finished",["will finish","are finishing","finished"],13]],"C1":[["I wish I ___ more time to travel.","had",["have","would have","having"],1],["Not only ___ late, but he also forgot the documents.","was he",["he was","he is","is he"],2],["My brother, ___ lives in Madrid, is visiting us.","who",["that","which","whom"],3],["It was Maria ___ solved the problem.","who",["what","whose","which"],4],["The minister is said ___ resigned.","to have",["that he has","having","to has"],7],["___ the report, she left the office.","Having finished",["Finishing","Finished having","To finish"],8],["The study ___ that prices may fall.","suggests",["proves","prove","is proving"],11],["___ the difficulties, the project succeeded.","Despite",["Although","However","Because"],9]],"C2":[["I'm going to ___ my car serviced tomorrow.","have",["make","do","let"],0],["If I had taken that job, I ___ in Paris now.","would be",["would have been","will be","had been"],1],["The board insisted that he ___ immediately.","resign",["resigns","resigned","would resign"],3],["___ I known, I would have called you.","Had",["If","Have","Should"],5],["It's high time we ___ a decision.","made",["make","will make","are making"],6],["___ did she realize the danger.","Only later",["Later only she","Later she only","Only she later"],8],["No matter how ___ you try, you can't please everyone.","hard",["harder","hardly","hardest"],14],["The word 'unbelievable' is formed with the prefix ___.","un-",["in-","dis-","mis-"],13]]},"pt":{"A1":[["Eu ___ estudante.","sou",["estou","é","somos"],0],["Ele ___ em casa agora.","está",["é","são","ser"],0],["___ uma padaria aqui perto?","Tem",["Têm","São","Estão"],6],["Ele é ___ Peru. (de + o)","do",["no","ao","pelo"],5],["___ mãe é professora. (minha/meu)","Minha",["Meu","Meus","Seu"],8],["___ é o seu nome?","Qual",["Onde","Quem","Quando"],10],["Eu ___ falo inglês. (negação)","não",["nada","nunca não","nem"],12],["Eu ___ ajudar você. (poder)","posso",["pode","podem","podemos"],11]],"A2":[["Ontem eu ___ ao mercado.","fui",["vou","ia","irei"],11],["Quando eu era criança, ___ na rua. (brincar)","brincava",["brinquei","brinco","brincarei"],1],["Ela ___ lendo agora.","está",["é","tem","vai"],3],["Nós ___ viajar amanhã.","vamos",["vão","vou","viajamos"],4],["Este presente é ___ você.","para",["por","pelo","de"],9],["Meu carro é ___ do que o seu.","melhor",["mais bom","bom","ótimo"],2],["Eu ___ levanto às seis.","me",["se","te","nos"],5],["Ela fala ___. (claro)","claramente",["claro-mente","clareza","clara"],7]],"B1":[["___ a janela, por favor. (abrir, você)","Abra",["Abre","Abrir","Abrindo"],2],["Ultimamente eu ___ dormido mal.","tenho",["sou","estou","fui"],3],["A mulher ___ mora ao lado é médica.","que",["onde","cujo","quem"],4],["Eu ___ mais se tivesse tempo. (viajar)","viajaria",["viajo","viajei","viajava"],5],["Uma casa pequena é uma ___.","casinha",["casarão","casona","casaço"],6],["Estou ___ agora. (trabalhar)","trabalhando",["trabalhar","trabalhado","trabalhei"],7],["Comecei ___ estudar português.","a",["de","em","por"],8],["Enquanto eu ___, ele chegou. (ler)","lia",["li","lerei","leria"],9]],"B2":[["O bolo ___ preparado pela minha avó.","foi",["fez","era fazer","tinha"],0],["Espero que você ___ do presente. (gostar)","goste",["gosta","gostou","gostaria"],1],["Se eu ___ você, aceitaria. (ser)","fosse",["for","sou","seria"],7],["Ele disse que ___ cansado. (estar)","estava",["está","estará","estar"],3],["Este vinho é ___ que aquele.","melhor",["mais bom","bom","ótimo"],4],["Embora ela ___ jovem, tem experiência. (ser)","seja",["é","foi","será"],6],["Quando cheguei, ele já ___ saído.","tinha",["tenho","teria","teve"],8],["Isso depende ___ você.","de",["em","com","por"],11]],"C1":[["Fale devagar para que todos ___. (entender)","entendam",["entendem","entenderam","entender"],9],["Oxalá ele ___ à festa. (vir)","venha",["vem","veio","viria"],8],["É importante nós ___ cedo. (chegar)","chegarmos",["chegamos","chegar","chegaremos"],3],["Se tivesse estudado, ___ no exame. (passar)","teria passado",["passaria","passou","passei"],4],["Os dados estão ___ analisados.","sendo",["foram","ser","tendo"],5],["___ tarde, decidimos adiar. (ser)","Sendo",["Ser","Sido","Seria"],2],["Tomara que ___ sol amanhã. (fazer)","faça",["faz","fará","fez"],8],["O plano é bom; ___, é caro.","contudo",["porque","logo","ademais"],12]],"C2":[["Fui ___ praia com meus primos.","à",["a","na","pela"],3],["Chegaremos ___ três horas.","às",["as","a","à"],3],["Ele aspira ___ cargo de diretor.","ao",["o","do","no"],4],["Faz dois anos que ele ___ aqui. (morar)","mora",["moram","morou","morava"],2],["___ o que houver, estarei lá.","Haja",["Seja","Tenha","Faça"],5],["Foi aqui ___ nos conhecemos.","que",["quem","onde que","qual"],6],["A ___ foi tomada em conjunto. (decidir)","decisão",["decidir","decidido","decisivo"],1],["Ele ___ uma música. (compor, perfeito)","compôs",["compos","componhou","compou"],13]]}};
+   Prueba de nivel adaptativa: 16 preguntas nuevas por nivel e idioma (se suman a PLACEMENT_BANK). */
+const PLACEMENT_EXTRA = {"en":{"A1":[["There ___ two books on the table.","are",["is","be","am"],3],["This is ___ book.  (I)","my",["I","me","mine"],4],["The keys are ___ the table.","on",["at","of","to"],5],["She can ___ the piano.","play",["plays","to play","playing"],9],["___ is your teacher?","Who",["What","Where","When"],10],["He ___ like coffee.","doesn't",["don't","isn't","not"],11],["I ___ have breakfast at home.","never",["am never","don't never","never am"],12],["I like ___ to music.","listening",["listen","to listen","listens"],13],["I ___ from Spain.","am",["is","are","be"],0],["She ___ tennis on Sundays.","plays",["play","playing","does plays"],1],["He is ___ engineer.","an",["a","many","some"],2],["There ___ a cat under the chair.","is",["are","be","have"],3],["___ are my new shoes.","These",["This","That","It"],7],["He ___ a big house.","has",["have","is","haves"],8],["___ do you live? — In Madrid.","Where",["Who","When","Why"],10],["She always ___ up at seven.","gets",["get","getting","is get"],12]],"A2":[["Yesterday we ___ to the cinema.","went",["go","goes","going"],0],["Look! It ___ right now.","is raining",["rains","rain","rained"],1],["This bag is ___ than that one.","cheaper",["more cheap","cheapest","the cheaper"],2],["We ___ visit Rome next summer.","are going to",["going to","will to","are go to"],3],["There isn't ___ milk in the fridge.","any",["some","many","a"],4],["When I called, she ___ dinner.","was cooking",["cooked","cooks","is cooking"],5],["___ you like a cup of tea?","Would",["Do","Are","Will"],15],["She speaks English very ___.","well",["good","goodly","best"],16],["She ___ her keys yesterday.","lost",["loses","losted","lose"],0],["What ___ you doing at the moment?","are",["do","did","have"],1],["This is the ___ film of the year.","best",["most good","better","goodest"],2],["Did you ___ the exam yesterday?","pass",["passed","passing","to pass"],12],["You ___ wear a uniform at this school; it's compulsory.","have to",["don't have to","are able","might"],14],["He drives very ___.","carefully",["careful","care","carefulness"],16],["The film was ___ boring that we left.","so",["too","enough","very"],17],["I ___ born in 1995.","was",["were","am","have"],11]],"B1":[["I ___ in London since 2019.","have lived",["lived","live","was living"],0],["If it rains tomorrow, we ___ at home.","will stay",["stay","would stay","stayed"],1],["You ___ wear a seat belt; it's the law.","must",["should","can","might"],2],["The woman ___ lives next door is a doctor.","who",["which","whose","what"],4],["She enjoys ___ novels.","reading",["to read","read","reads"],5],["You're tired, ___?","aren't you",["are you","don't you","isn't it"],6],["When we arrived, the film ___.","had already started",["already started","has already started","already start"],8],["___ it was raining, we went for a walk.","Although",["Because","So","Despite"],9],["She has worked here ___ 2015.","since",["for","during","from"],0],["If you ___ hard, you'll pass the exam.","study",["will study","studied","would study"],1],["I don't know where ___.","he lives",["does he live","lives he","he does live"],12],["It's the book ___ I told you about.","that",["who","whose","what"],4],["He suggested ___ to the cinema.","going",["to go","go","went"],5],["I ___ him yesterday.","saw",["have seen","see","had seen"],7],["Please switch ___ the light when you leave.","off",["of","at","in"],10],["She is as tall ___ her brother.","as",["than","like","that"],11]],"B2":[["The bridge ___ in 1932.","was built",["built","has built","is building"],0],["If I ___ more time, I would learn the piano.","had",["have","would have","having"],1],["She said she ___ the next day.","would come",["will come","comes","came"],2],["He ___ be at home; his car is outside.","must",["can't","mustn't","needn't"],3],["If she had studied, she ___ the exam.","would have passed",["would pass","will pass","passed"],5],["You ___ told me earlier! I would have helped.","should have",["must have","might","would have"],7],["You can borrow my car ___ you drive carefully.","as long as",["unless","in case","although"],8],["By next June, they ___ the house.","will have finished",["will finish","are finishing","finished"],13],["This medicine ___ twice a day.","should be taken",["should take","should be take","is should taken"],0],["I wish I ___ speak Italian.","could",["can","will","would be"],1],["He told me that he ___ very tired.","was",["were","be","has being"],2],["When I was a child, we ___ go to the beach every summer.","used to",["use to","were used to","are used to"],4],["She ___ working here for ten years by next May.","will have been",["is","has been","would have"],13],["___ the rain, we had a great picnic.","In spite of",["Despite of","Although","Because"],12],["We are looking forward ___ you.","to seeing",["to see","for seeing","at see"],14],["___ of the two brothers speaks Chinese.","Neither",["None","No","Any"],10]],"C1":[["I wish I ___ more time to travel.","had",["have","would have","having"],1],["Not only ___ late, but he also forgot the documents.","was he",["he was","he is","is he"],2],["My brother, ___ lives in Madrid, is visiting us.","who",["that","which","whom"],3],["It was Maria ___ solved the problem.","who",["what","whose","which"],4],["The minister is said ___ resigned.","to have",["that he has","having","to has"],7],["___ the report, she left the office.","Having finished",["Finishing","Finished having","To finish"],8],["The study ___ that prices may fall.","suggests",["proves","prove","is proving"],11],["___ the difficulties, the project succeeded.","Despite",["Although","However","Because"],9],["How long ___ waiting?","have you been",["are you","did you","do you"],0],["If only I ___ told her the truth!","had",["have","would","did"],1],["Rarely ___ such a beautiful view.","have I seen",["I have seen","I saw","did I saw"],2],["The house, ___ roof was damaged, has been sold.","whose",["which","who","that"],3],["It was in Rome ___ they first met.","that",["what","which","how"],4],["___ from the window, she could see the sea.","Looking",["Look","To look","Looked"],8],["The plan is expensive; ___, it will save money in the long run.","however",["therefore","moreover","consequently"],9],["___ Netherlands is famous for its tulips.","The",["A","An","Some"],13]],"C2":[["I'm going to ___ my car serviced tomorrow.","have",["make","do","let"],0],["If I had taken that job, I ___ in Paris now.","would be",["would have been","will be","had been"],1],["The board insisted that he ___ immediately.","resign",["resigns","resigned","would resign"],3],["___ I known, I would have called you.","Had",["If","Have","Should"],5],["It's high time we ___ a decision.","made",["make","will make","are making"],6],["___ did she realize the danger.","Only later",["Later only she","Later she only","Only she later"],8],["No matter how ___ you try, you can't please everyone.","hard",["harder","hardly","hardest"],14],["The word 'unbelievable' is formed with the prefix ___.","un-",["in-","dis-","mis-"],13],["I'd rather you ___ smoke in here.","didn't",["don't","wouldn't","not"],6],["He acts as if he ___ the boss.","were",["be","has being","would be"],1],["The committee recommended that the proposal ___ rejected.","be",["is","was","would be"],3],["No sooner ___ she sat down than the phone rang.","had",["has","did","was"],2],["Should you ___ any questions, please contact us.","have",["had","has","having"],5],["Never before ___ so proud.","had I felt",["I had felt","did I felt","have felt"],8],["___ what you say, I won't change my mind.","Whatever",["However","Whichever","Whenever"],14],["It's raining cats and ___.","dogs",["mice","birds","horses"],12]]},"pt":{"A1":[["Eu ___ estudante.","sou",["estou","é","somos"],0],["Ele ___ em casa agora.","está",["é","são","ser"],0],["___ uma padaria aqui perto?","Tem",["Têm","São","Estão"],6],["Ele é ___ Peru. (de + o)","do",["no","ao","pelo"],5],["___ mãe é professora. (minha/meu)","Minha",["Meu","Meus","Seu"],8],["___ é o seu nome?","Qual",["Onde","Quem","Quando"],10],["Eu ___ falo inglês. (negação)","não",["nada","nunca não","nem"],12],["Eu ___ ajudar você. (poder)","posso",["pode","podem","podemos"],11],["Nós ___ brasileiros.","somos",["estamos","é","sou"],0],["Eu ___ português todos os dias.","estudo",["estuda","estudam","estudar"],1],["Eu tenho ___ irmã.","uma",["um","uns","o"],2],["Eu ___ dois filhos.","tenho",["tem","têm","temos"],3],["___ é professora.","Ela",["Eles","Nós","Vocês"],4],["O livro está ___ mesa.","na",["no","em","de"],5],["___ é o banheiro? — Ali.","Onde",["Quem","Quando","Por que"],10],["Eu ___ ir ao cinema hoje.","quero",["quer","querem","querer"],11]],"A2":[["Ontem eu ___ ao mercado.","fui",["vou","ia","irei"],11],["Quando eu era criança, ___ na rua. (brincar)","brincava",["brinquei","brinco","brincarei"],1],["Ela ___ lendo agora.","está",["é","tem","vai"],3],["Nós ___ viajar amanhã.","vamos",["vão","vou","viajamos"],4],["Este presente é ___ você.","para",["por","pelo","de"],9],["Meu carro é ___ do que o seu.","melhor",["mais bom","bom","ótimo"],2],["Eu ___ levanto às seis.","me",["se","te","nos"],5],["Ela fala ___. (claro)","claramente",["claro-mente","clareza","clara"],7],["Ontem nós ___ pizza.","comemos",["comíamos","comerei","comem"],0],["Quando eu era jovem, eu ___ muito.","viajava",["viajei","viajarei","viajo"],1],["Ele é o aluno ___ inteligente da turma.","mais",["mais do","tão","melhor"],2],["Eles ___ jantando neste momento.","estão",["são","têm","vão"],3],["Amanhã eu ___ visitar minha avó.","vou",["vai","fui","ia"],4],["Ele ___ chama Pedro.","se",["me","te","nos"],5],["Não tenho ___ dinheiro.","muito",["muita","muitos","muitas"],6],["Obrigado ___ ajuda.","pela",["para a","pelo","na"],9]],"B1":[["___ a janela, por favor. (abrir, você)","Abra",["Abre","Abrir","Abrindo"],2],["Ultimamente eu ___ dormido mal.","tenho",["sou","estou","fui"],3],["A mulher ___ mora ao lado é médica.","que",["onde","cujo","quem"],4],["Eu ___ mais se tivesse tempo. (viajar)","viajaria",["viajo","viajei","viajava"],5],["Uma casa pequena é uma ___.","casinha",["casarão","casona","casaço"],6],["Estou ___ agora. (trabalhar)","trabalhando",["trabalhar","trabalhado","trabalhei"],7],["Comecei ___ estudar português.","a",["de","em","por"],8],["Enquanto eu ___, ele chegou. (ler)","lia",["li","lerei","leria"],9],["Semana que vem eu ___ a Lisboa.","viajarei",["viajei","viajava","viajado"],0],["Ela me ___ um presente.","deu",["dei","deste","dou"],1],["Não ___ tarde!","chegue",["chega","chegar","chegando"],2],["O livro ___ eu li é ótimo.","que",["onde","quem","cujo"],4],["Se eu tivesse dinheiro, ___ uma casa.","compraria",["comprei","compro","comprarei"],5],["O cachorro é pequeno: é um ___.","cachorrinho",["cachorrão","cachorraço","cachorrico"],6],["Ele está ___ um bolo.","fazendo",["fazer","feito","faz"],7],["Ele não veio ___ estava doente.","porque",["embora","portanto","mas"],10]],"B2":[["O bolo ___ preparado pela minha avó.","foi",["fez","era fazer","tinha"],0],["Espero que você ___ do presente. (gostar)","goste",["gosta","gostou","gostaria"],1],["Se eu ___ você, aceitaria. (ser)","fosse",["for","sou","seria"],7],["Ele disse que ___ cansado. (estar)","estava",["está","estará","estar"],3],["Este vinho é ___ que aquele.","melhor",["mais bom","bom","ótimo"],4],["Embora ela ___ jovem, tem experiência. (ser)","seja",["é","foi","será"],6],["Quando cheguei, ele já ___ saído.","tinha",["tenho","teria","teve"],8],["Isso depende ___ você.","de",["em","com","por"],11],["Os ladrões ___ presos pela polícia.","foram",["fizeram","tinham","foi"],0],["Duvido que ela ___ a verdade. (saber)","saiba",["sabe","soube","sabia"],1],["Se eu ___ tempo, viajaria mais. (ter)","tivesse",["tenho","tive","terei"],2],["Ele disse que ___ ao médico no dia seguinte. (ir)","iria",["vai","foi","vá"],3],["Mesmo que ___ chuva, iremos à praia. (haver)","haja",["há","houve","haverá"],6],["Ele pediu que eu ___ mais cedo. (chegar)","chegasse",["cheguei","chego","chegaria"],7],["Falei devagar a fim de que você ___. (entender)","entendesse",["entende","entendeu","entender"],10],["Ela se esqueceu ___ chave.","da",["a","na","pela"],11]],"C1":[["Fale devagar para que todos ___. (entender)","entendam",["entendem","entenderam","entender"],9],["Oxalá ele ___ à festa. (vir)","venha",["vem","veio","viria"],8],["É importante nós ___ cedo. (chegar)","chegarmos",["chegamos","chegar","chegaremos"],3],["Se tivesse estudado, ___ no exame. (passar)","teria passado",["passaria","passou","passei"],4],["Os dados estão ___ analisados.","sendo",["foram","ser","tendo"],5],["___ tarde, decidimos adiar. (ser)","Sendo",["Ser","Sido","Seria"],2],["Tomara que ___ sol amanhã. (fazer)","faça",["faz","fará","fez"],8],["O plano é bom; ___, é caro.","contudo",["porque","logo","ademais"],12],["Quando você ___ em casa, me avise. (chegar)","chegar",["chegou","chega","chegará"],1],["Se você ___ isso, avise-me. (ver)","vir",["vê","viu","visse"],1],["Depois de ___ o relatório, ele saiu. (ler)","ler",["lendo","leu","lido de"],2],["Antes de eles ___, verifiquei tudo. (chegar)","chegarem",["chegar","chegam","chegaram"],3],["Se eu soubesse, ___ te ajudado. (ter)","teria",["tenho","tive","terei"],4],["O contrato ___ pelas partes. (assinar, voz passiva)","foi assinado",["assinou","assinado foi","era assinar"],5],["Iremos ao parque, ___ chova.","ainda que",["porque","pois","logo"],9],["Ele estudou muito; ___, não passou.","no entanto",["porque","pois","logo"],12]],"C2":[["Fui ___ praia com meus primos.","à",["a","na","pela"],3],["Chegaremos ___ três horas.","às",["as","a","à"],3],["Ele aspira ___ cargo de diretor.","ao",["o","do","no"],4],["Faz dois anos que ele ___ aqui. (morar)","mora",["moram","morou","morava"],2],["___ o que houver, estarei lá.","Haja",["Seja","Tenha","Faça"],5],["Foi aqui ___ nos conhecemos.","que",["quem","onde que","qual"],6],["A ___ foi tomada em conjunto. (decidir)","decisão",["decidir","decidido","decisivo"],1],["Ele ___ uma música. (compor, perfeito)","compôs",["compos","componhou","compou"],13],["Assisti ___ filme ontem.","ao",["o","no","do"],7],["___ muitos alunos na sala. (haver)","Havia",["Haviam","Haviamos","Haverão"],2],["Vou ___ pé.","a",["à","na","pela"],3],["Prefiro cinema ___ teatro.","a",["que","de","em"],4],["Custe o que ___.","custar",["custa","custou","custe"],5],["Ele ___ o dinheiro na mesa. (pôr, pretérito perfeito)","pôs",["pos","poz","pois"],13],["A palavra 'infeliz' é formada com o prefixo ___.","in-",["des-","a-","anti-"],12],["A ___ do presidente foi noticiada. (chegar)","chegada",["chegado","chegando","chegar"],1]]}};
 /* PLACEMENT-EXTRA:END */
 const LANG_PACKS = {
   en: { VOCAB, GRAMMAR, THEORY, CATEGORIES, CATEGORY_EXAMPLES, VERBS, SITUATION_THEMES, EXPRESSION_THEMES, FALSE_FRIENDS, HOW_TO_SAY, ORDER, LISTEN, TRANSLATE, READING, READING_CLOZE, READING_LETTERS, DIALOGUES, WRITING_PROMPTS, PLACEMENT_BANK },
@@ -21206,7 +21207,7 @@ function saveProgress(){
   try{
     localStorage.setItem(progressKeyFor(ACTIVE_PROFILE_ID, currentLang), JSON.stringify({
       stats, srs: SRS_DATA, errors: ERROR_BANK, level: currentLevel, ts: Date.now(),
-      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest, routeProgress, writingHistory, dialogueProgress, dialogueMeta, topicProgress, placementResult
+      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest, routeProgress, writingHistory, dialogueProgress, dialogueMeta, topicProgress, placementResult, placementSeen
     }));
   }catch(e){ /* almacenamiento no disponible: el progreso queda solo en esta sesión */ }
 }
@@ -21235,6 +21236,7 @@ function loadProgress(){
     if(data.matchPairsBest && typeof data.matchPairsBest === "object") Object.assign(matchPairsBest, data.matchPairsBest);
     if(data.routeProgress && typeof data.routeProgress === "object") Object.assign(routeProgress, data.routeProgress);
     if(data.placementResult && typeof data.placementResult === "object") placementResult = data.placementResult;
+    if(data.placementSeen && typeof data.placementSeen === "object") placementSeen = data.placementSeen;
   }catch(e){ /* datos corruptos: se ignoran y se empieza de cero */ }
 }
 /* Reinicia el progreso del perfil activo a sus valores por defecto
@@ -21259,7 +21261,7 @@ function resetActiveProfileData(){
   writingHistory.length = 0;
   Object.keys(matchPairsBest).forEach(k=> delete matchPairsBest[k]);
   Object.keys(routeProgress).forEach(k=> delete routeProgress[k]);
-  placementResult = null;
+  placementResult = null; placementSeen = {};
   saveProgress();
 }
 
@@ -22427,7 +22429,9 @@ function placementSkillPool(lv, kind){
   }else if(kind === "l" && ("speechSynthesis" in window)){
     const sents = pack.LISTEN[lv] || [];
     sents.forEach((s, i)=>{
-      const others = shuffle(sents.filter(o=> o !== s)).slice(0, 3);
+      const words = t=> new Set(t.toLowerCase().replace(/[.,!?¿¡]/g, "").split(/s+/)), ws = words(s);
+      const sim = o=>{ const wo = words(o); let c = 0; wo.forEach(w=>{ if(ws.has(w)) c++; }); return c / (ws.size + wo.size - c); };
+      const others = shuffle(sents.filter(o=> o !== s).sort((a, b)=> sim(b) - sim(a)).slice(0, 6)).slice(0, 3);   // distractores parecidos, para que oír importe
       if(others.length === 3) out.push({key:`l${lv}-${i}`, kind:"l", level:lv, topicIndex:null, say:s, q:"Escucha la frase y elige la que oíste.", opts:[s, ...others], correct:s});
     });
   }
@@ -22480,34 +22484,39 @@ function drawPlacementIntro(){
   if(sw) sw.onclick = ()=>{ setActiveProfileId(null); location.reload(); };
 }
 function placementStart(){
-  placementState = {idx:2, top:null, tally:LEVELS.map(()=>({asked:0, correct:0})), res:{}, clean:{}, used:new Set(), answers:[], cur:null, n:0, result:null};
+  placementState = {idx:2, top:null, tally:LEVELS.map(()=>({asked:0, correct:0, gA:0, gC:0, wa:0, wc:0})), res:{}, clean:{}, used:new Set(), answers:[], cur:null, n:0, result:null};
   placementNext();
 }
 function placementNext(){
   const s = placementState;
   if(s.top !== null){   // confirmación: alterna entre el nivel aprobado más alto y el siguiente hasta llegar al mínimo de preguntas
-    const base = Math.max(0, s.top), cand = [base, Math.min(5, base + 1)];
+    const base = s.top === 5 ? 4 : Math.max(0, s.top), cand = [base, base + 1];
     s.idx = s.tally[cand[0]].asked <= s.tally[cand[1]].asked ? cand[0] : cand[1];
   }
   const lv = LEVELS[s.idx];
   const kind = PLACEMENT_KINDS[s.n] || "g";
   let all = kind === "g" ? [] : placementSkillPool(lv, kind);
   if(!all.length) all = placementPool(lv);
-  const fresh = all.filter(x=> !s.used.has(x.key));
-  const q = pick(fresh.length ? fresh : all);
+  let fresh = all.filter(x=> !s.used.has(x.key));
+  if(!fresh.length) fresh = all;
+  const seenN = x=> placementSeen[x.key] || 0, least = Math.min(...fresh.map(seenN));
+  const q = pick(fresh.filter(x=> seenN(x) === least));   // primero las que nunca viste; si ya se agotaron, las menos vistas
+  placementSeen[q.key] = seenN(q) + 1; saveProgress();
   s.used.add(q.key); s.cur = q; s.n++;
   drawPlacementQuestion();
 }
 /* Registra una respuesta y decide si el nivel actual se aprobó (2 aciertos), se falló (2 errores) o hace falta una 3.ª pregunta. */
 function placementRecord(ok){
-  const s = placementState, t = s.tally[s.idx];
-  t.asked++; if(ok) t.correct++;
-  const wrong = t.asked - t.correct;
+  const s = placementState, t = s.tally[s.idx], skill = !!(s.cur && s.cur.kind && s.cur.kind !== "g"), w = skill ? 0.5 : 1;
+  t.asked++; t.wa += w; if(ok){ t.correct++; t.wc += w; }
   if(s.top !== null){ if(s.n >= PLACEMENT_MIN_Q){ placementConfirmFinish(); return true; } return false; }
+  if(skill) return false;   // lectura y escucha pesan la mitad en el puntaje y no mueven la escalera (son más fáciles de acertar)
+  t.gA++; if(ok) t.gC++;
+  const wrong = t.gA - t.gC;
   let outcome = null;
-  if(t.correct >= 2) outcome = "pass"; else if(wrong >= 2) outcome = "fail";
+  if(t.gC >= 2) outcome = "pass"; else if(wrong >= 2) outcome = "fail";
   if(!outcome) return false;
-  s.res[s.idx] = outcome; s.clean[s.idx] = (t.asked === 2);
+  s.res[s.idx] = outcome; s.clean[s.idx] = (t.gA === 2);
   if(outcome === "pass"){
     if(s.res[s.idx + 1] === "fail" || s.idx === 5) return placementBoundary(s.idx);
     s.idx++;
@@ -22521,15 +22530,17 @@ function placementRecord(ok){
 /* Se encontró el límite: si aún no se llegó al mínimo de preguntas, se sigue confirmando en los niveles frontera. */
 function placementBoundary(top){
   const s = placementState;
-  if(s.n >= PLACEMENT_MIN_Q){ placementFinish(top); return true; }
-  s.top = top; return false;
+  s.top = top;
+  if(s.n >= PLACEMENT_MIN_Q){ placementConfirmFinish(); return true; }
+  return false;
 }
 /* Tras la confirmación se ajusta el nivel con toda la evidencia acumulada (precisión por nivel). */
 function placementConfirmFinish(){
-  const s = placementState, acc = i=> s.tally[i].asked ? s.tally[i].correct / s.tally[i].asked : null;
+  const s = placementState, acc = i=> s.tally[i].wa ? s.tally[i].wc / s.tally[i].wa : null;
+  const need = i=> i === 5 ? 0.9 : 0.6;   // C2 exige dominio claro (90 %); el resto, 60 %
   let top = s.top;
-  if(top >= 0 && acc(top) < 0.5) top--;
-  else if(top < 5 && s.tally[top + 1] && acc(top + 1) !== null && acc(top + 1) >= 0.67 && (top < 0 || acc(top) >= 0.5)) top++;
+  if(top >= 0 && acc(top) !== null && acc(top) < need(top)) top--;
+  else if(top < 5 && acc(top + 1) !== null && acc(top + 1) >= Math.max(0.67, need(top + 1)) && (top < 0 || acc(top) >= need(top))) top++;
   s.confirmed = true; placementFinish(top);
 }
 function placementFinish(top){   // top = índice del nivel más alto aprobado (-1 = ni A1)
@@ -22537,11 +22548,11 @@ function placementFinish(top){   // top = índice del nivel más alto aprobado (
   let score = 0;
   LEVELS.forEach((lv, i)=>{
     const t = s.tally[i];
-    if(t.asked) score += 10 * t.correct / t.asked;
+    if(t.wa) score += 10 * t.wc / t.wa;
     else if(i < idx) score += 10;   // niveles por debajo del resultado que no hizo falta preguntar
   });
-  const above = s.res[idx + 1], ac = i=> s.tally[i].asked ? s.tally[i].correct / s.tally[i].asked : null;
-  const clean = s.confirmed ? (beginner ? ac(0) <= 0.34 : ac(idx) >= 0.75 && (idx === 5 || ac(idx + 1) === null || ac(idx + 1) <= 0.34))
+  const above = s.res[idx + 1], ac = i=> s.tally[i].wa ? s.tally[i].wc / s.tally[i].wa : null;
+  const clean = s.confirmed ? (beginner ? ac(0) <= 0.34 : ac(idx) >= (idx === 5 ? 0.95 : 0.75) && (idx === 5 || ac(idx + 1) === null || ac(idx + 1) <= 0.34))
     : beginner ? s.clean[0] : (s.clean[idx] && (idx === 5 || above !== "fail" || s.clean[idx + 1]));
   const level = LEVELS[idx];
   s.result = {level, beginner, score:Math.round(score), confidence: clean ? "alta" : "media", date:Date.now(), asked:s.n};
@@ -25063,7 +25074,7 @@ function speak(text, rate, lang){
   u.lang = lg;
   const voice = listenPickVoice(lg);
   if(voice) u.voice = voice;
-  u.rate = rate || 0.92;
+  u.rate = rate || 0.98;
   window.speechSynthesis.speak(u);
 }
 /* =========================================================
@@ -25147,9 +25158,25 @@ let listenPrefs = {autoplay:true, voice:""};
 try{ Object.assign(listenPrefs, JSON.parse(localStorage.getItem(LISTEN_PREF_KEY) || "{}")); }catch(e){}
 function saveListenPrefs(){ try{ localStorage.setItem(LISTEN_PREF_KEY, JSON.stringify(listenPrefs)); }catch(e){} }
 function listenModeActive(){ return activeSection === "exercises" ? listenMode : "dictation"; }
+/* Calidad esperada de una voz del sistema: las neuronales (Edge «Natural/Online», Google, Apple Premium) suenan mucho más humanas que las clásicas de escritorio (David, Zira, eSpeak…). */
+function voiceScore(v){
+  const n = v.name || "";
+  let s = 0;
+  if(/natural|neural/i.test(n)) s += 100;
+  if(/online/i.test(n)) s += 60;
+  if(/google/i.test(n)) s += 50;
+  if(/premium|enhanced|siri/i.test(n)) s += 50;
+  if(/espeak/i.test(n) || (/microsoft/i.test(n) && !/natural|online/i.test(n))) s -= 40;   // voces clásicas de Windows (David, Zira, Maria…)
+  if(!v.localService) s += 10;   // las voces en la nube suelen ser neuronales
+  return s;
+}
+function voicesForLang(lg){
+  const exact = _voicesCache.filter(v=> v.lang === lg), any = _voicesCache.filter(v=> v.lang && v.lang.startsWith(lg.slice(0, 2)));
+  return (exact.length ? exact : any).slice().sort((a, b)=> voiceScore(b) - voiceScore(a));
+}
 function listenPickVoice(lg){
   const pref = listenPrefs.voice ? _voicesCache.find(v=> v.name === listenPrefs.voice && v.lang === lg) : null;
-  return pref || _voicesCache.find(v=>v.lang===lg) || _voicesCache.find(v=>v.lang && v.lang.startsWith(lg.slice(0,2)));
+  return pref || voicesForLang(lg)[0];
 }
 let _listenChunkToken = 0;
 function listenSpeakChunks(text){
@@ -25173,17 +25200,19 @@ function listenSpeakChunks(text){
 function listenHeaderHTML(){
   const modes = (activeSection === "exercises")
     ? `<div class="listen-modes" role="tablist" aria-label="Tipo de escucha">${LISTEN_MODES.map(([id,l])=>`<button type="button" class="ex-tab${id===listenMode?" active":""}" data-listen-mode="${id}"><span>${l}</span></button>`).join("")}</div>` : "";
-  const voices = _voicesCache.filter(v=> v.lang && v.lang.slice(0,2) === (currentLang==="pt" ? "pt" : "en"));
+  const voices = _voicesCache.filter(v=> v.lang && v.lang.slice(0,2) === (currentLang==="pt" ? "pt" : "en")).sort((a, b)=> voiceScore(b) - voiceScore(a));
+  const best = voicesForLang(currentLang === "pt" ? "pt-BR" : voiceAccent)[0], natural = best && voiceScore(best) >= 50;
   return `${modes}
     <details class="listen-opts"><summary>⚙️ Opciones de audio</summary>
       <label class="listen-opt"><input type="checkbox" id="listenAutoplay" ${listenPrefs.autoplay?"checked":""}> Reproducir automáticamente al empezar</label>
       <label class="listen-opt">Voz:
         <select id="listenVoice" class="text-input" style="max-width:260px;padding:6px 10px;">
           <option value="">Automática</option>
-          ${voices.map(v=>`<option value="${escHtml(v.name)}" ${v.name===listenPrefs.voice?"selected":""}>${escHtml(v.name)} (${escHtml(v.lang)})</option>`).join("")}
+          ${voices.map(v=>`<option value="${escHtml(v.name)}" ${v.name===listenPrefs.voice?"selected":""}>${voiceScore(v) >= 50 ? "★ " : ""}${escHtml(v.name)} (${escHtml(v.lang)})</option>`).join("")}
         </select>
       </label>
       ${voices.length ? "" : `<div class="wr-body">Tu navegador no muestra voces distintas: se usará la voz predeterminada.</div>`}
+      ${voices.length && !natural ? `<div class="wr-body">Las voces de este navegador suenan robóticas (★ = voz natural). Para una voz más humana abre la app en <b>Microsoft Edge</b> (voces «Natural» como Aria o Guy) o en <b>Chrome</b> con conexión (voces de Google).</div>` : ""}
     </details>`;
 }
 function listenWireHeader(root){
