@@ -19311,6 +19311,7 @@ const stats = {};
 const current = {};
 const dailyStreak = {count:0, lastDate:null};   // racha diaria global, distinta de stats[id].streak
 const weeklyHistory = [];  // [{weekStart, exercisesDone, correct, correctRate}] — últimas 12 semanas
+const examModules = [];    // intentos de los módulos del Examen: {date, mod, level, score, correct?, total?, per?, parts?}, máx. 60
 const examHistory = [];    // [{date, level, correctTotal, totalQuestions, breakdown:{gapfill:{correct,total}, vocab:{correct,total}}}]
 const dailyActivity = {};  // "YYYY-MM-DD" -> {<exerciseId>: cantidad de respuestas ese día} — para el gráfico de barras apiladas del Dashboard
 let uiLangPref = "es";           // preferencia de idioma de interfaz (solo se guarda, no traduce contenido todavía)
@@ -21207,7 +21208,7 @@ function saveProgress(){
   try{
     localStorage.setItem(progressKeyFor(ACTIVE_PROFILE_ID, currentLang), JSON.stringify({
       stats, srs: SRS_DATA, errors: ERROR_BANK, level: currentLevel, ts: Date.now(),
-      dailyStreak, weeklyHistory, examHistory, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest, routeProgress, writingHistory, dialogueProgress, dialogueMeta, topicProgress, placementResult, placementSeen
+      dailyStreak, weeklyHistory, examHistory, examModules, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, userName, matchPairsBest, routeProgress, writingHistory, dialogueProgress, dialogueMeta, topicProgress, placementResult, placementSeen
     }));
   }catch(e){ /* almacenamiento no disponible: el progreso queda solo en esta sesión */ }
 }
@@ -21224,6 +21225,7 @@ function loadProgress(){
     if(data.dailyStreak) Object.assign(dailyStreak, data.dailyStreak);
     if(Array.isArray(data.weeklyHistory)) weeklyHistory.splice(0, weeklyHistory.length, ...data.weeklyHistory);
     if(Array.isArray(data.examHistory)) examHistory.splice(0, examHistory.length, ...data.examHistory);
+    if(Array.isArray(data.examModules)) examModules.splice(0, examModules.length, ...data.examModules.slice(0, 60));
     if(data.dailyActivity && typeof data.dailyActivity==="object") Object.assign(dailyActivity, data.dailyActivity);
     if(data.uiLangPref) uiLangPref = data.uiLangPref;
     if(data.dailyGoal) dailyGoal = data.dailyGoal;
@@ -21249,7 +21251,7 @@ function resetActiveProfileData(){
   currentLevel = "A1";
   dailyStreak.count = 0; dailyStreak.lastDate = null;
   weeklyHistory.length = 0;
-  examHistory.length = 0;
+  examHistory.length = 0; examModules.length = 0;
   Object.keys(dailyActivity).forEach(k=> delete dailyActivity[k]);
   uiLangPref = "es";
   dailyGoal = 10;
@@ -22613,14 +22615,6 @@ function drawPlacementQuestion(){
     };
   });
 }
-function computePlacementLevel(answers){
-  let result = null;
-  for(const lv of LEVELS){
-    const correctCount = answers.filter(a=>a.level===lv && a.correct).length;
-    if(correctCount >= 2){ result = lv; } else { break; }
-  }
-  return result;
-}
 function drawPlacementResults(){
   const s = placementState, r = s.result;
   const idx = LEVELS.indexOf(r.level);
@@ -22684,168 +22678,394 @@ function drawPlacementResults(){
 }
 
 /* =========================================================
-   EXÁMENES (simulacros cronometrados, actualizan el nivel oficial)
-   Reutiliza PLACEMENT_BANK (gramática) y VOCAB (vocabulario) — no
-   inventa contenido nuevo — y computePlacementLevel() para decidir
-   si el nivel oficial sube, exactamente igual que en la Prueba de
-   Nivel. A diferencia de esta, el intento SÍ queda guardado.
+   EXÁMENES POR MÓDULOS (medir progreso, sin cronómetro)
+   Cuatro módulos independientes —Gramática y vocabulario, Lectura, Escucha,
+   Escritura y habla—: cada uno guarda su puntaje y su nivel estimado en
+   examModules. No cambian el nivel oficial: lo sugieren y tú decides.
+   Reutilizan los bancos existentes (PLACEMENT_BANK/EXTRA, VOCAB, READING,
+   LISTEN, WRITING_PROMPTS) y evitan repetir preguntas ya vistas.
    ========================================================= */
-let examState = null; // {questions, index, answers, secondsLeft, timerId}
-const EXAM_SECONDS = 480; // 8 minutos
+const EXAM_MODULES = [
+  {id:"gv", icon:"📝", title:"Gramática y vocabulario", desc:"24 preguntas: 2 de gramática y 2 de vocabulario por cada nivel, de A1 a C2."},
+  {id:"read", icon:"📖", title:"Lectura", desc:"Un texto por nivel, de A1 a C2, con sus preguntas de comprensión."},
+  {id:"listen", icon:"🎧", title:"Escucha", desc:"18 frases: oyes una y eliges la que oíste, 3 por nivel. Necesitas el audio activado."},
+  {id:"wspeak", icon:"✍️", title:"Escritura y habla", desc:"Escribes un texto corto y lees 5 frases en voz alta (necesitas micrófono para la parte de habla)."},
+];
+let examRun = null;   // {mod, questions, idx, answers} · para «Escritura y habla»: {mod, step, ...}
+const examModTitle = id=> (EXAM_MODULES.find(m=> m.id === id) || {title:id}).title;
 
-function buildExamSet(){
-  const set = [];
-  const bank = LANG_PACKS[currentLang].PLACEMENT_BANK;
-  const vocabBank = LANG_PACKS[currentLang].VOCAB;
+/* Elige n elementos priorizando los que menos veces se han mostrado (placementSeen, clave con prefijo «e:»). */
+function examPickN(items, n, keyOf){
+  const seenN = x=> placementSeen["e:" + keyOf(x)] || 0;
+  const chosen = shuffle(items.slice()).sort((a, b)=> seenN(a) - seenN(b)).slice(0, n);
+  chosen.forEach(x=>{ placementSeen["e:" + keyOf(x)] = seenN(x) + 1; });
+  return chosen;
+}
+function examBuild(mod){
+  const pack = LANG_PACKS[currentLang], out = [];
   LEVELS.forEach(lv=>{
-    for(let t=0; t<2; t++){
-      const variants = bank[`${lv}-${t}`];
-      const chosen = pick(variants);
-      set.push({section:"gapfill", sectionLabel:"Gramática", level:lv, topicIndex:t, q:chosen.q, opts:chosen.opts, correct:chosen.correct});
+    if(mod === "gv"){
+      examPickN(placementPool(lv), 2, x=> x.key).forEach(x=> out.push({level:lv, kind:"g", sectionLabel:"Gramática", topicIndex:x.topicIndex, q:x.q, opts:x.opts, correct:x.correct}));
+      const voc = (pack.VOCAB[lv] || []).map((v, i)=> ({v, i}));
+      examPickN(voc, 2, x=> `v${lv}-${x.i}`).forEach(({v})=> out.push({level:lv, kind:"v", sectionLabel:"Vocabulario", topicIndex:null, q:`¿Qué significa "${v.en}"?`, opts:v.opts, correct:v.es}));
+    }else if(mod === "read"){
+      const ps = (pack.READING[lv] || []).map((p, i)=> ({p, i}));
+      examPickN(ps, 1, x=> `r${lv}-${x.i}`).forEach(({p})=> p.qs.slice(0, 4).forEach(x=> out.push({level:lv, kind:"r", sectionLabel:"Lectura", topicIndex:null, title:p.title, text:p.text, q:x.q, opts:x.opts, correct:x.opts[x.correct]})));
+    }else if(mod === "listen"){
+      examPickN(placementSkillPool(lv, "l"), 3, x=> x.key).forEach(x=> out.push({level:lv, kind:"l", sectionLabel:"Escucha", topicIndex:null, say:x.say, q:x.q, opts:x.opts, correct:x.correct}));
     }
-    const vItem = pick(vocabBank[lv]);
-    set.push({section:"vocab", sectionLabel:"Vocabulario", level:lv, q:`¿Qué significa "${vItem.en}"?`, opts:shuffle(vItem.opts), correct:vItem.es});
   });
-  return set;
+  return out;
 }
-function renderExams(){
-  if(examState && examState.index < examState.questions.length){ drawExamQuestion(); return; }
-  drawExamsHome();
+/* Nivel estimado a partir de los aciertos por nivel: el más alto que se domina (60 %, y 75 % en C2) con un 60 % acumulado hasta ahí. */
+function examLevelFromTally(per){
+  let best = 0, cc = 0, tt = 0;
+  LEVELS.forEach((lv, i)=>{
+    const [c, t] = per[lv] || [0, 0]; cc += c; tt += t;
+    if(t && c / t >= (lv === "C2" ? 0.75 : 0.6) && cc / tt >= 0.6) best = i;
+  });
+  return LEVELS[best];
 }
+function examLastOf(mod){ return examModules.find(e=> e.mod === mod); }
+function examCanRun(mod){
+  if(mod === "listen") return "speechSynthesis" in window;
+  return true;
+}
+function renderExams(){ examRun = null; drawExamsHome(); }
 function drawExamsHome(){
   const html = `
     <div class="section-head">
-      <div class="eyebrow">Evaluación cronometrada</div>
+      <div class="eyebrow">Evaluación</div>
       <h2>Exámenes</h2>
-      <p><b>Para medir tu progreso con el tiempo</b>: simulacro de ${LEVELS.length*3} preguntas (gramática + vocabulario, de A1 a C2) con límite de ${Math.round(EXAM_SECONDS/60)} minutos. Cada intento queda guardado y <b>sí actualiza tu nivel CEFR oficial</b>. Si solo quieres saber por dónde empezar, usa la Prueba de nivel.</p>
+      <p><b>Para medir tu progreso con el tiempo</b>, destreza por destreza. Haz el módulo que quieras, sin cronómetro. Cada intento queda guardado con su puntaje y su nivel estimado; <b>no cambia tu nivel oficial</b>: te lo sugiere y tú decides si aplicarlo. Si solo quieres saber por dónde empezar, usa la Prueba de nivel.</p>
     </div>
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-bottom:20px;">
+      ${EXAM_MODULES.map(m=>{
+        const last = examLastOf(m.id), ok = examCanRun(m.id);
+        return `<div class="card" style="margin:0;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:1.6rem;">${m.icon}</div>
+          <h3 style="margin:0;font-size:1.05rem;">${m.title}</h3>
+          <p style="color:var(--ink-soft);font-size:0.86rem;margin:0;flex:1;">${m.desc}</p>
+          ${last ? `<div style="font-size:0.82rem;color:var(--ink-soft);">Último intento: <span class="badge-level">${last.level}</span> · ${last.score}/100 · ${new Date(last.date).toLocaleDateString()}</div>` : `<div style="font-size:0.82rem;color:var(--ink-soft);">Aún no lo has hecho.</div>`}
+          ${ok ? "" : `<div style="font-size:0.8rem;color:var(--pink);">Tu navegador no tiene síntesis de voz: este módulo no está disponible aquí.</div>`}
+          <div class="btn-row" style="margin:0;"><button class="btn" data-exam-mod="${m.id}" ${ok ? "" : "disabled"}>${last ? "Repetir módulo" : "Empezar módulo"} →</button></div>
+        </div>`;
+      }).join("")}
+    </div>
+    ${examModules.length ? `
     <div class="card" style="margin-bottom:20px;">
-      <h3 style="margin:0 0 10px;font-size:1.05rem;">¿Cómo funciona?</h3>
-      <p style="color:var(--ink-soft);font-size:0.9rem;margin:0;">Verás preguntas de gramática y vocabulario mezcladas por nivel, con un cronómetro visible. Al terminar (o cuando se agote el tiempo), tu nivel oficial se recalcula con el mismo método que la Prueba de Nivel, y verás el desglose de tu desempeño por destreza.</p>
-      <div class="btn-row"><button class="btn" id="startExamBtn">Iniciar simulacro →</button></div>
-    </div>
-    ${examHistory.length ? `
-    <div class="card">
       <h3 style="margin:0 0 14px;font-size:1.05rem;">Intentos anteriores</h3>
       <div style="display:grid;gap:10px;">
-        ${examHistory.slice(0,10).map(h=>`
+        ${examModules.slice(0, 10).map(h=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:0.86rem;">
+            <span>${new Date(h.date).toLocaleDateString()}</span>
+            <span>${examModTitle(h.mod)}</span>
+            <span class="badge-level">${h.level}</span>
+            <span>${h.score}/100</span>
+          </div>`).join("")}
+      </div>
+    </div>` : ""}
+    ${examHistory.length ? `
+    <div class="card">
+      <h3 style="margin:0 0 14px;font-size:1.05rem;">Simulacros anteriores</h3>
+      <div style="display:grid;gap:10px;">
+        ${examHistory.slice(0, 5).map(h=>`
           <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:0.86rem;">
             <span>${new Date(h.date).toLocaleDateString()}</span>
             <span class="badge-level">${h.level}</span>
             <span>${h.correctTotal}/${h.totalQuestions} correctas</span>
           </div>`).join("")}
       </div>
-    </div>` : ""}
-  `;
+    </div>` : ""}`;
   document.getElementById("panel-exams").innerHTML = html;
-  document.getElementById("startExamBtn").onclick = startExam;
+  document.querySelectorAll("[data-exam-mod]").forEach(b=> b.onclick = ()=> startExamModule(b.dataset.examMod));
 }
-function startExam(){
-  examState = {questions: buildExamSet(), index:0, answers:[], secondsLeft: EXAM_SECONDS, timerId:null};
-  examState.timerId = setInterval(()=>{
-    examState.secondsLeft--;
-    const clock = document.getElementById("examClock");
-    if(clock) clock.textContent = formatExamClock(examState.secondsLeft);
-    if(examState.secondsLeft <= 0){ clearInterval(examState.timerId); finishExam(); }
-  }, 1000);
+function startExamModule(mod){
+  if(mod === "wspeak"){ startWriteSpeak(); return; }
+  const questions = examBuild(mod);
+  if(!questions.length){ showCelebration("No hay preguntas disponibles para este módulo en este idioma."); return; }
+  examRun = {mod, questions, idx:0, answers:[]};
+  saveProgress();   // guarda qué preguntas se mostraron
   drawExamQuestion();
 }
-function formatExamClock(s){
-  const m = Math.max(0,Math.floor(s/60)), sec = Math.max(0,s%60);
-  return `${m}:${sec.toString().padStart(2,"0")}`;
+function examExitLink(){ return `<div style="margin-top:10px;"><button class="practice-link" id="examExitBtn" type="button">Salir del módulo</button></div>`; }
+function examWireExit(){
+  const ex = document.getElementById("examExitBtn");
+  if(ex) ex.onclick = ()=>{ if(confirm("¿Salir del módulo? Se perderán tus respuestas.")){ examRun = null; drawExamsHome(); } };
 }
 function drawExamQuestion(){
-  const total = examState.questions.length;
-  const q = examState.questions[examState.index];
-  const pct = Math.round(examState.index/total*100);
+  const r = examRun, total = r.questions.length, q = r.questions[r.idx];
+  const pct = Math.round(r.idx / total * 100);
   const html = `
     <div class="section-head">
-      <div class="eyebrow">Examen · Pregunta ${examState.index+1} de ${total}</div>
-      <h2>⏱️ <span id="examClock">${formatExamClock(examState.secondsLeft)}</span></h2>
+      <div class="eyebrow">Examen · ${examModTitle(r.mod)}</div>
+      <h2>Pregunta ${r.idx + 1} de ${total}</h2>
       <div style="background:var(--line);border-radius:999px;height:8px;overflow:hidden;margin-top:12px;max-width:400px;">
         <div style="background:var(--grad-purple);height:100%;width:${pct}%;transition:width .3s ease;"></div>
       </div>
     </div>
     <div class="card">
+      ${q.kind === "r" ? `<div class="reading-text" style="margin-bottom:14px;"><b>${q.title}</b><br>${q.text}</div>` : ""}
+      ${q.kind === "l" ? `<div style="margin-bottom:14px;"><button class="btn secondary" id="examPlayBtn" type="button">🔊 Escuchar</button></div>` : ""}
       <div class="q-top">
-        <span class="badge-level">${q.level}</span>
         <div class="q-text">${q.q}</div>
         <span class="score-pill">${q.sectionLabel}</span>
       </div>
       <div class="options" id="examOpts">
-        ${shuffle(q.opts).map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join("")}
+        ${shuffle(q.opts).map(o=>`<button class="opt-btn" data-val="${escHtml(o)}">${escHtml(o)}</button>`).join("")}
       </div>
-    </div>`;
+    </div>
+    ${examExitLink()}`;
   document.getElementById("panel-exams").innerHTML = html;
+  examWireExit();
+  const playBtn = document.getElementById("examPlayBtn");
+  if(playBtn){
+    const play = ()=> speak(q.say, 0.95, currentLang === "pt" ? "pt-BR" : undefined);
+    playBtn.onclick = play; setTimeout(play, 300);
+  }
   const opts_el = document.querySelectorAll("#examOpts .opt-btn");
   opts_el.forEach(b=>{
     b.onclick = ()=>{
-      opts_el.forEach(o=>o.disabled=true);
-      const ok = b.dataset.val === q.correct;
-      const correctBtn = [...opts_el].find(o=>o.dataset.val===q.correct);
-      if(ok){ b.classList.add("correct"); popHighlight(correctBtn,"#22C55E"); }
-      else { b.classList.add("wrong","shake"); correctBtn.classList.add("correct"); }
-      examState.answers.push({section:q.section, level:q.level, topicIndex:q.topicIndex, correct:ok});
+      opts_el.forEach(o=> o.disabled = true);
+      const chosen = b.dataset.val, ok = chosen === q.correct;
+      const correctBtn = [...opts_el].find(o=> o.dataset.val === q.correct);
+      if(ok){ b.classList.add("correct"); popHighlight(correctBtn, "#22C55E"); }
+      else{ b.classList.add("wrong", "shake"); correctBtn.classList.add("correct"); }
+      r.answers.push({level:q.level, kind:q.kind, topicIndex:q.topicIndex, q:q.q, chosen, correctAnswer:q.correct, correct:ok});
       setTimeout(()=>{
-        examState.index++;
-        if(examState.index < total) drawExamQuestion();
-        else finishExam();
-      }, 600);
+        r.idx++;
+        if(r.idx < total) drawExamQuestion(); else finishExamModule();
+      }, 700);
     };
   });
 }
-function finishExam(){
-  if(examState.timerId) clearInterval(examState.timerId);
-  const answers = examState.answers;
-  const newLevel = computePlacementLevel(answers) || "A1";
-  const prevLevelIdx = LEVELS.indexOf(currentLevel);
-  currentLevel = newLevel;
-  document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent===currentLevel));
-  if(LEVELS.indexOf(newLevel) > prevLevelIdx) showBigCelebration(`🎉 Subiste a nivel ${newLevel}`, "Tu progreso calculado subió de nivel.");
-  const bySection = sec => ({
-    correct: answers.filter(a=>a.section===sec && a.correct).length,
-    total: answers.filter(a=>a.section===sec).length,
-  });
-  const breakdown = {gapfill: bySection("gapfill"), vocab: bySection("vocab")};
-  const correctTotal = answers.filter(a=>a.correct).length;
-  const totalQuestions = examState.questions.length;
-  examHistory.unshift({date: Date.now(), level: newLevel, correctTotal, totalQuestions, breakdown});
-  if(examHistory.length > 10) examHistory.length = 10;
+function examSave(entry){
+  examModules.unshift(entry);
+  if(examModules.length > 60) examModules.length = 60;
   saveProgress();
-  drawExamResults(newLevel, correctTotal, totalQuestions, breakdown);
-  examState = null;
 }
-function drawExamResults(level, correctTotal, totalQuestions, breakdown){
-  const bars = [
-    {label:"Gramática", ...breakdown.gapfill},
-    {label:"Vocabulario", ...breakdown.vocab},
-  ];
+function finishExamModule(){
+  const r = examRun, per = {};
+  LEVELS.forEach(lv=> per[lv] = [0, 0]);
+  r.answers.forEach(a=>{ per[a.level][1]++; if(a.correct) per[a.level][0]++; });
+  const correct = r.answers.filter(a=> a.correct).length, total = r.answers.length;
+  const entry = {date:Date.now(), mod:r.mod, level:examLevelFromTally(per), score:Math.round(correct / total * 100), correct, total, per};
+  examSave(entry);
+  drawExamModuleResults(entry, r.answers.filter(a=> !a.correct));
+  examRun = null;
+}
+function examApplyBlock(level){
+  const differs = level !== currentLevel;
+  return `<div class="card" style="margin-bottom:20px;">
+    <p style="margin:0 0 10px;font-size:0.92rem;">Tu nivel oficial es <b>${currentLevel}</b>. ${differs ? `Este módulo indica <b>${level}</b>.` : "Este módulo coincide con tu nivel oficial."} El examen no lo cambia por su cuenta.</p>
+    ${differs ? `<button class="btn secondary" id="examApplyLevelBtn" type="button">Usar ${level} como mi nivel</button>` : ""}
+  </div>`;
+}
+function examWireApply(level){
+  const b = document.getElementById("examApplyLevelBtn");
+  if(!b) return;
+  b.onclick = ()=>{
+    const prev = LEVELS.indexOf(currentLevel);
+    currentLevel = level;
+    document.querySelectorAll(".level-chip").forEach(c=> c.classList.toggle("active", c.textContent === currentLevel));
+    saveProgress();
+    if(LEVELS.indexOf(level) > prev) showBigCelebration(`🎉 Subiste a nivel ${level}`, "Tu nivel oficial se actualizó.");
+    b.disabled = true; b.textContent = `Nivel oficial: ${level} ✓`;
+  };
+}
+function drawExamModuleResults(entry, wrong){
   const html = `
     <div class="section-head">
-      <div class="eyebrow">Resultado del examen</div>
-      <h2>Tu nivel oficial ahora es ${level}</h2>
-      <p>Respondiste correctamente ${correctTotal} de ${totalQuestions} preguntas. Tu nivel CEFR oficial se actualizó automáticamente y este intento quedó guardado en tu historial.</p>
+      <div class="eyebrow">Resultado del módulo</div>
+      <h2>${examModTitle(entry.mod)}: nivel estimado ${entry.level}</h2>
+      <p>Acertaste <b>${entry.correct}</b> de <b>${entry.total}</b> preguntas (${entry.score}/100). Este intento quedó guardado en tu historial.</p>
     </div>
+    ${examApplyBlock(entry.level)}
     <div class="card" style="margin-bottom:20px;">
-      <h3 style="margin:0 0 14px;font-size:1.05rem;">Desglose por destreza</h3>
+      <h3 style="margin:0 0 14px;font-size:1.05rem;">Aciertos por nivel</h3>
       <div style="display:grid;gap:12px;">
-        ${bars.map(b=>`
+        ${LEVELS.filter(lv=> entry.per[lv][1]).map(lv=>{ const [c, t] = entry.per[lv]; return `
           <div>
-            <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;"><span><b>${b.label}</b></span><span>${b.correct}/${b.total}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;"><span><b>${lv}</b></span><span>${c}/${t}</span></div>
             <div style="background:var(--line);border-radius:999px;height:8px;overflow:hidden;">
-              <div style="background:var(--grad-teal);height:100%;width:${b.total?(b.correct/b.total*100):0}%;"></div>
+              <div style="background:${c / t >= 0.6 ? "var(--grad-teal)" : "var(--grad-pink)"};height:100%;width:${c / t * 100}%;"></div>
             </div>
-          </div>`).join("")}
+          </div>`; }).join("")}
       </div>
     </div>
+    ${wrong.length ? `
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="margin:0 0 14px;font-size:1.05rem;">Para repasar</h3>
+        <div style="display:grid;gap:12px;">
+          ${wrong.map(w=>{
+            const topic = w.topicIndex == null ? null : LANG_PACKS[currentLang].THEORY[w.level][w.topicIndex];
+            return `<div style="background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:14px 16px;">
+              <div style="font-weight:600;margin-bottom:6px;">${w.q}</div>
+              <div style="font-size:0.88rem;color:var(--ink-soft);margin-bottom:4px;">Tu respuesta: <span style="color:var(--pink);">${escHtml(w.chosen)}</span> · Correcta: <b style="color:var(--teal);">${escHtml(w.correctAnswer)}</b></div>
+              ${topic ? `<div style="font-size:0.85rem;color:var(--ink-soft);margin-bottom:10px;">Tema: <b>${topic.title}</b> (Nivel ${w.level})</div>
+              <button class="btn secondary" data-jlevel="${w.level}" data-jtopic="${w.topicIndex}" style="font-size:0.8rem;padding:7px 14px;">Ver este tema en Gramática →</button>` : ""}
+            </div>`;
+          }).join("")}
+        </div>
+      </div>` : `<div class="card" style="margin-bottom:20px;"><p style="margin:0;color:var(--teal);font-weight:600;">¡Respondiste todo correctamente! 🎉</p></div>`}
     <div class="btn-row">
-      <button class="btn" id="examRetakeBtn">Repetir simulacro</button>
-      <button class="btn secondary" id="examHomeBtn">Volver al Dashboard</button>
-    </div>
-  `;
+      <button class="btn" id="examRetakeBtn">Repetir módulo</button>
+      <button class="btn secondary" id="examBackBtn">Volver a Exámenes</button>
+    </div>`;
   document.getElementById("panel-exams").innerHTML = html;
-  document.getElementById("examRetakeBtn").onclick = startExam;
-  document.getElementById("examHomeBtn").onclick = ()=> goTo("home");
+  document.querySelectorAll("[data-jlevel]").forEach(btn=>{
+    btn.onclick = ()=> openTheoryTopic(btn.dataset.jlevel, parseInt(btn.dataset.jtopic));
+  });
+  examWireApply(entry.level);
+  document.getElementById("examRetakeBtn").onclick = ()=> startExamModule(entry.mod);
+  document.getElementById("examBackBtn").onclick = ()=> drawExamsHome();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ---- Módulo «Escritura y habla» ----
+   Escritura: un texto sobre una consigna de tu nivel oficial, evaluado por reglas (longitud, tema y errores frecuentes; sin IA).
+   Habla: lees 5 frases en voz alta y el reconocimiento de voz del navegador comprueba qué porcentaje de palabras dijiste. */
+const EXAM_SPEAK_N = 5;
+function examWritingScore(an, item){
+  if(!an.wordCount) return 0;
+  const len = Math.min(1, an.wordCount / item.minWords);
+  const topic = Math.min(1, an.found.length / Math.min(3, item.keywords.length));
+  const w = an.issues.reduce((s, i)=> s + (i.pri === 1 ? 1 : i.pri === 2 ? 0.6 : 0.3), 0);
+  const acc = Math.max(0, 1 - (w / (an.wordCount / 10)) / 1.5);
+  return Math.round(40 * len + 30 * topic + 30 * acc);
+}
+function examSpeakMatch(said, target){
+  const t = normalize(target).split(" "), s = normalize(said).split(" ");
+  const pool = s.slice();
+  let hit = 0;
+  t.forEach(w=>{ const i = pool.indexOf(w); if(i >= 0){ hit++; pool.splice(i, 1); } });
+  return hit / t.length;
+}
+function startWriteSpeak(){
+  const lv = currentLevel, prompts = (LANG_PACKS[currentLang].WRITING_PROMPTS[lv] || []).map((item, i)=> ({item, i}));
+  if(!prompts.length){ showCelebration("No hay consignas de escritura para este nivel en este idioma."); return; }
+  const {item} = examPickN(prompts, 1, x=> `w${lv}-${x.i}`)[0];
+  const sents = (LANG_PACKS[currentLang].LISTEN[lv] || []).map((s, i)=> ({s, i}));
+  const say = examPickN(sents, EXAM_SPEAK_N, x=> `s${lv}-${x.i}`).map(x=> x.s);
+  examRun = {mod:"wspeak", step:"write", lv, item, say, sIdx:0, matches:[], writing:null};
+  saveProgress();
+  drawExamWrite();
+}
+function drawExamWrite(){
+  const r = examRun, item = r.item;
+  const html = `
+    <div class="section-head">
+      <div class="eyebrow">Examen · Escritura y habla · Parte 1 de 2</div>
+      <h2>Escritura</h2>
+    </div>
+    <div class="card">
+      <div class="q-top"><span class="badge-level">${r.lv}</span><div class="q-text">${item.prompt}<span class="ex-es">${item.es}</span></div></div>
+      <textarea class="text-input" id="examWriteInput" rows="7" placeholder="Escribe tu respuesta en ${LANG_META[currentLang].label.toLowerCase()} aquí..."></textarea>
+      <div style="font-size:0.82rem;color:var(--ink-soft);margin-top:6px;"><span id="examWordCount">0</span> palabras · mínimo recomendado: ${item.minWords}</div>
+      <div class="btn-row"><button class="btn" id="examWriteNext" type="button">Continuar a la parte de habla →</button></div>
+    </div>
+    ${examExitLink()}`;
+  document.getElementById("panel-exams").innerHTML = html;
+  examWireExit();
+  const input = document.getElementById("examWriteInput");
+  input.oninput = ()=>{ document.getElementById("examWordCount").textContent = input.value.trim() ? input.value.trim().split(/\s+/).length : 0; };
+  document.getElementById("examWriteNext").onclick = ()=>{
+    const text = input.value.trim();
+    if(!text){ needAnswer(input); return; }
+    const an = writingAnalyze(text, item, r.lv);
+    r.writing = {score:examWritingScore(an, item), words:an.wordCount, ideas:an.found.length, issues:an.issues.slice(0, 5).map(i=> i.msg)};
+    r.step = "speak";
+    if(!SpeechRecognitionCtor){ finishWriteSpeak(); return; }
+    drawExamSpeak();
+  };
+}
+function drawExamSpeak(){
+  const r = examRun, target = r.say[r.sIdx];
+  const html = `
+    <div class="section-head">
+      <div class="eyebrow">Examen · Escritura y habla · Parte 2 de 2</div>
+      <h2>Habla: frase ${r.sIdx + 1} de ${r.say.length}</h2>
+      <p class="dash-card-sub" style="margin:4px 0 0;">Lee la frase en voz alta cuando pulses 🎤.</p>
+    </div>
+    <div class="card">
+      <div class="q-text" style="font-size:1.25rem;margin-bottom:14px;">${escHtml(target)}</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn secondary" id="examModelBtn" type="button">🔊 Escuchar modelo</button>
+        <button class="btn" id="examRecBtn" type="button">🎤 Hablar</button>
+      </div>
+      <div class="feedback" id="examSpeakFb"></div>
+      <div class="btn-row"><button class="btn" id="examSpeakNext" type="button" style="display:none;">${r.sIdx + 1 < r.say.length ? "Siguiente →" : "Ver resultado →"}</button></div>
+      <p style="margin:14px 0 0;font-size:0.8rem;"><button class="practice-link" id="examSkipSpeak" type="button">No puedo hablar ahora: terminar sin la parte de habla</button></p>
+    </div>
+    ${examExitLink()}`;
+  document.getElementById("panel-exams").innerHTML = html;
+  examWireExit();
+  document.getElementById("examModelBtn").onclick = ()=> speak(target, 0.95, currentLang === "pt" ? "pt-BR" : undefined);
+  const fb = document.getElementById("examSpeakFb"), rec = document.getElementById("examRecBtn"), next = document.getElementById("examSpeakNext");
+  document.getElementById("examSkipSpeak").onclick = ()=> finishWriteSpeak();
+  next.onclick = ()=>{ r.sIdx++; if(r.sIdx < r.say.length) drawExamSpeak(); else finishWriteSpeak(); };
+  rec.onclick = ()=>{
+    if(_pronounceRecognition){ try{ _pronounceRecognition.abort(); }catch(e){} }
+    const sr = new SpeechRecognitionCtor();
+    _pronounceRecognition = sr;
+    sr.lang = voiceAccent || "en-US"; sr.interimResults = false; sr.maxAlternatives = 3;
+    rec.disabled = true; rec.textContent = "🔴 Escuchando…";
+    sr.onresult = (e)=>{
+      const alts = [...e.results[0]].map(a=> a.transcript);
+      const best = Math.max(...alts.map(t=> examSpeakMatch(t, target)));
+      r.matches[r.sIdx] = best;
+      const ok = best >= 0.8;
+      fb.className = "feedback show " + (ok ? "ok" : "bad");
+      fb.innerHTML = `${ok ? "✅" : "❌"} Dijiste: “${escHtml(alts[0])}” · coincidencia ${Math.round(best * 100)} %`;
+      next.style.display = "inline-block";
+    };
+    sr.onerror = (e)=>{
+      fb.className = "feedback show bad";
+      fb.textContent = e.error === "not-allowed" ? "Permiso de micrófono denegado. Puedes terminar sin la parte de habla." : "No se pudo escuchar. Inténtalo de nuevo.";
+    };
+    sr.onend = ()=>{ rec.disabled = false; rec.textContent = "🎤 Hablar"; _pronounceRecognition = null; };
+    try{ sr.start(); }catch(e){ rec.disabled = false; rec.textContent = "🎤 Hablar"; fb.className = "feedback show bad"; fb.textContent = "No se pudo iniciar el micrófono."; }
+  };
+}
+function finishWriteSpeak(){
+  const r = examRun, lower = lv=> LEVELS[Math.max(0, LEVELS.indexOf(lv) - 1)];
+  const answered = r.matches.filter(m=> m !== undefined);
+  const speakScore = answered.length ? Math.round(answered.reduce((a, b)=> a + b, 0) / answered.length * 100) : null;
+  const wLevel = r.writing.score >= 60 ? r.lv : lower(r.lv);
+  const sLevel = speakScore === null ? null : (speakScore >= 70 ? r.lv : lower(r.lv));
+  const level = [wLevel, sLevel].filter(Boolean).sort((a, b)=> LEVELS.indexOf(a) - LEVELS.indexOf(b))[0];
+  const scores = [r.writing.score, speakScore].filter(s=> s !== null);
+  const entry = {date:Date.now(), mod:"wspeak", level, score:Math.round(scores.reduce((a, b)=> a + b, 0) / scores.length), parts:{write:r.writing.score, speak:speakScore, taskLevel:r.lv}};
+  examSave(entry);
+  drawWriteSpeakResults(entry, r.writing, wLevel, sLevel, answered.length);
+  examRun = null;
+}
+function drawWriteSpeakResults(entry, w, wLevel, sLevel, nSpoken){
+  const html = `
+    <div class="section-head">
+      <div class="eyebrow">Resultado del módulo</div>
+      <h2>Escritura y habla: nivel estimado ${entry.level}</h2>
+      <p>Puntaje del módulo: <b>${entry.score}/100</b> con consignas de nivel <b>${entry.parts.taskLevel}</b>. Este intento quedó guardado en tu historial.</p>
+    </div>
+    ${examApplyBlock(entry.level)}
+    <div class="card" style="margin-bottom:20px;">
+      <h3 style="margin:0 0 10px;font-size:1.05rem;">✍️ Escritura: ${w.score}/100 · nivel ${wLevel}</h3>
+      <p style="color:var(--ink-soft);font-size:0.88rem;margin:0 0 8px;">Escribiste ${w.words} palabras y tocaste ${w.ideas} de las ideas esperadas. La evaluación es por reglas (longitud, tema y errores frecuentes), no por una persona.</p>
+      ${w.issues.length ? `<ul style="margin:0;padding-left:18px;font-size:0.86rem;color:var(--ink-soft);">${w.issues.map(m=> `<li>${m}</li>`).join("")}</ul>` : `<p style="margin:0;font-size:0.86rem;color:var(--teal);">No se detectaron errores frecuentes.</p>`}
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <h3 style="margin:0 0 10px;font-size:1.05rem;">🎤 Habla: ${entry.parts.speak === null ? "sin evaluar" : `${entry.parts.speak}/100 · nivel ${sLevel}`}</h3>
+      <p style="color:var(--ink-soft);font-size:0.88rem;margin:0;">${entry.parts.speak === null ? "No se hizo la parte de habla (sin micrófono, sin reconocimiento de voz o la omitiste); el puntaje solo cuenta la escritura." : `Se evaluaron ${nSpoken} frases: el puntaje es el porcentaje medio de palabras que el reconocimiento de voz entendió.`}</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="examRetakeBtn">Repetir módulo</button>
+      <button class="btn secondary" id="examBackBtn">Volver a Exámenes</button>
+    </div>`;
+  document.getElementById("panel-exams").innerHTML = html;
+  examWireApply(entry.level);
+  document.getElementById("examRetakeBtn").onclick = ()=> startExamModule("wspeak");
+  document.getElementById("examBackBtn").onclick = ()=> drawExamsHome();
+  window.scrollTo({top:0, behavior:"smooth"});
 }
 
 /* =========================================================
