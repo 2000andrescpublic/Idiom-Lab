@@ -805,6 +805,15 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .topic-practice{margin:18px 0 8px;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:var(--bg-soft);}
 .topic-practice-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:6px;}
 .topic-practice .btn{margin-top:10px;}
+@media (max-width:640px){
+  #panel-situations table.data-table, #panel-expressions table.data-table, #panel-howtosay table.data-table, #panel-falsefriends table.data-table, #panel-vocabtopics table.data-table, #panel-phrasal table.data-table, #panel-verbs table.data-table{display:block;width:100%;}
+  #panel-situations .data-table thead, #panel-expressions .data-table thead, #panel-howtosay .data-table thead, #panel-falsefriends .data-table thead, #panel-vocabtopics .data-table thead, #panel-phrasal .data-table thead, #panel-verbs .data-table thead{display:none;}
+  #panel-situations .data-table tbody, #panel-expressions .data-table tbody, #panel-howtosay .data-table tbody, #panel-falsefriends .data-table tbody, #panel-vocabtopics .data-table tbody, #panel-phrasal .data-table tbody, #panel-verbs .data-table tbody{display:block;}
+  #panel-situations .data-table tr, #panel-expressions .data-table tr, #panel-howtosay .data-table tr, #panel-falsefriends .data-table tr, #panel-vocabtopics .data-table tr, #panel-phrasal .data-table tr, #panel-verbs .data-table tr{display:block;padding:12px 14px;border-bottom:1px solid var(--line);}
+  #panel-situations .data-table td, #panel-expressions .data-table td, #panel-howtosay .data-table td, #panel-falsefriends .data-table td, #panel-vocabtopics .data-table td, #panel-phrasal .data-table td, #panel-verbs .data-table td{display:block;width:auto;min-width:0;border:0;padding:3px 0;}
+  #panel-situations .data-table td[data-label]::before, #panel-expressions .data-table td[data-label]::before, #panel-howtosay .data-table td[data-label]::before, #panel-falsefriends .data-table td[data-label]::before, #panel-vocabtopics .data-table td[data-label]::before, #panel-phrasal .data-table td[data-label]::before, #panel-verbs .data-table td[data-label]::before{content:attr(data-label);display:block;font-size:0.68rem;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:1px;}
+  #panel-situations .data-table th, #panel-expressions .data-table th, #panel-howtosay .data-table th, #panel-falsefriends .data-table th, #panel-vocabtopics .data-table th, #panel-phrasal .data-table th, #panel-verbs .data-table th{min-width:0 !important;}
+}
 .wr-review{margin-top:14px;text-align:left;}
 .wr-review-h{font-weight:800;font-size:0.95rem;margin-bottom:8px;}
 .wr-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
@@ -21114,10 +21123,19 @@ function bumpDailyStreak(){
     dailyStreak.count = 1;
   }
   dailyStreak.lastDate = today;
-  showBigCelebration(`🔥 Racha de ${dailyStreak.count} ${dailyStreak.count===1?"día":"días"}`, "Seguí así, vas muy bien.");
+  showCelebration(`🔥 Racha de ${dailyStreak.count} ${dailyStreak.count===1?"día":"días"}. ¡Sigue así!`);
 }
 /* ---- Celebración (racha nueva / subida de nivel) ---- */
 let _celebTimer = null;
+/* Respuesta vacía: no se registra como intento; se avisa en el propio campo. */
+function needAnswer(input){
+  if(!input) return;
+  input.classList.remove("shake"); void input.offsetWidth; input.classList.add("shake");
+  input.focus();
+  const ph = input.placeholder;
+  input.placeholder = "Escribe una respuesta primero";
+  setTimeout(()=>{ input.placeholder = ph; input.classList.remove("shake"); }, 1500);
+}
 function showCelebration(message){
   let el = document.getElementById("celebrationToast");
   if(!el){
@@ -21266,7 +21284,7 @@ function srsPick(pool, idPrefix){
     const i = parseInt(SRS_FORCED_ID.slice(idPrefix.length+1));
     if(pool[i] !== undefined){
       const id = SRS_FORCED_ID; SRS_FORCED_ID = null;
-      return remember({item:pool[i], id, review:true});
+      return remember({item:pool[i], id, review:!!SRS_DATA[id]});   // una pregunta nueva no es «repaso»
     }
   }
   for(let k=SRS_RETRY_QUEUE.length-1;k>=0;k--) if(SRS_RETRY_QUEUE[k].dueTick + 12 < SRS_TICK) SRS_RETRY_QUEUE.splice(k,1);
@@ -21633,7 +21651,18 @@ function buildHeader(){
   });
 }
 
+let _navFromPop = false, _navInit = false;
+window.addEventListener("popstate", e=>{
+  if(!document.getElementById("panel-home")) return;
+  const s = (e.state && e.state.sec) || "home";
+  _navFromPop = true;
+  try{ goTo(s); }finally{ _navFromPop = false; }
+});
 function goTo(sectionId){
+  if(!_navFromPop && !(history.state && history.state.sec === sectionId)){
+    try{ if(_navInit) history.pushState({sec:sectionId}, "", "#" + sectionId); else history.replaceState({sec:sectionId}, "", "#" + sectionId); }catch(e){}
+  }
+  _navInit = true;
   if(sectionId !== "practicehoy" && practiceTodaySession){
     practiceTodayCleanup();
     practiceTodaySession = null;
@@ -22604,11 +22633,11 @@ function renderProfile(){
     </div>
     <div class="card" style="margin-bottom:20px;">
       <h3 class="dash-card-title">Progreso semanal</h3>
-      <p class="dash-card-sub">Ejercicios completados por semana (${weeks.length ? `últimas ${weeks.length} semanas con actividad` : "aún sin actividad"}).</p>
+      <p class="dash-card-sub">Ejercicios completados por semana (${weeks.length ? (weeks.length === 1 ? "tu semana con actividad" : `últimas ${weeks.length} semanas con actividad`) : "aún sin actividad"}).</p>
       ${weeks.length ? `
       <div style="display:flex;align-items:flex-end;gap:10px;height:120px;margin-top:14px;">
         ${weeks.map(w=>`
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="flex:1;max-width:72px;display:flex;flex-direction:column;align-items:center;gap:6px;">
             <div style="width:100%;background:var(--grad-purple);border-radius:6px 6px 0 0;height:${Math.max(6, Math.round(w.exercisesDone/maxDone*100))}px;" title="${w.exercisesDone} ejercicios · ${w.correctRate}% de aciertos"></div>
             <span style="font-size:0.68rem;color:var(--ink-soft);">${w.weekStart.slice(5)}</span>
           </div>`).join("")}
@@ -22627,14 +22656,6 @@ function renderProfile(){
           <label for="userNameInput" style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:8px;">Tu nombre</label>
           <input type="text" maxlength="40" class="text-input" id="userNameInput" value="${userName}" placeholder="¿Cómo te llamas?">
           <p style="color:var(--ink-soft);font-size:0.8rem;margin:8px 0 0;">Se usa para personalizar el saludo del Dashboard.</p>
-        </div>
-        <div>
-          <label style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:8px;">Idioma de interfaz</label>
-          <div style="display:flex;gap:8px;">
-            <button class="ex-tab${uiLangPref==="es"?" active":""}" data-lang="es">Español</button>
-            <button class="ex-tab${uiLangPref==="en"?" active":""}" data-lang="en">English</button>
-          </div>
-          <p style="color:var(--ink-soft);font-size:0.8rem;margin:8px 0 0;">Por ahora esto solo guarda tu preferencia; el contenido sigue en español.</p>
         </div>
         <div>
           <label style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:8px;">Idioma que estás practicando</label>
@@ -22675,9 +22696,6 @@ function renderProfile(){
     userName = e.target.value.trim().slice(0,40);
     e.target.value = userName;
     saveProgress();
-  });
-  document.querySelectorAll("[data-lang]").forEach(b=>{
-    b.onclick = ()=>{ uiLangPref = b.dataset.lang; saveProgress(); renderProfile(); };
   });
   document.querySelectorAll("[data-learn-lang]").forEach(b=>{
     b.onclick = ()=>{
@@ -23530,6 +23548,11 @@ function renderExercisesShell(){
       document.querySelectorAll(".ex-tab").forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
       renderExercise(t.id, true);
+      if(window.innerWidth <= 768){
+        const ep = document.getElementById("exPanel");
+        // scroll instantáneo tras pintar: el smooth se cancelaba cuando el nuevo ejercicio era más corto que el anterior
+        if(ep) requestAnimationFrame(()=> window.scrollTo({top:Math.max(0, ep.getBoundingClientRect().top + window.scrollY - 70), behavior:"auto"}));
+      }
     };
     nav.appendChild(b);
   });
@@ -23882,6 +23905,7 @@ function drawGapfill(){
   const check = document.getElementById("gapfillCheck");
   const next = document.getElementById("gapfillNext");
   function doCheck(){
+    if(!input.value.trim()){ needAnswer(input); return; }
     const userVal = normalizeEq(input.value);
     // Se acepta la palabra que falta o la oración completa (hueco reemplazado, sin la pista
     // entre paréntesis). item.alt permite declarar respuestas válidas extra por pregunta.
@@ -24148,6 +24172,7 @@ function drawWriting(){
   let firstCheck = true, prevIssues = null;
   function doCheck(){
     const text = input.value.trim();
+    if(!text){ needAnswer(input); return; }
     const an = writingAnalyze(text, item, lv);
     const wordCount = an.wordCount;
     const ok = wordCount >= item.minWords && an.found.length >= 1;
@@ -25017,6 +25042,7 @@ function drawListenDictation(){
     input.focus();
   };
   function doCheck(){
+    if(!input.value.trim()){ needAnswer(input); return; }
     const an = listenAnalyze(sentence, input.value, isReal ? target : "");
     const ok = an.exact || an.nearly;
     // Con la pista 2 (primeras letras) la frase no se da por dominada: vuelve pronto al repaso.
@@ -25133,6 +25159,7 @@ function drawListenCloze(){
   const inputs = [...document.querySelectorAll(".cloze-inp")];
   const check = document.getElementById("listenCheck");
   function doCheck(){
+    if(inputs.every(x=> !x.value.trim())){ needAnswer(inputs[0]); return; }
     const res = blanks.map((b, k)=>{
       const v = normalizeEq(inputs[k].value), w = normalizeEq(b.word);
       const exact = v === w;
@@ -25446,6 +25473,7 @@ function drawTranslateWrite(){
   let hints = 0;
   translateHintsWire(input, hintBtn, document.getElementById("translateHint"), item.en[0], ()=>hints, h=>{ hints = h; });
   function doCheck(){
+    if(!input.value.trim()){ needAnswer(input); return; }
     const an = translateAnalyze(input.value, item.en);
     const ok = an.ok;
     srsUpdate(id, ok && hints < 2);   // con 2 o más pistas vuelve pronto al repaso
@@ -25628,6 +25656,7 @@ function drawTranslateScene(){
   let hints = 0;
   translateHintsWire(input, hintBtn, document.getElementById("translateHint"), item.en[0], ()=>hints, h=>{ hints = h; });
   function doCheck(){
+    if(!input.value.trim()){ needAnswer(input); return; }
     const an = translateAnalyze(input.value, item.en);
     st.results[st.i] = an.ok;
     registerAnswer("translate", an.ok);
@@ -25973,6 +26002,7 @@ function dlgDrawProduce(st, d, node, area, kind, mode){
   let hints = 0, spoken = "";
   translateHintsWire(input, hintBtn, document.getElementById("dlgHint"), target.text, ()=>hints, h=>{ hints = h; });
   function finish(typed, viaVoice){
+    if(!typed || !typed.trim()){ needAnswer(input); return; }
     const an = translateAnalyze(typed, [target.text]);
     const sc = translateTokenScore(target.text, an.cmatch);
     const pct = sc.total ? Math.round(sc.heard / sc.total * 100) : 0;
@@ -27094,7 +27124,7 @@ function newTheoryqQuestion(){
   const item = THEORY_Q[key][n];
   const [home, idx] = key.split(":");
   const d = SRS_DATA[id];
-  current.theoryq = {id, key, home, idx:+idx, n, item, review:!!(d && d.dueAt <= Date.now()), lv:home};
+  current.theoryq = {id, key, home, idx:+idx, n, item, review:!!d, lv:home};
   drawTheoryq();
 }
 function drawTheoryq(){
@@ -27201,6 +27231,24 @@ function renderTopicComplete(s){
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
+/* Tablas de Utilidades en móvil: se etiquetan las celdas con el título de su columna (CSS las apila en tarjetas). */
+(function(){
+  const label = ()=>{
+    document.querySelectorAll("#panel-situations table, #panel-expressions table, #panel-howtosay table, #panel-falsefriends table, #panel-vocabtopics table, #panel-phrasal table, #panel-verbs table").forEach(t=>{
+      if(t.dataset.lab) return;
+      const heads = [...t.querySelectorAll("thead th")].map(h=> h.textContent.trim());
+      t.querySelectorAll("tbody tr").forEach(tr=> [...tr.children].forEach((td, i)=>{ if(heads[i]) td.setAttribute("data-label", heads[i]); }));
+      t.dataset.lab = "1";
+    });
+  };
+  let queued = false;
+  const start = ()=>{
+    const main = document.querySelector("main") || document.body;
+    new MutationObserver(()=>{ if(queued) return; queued = true; requestAnimationFrame(()=>{ queued = false; label(); }); }).observe(main, {childList:true, subtree:true});
+    label();
+  };
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+})();
 /* =========================================================
    RUTA DE APRENDIZAJE (solo inglés, A1–C2)
    Cada unidad es un tema de teoría del nivel. Unidad = teoría + repaso de cierre de 6 preguntas
