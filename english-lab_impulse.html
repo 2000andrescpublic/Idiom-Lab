@@ -806,6 +806,14 @@ textarea.text-input{min-height:120px;resize:vertical;line-height:1.5;}
 .topic-practice-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:6px;}
 .topic-practice .btn{margin-top:10px;}
 @media (max-width:640px){
+  .exercise-subnav{gap:6px;margin-bottom:14px;}
+  .exercise-subnav .ex-tab{padding:6px 11px;font-size:0.78rem;gap:4px;}
+  .listen-modes{flex-wrap:nowrap;overflow-x:auto;gap:6px;margin-bottom:8px;padding-bottom:2px;scrollbar-width:none;}
+  .listen-modes::-webkit-scrollbar{display:none;}
+  .listen-modes .ex-tab{flex:0 0 auto;padding:6px 12px;font-size:0.8rem;}
+  .dlg-bar{gap:8px;margin-bottom:8px;}
+}
+@media (max-width:640px){
   #panel-situations table.data-table, #panel-expressions table.data-table, #panel-howtosay table.data-table, #panel-falsefriends table.data-table, #panel-vocabtopics table.data-table, #panel-phrasal table.data-table, #panel-verbs table.data-table{display:block;width:100%;}
   #panel-situations .data-table thead, #panel-expressions .data-table thead, #panel-howtosay .data-table thead, #panel-falsefriends .data-table thead, #panel-vocabtopics .data-table thead, #panel-phrasal .data-table thead, #panel-verbs .data-table thead{display:none;}
   #panel-situations .data-table tbody, #panel-expressions .data-table tbody, #panel-howtosay .data-table tbody, #panel-falsefriends .data-table tbody, #panel-vocabtopics .data-table tbody, #panel-phrasal .data-table tbody, #panel-verbs .data-table tbody{display:block;}
@@ -21675,7 +21683,7 @@ function goTo(sectionId){
     d.querySelector(".nav-dropdown-toggle").classList.toggle("active", inGroup);
   });
   document.querySelectorAll(".section-panel").forEach(p=>p.classList.toggle("active", p.id==="panel-"+sectionId));
-  document.getElementById("levelBar").classList.toggle("show", sectionId==="theory" || sectionId==="exercises" || sectionId==="vocabtopics");
+  document.getElementById("levelBar").classList.toggle("show", (sectionId==="theory" && !(activeTheoryTopic && theoryReturnTo)) || sectionId==="exercises" || sectionId==="vocabtopics");
   if(LANG_GATED_SECTIONS.includes(sectionId) && !isSectionReadyForLang(sectionId, currentLang)){
     renderLangComingSoon(sectionId);
   }else{
@@ -21955,6 +21963,8 @@ function renderHome(){
   const dailyChartData = computeDailyActivity(7);
   const activeProfileName = (getProfiles().find(p=>p.id===ACTIVE_PROFILE_ID) || {}).name || "";
   const greetName = userName || activeProfileName;
+  const totalAttempts = Object.keys(stats).reduce((n, id)=> n + ((stats[id] && stats[id].total) || 0), 0);
+  const isReturning = totalAttempts > 0 || Object.keys(routeProgress).length > 0;
   const review = srsReviewSummary();
   const reviewN = review.due.length;
   const routeCard = isSectionReadyForLang("route", currentLang) ? routeHomeCardHtml() : "";
@@ -21972,7 +21982,7 @@ function renderHome(){
       ${auroraBackgroundSVG()}
       <div class="landing-hero-inner">
         <div class="landing-hero-text">
-          <h1>¡Hola de nuevo${greetName ? ", " + greetName : ""}! 👋</h1>
+          <h1>¡Hola${isReturning ? " de nuevo" : ""}${greetName ? ", " + greetName : ""}! 👋</h1>
           <p>Teoría clara, ejercicios interactivos y seguimiento real de tu progreso — de A1 a C2.</p>
           <button id="placementCta" class="landing-cta">🎯 ¿No sabes tu nivel? Descúbrelo en 5 minutos →</button>
         </div>
@@ -21982,12 +21992,12 @@ function renderHome(){
             ${reviewCard}
           </div>
           ${routeCard}
-          <div class="card dash-recommend-card landing-recommend-card">
+          ${totalAttempts >= 20 ? `<div class="card dash-recommend-card landing-recommend-card">
             <h3 class="dash-card-title">Sesión recomendada hoy</h3>
             <span class="dash-recommend-skill">${weakLabel}</span>
             <p class="dash-card-sub">Es tu destreza con menor porcentaje de aciertos ahora mismo.</p>
             <button class="btn" id="dashRecommendBtn" style="width:100%;">Practicar ${weakLabel} →</button>
-          </div>
+          </div>` : ""}
           <div class="card dash-recommend-card landing-recommend-card">
             <h3 class="dash-card-title">🎯 Práctica de hoy</h3>
             <p class="dash-card-sub">10 ejercicios variados de Vocabulario, Gramática, Escucha y más — con más práctica en tu punto débil.</p>
@@ -22065,7 +22075,7 @@ function renderHome(){
     const cur = routeCurrentIndex(routeSelectedLevel);
     if(cur > 0) routeScrollTo(routeSelectedLevel, cur);
   };
-  document.getElementById("dashRecommendBtn").onclick = ()=>{
+  (document.getElementById("dashRecommendBtn") || {}).onclick = ()=>{
     activeExercise = weakId;
     goTo("exercises");
     document.querySelectorAll(".ex-tab").forEach((b,i)=> b.classList.toggle("active", EX_TABS[i] && EX_TABS[i].id===weakId));
@@ -22123,12 +22133,19 @@ function drawTheoryListView(){
     };
   });
 }
+function topicLevelNote(lv, index){
+  try{
+    if(currentLang !== "en") return "";
+    const info = topicUnitFor(lv, index);
+    return info && info.level !== lv ? ` · en la Ruta: ${info.level}` : "";
+  }catch(e){ return ""; }
+}
 function drawTheoryDetail(lv, index){
   const t = LANG_PACKS[currentLang].THEORY[lv][index];
   const html = `
     <div class="section-head">
       <button class="theory-back" id="theoryBackBtn">← ${theoryReturnTo ? theoryReturnTo.label : "Volver a Gramática"}</button>
-      <div class="eyebrow">Teoría · Nivel ${lv}</div>
+      <div class="eyebrow">Teoría · Nivel ${lv}${topicLevelNote(lv, index)}</div>
       <h2>${t.title}</h2>
     </div>
     <div class="card topic-card">
@@ -22139,7 +22156,7 @@ function drawTheoryDetail(lv, index){
       </ul>
       <div class="tip-box">💡 ${t.tip}</div>
       ${topicPracticeBlockHTML(lv, index)}
-      <button class="practice-link" id="theoryPracticeBtn">Practicar gramática de este nivel →</button>
+      <button class="practice-link" id="theoryPracticeBtn">Más ejercicios de gramática del nivel ${lv} →</button>
     </div>
   `;
   document.getElementById("panel-theory").innerHTML = html;
@@ -22257,7 +22274,7 @@ function drawPlacementIntro(){
     <div class="section-head">
       <div class="eyebrow">Evaluación</div>
       <h2>Prueba de nivel</h2>
-      <p>18 preguntas (3 por nivel, de A1 a C2), alineadas a temas reales de gramática equivalentes a los del Marco Común Europeo de Referencia (CEFR). Toma unos 5-8 minutos.</p>
+      <p><b>Sirve para saber por dónde empezar</b>: no se guarda ni cambia tu nivel oficial hasta que lo apliques. 18 preguntas (3 por nivel, de A1 a C2), alineadas a temas reales de gramática equivalentes a los del Marco Común Europeo de Referencia (CEFR). Toma unos 5-8 minutos.</p>
     </div>
     <div class="card">
       <h3 style="margin:0 0 10px;font-size:1.05rem;">¿Cómo funciona?</h3>
@@ -22288,8 +22305,10 @@ function drawPlacementQuestion(){
       <div class="options" id="placementOpts">
         ${shuffle(q.opts).map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join("")}
       </div>
-    </div>`;
+    </div>
+    <div style="margin-top:10px;"><button class="practice-link" id="placementExitBtn" type="button">Salir de la prueba</button></div>`;
   document.getElementById("panel-placement").innerHTML = html;
+  document.getElementById("placementExitBtn").onclick = ()=>{ if(confirm("¿Salir de la prueba? Se perderán tus respuestas.")) goTo("home"); };
   const opts_el = document.querySelectorAll("#placementOpts .opt-btn");
   opts_el.forEach(b=>{
     b.onclick = ()=>{
@@ -22299,11 +22318,16 @@ function drawPlacementQuestion(){
       if(ok){ b.classList.add("correct"); popHighlight(correctBtn,"#22C55E"); }
       else { b.classList.add("wrong","shake"); correctBtn.classList.add("correct"); }
       placementState.answers.push({level:q.level, topicIndex:q.topicIndex, q:q.q, chosen:b.dataset.val, correctAnswer:q.correct, correct:ok});
-      setTimeout(()=>{
+      const nb = document.createElement("button");
+      nb.className = "btn"; nb.id = "placementNextBtn"; nb.style.marginTop = "14px";
+      nb.textContent = placementState.index + 1 < total ? "Siguiente →" : "Ver mi resultado →";
+      nb.onclick = ()=>{
         placementState.index++;
         if(placementState.index < total) drawPlacementQuestion();
         else finishPlacementTest();
-      }, 700);
+      };
+      document.getElementById("placementOpts").after(nb);
+      nb.focus();
     };
   });
 }
@@ -22316,16 +22340,16 @@ function computePlacementLevel(answers){
   return result;
 }
 function finishPlacementTest(){
-  const level = computePlacementLevel(placementState.answers) || "Pre-A1";
-  drawPlacementResults(placementState.answers, level);
+  const level = computePlacementLevel(placementState.answers) || "A1";   // sin 2 de 3 en A1 = punto de partida A1
+  drawPlacementResults(placementState.answers, level, !computePlacementLevel(placementState.answers));
 }
-function drawPlacementResults(answers, level){
+function drawPlacementResults(answers, level, beginner){
   const wrong = answers.filter(a=>!a.correct);
   const perLevel = LEVELS.map(lv=>({lv, correct: answers.filter(a=>a.level===lv&&a.correct).length, total: answers.filter(a=>a.level===lv).length || 3}));
   const html = `
     <div class="section-head">
       <div class="eyebrow">Resultado</div>
-      <h2>Tu nivel estimado es ${level}</h2>
+      <h2>Tu nivel estimado es ${level}${beginner ? " (inicial)" : ""}</h2>
       <p>Metodología: buscamos el nivel más alto en el que respondiste correctamente al menos 2 de 3 preguntas — igual que en pruebas de colocación reales, donde el punto en el que empiezas a fallar de forma consistente marca tu techo actual. Este resultado no queda guardado: si repites la prueba, empezarás de cero con preguntas nuevas.</p>
     </div>
     <div class="card" style="margin-bottom:20px;">
@@ -22349,14 +22373,14 @@ function drawPlacementResults(answers, level){
             return `<div style="background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:14px 16px;">
               <div style="font-weight:600;margin-bottom:6px;">${w.q}</div>
               <div style="font-size:0.88rem;color:var(--ink-soft);margin-bottom:4px;">Tu respuesta: <span style="color:var(--pink);">${w.chosen}</span> · Correcta: <b style="color:var(--teal);">${w.correctAnswer}</b></div>
-              <div style="font-size:0.85rem;color:var(--ink-soft);margin-bottom:10px;">Tema: <b>${topic.title}</b> (Nivel ${w.level}) — ${topic.summary}</div>
+              <div style="font-size:0.85rem;color:var(--ink-soft);margin-bottom:10px;">Tema: <b>${topic.title}</b> (Nivel ${w.level}${topicLevelNote(w.level, w.topicIndex)}) — ${topic.summary}</div>
               <button class="btn secondary" data-jlevel="${w.level}" data-jtopic="${w.topicIndex}" style="font-size:0.8rem;padding:7px 14px;">Ver este tema en Gramática →</button>
             </div>`;
           }).join("")}
         </div>
       </div>` : `<div class="card" style="margin-bottom:20px;"><p style="margin:0;color:var(--teal);font-weight:600;">¡Respondiste todo correctamente! 🎉</p></div>`}
     <div class="btn-row">
-      <button class="btn" id="applyPlacementBtn">Aplicar nivel ${level==="Pre-A1"?"A1":level} y practicar →</button>
+      <button class="btn" id="applyPlacementBtn">Aplicar nivel ${level} y empezar la Ruta →</button>
       <button class="btn secondary" id="retakePlacementBtn2">Repetir la prueba (preguntas nuevas)</button>
     </div>
   `;
@@ -22366,10 +22390,11 @@ function drawPlacementResults(answers, level){
   });
   document.getElementById("applyPlacementBtn").onclick = ()=>{
     const prevIdx = LEVELS.indexOf(currentLevel);
-    currentLevel = level==="Pre-A1" ? "A1" : level;
+    currentLevel = level;
     document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent===currentLevel));
     if(LEVELS.indexOf(currentLevel) > prevIdx) showBigCelebration(`🎉 Tu nivel oficial ahora es ${currentLevel}`, "Un logro real — lo lograste con constancia.");
-    goTo("exercises");
+    if(currentLang === "en" && isSectionReadyForLang("route", currentLang) && ROUTE_LEVELS.includes(level)){ routeSelectedLevel = level; goTo("route"); }
+    else goTo("exercises");
   };
   document.getElementById("retakePlacementBtn2").onclick = ()=>{
     placementState = {index:0, answers:[], questions: buildPlacementSet()};
@@ -22411,7 +22436,7 @@ function drawExamsHome(){
     <div class="section-head">
       <div class="eyebrow">Evaluación cronometrada</div>
       <h2>Exámenes</h2>
-      <p>Simulacro de ${LEVELS.length*3} preguntas (gramática + vocabulario, de A1 a C2) con tiempo límite de ${Math.round(EXAM_SECONDS/60)} minutos. A diferencia de la Prueba de Nivel, cada intento queda guardado y <b>sí actualiza tu nivel CEFR oficial</b>.</p>
+      <p><b>Para medir tu progreso con el tiempo</b>: simulacro de ${LEVELS.length*3} preguntas (gramática + vocabulario, de A1 a C2) con límite de ${Math.round(EXAM_SECONDS/60)} minutos. Cada intento queda guardado y <b>sí actualiza tu nivel CEFR oficial</b>. Si solo quieres saber por dónde empezar, usa la Prueba de nivel.</p>
     </div>
     <div class="card" style="margin-bottom:20px;">
       <h3 style="margin:0 0 10px;font-size:1.05rem;">¿Cómo funciona?</h3>
@@ -25771,6 +25796,31 @@ const DIALOGUE_PREF_KEY = "impulse_dialogue_prefs";
 let dialoguePrefs = {showEs:false};
 try{ Object.assign(dialoguePrefs, JSON.parse(localStorage.getItem(DIALOGUE_PREF_KEY) || "{}")); }catch(e){}
 function saveDialoguePrefs(){ try{ localStorage.setItem(DIALOGUE_PREF_KEY, JSON.stringify(dialoguePrefs)); }catch(e){} }
+(function(){
+  const gramRe = /gramat|falta|se dice|orden|incorrect|error|no existe|no se usa|concord|sobra|verbo|artículo|tiempo verbal|forma correcta|debe ser|debería/i;
+  const D = LANG_PACKS.en && LANG_PACKS.en.DIALOGUES;
+  if(!D) return;
+  Object.keys(D).forEach(lv=>{
+    const list = D[lv];
+    const donors = [];
+    list.forEach((d, di)=> d.turns.forEach(t=>{
+      const c = (t.options || []).filter(o=> o.correct);
+      if(c.length === 1 && c[0].text.split(/\s+/).length >= 6) donors.push({di, text:c[0].text});
+    }));
+    if(!donors.length) return;
+    let n = 0;
+    list.forEach((d, di)=> d.turns.forEach(t=>{
+      if(!t.options || t.options.filter(o=> o.correct).length !== 1) return;
+      const wrong = t.options.filter(o=> !o.correct);
+      if(wrong.length !== 2 || !wrong.every(o=> gramRe.test(o.explain || ""))) return;
+      let tries = 0, donor;
+      do{ donor = donors[(n * 7 + 3 + tries * 11) % donors.length]; n++; tries++; }while(donor.di === di && tries < 20);
+      if(donor.di === di) return;
+      wrong[1].text = donor.text;
+      wrong[1].explain = "La frase está bien escrita, pero no encaja con lo que te dijeron: en este contexto no tiene sentido.";
+    }));
+  });
+})();
 function dlgList(lv){ return LANG_PACKS[currentLang].DIALOGUES[lv] || []; }
 function dlgTheme(lv, i){ const d = dlgList(lv)[i]; return (d && d.theme) || (currentLang === "en" && DIALOGUE_THEMES[`${lv}.${i}`]) || ""; }
 function dlgKind(d){ return d.role === "A" ? "role" : d.branch ? "branch" : "normal"; }
@@ -25855,9 +25905,9 @@ function dlgThemes(lv){
 function dlgHeaderHTML(lv, idx){
   const modes = dlgAvailableModes(lv, idx === undefined ? 0 : idx);
   const themes = dlgThemes(lv);
-  const modeLabels = {choose:"🔘 Elegir", type:"⌨️ Escribir", speak:"🎤 Hablar"};
+  const modeLabels = {choose:"🔘 Opciones", type:"⌨️ Escribir", speak:"🎤 Hablar"};
   return `<div class="listen-modes" role="tablist" aria-label="Cómo responder">${modes.map(m=>`<button type="button" class="ex-tab${m===dialogueAnswerMode?" active":""}" data-dlg-mode="${m}"><span>${modeLabels[m]}</span></button>`).join("")}
-      <button type="button" class="ex-tab${dialogueView==="list"?" active":""}" data-dlg-list="1"><span>📚 Elegir diálogo</span></button></div>
+      <button type="button" class="ex-tab${dialogueView==="list"?" active":""}" data-dlg-list="1"><span>📚 Lista de diálogos</span></button></div>
     <div class="dlg-bar">
       ${themes.length ? `<label class="listen-opt" style="margin:0;">Escenario: <select id="dlgTheme" class="text-input" style="max-width:220px;padding:6px 10px;"><option value="">Todos</option>${themes.map(([t, n])=>`<option value="${escHtml(t)}" ${t===dialogueTheme?"selected":""}>${escHtml(t)} (${n})</option>`).join("")}</select></label>` : ""}
       ${currentLang === "en" ? `<label class="listen-opt" style="margin:0;"><input type="checkbox" id="dlgShowEs" ${dialoguePrefs.showEs?"checked":""}> Mostrar traducción</label>` : ""}
@@ -27096,14 +27146,14 @@ function topicBadgeHTML(home, idx){
   const m = topicMastery(home, idx);
   if(!m) return "";
   if(!m.seen) return ` <span class="topic-badge none">Sin practicar</span>`;
-  return ` <span class="topic-badge">${topicMedal(m.pct) || "▫️"} ${m.pct}%</span>`;
+  return ` <span class="topic-badge">${topicMedal(m.pct) ? topicMedal(m.pct) + " " : ""}${m.pct}%</span>`;
 }
 function topicPracticeBlockHTML(home, idx){
   if(currentLang !== "en" || !topicUnitFor(home, idx)) return "";
   const m = topicMastery(home, idx), tp = topicProgress[topicKey(home, idx)] || {};
   const pct = m ? m.pct : 0;
   return `<div class="topic-practice">
-    <div class="topic-practice-head"><b>Tu dominio de este tema</b><span>${topicMedal(pct) || "▫️"} ${pct}%</span></div>
+    <div class="topic-practice-head"><b>Tu dominio de este tema</b><span>${topicMedal(pct) ? topicMedal(pct) + " " : ""}${pct}%</span></div>
     <div class="wr-progress-bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
     <div class="wr-tip">${m ? `${m.seen} de ${m.total} preguntas practicadas` : ""}${tp.sessions ? ` · ${tp.sessions} ${tp.sessions === 1 ? "sesión" : "sesiones"} · última ${tp.last}%` : ""}</div>
     <button class="btn" id="theoryTopicBtn" type="button">🎯 Practicar este tema →</button>
@@ -27198,8 +27248,9 @@ function renderTopicComplete(s){
   const rp = routeTouch(s.level, s.unit);
   rp.attempts = (rp.attempts || 0) + 1;
   rp.best = Math.max(rp.best || 0, pct);
-  const newlyPassed = passed && !rp.passed;
-  if(passed) rp.passed = true;
+  const canPass = routeIsOpen(s.level, s.unit);   // una unidad bloqueada se entrena, pero solo el cierre (o «Saltar») la supera
+  const newlyPassed = passed && canPass && !rp.passed;
+  if(passed && canPass) rp.passed = true;
   saveProgress();
   const rows = Object.keys(s.byType).map(id=>`<tr><td>${TOPIC_TYPE_LABELS[id] || id}</td><td>${s.byType[id].correct}/${s.byType[id].total}</td></tr>`).join("");
   const missed = s.missed.filter(Boolean);
@@ -27211,7 +27262,7 @@ function renderTopicComplete(s){
       <p class="dash-card-sub">${escHtml(s.title)} · ${s.correct}/${s.answered} correctas (${pct}%)</p>
     </div>
     <div class="card" style="max-width:520px;margin:0 auto 18px;">
-      <div class="topic-practice-head"><b>Dominio del tema</b><span>${topicMedal(m.pct) || "▫️"} ${s.before}% → <b>${m.pct}%</b>${delta > 0 ? ` (+${delta})` : ""}</span></div>
+      <div class="topic-practice-head"><b>Dominio del tema</b><span>${topicMedal(m.pct) ? topicMedal(m.pct) + " " : ""}${s.before}% → <b>${m.pct}%</b>${delta > 0 ? ` (+${delta})` : ""}</span></div>
       <div class="wr-progress-bar" aria-hidden="true"><span style="width:${m.pct}%"></span></div>
       ${newlyPassed ? `<div class="wr-progress" style="margin-top:8px;">✅ ¡Unidad superada en la Ruta ${s.level}!</div>` : ""}
     </div>
@@ -27375,7 +27426,9 @@ function routeLevelPassed(level){
 function routeCurrentLevel(){
   let best = null, ts = -1;
   Object.keys(routeProgress).forEach(key=>{
-    const t = routeProgress[key].ts || 0;
+    const rp0 = routeProgress[key];
+    if(!(rp0.passed || rp0.attempts || rp0.skipped)) return;   // solo mirar la teoría no cambia el nivel
+    const t = rp0.ts || 0;
     if(t > ts){ ts = t; best = ROUTE_LEVELS.find(l=> (ROUTE_ORDER[l]||[]).some(e=> e[0]+":"+e[1] === key)) || key.split(":")[0]; }
   });
   return ROUTE_LEVELS.includes(best) ? best : "A1";
@@ -27496,9 +27549,9 @@ function renderRoute(){
         </div>
         <div class="btn-row" style="margin-top:0;">
           <button class="btn secondary" data-route-theory="${k}">📖 Teoría</button>
-          <button class="btn secondary" data-route-topic="${k}">🎯 Practicar tema</button>
           ${open
-            ? `<button class="btn" data-route-close="${k}">${st.attempts ? "Reintentar cierre" : "Repaso de cierre"}</button>`
+            ? `<button class="btn secondary" data-route-topic="${k}">🎯 Entrenar el tema</button>
+          <button class="btn" data-route-close="${k}">${st.passed ? "Repetir el cierre" : st.attempts ? "Reintentar el cierre" : "✔ Cierre para superar"}</button>`
             : `<button class="btn secondary" data-route-skip="${k}">Saltar: ya lo sé</button>`}
         </div>
       </div>`;
@@ -27507,7 +27560,7 @@ function renderRoute(){
     <div class="section-head">
       <div class="eyebrow">Ruta de aprendizaje</div>
       <h2>Ruta ${level}</h2>
-      <p>${units.length} unidades guiadas: primero la teoría y después un repaso de cierre de ${ROUTE_CLOSE_SIZE} preguntas (se aprueba con ${ROUTE_PASS_PCT}%). Al aprobar se abre la siguiente. ¿Ya dominas un tema? Usa «Saltar».</p>
+      <p>${units.length} unidades guiadas: lee la teoría, entrena el tema las veces que quieras y haz el cierre de ${ROUTE_CLOSE_SIZE} preguntas (se aprueba con ${ROUTE_PASS_PCT}%) para abrir la siguiente. ¿Ya dominas un tema? Usa «Saltar».</p>
       <div class="route-tabs" role="group" aria-label="Nivel">${tabs}</div>
       ${inReview ? `<p class="route-review-note">🧪 Las unidades de ${level} están <b>en revisión</b>: las preguntas y explicaciones las redactó una IA y todavía no las ha revisado un profesor. Si ves algún error, avísalo.</p>` : ""}
       <div class="route-progress" role="progressbar" aria-valuemin="0" aria-valuemax="${units.length}" aria-valuenow="${passedCount}"><span style="width:${passedCount/units.length*100}%"></span></div>
