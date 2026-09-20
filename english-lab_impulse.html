@@ -19405,7 +19405,7 @@ const LANG_GATED_SECTIONS = ["route","theory","categories","phrasal","verbs","si
    que siempre las tiene todas). Una sección ausente de un idioma en
    este mapa se trata como no lista. */
 const LANG_SECTION_READY = {
-  pt: {theory:true, exercises:true, categories:true, verbs:true, situations:true, expressions:true, falsefriends:true, howtosay:true, placement:true, exams:true, vocabtopics:true},
+  pt: {route:true, theory:true, exercises:true, categories:true, verbs:true, situations:true, expressions:true, falsefriends:true, howtosay:true, placement:true, exams:true, vocabtopics:true},
 };
 function isSectionReadyForLang(sectionId, lang){
   if(lang==="en") return true;
@@ -22525,7 +22525,7 @@ function drawPlacementResults(answers, level, beginner){
     currentLevel = level;
     document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent===currentLevel));
     if(LEVELS.indexOf(currentLevel) > prevIdx) showBigCelebration(`🎉 Tu nivel oficial ahora es ${currentLevel}`, "Un logro real — lo lograste con constancia.");
-    if(currentLang === "en" && isSectionReadyForLang("route", currentLang) && ROUTE_LEVELS.includes(level)){ routeSelectedLevel = level; goTo("route"); }
+    if(isSectionReadyForLang("route", currentLang) && ROUTE_LEVELS.includes(level)){ routeSelectedLevel = level; goTo("route"); }
     else goTo("exercises");
   };
   document.getElementById("retakePlacementBtn2").onclick = ()=>{
@@ -22820,7 +22820,7 @@ function renderProfile(){
             <button class="ex-tab${currentLang==="en"?" active":""}" data-learn-lang="en">🇺🇸 Inglés</button>
             <button class="ex-tab${currentLang==="pt"?" active":""}" data-learn-lang="pt">🇧🇷 Portugués (Brasil)</button>
           </div>
-          <p style="color:var(--ink-soft);font-size:0.8rem;margin:8px 0 0;">${currentLang==="pt" ? "El contenido en portugués todavía está en construcción — algunas secciones mostrarán un aviso." : "Tu progreso se guarda por separado para cada idioma, así que puedes ir y volver sin perder nada."}</p>
+          <p style="color:var(--ink-soft);font-size:0.8rem;margin:8px 0 0;">${currentLang==="pt" ? "El contenido en portugués es nuevo y todavía está en revisión: puede tener errores. Si ves alguno, avísalo." : "Tu progreso se guarda por separado para cada idioma, así que puedes ir y volver sin perder nada."}</p>
         </div>
         <div>
           <label for="dailyGoalInput" style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:8px;">Meta diaria (ejercicios)</label>
@@ -27412,7 +27412,7 @@ function renderTopicComplete(s){
   tp.sessions++; tp.best = Math.max(tp.best, pct); tp.last = pct; tp.ts = Date.now();
   const passed = pct >= ROUTE_PASS_PCT;
   let newlyPassed = false;
-  if(currentLang === "en"){   // la Ruta solo existe en inglés
+  {
     const rp = routeTouch(s.level, s.unit);
     rp.attempts = (rp.attempts || 0) + 1;
     rp.best = Math.max(rp.best || 0, pct);
@@ -27555,9 +27555,19 @@ const ROUTE_ORDER = {
   C1:[["C1",1],["C1",2],["C1",3],["C1",4],["C1",5],["B2",6],["C1",6],["C1",7],["C1",8],["C1",9],["C1",10],["C1",11],["C1",12],["C1",13],["C1",14]],
   C2:[["C2",0],["C2",1],["C2",2],["C2",3],["C2",4],["C2",5],["C2",6],["C2",7],["C2",8],["C2",9],["C2",10],["C2",11],["C2",12],["C2",13],["C2",14]]
 };
-function routeKey(level, k){ const e = (ROUTE_ORDER[level] || [])[k]; return e ? e[0]+":"+e[1] : level+":"+k; }
+/* Orden de la Ruta: en inglés lo define ROUTE_ORDER; en portugués, cada nivel recorre sus propios temas en el orden de Teoría. */
+const _ptRouteOrder = {};
+function routeOrder(level){
+  if(currentLang === "pt"){
+    if(!_ptRouteOrder[level]) _ptRouteOrder[level] = Array.from({length:(LANG_PACKS.pt.THEORY[level] || []).length}, (_, i)=> [level, i]);
+    return _ptRouteOrder[level];
+  }
+  return ROUTE_ORDER[level] || [];
+}
+function routeKey(level, k){ const e = routeOrder(level)[k]; return e ? e[0]+":"+e[1] : level+":"+k; }
 let routeSelectedLevel = null;
 function routeUnits(level){
+  if(currentLang === "pt") return routeOrder(level).map(([home, i], pos)=>{ const pu = ptTopicUnit(home, i); return pu ? Object.assign({}, pu, {level, pos}) : null; }).filter(Boolean);
   return (ROUTE_ORDER[level] || []).map(([home, i], pos)=>{
     const t = LANG_PACKS.en.THEORY[home][i];
     const u = (ROUTE_UNITS[home] || [])[i] || {};
@@ -27598,14 +27608,19 @@ function routeCurrentLevel(){
     const rp0 = routeProgress[key];
     if(!(rp0.passed || rp0.attempts || rp0.skipped)) return;   // solo mirar la teoría no cambia el nivel
     const t = rp0.ts || 0;
-    if(t > ts){ ts = t; best = ROUTE_LEVELS.find(l=> (ROUTE_ORDER[l]||[]).some(e=> e[0]+":"+e[1] === key)) || key.split(":")[0]; }
+    if(t > ts){ ts = t; best = ROUTE_LEVELS.find(l=> routeOrder(l).some(e=> e[0]+":"+e[1] === key)) || key.split(":")[0]; }
   });
   return ROUTE_LEVELS.includes(best) ? best : "A1";
 }
 function buildUnitSession(level, k){
   const u = routeUnits(level)[k];
   /* Solo preguntas del tema (sin vocabulario ni relleno de otros temas del nivel). */
-  const queue = shuffle(u.items.map(x=>({type:x.type, forcedId:x.id}))).slice(0, ROUTE_CLOSE_SIZE);
+  let queue;
+  if(currentLang === "pt"){   // el cierre PT mezcla 2 preguntas de teoría con ejercicios del tema
+    const tq = shuffle((theoryQBank()[u.key] || []).map((_, n)=>({type:"theoryq", forcedId:`theoryq:pt:${u.key}:${n}`}))).slice(0, 2);
+    const core = shuffle(u.items.map(x=>({type:x.type, forcedId:x.id}))).slice(0, ROUTE_CLOSE_SIZE - tq.length);
+    queue = shuffle(core.concat(tq));
+  }else queue = shuffle(u.items.map(x=>({type:x.type, forcedId:x.id}))).slice(0, ROUTE_CLOSE_SIZE);
   return {mode:"unit", level, unit:k, queue, index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set()};
 }
 function routeMissedLine(type, cur){
@@ -27691,7 +27706,7 @@ function renderRoute(){
   const units = routeUnits(level);
   const passedCount = routeLevelPassed(level);
   const cur = routeCurrentIndex(level);
-  const inReview = ROUTE_REVIEW_LEVELS.includes(level);
+  const inReview = currentLang === "pt" || ROUTE_REVIEW_LEVELS.includes(level);
   const tabs = ROUTE_LEVELS.map(l=>`
     <button class="route-tab${l===level?" active":""}" data-route-level="${l}" aria-pressed="${l===level}">${l}<span>${routeLevelPassed(l)}/${routeUnits(l).length}</span></button>`).join("");
   const card = (u,k)=>{
