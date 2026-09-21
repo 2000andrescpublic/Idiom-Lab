@@ -1185,6 +1185,48 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .bolt-bubble{position:relative;background:var(--bg);color:var(--ink);border:2px solid var(--line);border-radius:18px;padding:10px 14px;font-size:.92rem;line-height:1.45;box-shadow:0 3px 10px rgba(20,30,80,.12);}
 .bolt-bubble::before{content:"";position:absolute;left:-8px;top:50%;width:14px;height:14px;background:var(--bg);border-left:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateY(-50%) rotate(45deg);}
 .bolt-bubble b{color:var(--purple);}
+/* ---- Inicio: panel de acción y progreso ---- */
+.home-hero{padding:26px 28px 24px;border-radius:28px;}
+.home-hero-inner{position:relative;z-index:1;display:flex;flex-direction:column;gap:18px;}
+.home-hero-top{display:flex;align-items:center;gap:18px;}
+.home-hero-top .bolt{margin:0;flex:none;}
+.home-hero-msg{flex:1;min-width:0;}
+.home-hero-msg h1{color:#fff;font-size:2rem;font-weight:800;line-height:1.15;margin:0 0 10px;letter-spacing:-0.02em;}
+.home-bubble{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:10px 14px;color:#fff;font-size:.98rem;line-height:1.45;backdrop-filter:blur(6px);}
+.home-bubble b{color:#FFD23F;}
+.home-cta{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.home-cta-btn{display:flex;flex-direction:column;gap:3px;text-align:left;border:0;border-radius:18px;padding:14px 16px;cursor:pointer;font-family:inherit;transition:transform .15s ease,box-shadow .2s ease;}
+.home-cta-btn strong{font-size:1.08rem;font-weight:800;}
+.home-cta-btn small{font-size:.78rem;opacity:.88;line-height:1.35;}
+.home-cta-btn:hover{transform:translateY(-2px);}
+.home-cta-btn:active{transform:translateY(1px) scale(.985);}
+.cta-route{background:linear-gradient(135deg,#FFC93C,#F58A1F);color:#3B2600;box-shadow:0 8px 20px rgba(245,138,31,.38);}
+.cta-practice{background:linear-gradient(135deg,#7C5CFF,#4F3DFF);color:#fff;box-shadow:0 8px 20px rgba(79,61,255,.42);}
+.home-links{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;color:rgba(255,255,255,.85);font-size:.85rem;}
+.home-links .practice-link{color:#fff;text-decoration:underline;text-underline-offset:3px;font-weight:600;background:none;border:0;padding:0;cursor:pointer;font-family:inherit;font-size:inherit;}
+.home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0;}
+.home-card{background:var(--bg-soft);border:1px solid var(--line);border-radius:22px;padding:16px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.home-card h4{margin:0;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:800;}
+.home-card-sub{font-size:.8rem;color:var(--ink-soft);}
+.home-streak-num{display:flex;align-items:center;gap:6px;font-size:2.2rem;font-weight:800;line-height:1.1;padding-top:6px;}
+.home-week{display:flex;gap:4px;justify-content:center;margin-top:2px;}
+.home-week span{width:22px;height:22px;border-radius:7px;background:var(--line);font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);}
+.home-week span.on{background:linear-gradient(#FFC93C,#F58A1F);color:#3B2600;}
+.home-week span.today{outline:2px solid var(--purple);outline-offset:1px;}
+.home-bar{width:100%;height:9px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:4px;}
+.home-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#3DE08D,#22B866);}
+.home-empty{display:flex;align-items:center;gap:16px;background:var(--bg-soft);border:1px dashed var(--line);border-radius:22px;padding:16px 20px;margin-bottom:24px;}
+.home-empty .bolt{margin:0;flex:none;}
+.home-empty h3{margin:0 0 4px;font-size:1.05rem;}
+.home-empty p{margin:0;color:var(--ink-soft);font-size:.9rem;line-height:1.5;}
+@media (max-width:760px){
+  .home-hero{padding:20px 16px;}
+  .home-hero-top{flex-direction:column;text-align:center;gap:10px;}
+  .home-hero-msg h1{font-size:1.6rem;}
+  .home-cta,.home-grid{grid-template-columns:1fr;}
+  .home-links{justify-content:center;}
+  .home-empty{flex-direction:column;text-align:center;}
+}
 .medal{display:block;overflow:visible;transition:transform .25s cubic-bezier(.2,.9,.3,1.3);}
 .medal.locked{filter:grayscale(1) opacity(.4);}
 .ach-item:not(.is-locked):hover .medal{transform:translateY(-3px) rotate(-4deg) scale(1.06);}
@@ -21751,7 +21793,7 @@ function weekDaysInfo(){
   return names.map((n, i)=>{
     const k = todayStr(new Date(new Date(start).getTime() + i * 86400000));
     const act = dailyActivity[k] || {};
-    return {n, k, done:Object.keys(act).some(x=> act[x] > 0 || (act[x] && act[x].total > 0)), today:k === today};
+    return {n, k, done:Object.keys(act).some(x=> act[x] > 0 || (act[x] && (act[x].count > 0 || act[x].total > 0))), today:k === today};
   });
 }
 function weeklyGoalCardHTML(){
@@ -22288,6 +22330,14 @@ function boltCoachHTML(reviewN, streak, returning){
   return `<div class="bolt-coach">${boltSVG(st, 78)}<div class="bolt-bubble">${msg}</div></div>`;
 }
 
+function boltHomeState(reviewN, streak, returning, remain){
+  const lost = dailyStreak.lastDate && streak > 0 && Math.round((new Date(todayStr()) - new Date(dailyStreak.lastDate)) / 86400000) > 1;
+  if(!returning) return {state:"hype", msg:"<b>¡Soy Bolt, tu coach!</b> Empieza con tu primera práctica: solo unos minutos."};
+  if(lost) return {state:"sad", msg:"<b>Se cortó tu racha.</b> No pasa nada: ¡hoy empezamos otra!"};
+  if(remain > 0 && streak >= 1) return {state:"coach", msg:`<b>Racha de ${streak} ${streak === 1 ? "día" : "días"}.</b> Te faltan ${remain} ejercicios para tu meta de hoy.`};
+  if(remain > 0) return {state:"coach", msg:`<b>Te faltan ${remain} ejercicios</b> para tu meta de hoy. ¡Vamos!`};
+  return {state:"hype", msg:"<b>¡Meta de hoy cumplida!</b> Lo que hagas ahora es un extra para tu racha."};
+}
 /* ---- Medallas por nivel e insignias de logros ---- */
 const MEDAL_TIER = {
   A1:{g:"md-bronze", rb:"md-rb-blue", ink:"#5B2F0E", ring:"#8A4C1E"}, A2:{g:"md-silver", rb:"md-rb-green", ink:"#39414F", ring:"#7B8598"},
@@ -23008,40 +23058,68 @@ function renderHome(){
       ? `<span class="dash-recommend-skill">Estás al día ✅</span>
          <p class="dash-card-sub">No tienes nada vencido. Tu próximo repaso es ${reviewWhenText(review.nextAt)}.</p>`
       : `<p class="dash-card-sub">Cuando practiques Vocabulario, Gramática, Escucha y más, aquí verás qué te toca repasar cada día.</p>`;
+  const doneToday = Object.values(dailyActivity[todayStr()] || {}).reduce((s, e)=> s + (e && typeof e === "object" ? (e.count || 0) : (+e || 0)), 0);
+  const goalN = dailyGoal || 10, remainToday = Math.max(0, goalN - doneToday);
+  const ringLen = 194.8, ringDash = Math.round(Math.min(1, doneToday / goalN) * ringLen);
+  const bst = boltHomeState(reviewN, dailyStreak.count, isReturning, remainToday);
+  const rLevel = routeCurrentLevel(), rUnits = routeUnits(rLevel), rCur = routeCurrentIndex(rLevel), rPassed = routeLevelPassed(rLevel);
+  const rNext = ROUTE_LEVELS[ROUTE_LEVELS.indexOf(rLevel) + 1];
+  const rPct = rUnits.length ? Math.round(rPassed / rUnits.length * 100) : 0;
+  let rTitle, rSub, rLine;
+  if(rCur === -1){ rTitle = "Ver la ruta"; rSub = `Ruta ${rLevel} completa`; rLine = `Superaste las ${rUnits.length} unidades${rNext ? ` · siguiente: ${rNext}` : ""}`; }
+  else if(!Object.keys(routeProgress).length){ rTitle = "Empezar la Ruta"; rSub = "Tu camino de A1 a C2"; rLine = "Teoría y repaso guiados"; }
+  else{ rTitle = "Continuar mi Ruta"; rSub = "Sigue donde lo dejaste"; rLine = `${rLevel} · Unidad ${rCur + 1}: ${escHtml(rUnits[rCur].title)}`; }
+  const weekRow = weekDaysInfo().map(d=> `<span class="${d.done ? "on" : ""}${d.today ? " today" : ""}" title="${d.k}">${d.n}</span>`).join("");
   const html = `
-    <div class="landing-hero">
+    <div class="landing-hero home-hero">
       ${auroraBackgroundSVG()}
-      <div class="landing-hero-inner">
-        <div class="landing-hero-text">
-          <h1>¡Hola${isReturning ? " de nuevo" : ""}${greetName ? ", " + greetName : ""}! 👋</h1>
-          <p>Teoría clara, ejercicios interactivos y seguimiento real de tu progreso — de A1 a C2.</p>
-          ${boltCoachHTML(reviewN, dailyStreak.count, isReturning)}
-          <button id="placementCta" class="landing-cta">${placementResult ? "📊 Mide tu progreso en los Exámenes →" : "🎯 ¿No sabes tu nivel? Haz la Prueba de nivel (unos 12 minutos) →"}</button>
-          ${placementResult ? `<div style="margin-top:10px;font-size:0.85rem;color:var(--ink-soft);">Tu última Prueba de nivel: <b>${placementResult.level}</b> · <button class="practice-link" id="placementRetakeLink" type="button">Repetirla</button></div>` : ""}
+      <div class="home-hero-inner">
+        <div class="home-hero-top">
+          ${boltSVG(bst.state, 108)}
+          <div class="home-hero-msg">
+            <h1>¡Hola${isReturning ? " de nuevo" : ""}${greetName ? ", " + greetName : ""}! ${"👋"}</h1>
+            <div class="home-bubble">${bst.msg}</div>
+          </div>
         </div>
-        <div class="landing-recommend-stack">
-          <div class="card dash-recommend-card landing-recommend-card">
-            <h3 class="dash-card-title">🔁 Repaso de hoy</h3>
-            ${reviewCard}
-          </div>
-          ${routeCard}
-          ${totalAttempts >= 20 ? `<div class="card dash-recommend-card landing-recommend-card">
-            <h3 class="dash-card-title">Sesión recomendada hoy</h3>
-            <span class="dash-recommend-skill">${weakLabel}</span>
-            <p class="dash-card-sub">Es tu destreza con menor porcentaje de aciertos ahora mismo.</p>
-            <button class="btn" id="dashRecommendBtn" style="width:100%;">Practicar ${weakLabel} →</button>
-          </div>` : ""}
-          <div class="card dash-recommend-card landing-recommend-card">
-            <h3 class="dash-card-title">🎯 Práctica de hoy</h3>
-            <p class="dash-card-sub">10 ejercicios variados de Vocabulario, Gramática, Escucha y más — con más práctica en tu punto débil.</p>
-            <button class="btn" id="practiceHoyStartBtn" style="width:100%;">Empezar práctica de hoy →</button>
-          </div>
+        <div class="home-cta">
+          <button class="home-cta-btn cta-route" id="routeHomeBtn" type="button"><small>${rSub}</small><strong>${rTitle} →</strong><small>${rLine}</small></button>
+          <button class="home-cta-btn cta-practice" id="practiceHoyStartBtn" type="button"><small>10 ejercicios · unos 8 min</small><strong>Práctica de hoy →</strong><small>${reviewN ? `Tienes ${reviewN} por repasar` : "Variados, con foco en tu punto débil"}</small></button>
+        </div>
+        <div class="home-links">
+          <button id="placementCta" class="practice-link" type="button">${placementResult ? "Mide tu progreso en los Exámenes →" : "¿No sabes tu nivel? Haz la Prueba de nivel (unos 12 minutos) →"}</button>
+          ${placementResult ? `<span>Última prueba: <b>${placementResult.level}</b> · <button class="practice-link" id="placementRetakeLink" type="button">Repetirla</button></span>` : ""}
+          ${reviewN ? `<button class="practice-link" id="reviewStartBtn" type="button">Repasar ahora (${Math.min(reviewN, REVIEW_SESSION_SIZE)}) →</button>` : ""}
         </div>
       </div>
     </div>
 
     <div class="hero">
-      <div class="dash-top-grid">
+      <div class="home-grid">
+        <div class="home-card">
+          <h4>Meta de hoy</h4>
+          <svg viewBox="0 0 80 80" width="88" height="88" role="img" aria-label="${doneToday} de ${goalN} ejercicios hoy">
+            <defs><linearGradient id="homeRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DF3FF"/><stop offset="1" stop-color="#4F3DFF"/></linearGradient></defs>
+            <circle cx="40" cy="40" r="31" fill="none" stroke="var(--line)" stroke-width="9"/>
+            <circle cx="40" cy="40" r="31" fill="none" stroke="url(#homeRing)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${ringDash} ${ringLen}" transform="rotate(-90 40 40)"/>
+            <text x="40" y="45" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)">${doneToday}/${goalN}</text>
+          </svg>
+          <div class="home-card-sub">${remainToday ? `Te faltan ${remainToday} hoy` : "¡Meta cumplida!"}</div>
+        </div>
+        <div class="home-card">
+          <h4>Racha</h4>
+          <div class="home-streak-num">${svgIcon("flame", 30)}<span>${dailyStreak.count}</span></div>
+          <div class="home-card-sub">${dailyStreak.count === 0 ? "Practica hoy para empezar" : dailyStreak.count === 1 ? "día seguido" : "días seguidos"}</div>
+          <div class="home-week" role="img" aria-label="Días practicados esta semana">${weekRow}</div>
+        </div>
+        <div class="home-card">
+          <h4>Tu nivel</h4>
+          ${medalSvg(rLevel, 56)}
+          <div class="home-bar" role="img" aria-label="${rPct}% de la Ruta ${rLevel}"><i style="width:${rPct}%"></i></div>
+          <div class="home-card-sub">${rCur === -1 ? `Ruta ${rLevel} completa` : `${rPct}% de la Ruta ${rLevel}${rNext ? ` → ${rNext}` : ""}`}</div>
+        </div>
+      </div>
+
+      ${totalAttempts >= 5 ? `<div class="dash-top-grid">
         <div class="card hero-radar-card" style="margin:0;">
           <div class="chart-card-blob" style="width:150px;height:150px;background:var(--purple);top:-60px;right:-50px;"></div>
           <div class="chart-card-header">
@@ -23066,33 +23144,10 @@ function renderHome(){
           </div>
           ${renderDailyActivitySVG(dailyChartData)}
         </div>
-      </div>
-
-      <div class="dash-mini-row">
-        ${weeklyGoalCardHTML()}
-        <div class="card dash-accent-amber">
-          <div class="dash-streak-num">🔥 ${dailyStreak.count}</div>
-          <div class="dash-streak-label">${dailyStreak.count===0 ? "¡Completa un ejercicio hoy para arrancar tu racha!" : (dailyStreak.count===1 ? "día de racha" : "días de racha") + " — distinta de las rachas por ejercicio."}</div>
-        </div>
-      </div>
-
-      <div class="features-strip">
-        <div class="feature-item">
-          <div class="fi-icon icon-purple">${svgIcon("lightning",28)}</div>
-          <h4>Explicaciones simples</h4>
-          <p>Cada error se explica en un lenguaje claro, sin tecnicismos innecesarios.</p>
-        </div>
-        <div class="feature-item">
-          <div class="fi-icon icon-teal">${svgIcon("chartbar",28)}</div>
-          <h4>Todos los niveles</h4>
-          <p>De A1 a C2, más un modo Random para retarte con cualquier nivel.</p>
-        </div>
-        <div class="feature-item">
-          <div class="fi-icon icon-blue">${currentLang === "pt" ? "🇧🇷" : "🇺🇸"}</div>
-          <h4>${currentLang === "pt" ? "Português do Brasil" : "Estándar US English"}</h4>
-          <p>${currentLang === "pt" ? "Gramática y ejemplos alineados al portugués brasileño estándar." : "Gramática y ejemplos alineados al inglés americano estándar."}</p>
-        </div>
-      </div>
+      </div>` : `<div class="home-empty">
+        ${boltSVG("think", 78)}
+        <div><h3>Aquí verás tus destrezas y tu actividad</h3><p>Completa unos 5 ejercicios y Bolt dibujará tu radar de destrezas y tu actividad de los últimos 7 días.</p></div>
+      </div>`}
     </div>`;
   document.getElementById("panel-home").innerHTML = html;
   wireWeeklyGoal();
@@ -24254,6 +24309,7 @@ function renderProfile(){
       <button class="ex-tab" id="showGuideBtn" type="button">📘 Ver la guía de bienvenida</button>
     </div>
     ${achievementsHTML()}
+    <div style="margin-bottom:20px;">${weeklyGoalCardHTML()}</div>
     <div class="card" style="margin-bottom:20px;">
       <h3 class="dash-card-title">Progreso semanal</h3>
       <p class="dash-card-sub">Ejercicios completados por semana (${weeks.length ? (weeks.length === 1 ? "tu semana con actividad" : `últimas ${weeks.length} semanas con actividad`) : "aún sin actividad"}).</p>
@@ -24309,6 +24365,7 @@ function renderProfile(){
     </div>
   `;
   document.getElementById("panel-profile").innerHTML = html;
+  wireWeeklyGoal();
   document.getElementById("profilePracticeBtn").onclick = ()=>{
     activeExercise = weakId;
     goTo("exercises");
