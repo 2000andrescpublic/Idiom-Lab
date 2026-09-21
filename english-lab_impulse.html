@@ -1392,6 +1392,69 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .hub-saved p{margin:2px 0 8px;color:var(--ink-soft);font-size:.88rem;}
 @media (max-width:520px){.hub-saved{flex-direction:column;text-align:center;}.uc-vs{grid-template-columns:1fr;}.uc-bar .btn{width:100%;justify-content:center;}}
 @media (prefers-reduced-motion:reduce){.ucf-in{transition:none;}}
+/* ---- Categorías gramaticales ---- */
+.cat2{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+.cat-ana{padding:16px;}
+.cat-ana-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.cat-ana-head h3{margin:0;font-size:1.05rem;}
+.cat-sent{font-size:1.15rem;line-height:2.3;font-weight:600;}
+.cat-w{display:inline-block;padding:0 9px;margin:0 1px;border:0;border-radius:10px;font:inherit;color:#fff;cursor:pointer;transition:transform .12s ease,box-shadow .15s ease;text-shadow:0 1px 2px rgba(0,0,0,.25);}
+.cat-w:hover{transform:translateY(-2px);}
+.cat-w.sel{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 6px 14px rgba(0,0,0,.3);}
+.cat-p{color:var(--ink-soft);}
+.cat-ana-info{margin-top:8px;background:var(--bg-soft);border-radius:14px;padding:10px 12px;font-size:.9rem;line-height:1.45;display:flex;gap:10px;align-items:flex-start;min-height:46px;}
+.cat-ana-info b{font-size:.95rem;}
+.cat-chip{width:14px;height:14px;border-radius:5px;flex:none;margin-top:4px;}
+.cat-hint{color:var(--ink-soft);}
+.cat-leg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px;font-size:.75rem;color:var(--ink-soft);}
+.cat-leg span{display:inline-flex;align-items:center;gap:5px;}
+.cat-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.cat-tile{border:0;border-radius:20px;padding:14px 8px 12px;color:#fff;cursor:pointer;font-family:inherit;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.28);transition:transform .15s ease,box-shadow .2s ease;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;overflow:hidden;}
+.cat-tile::after{content:"";position:absolute;right:-24px;top:-24px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 70%);}
+.cat-tile:hover{transform:translateY(-3px);}
+.cat-tile:active{transform:translateY(1px) scale(.985);}
+.cat-tile.act{outline:3px solid var(--ink);outline-offset:3px;}
+.cat-tile b{font-size:.92rem;margin-top:6px;position:relative;z-index:1;}
+.cat-tile small{font-size:.72rem;opacity:.85;position:relative;z-index:1;}
+.cat-tile-ic{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:15px;background:rgba(255,255,255,.93);box-shadow:0 4px 10px rgba(0,0,0,.22);line-height:0;position:relative;z-index:1;}
+.cat-tile-ic.big{width:54px;height:54px;border-radius:17px;color:#fff;}
+.cat-tile-ic.big .ico3{filter:drop-shadow(0 1px 1px rgba(0,0,0,.3));}
+.cat-detail-head{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+.cat-detail-head h3{margin:0;font-size:1.4rem;}
+.cat-detail-head .en{font-size:.9rem;color:var(--ink-soft);font-weight:600;}
+.cat-def{font-size:.95rem;font-weight:600;line-height:1.55;margin:0 0 12px;}
+.cat-analogy-d{background:var(--bg-soft);border-radius:14px;padding:0 14px;margin-bottom:14px;border-left:4px solid var(--purple);}
+.cat-analogy-d summary{cursor:pointer;padding:11px 0;font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;list-style:none;}
+.cat-analogy-d summary::-webkit-details-marker{display:none;}
+.cat-analogy-d p{margin:0 0 12px;color:var(--ink-soft);font-size:.9rem;line-height:1.55;}
+.cat-groups{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.cat-group{border:2px solid var(--line);background:none;color:var(--ink);border-radius:14px;padding:7px 14px;cursor:pointer;font-family:inherit;text-align:left;display:flex;flex-direction:column;line-height:1.25;}
+.cat-group b{font-size:.9rem;}
+.cat-group small{font-size:.72rem;color:var(--ink-soft);}
+.cat-group.on{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 4px 12px rgba(var(--purple-rgb),.35);}
+.cat-group.on small{color:rgba(255,255,255,.85);}
+.cat-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.cat-f{border:1.5px solid var(--line);background:none;border-radius:999px;padding:4px 10px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.78rem;color:var(--ink-soft);}
+.cat-f.on{border-color:var(--purple);background:var(--purple-soft);color:var(--purple-dark);}
+.cat-tag{display:inline-block;border-radius:999px;padding:2px 9px;font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-right:8px;vertical-align:1px;}
+.cat-f .cat-tag{margin:0;}
+.cat-tag.pre{background:rgba(31,181,138,.18);color:#0E7A5A;}
+.cat-tag.pas{background:rgba(245,166,35,.22);color:#9A5B00;}
+.cat-tag.fut{background:rgba(61,139,255,.18);color:#1F56C4;}
+.cat-tag.que{background:rgba(164,92,240,.2);color:#6A2CB8;}
+:root[data-theme="dark"] .cat-tag.pre{color:#5FE3B8;}
+:root[data-theme="dark"] .cat-tag.pas{color:#FFC46B;}
+:root[data-theme="dark"] .cat-tag.fut{color:#8DBBFF;}
+:root[data-theme="dark"] .cat-tag.que{color:#CDA0FF;}
+.cat-ex{display:flex;align-items:center;gap:10px;background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:14px;padding:10px 12px;}
+.cat-ex.pre{border-left-color:#1FB58A;}.cat-ex.pas{border-left-color:#F5A623;}.cat-ex.fut{border-left-color:#3D8BFF;}.cat-ex.que{border-left-color:#A45CF0;}
+.cat-ex-en{font-size:1rem;font-weight:600;line-height:1.5;}
+.cat-hl{color:#fff;border-radius:7px;padding:1px 6px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.25);}
+.cat-hl .tw{color:#fff;border-bottom-color:rgba(255,255,255,.6);}
+.cat-none{color:var(--ink-soft);font-size:.9rem;}
+.cat-cta{margin-top:6px;display:inline-flex;align-items:center;gap:8px;}
+@media (max-width:520px){.cat-sent{font-size:1.02rem;}.cat-tile b{font-size:.82rem;}.cat-tile-ic{width:40px;height:40px;}.cat-cta{width:100%;justify-content:center;}}
 .medal{display:block;overflow:visible;transition:transform .25s cubic-bezier(.2,.9,.3,1.3);}
 .medal.locked{filter:grayscale(1) opacity(.4);}
 .ach-item:not(.is-locked):hover .medal{transform:translateY(-3px) rotate(-4deg) scale(1.06);}
@@ -23735,73 +23798,120 @@ function drawTheoryDetail(lv, index){
    ========================================================= */
 let activeCategory = "noun";
 let activeCategoryGroup = 0;
+/* CATEGORIAS-UI: anatomía de una oración, cuadrícula de fichas 3D, ejemplos con color por tiempo y acciones. */
+const CAT_HUES = {
+  noun:["#8E6CFF","#4B2FC9"], pronoun:["#4C9AFF","#1F56C4"], verb:["#25C99B","#0E7A5A"], adjective:["#EC5A9C","#A01F5E"], adverb:["#F5B03A","#B0670A"],
+  preposition:["#2CC0D8","#0F6F80"], conjunction:["#B673FF","#6A2CB8"], article:["#86BD2F","#4A7412"], interjection:["#F2704E","#A62E12"]
+};
+const CAT_TENSE_CLS = {Presente:"pre", Pasado:"pas", Futuro:"fut", Pregunta:"que"};
+/* Frases para la anatomía: [palabra, categoría (o null si es puntuación), explicación] */
+const CAT_SENTENCES = {
+  en:[
+    [["Wow!","interjection","Expresa una emoción o una reacción; va sola o al inicio."],["She","pronoun","Sustituye a un sustantivo: she = una mujer."],["quickly","adverb","Dice cómo se hace la acción: quickly = rápidamente."],["gave","verb","Expresa la acción; aquí, en pasado (irregular)."],["the","article","Presenta al sustantivo: the = uno ya conocido."],["old","adjective","Describe al sustantivo: old = viejo."],["dog","noun","Nombra a un ser: dog = perro."],["water","noun","Nombra una cosa: water = agua."],["in","preposition","Relaciona palabras; aquí indica lugar."],["the","article","Presenta al sustantivo."],["garden","noun","Nombra un lugar: garden = jardín."],[",",null],["and","conjunction","Une dos ideas: and = y."],["he","pronoun","Sustituye a un sustantivo: he = un hombre o un animal macho."],["drank","verb","Acción en pasado (irregular de drink)."],[".",null]],
+    [["Hey!","interjection","Sirve para llamar la atención."],["The","article","Presenta al sustantivo."],["tall","adjective","Describe al sustantivo: tall = alto."],["boy","noun","Nombra a una persona: boy = niño."],["usually","adverb","Dice con qué frecuencia: usually = normalmente."],["plays","verb","Expresa la acción; presente con -s para he/she/it."],["football","noun","Nombra una cosa: football = fútbol."],["with","preposition","Relaciona palabras; aquí indica compañía."],["them","pronoun","Sustituye a un sustantivo plural, como objeto."],[",",null],["but","conjunction","Une dos ideas opuestas: but = pero."],["they","pronoun","Sustituye a un sustantivo plural, como sujeto."],["never","adverb","Frecuencia: never = nunca."],["win","verb","Expresa la acción: win = ganar."],[".",null]],
+    [["Ouch!","interjection","Expresa dolor."],["The","article","Presenta al sustantivo."],["small","adjective","Describe al sustantivo: small = pequeño."],["cat","noun","Nombra a un ser: cat = gato."],["jumped","verb","Acción en pasado (verbo regular: jump + ed)."],["onto","preposition","Relaciona palabras; indica dirección hacia una superficie."],["a","article","Presenta un sustantivo no conocido: a = un."],["chair","noun","Nombra una cosa: chair = silla."],["and","conjunction","Une dos ideas: and = y."],["it","pronoun","Sustituye a un sustantivo (el gato)."],["slept","verb","Acción en pasado (irregular de sleep)."],["there","adverb","Dice dónde: there = allí."],[".",null]]
+  ],
+  pt:[
+    [["Nossa!","interjection","Expresa sorpresa o una emoción."],["Ela","pronoun","Sustituye a un sustantivo: ela = ella."],["deu","verb","Expresa la acción; aquí, en pasado (dar)."],["rapidamente","adverb","Dice cómo se hace la acción: rapidamente = rápidamente."],["água","noun","Nombra una cosa: água = agua."],["para","preposition","Relaciona palabras; aquí indica destinatario."],["o","article","Presenta al sustantivo: o = el."],["cachorro","noun","Nombra a un ser: cachorro = perro (cachorro)."],["velho","adjective","Describe al sustantivo: velho = viejo."],[",",null],["e","conjunction","Une dos ideas: e = y."],["ele","pronoun","Sustituye a un sustantivo: ele = él."],["bebeu","verb","Acción en pasado (beber)."],[".",null]],
+    [["Ei!","interjection","Sirve para llamar la atención."],["O","article","Presenta al sustantivo: o = el."],["menino","noun","Nombra a una persona: menino = niño."],["alto","adjective","Describe al sustantivo: alto = alto."],["sempre","adverb","Frecuencia: sempre = siempre."],["joga","verb","Expresa la acción: jogar = jugar."],["futebol","noun","Nombra una cosa: futebol = fútbol."],["com","preposition","Relaciona palabras; aquí indica compañía."],["eles","pronoun","Sustituye a un sustantivo plural."],[",",null],["mas","conjunction","Une dos ideas opuestas: mas = pero."],["nunca","adverb","Frecuencia: nunca = nunca."],["ganha","verb","Expresa la acción: ganhar = ganar."],[".",null]],
+    [["Ai!","interjection","Expresa dolor."],["O","article","Presenta al sustantivo: o = el."],["gato","noun","Nombra a un ser: gato = gato."],["pequeno","adjective","Describe al sustantivo: pequeno = pequeño."],["pulou","verb","Acción en pasado (pular = saltar)."],["em","preposition","Relaciona palabras; aquí indica lugar."],["uma","article","Presenta un sustantivo no conocido: uma = una."],["cadeira","noun","Nombra una cosa: cadeira = silla."],["e","conjunction","Une dos ideas: e = y."],["ele","pronoun","Sustituye a un sustantivo (el gato)."],["dormiu","verb","Acción en pasado (dormir)."],["lá","adverb","Dice dónde: lá = allí."],[".",null]]
+  ]
+};
+let catSentenceIdx = 0, catTenseFilter = "all";
+function catName(id){ const c = LANG_PACKS[currentLang].CATEGORIES.find(x=> x.id === id); return c ? c.name : id; }
+function catChipBg(id){ const h = CAT_HUES[id] || ["#7C5CFF", "#4F3DFF"]; return `linear-gradient(135deg,${h[0]},${h[1]})`; }
 function renderCategories(){
+  const cats = LANG_PACKS[currentLang].CATEGORIES;
   const html = `
     <div class="section-head">
       <div class="eyebrow">Referencia</div>
       <h2>Categorías gramaticales</h2>
-      <p>Las piezas que forman toda oración en inglés, explicadas de forma simple y visual.</p>
+      <p>Las piezas que forman toda oración, explicadas de forma simple y visual. Toca una palabra de la frase o elige una categoría.</p>
     </div>
-    <div class="cat-layout">
-      <div class="cat-list" id="catList"></div>
+    <div class="cat2">
+      <div class="card cat-ana" id="catAna"></div>
+      <div class="cat-grid" id="catGrid" role="group" aria-label="Categorías">
+        ${cats.map(c=> `<button type="button" class="cat-tile${c.id === activeCategory ? " act" : ""}" data-cat="${c.id}" style="background:${catChipBg(c.id)}" aria-pressed="${c.id === activeCategory}">
+          <span class="cat-tile-ic">${svgIcon(c.icon, 26)}</span><b>${c.name}</b><small>${c.en}</small></button>`).join("")}
+      </div>
       <div class="card cat-detail" id="catDetail"></div>
-    </div>
-  `;
+    </div>`;
   document.getElementById("panel-categories").innerHTML = html;
-  const list = document.getElementById("catList");
-  LANG_PACKS[currentLang].CATEGORIES.forEach(c=>{
-    const b = document.createElement("button");
-    b.className="cat-list-item" + (c.id===activeCategory ? " active" : "");
-    b.dataset.cat = c.id;
-    b.innerHTML = `<div class="cat-icon-sm icon-${c.color}">${svgIcon(c.icon,18)}</div><div><h4>${c.name}</h4><span class="en">${c.en}</span></div>`;
-    b.onclick = ()=>{
-      activeCategory = c.id;
-      activeCategoryGroup = 0;
-      document.querySelectorAll(".cat-list-item").forEach(x=>x.classList.toggle("active", x.dataset.cat===c.id));
-      drawCategoryDetail();
-      popHighlight(b, brandHex());
-      window.scrollTo({top:0, behavior:"smooth"});
-    };
-    list.appendChild(b);
-  });
+  document.querySelectorAll("#catGrid .cat-tile").forEach(b=> b.onclick = ()=>{ selectCategory(b.dataset.cat, true); });
+  drawCategoryAnatomy(null);
   drawCategoryDetail();
 }
+function selectCategory(id, scroll){
+  activeCategory = id; activeCategoryGroup = 0; catTenseFilter = "all";
+  document.querySelectorAll("#catGrid .cat-tile").forEach(x=>{ const on = x.dataset.cat === id; x.classList.toggle("act", on); x.setAttribute("aria-pressed", String(on)); });
+  drawCategoryDetail();
+  if(scroll){ const d = document.getElementById("catDetail"); if(d) d.scrollIntoView({behavior:"smooth", block:"start"}); }
+}
+function drawCategoryAnatomy(selIdx){
+  const sents = CAT_SENTENCES[currentLang] || CAT_SENTENCES.en;
+  const s = sents[catSentenceIdx % sents.length];
+  const legendIds = [...new Set(s.filter(t=> t[1]).map(t=> t[1]))];
+  const box = document.getElementById("catAna");
+  const info = selIdx != null ? s[selIdx] : null;
+  box.innerHTML = `
+    <div class="cat-ana-head"><h3>Anatomía de una oración</h3><button type="button" class="uc-link" id="catNextSent">Otra frase</button></div>
+    <div class="cat-sent" role="group" aria-label="Frase de ejemplo: toca una palabra">${s.map((t, i)=> t[1]
+      ? `<button type="button" class="cat-w${selIdx === i ? " sel" : ""}" data-i="${i}" style="background:${catChipBg(t[1])}" aria-label="${escHtml(t[0])}: ${catName(t[1])}">${escHtml(t[0])}</button>`
+      : `<span class="cat-p">${escHtml(t[0])}</span>`).join(" ")}</div>
+    <div class="cat-ana-info" aria-live="polite">${info
+      ? `<span class="cat-chip" style="background:${catChipBg(info[1])}"></span><div><b>${catName(info[1])}</b><br>${info[2]} <button type="button" class="uc-link" id="catGoCat">Ver la categoría →</button></div>`
+      : `<span class="cat-hint">Toca una palabra para ver de qué categoría es.</span>`}</div>
+    <div class="cat-leg">${legendIds.map(id=> `<span><i style="background:${catChipBg(id)}"></i>${catName(id)}</span>`).join("")}</div>`;
+  box.querySelectorAll(".cat-w").forEach(b=> b.onclick = ()=> drawCategoryAnatomy(+b.dataset.i));
+  document.getElementById("catNextSent").onclick = ()=>{ catSentenceIdx++; drawCategoryAnatomy(null); };
+  const go = document.getElementById("catGoCat");
+  if(go) go.onclick = ()=> selectCategory(info[1], true);
+}
 function drawCategoryDetail(){
-  const c = LANG_PACKS[currentLang].CATEGORIES.find(x=>x.id===activeCategory);
+  const pack = LANG_PACKS[currentLang], c = pack.CATEGORIES.find(x=> x.id === activeCategory) || pack.CATEGORIES[0];
+  const h = CAT_HUES[c.id] || ["#7C5CFF", "#4F3DFF"];
   const html = `
-    <div class="cat-detail-head">
-      <div class="cat-icon-lg icon-${c.color}">${svgIcon(c.icon,28)}</div>
-      <div>
-        <h3>${c.name} <span class="en">(${c.en})</span></h3>
-      </div>
+    <div class="cat-detail-head" style="--cc:${h[0]}">
+      <span class="cat-tile-ic big" style="background:${catChipBg(c.id)}">${svgIcon(c.icon, 30).replace('class="ico3"', 'class="ico3 cat-ic-white"')}</span>
+      <div><h3>${c.name} <span class="en">(${c.en})</span></h3></div>
     </div>
     <p class="cat-def">${c.def}</p>
-    <div class="cat-analogy">💡 ${c.analogy}</div>
-    <p class="cat-group-hint">Elige un grupo para ver 8 ejemplos (presente, pasado, futuro y preguntas):</p>
-    <div class="cat-types" id="catTypes">
-      ${c.types.map((t,i)=>`<button class="cat-type-btn${i===activeCategoryGroup?" active":""}" data-idx="${i}">${t}</button>`).join("")}
+    <details class="cat-analogy-d"><summary>${svgIcon("bulb", 20)} Una forma fácil de recordarlo</summary><p>${c.analogy}</p></details>
+    <div class="cat-groups" id="catTypes" role="tablist" aria-label="Grupos">
+      ${c.types.map((t, i)=>{ const [nm, ex] = t.split(/:\s*/); return `<button type="button" role="tab" class="cat-group${i === activeCategoryGroup ? " on" : ""}" data-idx="${i}" aria-selected="${i === activeCategoryGroup}"><b>${escHtml(nm)}</b>${ex ? `<small>${escHtml(ex)}</small>` : ""}</button>`; }).join("")}
+    </div>
+    <div class="cat-filter" id="catFilter" role="group" aria-label="Filtrar por tiempo">
+      ${["all", "Presente", "Pasado", "Futuro", "Pregunta"].map(f=> `<button type="button" class="cat-f${catTenseFilter === f ? " on" : ""}" data-f="${f}" aria-pressed="${catTenseFilter === f}">${f === "all" ? "Todos" : `<span class="cat-tag ${CAT_TENSE_CLS[f]}">${f}</span>`}</button>`).join("")}
     </div>
     <div id="catGroupExamples"></div>
-  `;
+    <button type="button" class="btn cat-cta" id="catPracticeBtn">${svgIcon("target", 18)} Practicar «Clase de palabra» →</button>`;
   document.getElementById("catDetail").innerHTML = html;
-  document.querySelectorAll(".cat-type-btn").forEach(btn=>{
-    btn.onclick = ()=>{
-      activeCategoryGroup = parseInt(btn.dataset.idx);
-      document.querySelectorAll(".cat-type-btn").forEach(x=>x.classList.toggle("active", x===btn));
-      drawCategoryGroupExamples();
-    };
+  document.querySelectorAll("#catTypes .cat-group").forEach(btn=> btn.onclick = ()=>{
+    activeCategoryGroup = parseInt(btn.dataset.idx);
+    document.querySelectorAll("#catTypes .cat-group").forEach(x=>{ const on = x === btn; x.classList.toggle("on", on); x.setAttribute("aria-selected", String(on)); });
+    drawCategoryGroupExamples();
   });
+  document.querySelectorAll("#catFilter .cat-f").forEach(btn=> btn.onclick = ()=>{
+    catTenseFilter = btn.dataset.f;
+    document.querySelectorAll("#catFilter .cat-f").forEach(x=>{ const on = x === btn; x.classList.toggle("on", on); x.setAttribute("aria-pressed", String(on)); });
+    drawCategoryGroupExamples();
+  });
+  document.getElementById("catPracticeBtn").onclick = ()=>{ activeExercise = "wordclass"; goTo("exercises"); if(typeof exRenderNav === "function") exRenderNav(); renderExercise("wordclass", true); };
   drawCategoryGroupExamples();
 }
 function drawCategoryGroupExamples(){
   const key = `${activeCategory}:${activeCategoryGroup}`;
-  const examples = LANG_PACKS[currentLang].CATEGORY_EXAMPLES[key] || [];
-  const html = `
-    <ul class="examples cat-group-examples-list">
-      ${examples.map(e=>`<li><span class="tense-tag">${e.tense}</span>${wzBold(e.en, e.bold)} <span class="es-inline">(${e.es})</span></li>`).join("")}
-    </ul>
-  `;
-  document.getElementById("catGroupExamples").innerHTML = html;
+  const all = LANG_PACKS[currentLang].CATEGORY_EXAMPLES[key] || [];
+  const h = CAT_HUES[activeCategory] || ["#7C5CFF", "#4F3DFF"];
+  const shown = all.map((e, i)=>({e, i})).filter(x=> catTenseFilter === "all" || x.e.tense === catTenseFilter);
+  const items = shown.map(({e, i})=>({speak:e.en, copy:e.en, saveId:`catex:${currentLang}:${key}:${i}`, savePrompt:`¿Cómo se dice «${e.es}»?`, saveAnswer:e.en, saveExplain:`${catName(activeCategory)}: ${e.bold}`}));
+  const box = document.getElementById("catGroupExamples");
+  box.innerHTML = shown.length ? `<div class="uc-list">${shown.map(({e}, n)=> `
+    <div class="cat-ex ${CAT_TENSE_CLS[e.tense] || "pre"}">
+      <div class="uc-t"><div class="cat-ex-en"><span class="cat-tag ${CAT_TENSE_CLS[e.tense] || "pre"}">${e.tense}</span>${wzBold(e.en, e.bold).replace(/<strong>/g, `<strong class="cat-hl" style="background:${catChipBg(activeCategory)}">`)}</div><div class="uc-es">${escHtml(e.es)}</div></div>
+      ${ucActs(n, {saveId:items[n].saveId})}
+    </div>`).join("")}</div>` : `<p class="cat-none">No hay ejemplos de este tiempo en este grupo. Prueba con «Todos».</p>`;
+  ucWire(box, items, drawCategoryGroupExamples);
 }
 
 /* =========================================================
