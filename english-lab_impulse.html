@@ -1484,6 +1484,54 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .vv-tag{display:inline-block;margin-top:8px;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;font-weight:800;border-radius:999px;padding:2px 8px;background:rgba(124,92,255,.18);color:var(--purple-dark);}
 :root[data-theme="dark"] .vv-tag{color:#B7A5FF;}
 .vv-tag.rg{background:rgba(31,181,138,.18);color:#0E7A5A;}
+/* PHRASAL-UI-CSS:BEGIN */
+.pv-p{color:var(--purple);font-weight:800;}
+:root[data-theme="dark"] .pv-p{color:#B7A5FF;}
+.pv-parts{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 8px;margin:6px 0 2px;scrollbar-width:thin;}
+.pv-chip{flex:none;border:1.5px solid var(--line);background:var(--bg-soft);color:var(--purple);font-weight:800;font-size:.78rem;letter-spacing:.04em;border-radius:999px;padding:6px 13px;cursor:pointer;font-family:inherit;}
+:root[data-theme="dark"] .pv-chip{color:#B7A5FF;}
+.pv-chip.active{background:var(--purple);border-color:var(--purple);color:#fff;}
+.pv-pr{background:var(--bg-soft);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:6px 0 10px;}
+.pv-pr > p{margin:0 0 8px;font-size:.85rem;color:var(--ink-soft);line-height:1.45;}
+.pv-cnt{opacity:.7;}
+.pv-themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;margin-top:12px;}
+.pv-theme{display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-left:6px solid var(--lv,#8E6CFF);border-radius:16px;padding:14px 16px;cursor:pointer;font-family:inherit;color:var(--ink);transition:transform .15s ease,box-shadow .15s ease;}
+.pv-theme:hover{transform:translateY(-2px);box-shadow:var(--shadow-card);}
+.pv-th-top{display:flex;align-items:center;gap:10px;}
+.pv-lvl{display:inline-block;color:#111;font-weight:800;font-size:.68rem;border-radius:99px;padding:2px 9px;letter-spacing:.03em;}
+.pv-th-t{font-weight:800;font-size:1.02rem;}
+.pv-th-n{font-size:.75rem;color:var(--ink-soft);font-weight:700;}
+.pv-th-i{font-size:.82rem;color:var(--ink-soft);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.pv-list{border-top:1px solid var(--line);}
+.pv-row{position:relative;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);border-left:5px solid var(--lv,#8E6CFF);padding:9px 4px 9px 12px;cursor:pointer;outline-offset:-2px;}
+.pv-row:hover{background:var(--bg-soft);}
+.pv-row.on{background:var(--purple-soft);}
+:root[data-theme="dark"] .pv-row.on{background:rgba(124,92,255,.22);}
+.pv-n{flex:1;min-width:0;}
+.pv-n b{display:block;font-size:1rem;font-weight:700;}
+.pv-n > span{display:block;font-size:.8rem;color:var(--ink-soft);}
+.pv-th{display:block;font-style:normal;font-size:.7rem;color:var(--ink-soft);margin-top:2px;opacity:.85;}
+.pv-star{position:static;flex:none;}
+.pv-none{padding:16px 4px;color:var(--ink-soft);font-size:.9rem;margin:0;}
+.pv-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 10px;}
+.pv-bar .vv-search{flex:1 1 220px;margin:0;}
+.pv-seg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;}
+.pv-seg button{border:0;background:none;color:var(--ink-soft);font-family:inherit;font-weight:700;font-size:.8rem;padding:8px 14px;cursor:pointer;}
+.pv-seg button[aria-pressed="true"]{background:var(--purple);color:#fff;}
+.pv-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px;align-items:start;}
+.pv-card{position:sticky;top:90px;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:16px 18px;}
+.pv-card-h{display:flex;align-items:center;gap:8px;}
+.pv-card-t{font-size:1.5rem;font-weight:800;flex:1;}
+.pv-card-es{color:var(--ink-soft);margin:0 0 12px;}
+.pv-fr{border-left:4px solid var(--fc);background:var(--bg-soft);border-radius:0 12px 12px 0;padding:8px 12px;margin-bottom:8px;}
+.pv-fr small{display:block;font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;font-weight:800;color:var(--fc);margin-bottom:2px;}
+.pv-en{font-weight:700;font-size:1rem;line-height:1.35;}
+.pv-es{font-size:.85rem;color:var(--ink-soft);margin-top:2px;}
+.pv-sheet-lv{margin:8px 0 10px;font-size:.8rem;color:var(--ink-soft);display:flex;align-items:center;gap:8px;}
+.pv-filter{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--purple-soft);border-radius:12px;padding:7px 12px;margin-bottom:10px;font-size:.85rem;}
+:root[data-theme="dark"] .pv-filter{background:rgba(124,92,255,.2);}
+.pv-detail-legacy{display:none;}
+/* PHRASAL-UI-CSS:END */
 :root[data-theme="dark"] .vv-tag.rg{color:#5FE3B8;}
 /* VERBCARDS-CSS:BEGIN */
 .vc-h{margin:0 0 6px;font-size:1.15rem;}
@@ -25320,123 +25368,188 @@ function renderPhrasal(){
   if(activePhrasalTheme){ drawPhrasalDetail(activePhrasalTheme); }
   else { drawPhrasalList(); }
 }
+/* PHRASAL-UI:BEGIN — Phrasal Verbs: temas primero, buscador, partículas en chips, filas con franja de nivel, ficha (columnas en escritorio, panel inferior en móvil), favoritos y práctica por tema. */
+const PV_LV = {A1:"#34D399", A2:"#2CC0D8", B1:"#4C9AFF", B2:"#8E6CFF", C1:"#FF6B9A", C2:"#FFB020"};
+const PV_PARTS = new Set("up down on off out in over away back for with about around through by along apart across ahead forward into to from of at after against together behind aside".split(" "));
+const PV_FRAMES = [["Afirmación", "example", "esExample", "#1FB58A"], ["Negación", "neg", "esNeg", "#E2408A"], ["Pregunta", "q", "esQ", "#3D8BFF"]];
+let pvOrder = "theme", pvQ = "", pvSel = null, pvAuto = null, pvGQ = "", pvPart = null, pvWasWide = null, PHRASAL_FILTER = null;
+function pvWide(){ return window.matchMedia("(min-width: 900px)").matches; }
+function pvHl(phrase){ return String(phrase).split(" ").map((w, i)=> i > 0 && PV_PARTS.has(w.toLowerCase()) ? `<span class="pv-p">${escHtml(w)}</span>` : escHtml(w)).join(" "); }
+function pvAll(){ return PHRASAL_THEMES.flatMap(t=> t.items.map(pv=> ({pv, theme:t}))); }
+function pvFavId(pv){ return `pvfav:${pv.phrase}`; }
+function pvToggleFav(pv, level){ toggleSavedWord(pvFavId(pv), "phrasal", level, `«${pv.phrase}» (${pv.es})`, pv.es, pv.example); }
+function pvRow(pv, level, on, extra){
+  const fav = isWordSaved(pvFavId(pv));
+  return `<div class="pv-row${on ? " on" : ""}" role="button" tabindex="0" data-p="${escHtml(pv.phrase)}" data-t="${escHtml(level)}" style="--lv:${PV_LV[level] || "#8E6CFF"}" aria-label="${escHtml(pv.phrase)}: ${escHtml(pv.es)}">
+    <div class="pv-n"><b>${pvHl(pv.phrase)}</b><span>${escHtml(pv.es)}</span>${extra || ""}</div>
+    <button type="button" class="vv-star pv-star${fav ? " on" : ""}" data-fav="${escHtml(pv.phrase)}" aria-label="${fav ? "Quitar de favoritos" : "Guardar en favoritos"}">${fav ? "★" : "☆"}</button></div>`;
+}
+function pvFramesHtml(pv){
+  return PV_FRAMES.map(f=> `<div class="pv-fr" style="--fc:${f[3]}"><small>${f[0]}</small><div class="pv-en">${wz(pv[f[1]])}</div><div class="pv-es">${escHtml(pv[f[2]])}</div></div>`).join("");
+}
+/* Enlaza filas (clic/teclado) y estrellas dentro de un contenedor. */
+function pvBindRows(root, onOpen, findPv){
+  root.querySelectorAll(".pv-row").forEach(r=>{
+    const open = ()=> onOpen(r.dataset.p, r);
+    r.onclick = e=>{ if(e.target.closest(".pv-star")) return; open(); };
+    r.onkeydown = e=>{ if((e.key === "Enter" || e.key === " ") && !e.target.closest(".pv-star")){ e.preventDefault(); open(); } };
+  });
+  root.querySelectorAll(".pv-star").forEach(b=> b.onclick = e=>{
+    e.stopPropagation();
+    const row = b.closest(".pv-row"), pv = findPv(row.dataset.p, row.dataset.t); if(!pv) return;
+    pvToggleFav(pv, row.dataset.t);
+    const on = isWordSaved(pvFavId(pv)); b.textContent = on ? "★" : "☆"; b.classList.toggle("on", on); b.setAttribute("aria-label", on ? "Quitar de favoritos" : "Guardar en favoritos");
+    const cs = document.getElementById("pvCardStar"); if(cs && cs.dataset.p === pv.phrase){ cs.textContent = on ? "★" : "☆"; cs.classList.toggle("on", on); }
+  });
+}
+function pvOpen(themeId, phrase){
+  activePhrasalTheme = themeId; pvQ = ""; pvSel = phrase; pvAuto = phrase;
+  renderPhrasal(); window.scrollTo({top:0, behavior:"auto"});
+}
+/* ---- Lista de temas ---- */
 function drawPhrasalList(){
-  const themes = [...PHRASAL_THEMES].sort((a,b)=> LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level));
-  const html = `
+  const themes = [...PHRASAL_THEMES].sort((a, b)=> LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level));
+  document.getElementById("panel-phrasal").innerHTML = `
     <div class="section-head">
       <div class="eyebrow">Vocabulario</div>
       <h2>Phrasal Verbs por tema</h2>
-      <p>Elige un tema para ver la explicación completa y cada phrasal verb en afirmación, negación y pregunta. Todos los temas, de A1 a C2, están disponibles aquí.</p>
+      <p>Elige un tema para ver cada phrasal verb en afirmación, negación y pregunta. La partícula va en <span class="pv-p">morado</span>.</p>
     </div>
-    <div class="card" style="margin-bottom:22px;">
-      <h3 style="margin:0 0 8px;font-size:1.05rem;">🧭 Pistas rápidas por partícula</h3>
-      <p style="color:var(--ink-soft);font-size:0.87rem;margin:0 0 14px;">Te ayudan a intuir phrasal verbs nuevos, pero cada uno se aprende mejor en su propio contexto. Haz clic en una partícula para ver todos los phrasal verbs que terminan así.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;">
-        ${PARTICLE_TIPS.map(p=>`<button class="particle-tip-btn" data-particle="${p.particle}"><b style="color:var(--purple-dark);">${p.particle}</b> — ${p.tip}</button>`).join("")}
-      </div>
-      <div id="particleFilterResult"></div>
-    </div>
-    <div class="theory-list">
-      ${themes.map(t=>`
-        <button class="theory-list-item" data-theme="${t.id}">
-          <span class="badge-level">${t.level}</span>
-          <div style="flex:1;">
-            <div class="theory-list-title">${emo3d(t.icon)}${t.title}</div>
-            <div class="theory-list-summary">${t.items.length} phrasal verbs · ${t.intro.slice(0,90)}…</div>
-          </div>
-          <span class="theory-list-arrow">→</span>
-        </button>
-      `).join("")}
-    </div>
-  `;
-  document.getElementById("panel-phrasal").innerHTML = html;
-  document.querySelectorAll(".theory-list-item").forEach(btn=>{
-    btn.onclick = ()=>{ activePhrasalTheme = btn.dataset.theme; renderPhrasal(); window.scrollTo({top:0, behavior:"smooth"}); };
-  });
-  document.querySelectorAll(".particle-tip-btn").forEach(btn=>{
-    btn.onclick = ()=>{
-      document.querySelectorAll(".particle-tip-btn").forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      showParticleFilter(btn.dataset.particle);
-    };
-  });
-}
-function showParticleFilter(particle){
-  const matches = ALL_PHRASAL
-    .filter(pv => pv.phrase.trim().split(/\s+/).pop().toLowerCase() === particle.toLowerCase())
-    .sort((a,b)=> a.phrase.localeCompare(b.phrase));
-  const html = `
-    <div class="particle-result-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
-        <h4 style="margin:0;font-size:0.95rem;">Phrasal verbs terminados en "${particle}" <span style="color:var(--ink-soft);font-weight:400;">(${matches.length})</span></h4>
-        <button class="theory-back" id="particleFilterClose" style="margin:0;">✕ Cerrar</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="data-table phrasal-detail-table">
-          <thead><tr><th style="min-width:150px;">Phrasal Verb</th><th style="min-width:180px;">Significado</th><th style="min-width:230px;">Ejemplo</th></tr></thead>
-          <tbody>
-            ${matches.map(pv=>`
-              <tr>
-                <td style="font-weight:700;">${wz(pv.phrase)}</td>
-                <td>${pv.es}</td>
-                <td>${wz(pv.example)}<span class="ex-es">(${pv.esExample})</span></td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-  const container = document.getElementById("particleFilterResult");
-  container.innerHTML = html;
-  document.getElementById("particleFilterClose").onclick = ()=>{
-    container.innerHTML = "";
-    document.querySelectorAll(".particle-tip-btn").forEach(b=>b.classList.remove("active"));
+    <input type="search" class="vv-search" id="pvSearch" placeholder="Buscar phrasal verb o significado" autocomplete="off" aria-label="Buscar phrasal verb" value="${escHtml(pvGQ)}">
+    <div class="pv-parts" id="pvParts" role="group" aria-label="Pistas por partícula">${PARTICLE_TIPS.map(p=> `<button type="button" class="pv-chip${pvPart === p.particle ? " active" : ""}" data-particle="${p.particle}" aria-pressed="${pvPart === p.particle}">${p.particle}</button>`).join("")}</div>
+    <div id="pvPartRes"></div>
+    <div id="pvBody"></div>`;
+  const body = document.getElementById("pvBody");
+  const paint = ()=>{
+    const q = tsNorm(pvGQ).trim();
+    if(q){
+      const hits = pvAll().filter(x=> tsNorm(x.pv.phrase).includes(q) || tsNorm(x.pv.es).includes(q));
+      body.innerHTML = `<div class="vv-count" role="status" aria-live="polite">${hits.length} ${hits.length === 1 ? "resultado" : "resultados"}</div><div class="pv-list">${hits.length ? hits.map(x=> pvRow(x.pv, x.theme.level, false, `<em class="pv-th">${escHtml(x.theme.title)} · ${x.theme.level}</em>`)).join("") : `<p class="pv-none">No encontré phrasal verbs con esa búsqueda.</p>`}</div>`;
+      pvBindRows(body, (p, row)=>{ const hit = hits.find(x=> x.pv.phrase === p && x.theme.level === row.dataset.t); if(hit) pvOpen(hit.theme.id, p); }, (p, lv)=>{ const h = hits.find(x=> x.pv.phrase === p && x.theme.level === lv); return h && h.pv; });
+      return;
+    }
+    body.innerHTML = `<div class="pv-themes">${themes.map(t=> `
+      <button type="button" class="pv-theme" data-theme="${t.id}" style="--lv:${PV_LV[t.level] || "#8E6CFF"}">
+        <span class="pv-th-top"><span class="pv-lvl" style="background:${PV_LV[t.level] || "#8E6CFF"}">${t.level}</span><span class="pv-th-t">${emo3d(t.icon)}${escHtml(t.title)}</span></span>
+        <span class="pv-th-n">${t.items.length} phrasal verbs</span>
+        <span class="pv-th-i">${escHtml(t.intro.split(". ")[0])}.</span></button>`).join("")}</div>`;
+    body.querySelectorAll(".pv-theme").forEach(b=> b.onclick = ()=>{ activePhrasalTheme = b.dataset.theme; pvQ = ""; pvSel = null; pvAuto = null; renderPhrasal(); window.scrollTo({top:0, behavior:"smooth"}); });
   };
-  container.scrollIntoView({behavior:"smooth", block:"nearest"});
+  const showPart = ()=>{
+    const box = document.getElementById("pvPartRes");
+    document.querySelectorAll("#pvParts .pv-chip").forEach(c=>{ const on = c.dataset.particle === pvPart; c.classList.toggle("active", on); c.setAttribute("aria-pressed", String(on)); });
+    if(!pvPart){ box.innerHTML = ""; return; }
+    const tip = PARTICLE_TIPS.find(p=> p.particle === pvPart), part = pvPart.toLowerCase();
+    const hits = pvAll().filter(x=> x.pv.phrase.trim().split(" ").pop().toLowerCase() === part).sort((a, b)=> a.pv.phrase.localeCompare(b.pv.phrase));
+    box.innerHTML = `<div class="pv-pr"><p><b>${escHtml(pvPart)}</b> — ${escHtml(tip ? tip.tip : "")} <span class="pv-cnt">(${hits.length})</span></p>
+      <div class="pv-list">${hits.map(x=> pvRow(x.pv, x.theme.level, false, `<em class="pv-th">${escHtml(x.theme.title)} · ${x.theme.level}</em>`)).join("")}</div></div>`;
+    pvBindRows(box, (p, row)=>{ const hit = hits.find(x=> x.pv.phrase === p && x.theme.level === row.dataset.t); if(hit) pvOpen(hit.theme.id, p); }, (p, lv)=>{ const h = hits.find(x=> x.pv.phrase === p && x.theme.level === lv); return h && h.pv; });
+  };
+  document.querySelectorAll("#pvParts .pv-chip").forEach(c=> c.onclick = ()=>{ pvPart = pvPart === c.dataset.particle ? null : c.dataset.particle; showPart(); });
+  document.getElementById("pvSearch").addEventListener("input", e=>{ pvGQ = e.target.value; paint(); });
+  paint(); showPart();
+}
+/* ---- Detalle de un tema ---- */
+function pvSheetKey(e){ if(e.key === "Escape") pvCloseSheet(); }
+let pvSheetFrom = null;
+function pvCloseSheet(){
+  const o = document.getElementById("pvSheet"); if(o) o.classList.remove("show");
+  document.body.style.overflow = ""; document.removeEventListener("keydown", pvSheetKey);
+  if(pvSheetFrom && document.body.contains(pvSheetFrom)) pvSheetFrom.focus();
+}
+function pvOpenSheet(pv, theme, fromEl){
+  pvSheetFrom = fromEl || null;
+  let o = document.getElementById("pvSheet");
+  if(!o){ o = document.createElement("div"); o.id = "pvSheet"; o.className = "vs-overlay"; o.addEventListener("click", e=>{ if(e.target === o) pvCloseSheet(); }); document.body.appendChild(o); }
+  const draw = ()=>{
+    const fav = isWordSaved(pvFavId(pv));
+    o.innerHTML = `<div class="vs-box" role="dialog" aria-modal="true" aria-label="Phrasal verb ${escHtml(pv.phrase)}">
+      <div class="vs-grab" aria-hidden="true"></div>
+      <div class="vs-head"><div class="vs-title">${pvHl(pv.phrase)}</div><span class="vs-es">${escHtml(pv.es)}</span>
+        <button type="button" class="vv-star big${fav ? " on" : ""}" id="pvsFav" aria-label="${fav ? "Quitar de favoritos" : "Guardar en favoritos"}">${fav ? "★" : "☆"}</button>
+        <button type="button" class="vs-x" id="pvsClose" aria-label="Cerrar">×</button></div>
+      <div class="pv-sheet-lv"><span class="pv-lvl" style="background:${PV_LV[theme.level]}">${theme.level}</span> ${escHtml(theme.title)}</div>
+      <div class="vs-cards">${PV_FRAMES.map(f=> `<div class="vs-tc" style="border-left-color:${f[3]}"><div class="uc-t"><small style="color:${f[3]}">${f[0]}</small><div class="uc-en">${wz(pv[f[1]])}</div><div class="uc-es">${escHtml(pv[f[2]])}</div></div></div>`).join("")}</div>
+    </div>`;
+    o.querySelector("#pvsClose").onclick = pvCloseSheet;
+    o.querySelector("#pvsFav").onclick = ()=>{ pvToggleFav(pv, theme.level); draw(); paintRows(); o.querySelector("#pvsFav").focus(); };
+  };
+  const paintRows = ()=>{ const t = PHRASAL_THEMES.find(x=> x.id === activePhrasalTheme); if(t && document.getElementById("pvRows")) pvPaintDetail(t); };
+  draw();
+  requestAnimationFrame(()=>{ o.classList.add("show"); const x = o.querySelector("#pvsClose"); if(x) x.focus(); });
+  document.body.style.overflow = "hidden"; document.addEventListener("keydown", pvSheetKey);
+}
+function pvPaintDetail(theme){
+  const wide = pvWide(), q = tsNorm(pvQ).trim(), rows = document.getElementById("pvRows");
+  let items = theme.items.filter(pv=> !q || tsNorm(pv.phrase).includes(q) || tsNorm(pv.es).includes(q));
+  if(pvOrder === "az") items = [...items].sort((a, b)=> a.phrase.localeCompare(b.phrase));
+  if(wide){ const cur = items.find(p=> p.phrase === pvSel) || items[0]; pvSel = cur ? cur.phrase : null; }
+  rows.innerHTML = items.length ? items.map(pv=> pvRow(pv, theme.level, wide && pv.phrase === pvSel)).join("") : `<p class="pv-none">No encontré phrasal verbs con esa búsqueda.</p>`;
+  const card = document.getElementById("pvCard");
+  if(card){
+    const pv = items.find(p=> p.phrase === pvSel);
+    card.innerHTML = pv ? `<div class="pv-card-h"><div class="pv-card-t">${pvHl(pv.phrase)}</div><button type="button" class="vv-star big pv-cs${isWordSaved(pvFavId(pv)) ? " on" : ""}" id="pvCardStar" data-p="${escHtml(pv.phrase)}" aria-label="Guardar en favoritos">${isWordSaved(pvFavId(pv)) ? "★" : "☆"}</button></div><div class="pv-card-es">${escHtml(pv.es)}</div>${pvFramesHtml(pv)}` : "";
+    const cs = document.getElementById("pvCardStar");
+    if(cs) cs.onclick = ()=>{ const p = theme.items.find(x=> x.phrase === cs.dataset.p); pvToggleFav(p, theme.level); pvPaintDetail(theme); };
+  }
+  pvBindRows(rows, (p, row)=>{
+    const pv = theme.items.find(x=> x.phrase === p); if(!pv) return;
+    if(pvWide()){ pvSel = p; pvPaintDetail(theme); } else pvOpenSheet(pv, theme, row);
+  }, p=> theme.items.find(x=> x.phrase === p));
 }
 function drawPhrasalDetail(themeId){
-  const theme = PHRASAL_THEMES.find(t=>t.id===themeId);
-  const sortedItems = [...theme.items].sort((a,b)=> a.phrase.localeCompare(b.phrase));
-  const html = `
+  const theme = PHRASAL_THEMES.find(t=> t.id === themeId);
+  if(!theme){ activePhrasalTheme = null; drawPhrasalList(); return; }
+  const wide = pvWide(); pvWasWide = wide;
+  document.getElementById("panel-phrasal").innerHTML = `
     <div class="section-head">
       <button class="theory-back" id="phrasalBackBtn">← Volver a Phrasal Verbs</button>
       <div class="eyebrow">Phrasal Verbs · Nivel ${theme.level}</div>
-      <h2>${emo3d(theme.icon)}${theme.title}</h2>
+      <h2>${emo3d(theme.icon)}${escHtml(theme.title)}</h2>
       <p>${theme.intro}</p>
     </div>
-    <div class="card" style="overflow:auto;max-height:65vh;padding:0;">
-      <table class="data-table phrasal-detail-table">
-        <thead>
-          <tr>
-            <th style="min-width:160px;">Phrasal Verb</th>
-            <th style="min-width:230px;color:var(--teal);">Afirmación</th>
-            <th style="min-width:230px;color:var(--pink);">Negación</th>
-            <th style="min-width:230px;color:var(--blue);">Pregunta</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${sortedItems.map(pv=>`
-            <tr>
-              <td>
-                <div style="font-weight:700;font-size:1.02rem;">${wz(pv.phrase)}</div>
-                <div style="color:var(--ink-soft);font-size:0.82rem;margin-top:2px;">${pv.es}</div>
-              </td>
-              <td style="border-left:3px solid var(--teal);">${wz(pv.example)}<span class="ex-es">(${pv.esExample})</span></td>
-              <td style="border-left:3px solid var(--pink);">${wz(pv.neg)}<span class="ex-es">(${pv.esNeg})</span></td>
-              <td style="border-left:3px solid var(--blue);">${wz(pv.q)}<span class="ex-es">(${pv.esQ})</span></td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
+    <div class="pv-bar">
+      <input type="search" class="vv-search pv-q" id="pvQ" placeholder="Buscar en este tema" autocomplete="off" aria-label="Buscar en este tema" value="${escHtml(pvQ)}">
+      <div class="pv-seg" role="group" aria-label="Orden">
+        <button type="button" data-o="theme" aria-pressed="${pvOrder === "theme"}">Del tema</button><button type="button" data-o="az" aria-pressed="${pvOrder === "az"}">A–Z</button>
+      </div>
     </div>
-    <button class="practice-link" id="phrasalPracticeBtn">Practicar Phrasal Verbs →</button>
-  `;
-  document.getElementById("panel-phrasal").innerHTML = html;
+    <div class="${wide ? "pv-cols" : ""}">
+      <div><div class="pv-list" id="pvRows"></div>
+        <button class="practice-link" id="phrasalPracticeBtn">Practicar este tema (${theme.items.length}) →</button></div>
+      ${wide ? `<aside class="pv-card" id="pvCard" aria-live="polite"></aside>` : ""}
+    </div>`;
   document.getElementById("phrasalBackBtn").onclick = ()=>{ activePhrasalTheme = null; renderPhrasal(); window.scrollTo({top:0, behavior:"smooth"}); };
-  document.getElementById("phrasalPracticeBtn").onclick = ()=>{ activeExercise="phrasal"; goTo("exercises"); };
+  document.getElementById("phrasalPracticeBtn").onclick = ()=>{ PHRASAL_FILTER = theme.id; delete current.phrasal; activeExercise = "phrasal"; goTo("exercises"); };
+  document.getElementById("pvQ").addEventListener("input", e=>{ pvQ = e.target.value; pvPaintDetail(theme); });
+  document.querySelectorAll(".pv-seg button").forEach(b=> b.onclick = ()=>{ pvOrder = b.dataset.o; document.querySelectorAll(".pv-seg button").forEach(x=> x.setAttribute("aria-pressed", String(x === b))); pvPaintDetail(theme); });
+  pvPaintDetail(theme);
   window.scrollTo({top:0, behavior:"auto"});
+  if(pvAuto){
+    const pv = theme.items.find(x=> x.phrase === pvAuto); pvAuto = null;
+    if(pv && !wide) pvOpenSheet(pv, theme, null);
+  }
 }
+window.addEventListener("resize", ()=>{ if(activeSection === "phrasal" && activePhrasalTheme && pvWasWide !== null && pvWasWide !== pvWide()){ pvCloseSheet(); drawPhrasalDetail(activePhrasalTheme); } });
+/* Ejercicio filtrado por tema: elige entre los verbos del tema conservando los ids del SRS (posición en ALL_PHRASAL). */
+function pvFilterOn(){ return !!PHRASAL_FILTER && activeSection === "exercises" && activeExercise === "phrasal" && !(typeof practiceTodaySession !== "undefined" && practiceTodaySession); }
+function phrasalFilterHtml(){
+  if(!pvFilterOn()) return "";
+  const t = PHRASAL_THEMES.find(x=> x.id === PHRASAL_FILTER); if(!t) return "";
+  return `<div class="pv-filter"><span>Tema: <b>${escHtml(t.title)}</b></span><button type="button" class="uc-link" id="pvClear">Practicar todos</button></div>`;
+}
+function phrasalPickTheme(){
+  SRS_TICK++;
+  const t = PHRASAL_THEMES.find(x=> x.id === PHRASAL_FILTER);
+  const idxs = ALL_PHRASAL.map((x, i)=> i).filter(i=> ALL_PHRASAL[i].theme === t.title), now = Date.now();
+  const due = idxs.filter(i=> SRS_DATA[`phrasal:${i}`] && SRS_DATA[`phrasal:${i}`].dueAt <= now).sort((a, b)=> (SRS_DATA[`phrasal:${a}`].box - SRS_DATA[`phrasal:${b}`].box) || (SRS_DATA[`phrasal:${a}`].dueAt - SRS_DATA[`phrasal:${b}`].dueAt));
+  let i, review = false;
+  if(due.length && Math.random() < 0.65 && `phrasal:${due[0]}` !== LAST_PICKED_ID["phrasal"]){ i = due[0]; review = true; }
+  else{ const c = idxs.filter(k=> `phrasal:${k}` !== LAST_PICKED_ID["phrasal"]); i = (c.length ? c : idxs)[Math.floor(Math.random() * (c.length ? c : idxs).length)]; review = !!SRS_DATA[`phrasal:${i}`]; }
+  const id = `phrasal:${i}`; SRS_ITEM_CACHE[id] = ALL_PHRASAL[i]; LAST_PICKED_ID["phrasal"] = id;
+  return {item:ALL_PHRASAL[i], id, review};
+}
+/* PHRASAL-UI:END */
 
 /* =========================================================
    FRASES ÚTILES POR SITUACIÓN
@@ -26433,6 +26546,7 @@ function exSelectGroup(gid){
 }
 function exSelect(id, scroll){
   activeExercise = id;
+  if(id === "phrasal") PHRASAL_FILTER = null;
   const gr = EX_GROUPS.find(g=> g.items.includes(id));
   if(gr){ exLastInGroup[gr.id] = id; exSkill = gr.id; }
   exRound = {res:[], done:false};
@@ -29353,7 +29467,7 @@ function dlgRetryNext(st){
 
 /* ---- PHRASAL VERBS PRACTICE ---- */
 function newPhrasalQuestion(){
-  const {item, id, review} = srsPick(ALL_PHRASAL, `phrasal`);
+  const {item, id, review} = pvFilterOn() ? phrasalPickTheme() : srsPick(ALL_PHRASAL, `phrasal`);
   const distractors = shuffle(ALL_PHRASAL.filter(x=>x.es!==item.es)).slice(0,3).map(x=>x.es);
   current.phrasal = {item, id, review, opts: shuffle([item.es, ...distractors])};
   drawPhrasal();
@@ -29362,7 +29476,7 @@ function drawPhrasal(){
   const {item,opts,id,review} = current.phrasal;
   const html = `
     <div class="card">
-      ${scoreRowHtml("phrasal")}
+      ${scoreRowHtml("phrasal")}${phrasalFilterHtml()}
       <div class="q-top">
         <span class="badge-level">PV</span>
         <div class="q-text">¿Qué significa <b>"${item.phrase}"</b>?</div>
@@ -29395,6 +29509,7 @@ function drawPhrasal(){
     };
   });
   document.getElementById("phrasalNext").onclick = newPhrasalQuestion;
+  const pvc = document.getElementById("pvClear"); if(pvc) pvc.onclick = ()=>{ PHRASAL_FILTER = null; newPhrasalQuestion(); };
 }
 
 /* ---- CONJUGACIÓN (formas verbales) ---- */
