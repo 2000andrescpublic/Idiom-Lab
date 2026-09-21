@@ -1485,6 +1485,72 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 :root[data-theme="dark"] .vv-tag{color:#B7A5FF;}
 .vv-tag.rg{background:rgba(31,181,138,.18);color:#0E7A5A;}
 :root[data-theme="dark"] .vv-tag.rg{color:#5FE3B8;}
+/* VERBCARDS-CSS:BEGIN */
+.vc-h{margin:0 0 6px;font-size:1.15rem;}
+.vc-p{color:var(--ink-soft);font-size:.92rem;line-height:1.5;margin:0 0 12px;}
+.vc-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:8px;margin:0 0 14px;}
+.vc-stats div{background:var(--bg-soft);border-radius:12px;padding:8px 6px;text-align:center;}
+.vc-stats b{display:block;font-size:1.3rem;font-weight:800;}
+.vc-stats span{font-size:.72rem;color:var(--ink-soft);}
+.vc-patbar{display:flex;height:10px;border-radius:99px;overflow:hidden;gap:2px;margin:10px 0 8px;}
+.vc-patbar i{display:block;min-width:6px;}
+.vc-leg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.75rem;color:var(--ink-soft);margin-bottom:12px;}
+.vc-leg span{display:inline-flex;align-items:center;gap:5px;}
+.vc-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.vc-leg b{color:var(--ink);}
+.vc-bands{display:grid;gap:5px;margin-bottom:14px;}
+.vc-band{display:grid;grid-template-columns:70px 1fr 26px;align-items:center;gap:8px;font-size:.75rem;color:var(--ink-soft);}
+.vc-band div{height:8px;background:var(--line-soft);border-radius:99px;overflow:hidden;}
+.vc-band div i{display:block;height:100%;background:var(--purple);border-radius:99px;}
+.vc-band b{color:var(--ink);text-align:right;}
+.vc-plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-bottom:8px;}
+.vc-prow{--pc:#4C9AFF;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:1px;background:var(--bg-soft);border:1px solid var(--line);border-left:5px solid var(--pc);border-radius:10px;padding:6px 10px;cursor:pointer;font-family:inherit;color:var(--ink);}
+.vc-prow b{font-size:.95rem;}
+.vc-prow span{font-size:.72rem;color:var(--ink-soft);}
+.vc-prow[data-pc="reg"]{--pc:#34D399;}.vc-prow[data-pc="pp"]{--pc:#4C9AFF;}.vc-prow[data-pc="bp"]{--pc:#FF6B9A;}.vc-prow[data-pc="dist"]{--pc:#FFB020;}
+.vc-more{display:block;margin:4px auto 0;}
+.vc-top{display:flex;justify-content:space-between;gap:8px;font-size:.8rem;color:var(--ink-soft);margin-bottom:6px;}
+.vc-bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:10px;}
+.vc-bar i{display:block;height:100%;background:var(--purple);border-radius:99px;transition:width .25s ease;}
+.vc-hints{display:flex;justify-content:space-between;max-width:420px;margin:0 auto 8px;font-size:.72rem;font-weight:700;}
+.vc-hints span:first-child{color:#0E7A5A;}.vc-hints span:last-child{color:#9A5B00;}
+.vc-zone{max-width:420px;margin:0 auto;height:380px;position:relative;}
+.vc-card{position:absolute;inset:0;perspective:1000px;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:transform .23s ease,opacity .23s ease;outline-offset:3px;}
+.vc-card.drag{transition:none;cursor:grabbing;}
+.vc-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .45s ease;}
+.vc-card.flip .vc-in{transform:rotateY(180deg);}
+.vc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);border:2px solid var(--line);border-radius:22px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;transition:border-color .12s ease;}
+.vc-card.vc-know .vc-face{border-color:#34D399;}.vc-card.vc-rev .vc-face{border-color:#FFB020;}
+.vc-back{transform:rotateY(180deg);justify-content:flex-start;align-items:stretch;text-align:left;gap:9px;overflow:hidden;}
+.vc-emo{font-size:4.2rem;line-height:1;}
+.vc-verb{font-size:2.3rem;font-weight:800;margin-top:10px;word-break:break-word;}
+.vc-sub{font-size:.75rem;color:var(--ink-soft);margin-top:6px;}
+.vc-spk{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+.vc-stamp{position:absolute;top:14px;font-size:.8rem;font-weight:800;padding:4px 10px;border-radius:9px;opacity:0;pointer-events:none;}
+.vc-sl{left:14px;background:rgba(52,211,153,.2);color:#0E7A5A;}.vc-sr{right:56px;background:rgba(255,176,32,.25);color:#9A5B00;}
+.vc-bv{font-size:1.5rem;font-weight:800;}
+.vc-be{font-size:.95rem;color:var(--ink-soft);}
+.vc-chain{font-size:.95rem;}
+.vc-forms{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--ink-soft);}
+.vc-forms b{color:var(--ink);}
+.vc-forms mark{background:rgba(255,201,60,.35);color:inherit;border-radius:4px;padding:0 1px;}
+.vc-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.75rem;color:var(--ink-soft);}
+.vc-pat{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#111;border-radius:99px;padding:3px 9px;}
+.vc-ex{background:var(--bg-soft);border-radius:12px;padding:9px 12px;}
+.vc-en{font-weight:700;font-size:.95rem;}
+.vc-es{font-size:.8rem;color:var(--ink-soft);margin-top:2px;}
+.vc-sheet{align-self:center;margin-top:auto;}
+.vc-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+.vc-back .vv-chain{display:flex !important;flex-wrap:wrap;}
+.vc-btns{flex-wrap:nowrap;}
+.vc-btns .btn{flex:1 1 0;min-width:0;padding-left:8px;padding-right:8px;justify-content:center;white-space:nowrap;}
+.vc-btns .btn[disabled]{opacity:.45;cursor:default;}
+.vc-kn{border-color:#34D399;}.vc-rv{border-color:#FFB020;}
+.vc-sum{text-align:center;}
+.vc-sum .vc-plist{text-align:left;}
+@media (max-width:520px){.vc-zone{height:360px;}.vc-verb{font-size:2rem;}}
+@media (prefers-reduced-motion:reduce){.vc-in,.vc-card{transition:none;}}
+/* VERBCARDS-CSS:END */
 .vv-star{position:absolute;right:8px;top:6px;border:0;background:none;color:var(--ink-soft);opacity:.7;font-size:1.15rem;cursor:pointer;padding:4px;line-height:1;}
 .vv-star.on{color:#F5B400;opacity:1;}
 .vv-star.big{position:static;font-size:1.5rem;margin-left:auto;}
@@ -1762,6 +1828,7 @@ const EX_TABS = [
   {id:"translate", icon:"lightning", label:"Traducción"},
   {id:"phrasal", icon:"puzzle", label:"Phrasal Verbs"},
   {id:"verbforms", icon:"books", label:"Conjugación"},
+  {id:"verbcards", icon:"flashcards", label:"Tarjetas de verbos"},
   {id:"wordclass", icon:"tag", label:"Categorías"},
   {id:"writing", icon:"journalpen", label:"Writing"},
   {id:"errorbank", icon:"pin", label:"Para repasar"},
@@ -19871,7 +19938,7 @@ let currentLevel = "A1";
 let activeSection = "home";
 let activeExercise = "vocab";
 const stats = {};
-["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt","theoryq","vocabtype","vocabcloze","collocations","wordfamily"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
+["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt","theoryq","vocabtype","vocabcloze","collocations","wordfamily","verbcards"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
 const current = {};
 const dailyStreak = {count:0, lastDate:null};   // racha diaria global, distinta de stats[id].streak
 const weeklyHistory = [];  // [{weekStart, exercisesDone, correct, correctRate}] — últimas 12 semanas
@@ -19951,7 +20018,7 @@ function isSectionReadyForLang(sectionId, lang){
 /* Dentro de "exercises", cada tipo de ejercicio se habilita por
    separado, porque el banco de preguntas se autora tipo por tipo. */
 const LANG_EXERCISE_READY = {
-  pt: {vocab:true, matchpairs:true, gapfill:true, order:true, listen:true, translate:true, verbforms:true, wordclass:true, errorbank:true, reading:true, dialogue:true, writing:true, readingcloze:true, readingletters:true, minimalpairs:true, theoryq:true, vocabtype:true, vocabcloze:true, collocations:true, wordfamily:true},
+  pt: {vocab:true, matchpairs:true, gapfill:true, order:true, listen:true, translate:true, verbforms:true, wordclass:true, errorbank:true, reading:true, dialogue:true, writing:true, readingcloze:true, readingletters:true, minimalpairs:true, theoryq:true, vocabtype:true, vocabcloze:true, collocations:true, wordfamily:true, verbcards:true},
 };
 function isExerciseReadyForLang(exId, lang){
   if(lang==="en") return true;
@@ -23454,7 +23521,7 @@ function renderRadarSVG(skills){
    (más "order"->Gramática, "translate"->Vocabulario, "dialogue"->Listening,
    que el radar no cubre pero sí cuentan como ejercicios hechos). */
 const DAILY_ACTIVITY_CATS = [
-  {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","wordclass","phrasal","order","theoryq"]},
+  {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","verbcards","wordclass","phrasal","order","theoryq"]},
   {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics","matchpairs","es2pt","vocabtype","vocabcloze","collocations","wordfamily"]},
   {label:"Listening", color:"var(--blue)", gradId:"gListening", from:"#2E9CDB", to:"#8DD0F5", ids:["listen","dialogue","minimalpairs"]},
   {label:"Reading", color:"var(--amber)", gradId:"gReading", from:"#F5A623", to:"#FBD38D", ids:["reading","readingcloze","readingletters"]},
@@ -26117,7 +26184,7 @@ function openVerbSheet(base, fromEl){
     overlay.querySelector("#vsFav").onclick = ()=>{ toggleSavedWord(verbFavId(v), "verbforms", "B1", `Formas de «${v.base}» (${v.es})`, `${v.base} → ${v.past} → ${v.participle}`, `${v.s3} · ${v.gerund}`); draw(); overlay.querySelector("#vsFav").focus(); };
     overlay.querySelectorAll("[data-col]").forEach(b=> b.onclick = ()=>{ col = b.dataset.col; draw(); overlay.querySelector(`[data-col="${col}"]`).focus(); });
     overlay.querySelectorAll("[data-vspeak]").forEach(b=> b.onclick = ()=> speak(exs[+b.dataset.vspeak][col]));
-    overlay.querySelector("#vsPractice").onclick = ()=>{ closeVerbSheet(); drawVerbQuiz(v.base); };
+    overlay.querySelector("#vsPractice").onclick = ()=>{ closeVerbSheet(); if(activeSection !== "verbs") goTo("verbs"); drawVerbQuiz(v.base); };
   };
   draw();
   requestAnimationFrame(()=>{ overlay.classList.add("show"); const x = overlay.querySelector("#vsClose"); if(x) x.focus(); });
@@ -26310,7 +26377,7 @@ const VERB_SECTION_META = {
 const EX_GROUPS = [
   {id:"vocab", label:"Vocabulario", icon:"flashcards", items:["vocab","matchpairs","wordclass","phrasal"]},
   {id:"lexicon", label:"Palabras en uso", icon:"puzzle", items:["vocabtype","vocabcloze","collocations","wordfamily"]},
-  {id:"grammar", label:"Gramática", icon:"pencil", items:["gapfill","order","verbforms","translate"]},
+  {id:"grammar", label:"Gramática", icon:"pencil", items:["gapfill","order","verbforms","verbcards","translate"]},
   {id:"reading", label:"Lectura", icon:"book", items:["reading","readingcloze","readingletters"]},
   {id:"listen", label:"Escucha y habla", icon:"headphones", items:["listen","minimalpairs","dialogue"]},
   {id:"writing", label:"Escritura", icon:"journalpen", items:["writing"]},
@@ -26319,10 +26386,10 @@ const EX_GROUPS = [
 const exLastInGroup = {};
 const EX_GROUP_COLOR = {lexicon:"icon-teal", vocab:"icon-purple", grammar:"icon-teal", reading:"icon-blue", listen:"icon-pink", writing:"icon-amber", review:""};
 /* Dentro de su grupo, algunos tipos usan un nombre distinto para no repetir el del grupo. */
-const EX_SUB_LABEL = {vocabtype:"Escribe la palabra", vocabcloze:"Completa la frase", collocations:"Colocaciones", wordfamily:"Familias de palabras", vocab:"Tarjetas", gapfill:"Completar frases", reading:"Textos", listen:"Escucha"};
+const EX_SUB_LABEL = {vocabtype:"Escribe la palabra", vocabcloze:"Completa la frase", collocations:"Colocaciones", wordfamily:"Familias de palabras", vocab:"Tarjetas", gapfill:"Completar frases", reading:"Textos", listen:"Escucha", verbforms:"Conjugación", verbcards:"Tarjetas de verbos"};
 const EX_SUB_DESC = {
   vocab:"Elige el significado correcto de cada palabra.", matchpairs:"Une cada palabra con su pareja.", wordclass:"Clasifica palabras por su categoría.", phrasal:"Aprende verbos con partícula.",
-  gapfill:"Completa la oración con la opción correcta.", order:"Ordena las palabras para formar la frase.", verbforms:"Practica las formas de cada verbo.", translate:"Traduce frases entre tu idioma y el que aprendes.",
+  gapfill:"Completa la oración con la opción correcta.", order:"Ordena las palabras para formar la frase.", verbforms:"Practica las formas de cada verbo.", verbcards:"Desliza cada verbo: ya lo sé o repasar. Toca para voltear.", translate:"Traduce frases entre tu idioma y el que aprendes.",
   reading:"Lee un texto y responde preguntas.", readingcloze:"Completa los huecos dentro del texto.", readingletters:"Escribe las letras que faltan.",
   vocabtype:"Escribe la palabra que corresponde al significado.", vocabcloze:"Completa la frase con la palabra correcta.", collocations:"Elige el verbo que suele acompañar a cada palabra.", wordfamily:"Forma la palabra derivada que pide la frase.",
   listen:"Escucha una frase y escríbela o elígela.", minimalpairs:"Distingue sonidos muy parecidos.", dialogue:"Practica conversaciones reales.",
@@ -26370,6 +26437,7 @@ function exSelect(id, scroll){
   if(gr){ exLastInGroup[gr.id] = id; exSkill = gr.id; }
   exRound = {res:[], done:false};
   exStep = 2;
+  exRoundRender();
   renderExercise(id, true);
   exApplyStep(true);
 }
@@ -26444,19 +26512,21 @@ function renderExercise(id, forceNew){
     renderExerciseComingSoon();
     return;
   }
-  const DRAW = {vocabtype:drawVocabType, vocabcloze:drawVocabCloze, collocations:drawColloc, wordfamily:drawWordFam, vocab:drawVocab, matchpairs:drawMatchPairs, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank};
-  const NEWQ = {vocabtype:newVocabTypeQuestion, vocabcloze:newVocabClozeQuestion, collocations:newCollocQuestion, wordfamily:newWordFamQuestion, vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
+  const DRAW = {vocabtype:drawVocabType, vocabcloze:drawVocabCloze, collocations:drawColloc, wordfamily:drawWordFam, vocab:drawVocab, matchpairs:drawMatchPairs, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, verbcards:drawVerbCards, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank};
+  const NEWQ = {vocabtype:newVocabTypeQuestion, vocabcloze:newVocabClozeQuestion, collocations:newCollocQuestion, wordfamily:newWordFamQuestion, vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, verbcards:newVerbCardsQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
   if(forceNew || !current[id]) NEWQ[id]();
   else DRAW[id]();
 }
 /* ---- Ronda de 10: barra de progreso y resumen ---- */
 function exRoundRender(){
   const el = document.getElementById("exRound"); if(!el) return;
+  if(activeExercise === "verbcards"){ el.innerHTML = ""; return; }
   const n = exRound.res.length, ok = exRound.res.filter(Boolean).length;
   el.innerHTML = `<div class="exr-t"><span>${n >= 10 ? "Ronda completa" : `Pregunta ${n + 1} de 10`}</span><span>${ok} ${ok === 1 ? "acierto" : "aciertos"} en la ronda</span></div>
     <div class="exr-b" role="img" aria-label="Ronda: ${n} de 10 respondidas">${Array.from({length:10}, (_, i)=> `<i class="${i < n ? (exRound.res[i] ? "ok" : "bad") : i === n ? "act" : ""}"></i>`).join("")}</div>`;
 }
 function exRoundTick(id, ok){
+  if(activeExercise === "verbcards") return;
   if(activeSection !== "exercises" || !document.getElementById("exRound") || exRound.res.length >= 10) return;
   exRound.res.push(!!ok); exRoundRender();
   if(exRound.res.length === 10) setTimeout(exRoundSummary, 1500);
@@ -29396,6 +29466,222 @@ function drawVerbForm(){
   });
   document.getElementById("verbformNext").onclick = newVerbFormQuestion;
 }
+
+/* VERBCARDS:BEGIN — Tarjetas de verbos: desliza a la izquierda (ya lo sé) o a la derecha (repasar); toca para voltear. Usa el SRS (ids verbcards:lang:índice) con datos extra streak/day para el dominio. */
+const VC_SIZE = 20, VC_DUE_CAP = 14;
+const VC_PAT = [["reg", "Regular", "#34D399"], ["pp", "Pasado = participio", "#4C9AFF"], ["bp", "Base = participio", "#FF6B9A"], ["dist", "Las tres distintas", "#FFB020"]];
+let VC = {mode:"start", lang:"", deck:[], i:0, res:[], hist:[], pass:1, showAll:false, mastered0:0};
+function vcVerbs(){ return LANG_PACKS[currentLang].VERBS; }
+function vcId(idx){ return `verbcards:${currentLang}:${idx}`; }
+function vcMastered(e){ return !!(e && (e.streak || 0) >= 2); }
+function vcPendingIdx(){
+  const out = [];
+  vcVerbs().forEach((v, i)=>{ const e = SRS_DATA[vcId(i)]; if(e && e.lastResult === false) out.push(i); });
+  return out.sort((a, b)=> SRS_DATA[vcId(a)].dueAt - SRS_DATA[vcId(b)].dueAt);
+}
+function vcStats(){
+  const vs = vcVerbs(); let seen = 0, mastered = 0, due = 0; const now = Date.now();
+  vs.forEach((v, i)=>{ const e = SRS_DATA[vcId(i)]; if(!e) return; seen++; if(vcMastered(e)) mastered++; if(e.dueAt <= now) due++; });
+  return {total:vs.length, seen, mastered, due};
+}
+/* Marca una tarjeta: «ya lo sé» sube de caja (mínimo a 1 día); «repasar» baja una caja si ya iba avanzado (3+) y a la 1 si no. */
+function vcApply(id, know){
+  const prev = SRS_DATA[id], pb = prev ? prev.box : 0, today = todayStr();
+  let box, streak = prev && prev.streak || 0, day = prev && prev.day || "";
+  if(know){ box = Math.min(Math.max(pb + 1, 2), SRS_MAX_BOX); if(day !== today){ streak++; day = today; } }
+  else{ box = pb >= 3 ? pb - 1 : 1; streak = 0; }
+  SRS_DATA[id] = {box, dueAt: Date.now() + SRS_INTERVAL_MIN[box] * 60000, lastResult: know, streak, day};
+}
+/* Como registerAnswer pero sin el sonido de «fallo» ni la ronda de 10 (esta tiene su propio progreso). */
+function vcRegister(ok){
+  const st = stats.verbcards; st.total++; if(ok){ st.correct++; st.streak++; } else st.streak = 0;
+  bumpDailyStreak(); bumpWeeklyHistory(ok); bumpDailyActivity("verbcards", ok); checkAnswerMilestone(); checkDailyGoal(); saveProgress();
+}
+function vcBuildDeck(kind){
+  const vs = vcVerbs(), now = Date.now();
+  if(Array.isArray(kind)) return shuffle(kind);
+  if(kind === "pending") return vcPendingIdx().slice(0, VC_SIZE);
+  const all = vs.map((v, i)=> i);
+  const due = all.filter(i=> SRS_DATA[vcId(i)] && SRS_DATA[vcId(i)].dueAt <= now)
+    .sort((a, b)=> (SRS_DATA[vcId(a)].box - SRS_DATA[vcId(b)].box) || (SRS_DATA[vcId(a)].dueAt - SRS_DATA[vcId(b)].dueAt)).slice(0, VC_DUE_CAP);
+  const deck = shuffle(due), chosen = new Set(deck);
+  let cand = all.filter(i=> !SRS_DATA[vcId(i)]);
+  while(deck.length < VC_SIZE && cand.length){
+    const ws = cand.map(i=> Math.max(0.01, Math.pow(verbFreqWeight({v:vs[i]}), 2))), total = ws.reduce((a, b)=> a + b, 0);
+    let r = Math.random() * total, k = 0;
+    while(k < ws.length - 1 && r >= ws[k]){ r -= ws[k]; k++; }
+    deck.push(cand[k]); chosen.add(cand[k]); cand.splice(k, 1);
+  }
+  if(deck.length < VC_SIZE){
+    all.filter(i=> !chosen.has(i)).sort((a, b)=> SRS_DATA[vcId(a)].dueAt - SRS_DATA[vcId(b)].dueAt).slice(0, VC_SIZE - deck.length).forEach(i=> deck.push(i));
+  }
+  return deck;
+}
+function newVerbCardsQuestion(){
+  VC = {mode:"start", lang:currentLang, deck:[], i:0, res:[], hist:[], pass:1, showAll:false, mastered0:0};
+  current.verbcards = true;
+  exRoundRender();
+  drawVerbCards();
+}
+function drawVerbCards(){
+  if(VC.lang !== currentLang){ newVerbCardsQuestion(); return; }
+  if(VC.mode === "play") vcDrawPlay(); else if(VC.mode === "summary") vcDrawSummary(); else vcDrawStart();
+}
+function vcStart(kind, pass){
+  const deck = vcBuildDeck(kind);
+  if(!deck.length) return;
+  VC = {...VC, mode:"play", deck, i:0, res:[], hist:[], pass:pass || 1, mastered0:vcStats().mastered};
+  vcDrawPlay();
+}
+function vcPendRow(i){
+  const v = vcVerbs()[i];
+  return `<button type="button" class="vc-prow" data-pc="${verbColorKey(v)}" data-b="${escHtml(v.base)}"><b>${escHtml(v.base)}</b><span>${escHtml(v.es)}</span></button>`;
+}
+function vcBindPend(root){
+  root.querySelectorAll(".vc-prow").forEach(b=> b.onclick = ()=> openVerbSheet(b.dataset.b, b));
+}
+function vcDrawStart(){
+  const vs = vcVerbs(), pend = vcPendingIdx(), s = vcStats(), rank = verbRankFn();
+  const pat = {reg:0, pp:0, bp:0, dist:0}; pend.forEach(i=> pat[verbColorKey(vs[i])]++);
+  const bands = [["Top 20", 20], ["21 – 50", 50], ["51 – 100", 100], ["101 – 300", 300], ["Otros", 1e9]].map(([l, max], k, arr)=> ({l, n:pend.filter(i=>{ const r = rank(vs[i]); return r < max && r >= (k ? arr[k - 1][1] : 0); }).length}));
+  const maxB = Math.max(1, ...bands.map(b=> b.n));
+  const shown = VC.showAll ? pend : pend.slice(0, 12);
+  document.getElementById("exPanel").innerHTML = `
+    <div class="card vc-start">
+      <h3 class="vc-h">Tarjetas de verbos</h3>
+      <p class="vc-p">Verás el verbo: <b>desliza a la izquierda</b> si ya lo sabes, <b>a la derecha</b> si quieres repasarlo, y <b>toca la tarjeta</b> para voltearla y ver toda su información.</p>
+      <div class="vc-stats">
+        <div><b>${s.seen}</b><span>vistos de ${s.total}</span></div>
+        <div><b>${s.mastered}</b><span>dominados</span></div>
+        <div><b>${pend.length}</b><span>por repasar</span></div>
+        <div><b>${s.due}</b><span>toca hoy</span></div>
+      </div>
+      <div class="btn-row"><button class="btn" id="vcGo" type="button">Empezar ronda de ${VC_SIZE}</button>${pend.length ? `<button class="btn secondary" id="vcPend" type="button">Solo pendientes (${Math.min(pend.length, VC_SIZE)})</button>` : ""}</div>
+    </div>
+    ${pend.length ? `<div class="card vc-pend">
+      <h3 class="vc-h">Tienes ${pend.length} ${pend.length === 1 ? "verbo" : "verbos"} por repasar</h3>
+      <div class="vc-patbar" role="img" aria-label="Pendientes por patrón">${VC_PAT.filter(p=> pat[p[0]]).map(p=> `<i style="flex:${pat[p[0]]};background:${p[2]}"></i>`).join("")}</div>
+      <div class="vc-leg">${VC_PAT.map(p=> `<span><i style="background:${p[2]}"></i>${p[1]} <b>${pat[p[0]]}</b></span>`).join("")}</div>
+      <div class="vc-bands">${bands.map(b=> `<div class="vc-band"><span>${b.l}</span><div><i style="width:${Math.round(b.n / maxB * 100)}%"></i></div><b>${b.n}</b></div>`).join("")}</div>
+      <div class="vc-plist" id="vcPList">${shown.map(vcPendRow).join("")}</div>
+      ${pend.length > 12 ? `<button type="button" class="uc-link vc-more" id="vcMore">${VC.showAll ? "Mostrar menos" : `Mostrar los ${pend.length}`}</button>` : ""}
+    </div>` : `<div class="card vc-pend"><p class="vc-p" style="margin:0;">Todavía no tienes verbos pendientes. Lo que marques con «repasar» aparecerá aquí.</p></div>`}`;
+  document.getElementById("vcGo").onclick = ()=> vcStart("normal");
+  const pb = document.getElementById("vcPend"); if(pb) pb.onclick = ()=> vcStart("pending");
+  const more = document.getElementById("vcMore"); if(more) more.onclick = ()=>{ VC.showAll = !VC.showAll; vcDrawStart(); };
+  vcBindPend(document.getElementById("exPanel"));
+}
+function vcCardHtml(idx){
+  const v = vcVerbs()[idx], exs = currentLang === "pt" ? buildVerbExamplesPT(v) : buildVerbExamples(v), ex = exs[0], rk = verbRankFn()(v);
+  const pc = VC_PAT.find(p=> p[0] === verbColorKey(v)) || VC_PAT[0];
+  return `<div class="vc-in">
+    <div class="vc-face vc-front">
+      <span class="vc-stamp vc-sl" id="vcSL">Ya lo sé</span><span class="vc-stamp vc-sr" id="vcSR">Repasar</span>
+      <button type="button" class="vc-spk" id="vcSpk" aria-label="Escuchar ${escHtml(v.base)}">${svgIcon("speaker", 18)}</button>
+      <div class="vc-emo" aria-hidden="true">${escHtml(v.emoji || "")}</div>
+      <div class="vc-verb">${escHtml(v.base)}</div>
+      <div class="vc-sub">Toca para voltear</div>
+    </div>
+    <div class="vc-face vc-back">
+      <div class="vc-bh"><div class="vc-bv">${escHtml(v.base)}</div><div class="vc-be">${escHtml(v.es)}</div></div>
+      <div class="vv-chain vc-chain">${verbChainHtml(v)}</div>
+      <div class="vc-forms"><span>3ª persona: <b>${verbDiff(v.base, v.s3)}</b></span><span>Gerundio: <b>${verbDiff(v.base, v.gerund)}</b></span></div>
+      <div class="vc-meta"><span class="vc-pat" style="background:${pc[2]}">${verbPattern(v)}</span><span>${rk < 5000 ? verbBandLabel(rk) : "Poco frecuente"}</span></div>
+      <div class="vc-ex"><div class="vc-en">${escHtml(ex.aff)}</div><div class="vc-es">${escHtml(ex.esAff)}</div></div>
+      <button type="button" class="uc-link vc-sheet" id="vcSheet">Ver ficha completa</button>
+    </div></div>`;
+}
+function vcDrawPlay(){
+  const n = VC.deck.length, i = VC.i, know = VC.res.filter(Boolean).length;
+  document.getElementById("exPanel").innerHTML = `
+    <div class="card vc-play">
+      <div class="vc-top"><span id="vcCnt">Verbo ${Math.min(i + 1, n)} de ${n}${VC.pass > 1 ? " · segunda vuelta" : ""}</span><span>Ya sé ${know} · Repasar ${VC.res.length - know}</span></div>
+      <div class="vc-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${i}"><i style="width:${Math.round(i / n * 100)}%"></i></div>
+      <div class="vc-hints" aria-hidden="true"><span>‹ Ya lo sé</span><span>Repasar ›</span></div>
+      <div class="vc-zone"><div class="vc-card" id="vcCard" tabindex="0" role="button" aria-label="Tarjeta de verbo. Toca para voltear; flechas izquierda y derecha para marcar."></div></div>
+      <div class="vc-btns"><button class="btn secondary" id="vcUndo" type="button" ${i ? "" : "disabled"}>‹ Deshacer</button><button class="btn secondary vc-kn" id="vcKnow" type="button">Ya lo sé</button><button class="btn secondary vc-rv" id="vcRev" type="button">Repasar</button></div>
+      <p class="kbd-hint">Atajos: <kbd>←</kbd> ya lo sé · <kbd>→</kbd> repasar · <kbd>↑</kbd> voltear · <kbd>Z</kbd> deshacer</p>
+    </div>`;
+  vcMountCard();
+  document.getElementById("vcKnow").onclick = ()=> vcAnswer(true);
+  document.getElementById("vcRev").onclick = ()=> vcAnswer(false);
+  document.getElementById("vcUndo").onclick = vcUndo;
+}
+function vcMountCard(){
+  const card = document.getElementById("vcCard"); if(!card) return;
+  card.innerHTML = vcCardHtml(VC.deck[VC.i]); card.style.transform = ""; card.classList.remove("flip", "drag", "vc-know", "vc-rev"); VC.busy = false;
+  const idx = VC.deck[VC.i], v = vcVerbs()[idx];
+  const spk = document.getElementById("vcSpk"); spk.onpointerdown = e=> e.stopPropagation(); spk.onclick = e=>{ e.stopPropagation(); speak(v.base); };
+  const sh = document.getElementById("vcSheet"); sh.onpointerdown = e=> e.stopPropagation(); sh.onclick = e=>{ e.stopPropagation(); openVerbSheet(v.base, sh); };
+  let sx = 0, dx = 0, moved = false, down = false;
+  const stamp = ()=>{ const a = Math.min(1, Math.abs(dx) / 90); document.getElementById("vcSL").style.opacity = dx < 0 ? a : 0; document.getElementById("vcSR").style.opacity = dx > 0 ? a : 0; card.classList.toggle("vc-know", dx < -20); card.classList.toggle("vc-rev", dx > 20); };
+  card.onpointerdown = e=>{ if(VC.busy || (e.button != null && e.button > 0)) return; down = true; moved = false; sx = e.clientX; dx = 0; card.classList.add("drag"); try{ card.setPointerCapture(e.pointerId); }catch(_){} };
+  card.onpointermove = e=>{ if(!down) return; dx = e.clientX - sx; if(Math.abs(dx) > 8) moved = true; if(moved){ card.style.transform = `translateX(${dx}px) rotate(${dx / 16}deg)`; stamp(); } };
+  const reset = ()=>{ down = false; dx = 0; card.classList.remove("drag", "vc-know", "vc-rev"); card.style.transform = ""; const a = document.getElementById("vcSL"), b = document.getElementById("vcSR"); if(a) a.style.opacity = 0; if(b) b.style.opacity = 0; };
+  card.onpointercancel = reset;
+  card.onpointerup = ()=>{
+    if(!down) return; down = false; card.classList.remove("drag");
+    if(!moved){ reset(); vcFlip(); return; }
+    if(dx < -90) vcAnswer(true); else if(dx > 90) vcAnswer(false); else reset();
+  };
+}
+function vcFlip(){ const c = document.getElementById("vcCard"); if(c) c.classList.toggle("flip"); }
+function vcAnswer(know){
+  if(VC.mode !== "play" || VC.busy) return;
+  VC.busy = true;
+  const idx = VC.deck[VC.i], id = vcId(idx), today = todayStr(), act = dailyActivity[today] && dailyActivity[today].verbcards;
+  VC.hist.push({idx, prev: SRS_DATA[id] ? {...SRS_DATA[id]} : null, st: {...stats.verbcards}, act: act ? {...act} : null});
+  vcApply(id, know); vcRegister(know);
+  VC.res.push(know); VC.i++;
+  try{ if(fxSoundOn() && navigator.vibrate) navigator.vibrate(know ? 10 : [8, 30, 8]); }catch(e){}
+  const card = document.getElementById("vcCard"), dir = know ? -1 : 1;
+  if(card && !prefersReducedMotion()){ card.classList.remove("drag"); card.style.transform = `translateX(${dir * 460}px) rotate(${dir * 18}deg)`; card.style.opacity = "0"; }
+  setTimeout(()=>{
+    if(VC.mode !== "play") return;
+    if(VC.i >= VC.deck.length){ VC.mode = "summary"; vcDrawSummary(); }
+    else{ vcDrawPlay(); }
+  }, prefersReducedMotion() ? 0 : 230);
+}
+function vcUndo(){
+  if(VC.mode !== "play" || !VC.hist.length) return;
+  const h = VC.hist.pop(), id = vcId(h.idx), today = todayStr();
+  if(h.prev) SRS_DATA[id] = h.prev; else delete SRS_DATA[id];
+  Object.assign(stats.verbcards, h.st);
+  if(!dailyActivity[today]) dailyActivity[today] = {};
+  if(h.act) dailyActivity[today].verbcards = h.act; else delete dailyActivity[today].verbcards;
+  VC.res.pop(); VC.i--; saveProgress(); vcDrawPlay();
+}
+function vcDrawSummary(){
+  const n = VC.deck.length, know = VC.res.filter(Boolean).length, rev = VC.deck.filter((_, k)=> !VC.res[k]);
+  const newMast = Math.max(0, vcStats().mastered - VC.mastered0), pct = n ? know / n : 0;
+  document.getElementById("exPanel").innerHTML = `
+    <div class="card vc-sum">
+      <div class="exr-bolt">${boltSVG(pct >= .7 ? "hype" : pct >= .4 ? "happy" : "think", 84)}</div>
+      <h3 class="vc-h">${VC.pass > 1 ? "Segunda vuelta completada" : "Ronda completada"}</h3>
+      <div class="vc-stats"><div><b>${know}</b><span>ya los sabías</span></div><div><b>${rev.length}</b><span>a repasar</span></div><div><b>${newMast}</b><span>nuevos dominados</span></div></div>
+      ${rev.length ? `<p class="vc-p">Estos verbos volverán en tus próximas rondas:</p><div class="vc-plist">${rev.map(vcPendRow).join("")}</div>` : `<p class="vc-p">No marcaste ninguno para repasar. ¡Buen trabajo!</p>`}
+      <div class="btn-row" style="justify-content:center;">
+        ${rev.length ? `<button class="btn" id="vcAgainRev" type="button">Repasar estos ahora (${rev.length})</button>` : ""}
+        <button class="btn${rev.length ? " secondary" : ""}" id="vcAgain" type="button">Otra ronda</button>
+        <button class="btn secondary" id="vcChange" type="button">Cambiar de ejercicio</button>
+      </div>
+    </div>`;
+  if(pct >= .7 && !prefersReducedMotion()) fireConfetti(60);
+  vcBindPend(document.getElementById("exPanel"));
+  const ar = document.getElementById("vcAgainRev"); if(ar) ar.onclick = ()=> vcStart(rev, 2);
+  document.getElementById("vcAgain").onclick = ()=> vcStart("normal");
+  document.getElementById("vcChange").onclick = ()=>{ newVerbCardsQuestion(); if(exMobile()) exBack(); else window.scrollTo({top:0, behavior:"smooth"}); };
+}
+document.addEventListener("keydown", e=>{
+  if(activeSection !== "exercises" || activeExercise !== "verbcards" || VC.mode !== "play" || !document.getElementById("vcCard")) return;
+  if(e.target.closest && e.target.closest("input,textarea,select")) return;
+  if(document.querySelector("#verbSheet.show, .modal-backdrop.show, .modal.show, #modalRoot:not(:empty)")) return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); vcAnswer(true); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); vcAnswer(false); }
+  else if(e.key === "ArrowUp" || e.key === "ArrowDown"){ e.preventDefault(); vcFlip(); }
+  else if(e.key === "z" || e.key === "Z"){ vcUndo(); }
+});
+/* VERBCARDS:END */
 
 /* ---- CATEGORÍAS GRAMATICALES (identificar la palabra resaltada) ---- */
 function buildCategoryPractice(categories){
