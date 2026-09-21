@@ -24098,7 +24098,7 @@ function drawCategoryGroupExamples(){
   const box = document.getElementById("catGroupExamples");
   box.innerHTML = shown.length ? `<div class="uc-list">${shown.map(({e}, n)=> `
     <div class="cat-ex ${CAT_TENSE_CLS[e.tense] || "pre"}">
-      <div class="uc-t"><div class="cat-ex-en"><span class="cat-tag ${CAT_TENSE_CLS[e.tense] || "pre"}">${e.tense}</span>${wzBold(e.en, e.bold).replace(/<strong>/g, `<strong class="cat-hl" style="background:${catChipBg(activeCategory)}">`)}</div><div class="uc-es">${escHtml(e.es)}</div></div>
+      <div class="uc-t"><div class="cat-ex-en">${wzBold(e.en, e.bold).replace(/<strong>/g, `<strong class="cat-hl" style="background:${catChipBg(activeCategory)}">`)}</div><div class="uc-es">${escHtml(e.es)}</div></div>
       ${ucActs(n, {saveId:items[n].saveId})}
     </div>`).join("")}</div>` : `<p class="cat-none">No hay ejemplos de este tiempo en este grupo. Prueba con «Todos».</p>`;
   ucWire(box, items, drawCategoryGroupExamples);
