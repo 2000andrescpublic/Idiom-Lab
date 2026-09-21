@@ -23069,7 +23069,7 @@ function renderHome(){
   const rPct = rUnits.length ? Math.round(rPassed / rUnits.length * 100) : 0;
   let rTitle, rSub, rLine;
   if(rCur === -1){ rTitle = "Ver la ruta"; rSub = `Ruta ${rLevel} completa`; rLine = `Superaste las ${rUnits.length} unidades${rNext ? ` · siguiente: ${rNext}` : ""}`; }
-  else if(!Object.keys(routeProgress).length){ rTitle = "Empezar la Ruta"; rSub = "Tu camino de A1 a C2"; rLine = "Teoría y repaso guiados"; }
+  else if(!Object.keys(routeProgress).length){ rTitle = `Empezar la Ruta ${rLevel}`; rSub = placementResult ? "Empieza en el nivel de tu prueba" : "Tu camino de A1 a C2"; rLine = "Teoría y repaso guiados"; }
   else{ rTitle = "Continuar mi Ruta"; rSub = "Sigue donde lo dejaste"; rLine = `${rLevel} · Unidad ${rCur + 1}: ${escHtml(rUnits[rCur].title)}`; }
   const weekRow = weekDaysInfo().map(d=> `<span class="${d.done ? "on" : ""}${d.today ? " today" : ""}" title="${d.k}">${d.n}</span>`).join("");
   const html = `
@@ -29342,7 +29342,9 @@ function routeCurrentLevel(){
     const t = rp0.ts || 0;
     if(t > ts){ ts = t; best = ROUTE_LEVELS.find(l=> routeOrder(l).some(e=> e[0]+":"+e[1] === key)) || key.split(":")[0]; }
   });
-  return ROUTE_LEVELS.includes(best) ? best : "A1";
+  if(ROUTE_LEVELS.includes(best)) return best;
+  /* Sin actividad en la Ruta: se empieza en el nivel que dio la Prueba de nivel (no siempre en A1). */
+  return placementResult && ROUTE_LEVELS.includes(placementResult.level) ? placementResult.level : "A1";
 }
 function buildUnitSession(level, k){
   const u = routeUnits(level)[k];
