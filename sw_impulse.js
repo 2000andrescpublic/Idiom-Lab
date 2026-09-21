@@ -2,10 +2,11 @@
    funcione sin conexión. Solo intercepta pedidos relacionados con
    "impulse" (el propio HTML, el manifest y este mismo script); todo lo
    demás (otras variantes del proyecto, fuentes de Google, etc.) pasa
-   de largo sin tocarlo. Estrategia: "stale-while-revalidate" — sirve
-   la copia en caché al instante (y funciona offline), y en paralelo
-   busca una versión más nueva en la red para la próxima vez. */
-const CACHE_NAME = "englishlab-impulse-v1";
+   de largo sin tocarlo. Estrategia: "red primero" — siempre busca la versión más nueva (revalidando
+   con el servidor, así que si no cambió cuesta un 304) y solo usa la copia
+   en caché cuando no hay conexión. Así cada despliegue se ve en la primera
+   carga, sin quedarse una versión atrás. */
+const CACHE_NAME = "englishlab-impulse-v2";
 const CORE_ASSETS = [
   "./english-lab_impulse.html",
   "./manifest_impulse.json",
@@ -34,17 +35,16 @@ self.addEventListener("fetch", (event) => {
   if (!req.url.includes("impulse")) return; // solo maneja assets de impulse
 
   event.respondWith(
-    caches.match(req).then((cached) => {
-      const networkFetch = fetch(req)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const clone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-          }
-          return networkResponse;
-        })
-        .catch(() => cached);
-      return cached || networkFetch;
-    })
+    fetch(req.url, { cache: "no-cache" })
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+        }
+        return networkResponse;
+      })
+      .catch(() =>
+        caches.match(req).then((cached) => cached || caches.match("./english-lab_impulse.html"))
+      )
   );
 });
