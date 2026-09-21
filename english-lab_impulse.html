@@ -400,7 +400,7 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
 .chart-card-icon.purple{background:var(--grad-purple);}
 .chart-card-icon.teal{background:var(--grad-teal);box-shadow:0 8px 18px rgba(34,197,94,0.28);}
 .chart-legend-row{display:flex;flex-wrap:nowrap;justify-content:center;gap:2px;margin-top:6px;overflow-x:hidden;}
-.chart-legend-chip{display:inline-flex;align-items:center;gap:3px;font-size:0.64rem;font-weight:600;color:var(--ink-soft);padding:2px 6px 2px 4px;border-radius:999px;background:var(--bg-soft);white-space:nowrap;flex-shrink:0;}
+.chart-legend-chip{display:inline-flex;align-items:center;gap:3px;font-size:0.75rem;font-weight:600;color:var(--ink-soft);padding:2px 6px 2px 4px;border-radius:999px;background:var(--bg-soft);white-space:nowrap;flex-shrink:0;}
 .chart-legend-dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0;}
 .dash-top-grid{
   position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;
@@ -595,7 +595,7 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   padding:4px 8px;color:var(--ink-soft);font-size:0.78rem;line-height:1.35;
   width:fit-content;
 }
-.mm-item-pattern{font-family:'JetBrains Mono',monospace;font-size:0.71rem;}
+.mm-item-pattern{font-family:'JetBrains Mono',monospace;font-size:0.75rem;}
 .mm-item-phrase{font-family:'Inter',sans-serif;}
 .mm-speak{
   background:none;border:none;cursor:pointer;padding:0;font-size:0.78rem;
@@ -604,7 +604,7 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
 }
 .mm-speak:active{transform:scale(0.9);}
 .mm-sub{display:flex;flex-direction:column;gap:3px;margin-left:14px;padding-left:8px;border-left:2px dotted var(--line);}
-.mm-sub-item{font-size:0.72rem;color:var(--ink-soft);}
+.mm-sub-item{font-size:0.75rem;color:var(--ink-soft);}
 
 /* ---------------- CATEGORIES ---------------- */
 .cat-layout{display:grid;grid-template-columns:1fr 3fr;gap:20px;align-items:start;}
@@ -624,7 +624,7 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   flex-shrink:0;
 }
 .cat-list-item h4{margin:0;font-size:0.92rem;}
-.cat-list-item span.en{font-size:0.72rem;color:var(--ink-soft);}
+.cat-list-item span.en{font-size:0.75rem;color:var(--ink-soft);}
 
 .cat-detail{margin-top:0;}
 .cat-detail-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
@@ -651,7 +651,7 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
 .cat-group-examples-list li{border-left-color:var(--teal);}
 .es-inline{color:var(--ink-soft);font-size:0.87em;font-style:italic;}
 .tense-tag{
-  display:inline-block;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;
+  display:inline-block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;
   color:var(--teal);background:var(--bg);border:1px solid var(--teal);border-radius:999px;
   padding:1px 8px;margin-right:8px;vertical-align:middle;
 }
@@ -663,7 +663,45 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
 .icon-amber{background:var(--grad-amber);color:#6B3D00;}
 
 /* ---------------- EXERCISES SUBNAV ---------------- */
-.exercise-subnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+/* Nivel 1: destrezas como tarjetas con icono de color; nivel 2: control segmentado dentro de un panel propio. */
+.ex-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;}
+.ex-group{
+  display:flex;align-items:center;gap:12px;min-height:64px;padding:12px 14px;text-align:left;
+  border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:16px;
+  font-family:inherit;cursor:pointer;
+  transition:border-color .15s ease,background .15s ease,box-shadow .15s ease,transform .12s ease-out;
+}
+.ex-group:hover{border-color:var(--purple);}
+.ex-group:active{transform:scale(0.98);}
+.ex-group-ico{flex:0 0 auto;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+.ex-group-ico:not([class*="icon-"]){background:var(--bg-soft);color:var(--ink-soft);}
+.ex-group-ico svg{width:20px;height:20px;}
+.ex-group-txt{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.ex-group-txt b{font-size:0.92rem;font-weight:700;line-height:1.2;}
+.ex-group-txt small{font-size:0.75rem;color:var(--ink-soft);font-weight:500;}
+.ex-group.active{border-color:var(--purple);background:rgba(139,124,255,.12);box-shadow:0 0 0 1px var(--purple);}
+.exercise-subnav{margin:0 0 22px;padding:12px 14px 14px;border:1px dashed var(--line);border-radius:14px;background:var(--bg-soft);}
+.ex-sub-label{display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:600;color:var(--ink-soft);margin:0 0 10px;}
+.ex-sub-label b{color:var(--ink);}
+.ex-sub-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--purple);color:#fff;font-size:0.76rem;font-weight:800;}
+.ex-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;}
+.ex-choice{
+  position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;
+  padding:12px 42px 12px 14px;min-height:76px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);
+  color:var(--ink);font-family:inherit;cursor:pointer;
+  transition:border-color .15s ease,background .15s ease,transform .12s ease-out;
+}
+.ex-choice:hover{border-color:var(--purple);}
+.ex-choice:active{transform:scale(0.98);}
+.ex-choice-name{display:flex;align-items:center;gap:7px;font-size:0.92rem;font-weight:700;}
+.ex-choice-name svg{width:16px;height:16px;color:var(--ink-soft);flex:0 0 auto;}
+.ex-choice-desc{font-size:0.78rem;color:var(--ink-soft);line-height:1.35;font-weight:500;}
+.ex-choice::after{content:"";position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;border:2px solid var(--line);box-sizing:border-box;}
+.ex-choice.active{border-color:var(--purple);background:rgba(139,124,255,.12);}
+.ex-choice.active .ex-choice-name svg{color:var(--purple);}
+.ex-choice.active::after{border-color:var(--purple);background:var(--purple) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12l5 5 9-10'/></svg>") center/12px no-repeat;}
+.ex-tabbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;}
+.ex-tabbar .ex-tab{min-height:44px;font-size:0.9rem;}
 .ex-tab{
   border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);
   padding:9px 15px;border-radius:999px;font-size:0.85rem;font-weight:600;cursor:pointer;
@@ -813,8 +851,15 @@ body.placement-locked .nav-link, body.placement-locked .nav-dropdown, body.place
 .topic-practice-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:6px;}
 .topic-practice .btn{margin-top:10px;}
 @media (max-width:640px){
-  .exercise-subnav{gap:6px;margin-bottom:14px;}
-  .exercise-subnav .ex-tab{padding:6px 11px;font-size:0.78rem;gap:4px;}
+  .ex-groups{grid-template-columns:repeat(3,1fr);gap:6px;}
+  .ex-group{flex-direction:column;justify-content:center;text-align:center;gap:6px;padding:10px 4px;min-height:82px;}
+  .ex-group-txt{align-items:center;}
+  .ex-group-txt b{font-size:0.78rem;}
+  .exercise-subnav{padding:10px 10px 12px;margin-bottom:16px;}
+  .ex-tabbar{gap:6px;}
+  .ex-tabbar .ex-tab{flex:1 1 auto;justify-content:center;padding:8px 10px;font-size:0.82rem;}
+  .ex-choices{grid-template-columns:1fr;}
+  .ex-choice{min-height:0;padding:10px 40px 10px 12px;}
   .listen-modes{flex-wrap:nowrap;overflow-x:auto;gap:6px;margin-bottom:8px;padding-bottom:2px;scrollbar-width:none;}
   .listen-modes::-webkit-scrollbar{display:none;}
   .listen-modes .ex-tab{flex:0 0 auto;padding:6px 12px;font-size:0.8rem;}
@@ -826,7 +871,7 @@ body.placement-locked .nav-link, body.placement-locked .nav-dropdown, body.place
   #panel-situations .data-table tbody, #panel-expressions .data-table tbody, #panel-howtosay .data-table tbody, #panel-falsefriends .data-table tbody, #panel-vocabtopics .data-table tbody, #panel-phrasal .data-table tbody, #panel-verbs .data-table tbody{display:block;}
   #panel-situations .data-table tr, #panel-expressions .data-table tr, #panel-howtosay .data-table tr, #panel-falsefriends .data-table tr, #panel-vocabtopics .data-table tr, #panel-phrasal .data-table tr, #panel-verbs .data-table tr{display:block;padding:12px 14px;border-bottom:1px solid var(--line);}
   #panel-situations .data-table td, #panel-expressions .data-table td, #panel-howtosay .data-table td, #panel-falsefriends .data-table td, #panel-vocabtopics .data-table td, #panel-phrasal .data-table td, #panel-verbs .data-table td{display:block;width:auto;min-width:0;border:0;padding:3px 0;}
-  #panel-situations .data-table td[data-label]::before, #panel-expressions .data-table td[data-label]::before, #panel-howtosay .data-table td[data-label]::before, #panel-falsefriends .data-table td[data-label]::before, #panel-vocabtopics .data-table td[data-label]::before, #panel-phrasal .data-table td[data-label]::before, #panel-verbs .data-table td[data-label]::before{content:attr(data-label);display:block;font-size:0.68rem;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:1px;}
+  #panel-situations .data-table td[data-label]::before, #panel-expressions .data-table td[data-label]::before, #panel-howtosay .data-table td[data-label]::before, #panel-falsefriends .data-table td[data-label]::before, #panel-vocabtopics .data-table td[data-label]::before, #panel-phrasal .data-table td[data-label]::before, #panel-verbs .data-table td[data-label]::before{content:attr(data-label);display:block;font-size:0.75rem;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:1px;}
   #panel-situations .data-table th, #panel-expressions .data-table th, #panel-howtosay .data-table th, #panel-falsefriends .data-table th, #panel-vocabtopics .data-table th, #panel-phrasal .data-table th, #panel-verbs .data-table th{min-width:0 !important;}
 }
 .wr-review{margin-top:14px;text-align:left;}
@@ -848,7 +893,7 @@ body.placement-locked .nav-link, body.placement-locked .nav-dropdown, body.place
 .why-compare>div{padding:7px 10px;border-radius:8px;min-width:0;overflow-wrap:anywhere;}
 .why-compare .why-yours{background:#FBD5E0;}
 .why-compare .why-right{background:#D3F3DE;color:#14603A;}
-.why-compare span{display:block;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;opacity:0.75;}
+.why-compare span{display:block;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;opacity:0.75;}
 .why-body{margin:0 0 6px;}
 .why-tip{background:#FFF3C9;color:#5B4300;border-radius:8px;padding:7px 10px;margin-top:6px;}
 .why-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
@@ -948,7 +993,7 @@ body.placement-locked .nav-link, body.placement-locked .nav-dropdown, body.place
   border-radius:0 10px 10px 0;padding:12px 16px;font-size:0.92rem;line-height:1.5;
 }
 .vocab-example-box.show{display:block;animation:fadein .2s ease;}
-.vocab-example-box .ex-label{display:block;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue);margin-bottom:5px;}
+.vocab-example-box .ex-label{display:block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue);margin-bottom:5px;}
 .vocab-example-box .es-inline{display:block;margin-top:4px;color:var(--ink-soft);font-style:italic;}
 .rec-dot{
   width:12px;height:12px;border-radius:50%;background:var(--pink);flex-shrink:0;
@@ -959,7 +1004,7 @@ body.placement-locked .nav-link, body.placement-locked .nav-dropdown, body.place
   50%{transform:scale(1.15);opacity:1;box-shadow:0 0 0 6px rgba(224,69,122,0.18);}
 }
 .chat-bubble{max-width:82%;}
-.chat-bubble .role{font-size:0.7rem;color:var(--ink-soft);margin-bottom:3px;}
+.chat-bubble .role{font-size:0.75rem;color:var(--ink-soft);margin-bottom:3px;}
 .chat-bubble .bubble{border-radius:14px;padding:10px 14px;font-size:0.92rem;line-height:1.45;}
 .accent-btn{
   border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);
@@ -997,12 +1042,12 @@ body.placement-locked .nav-link, body.placement-locked .nav-dropdown, body.place
   color:var(--purple-dark);font-weight:700;font-family:'Inter',sans-serif;font-size:0.9rem;
   padding:3px 12px;cursor:pointer;line-height:1.5;transition:transform .12s ease,box-shadow .12s ease;
 }
-.cloze-chip .cloze-chip-num{font-size:0.72rem;opacity:0.75;}
+.cloze-chip .cloze-chip-num{font-size:0.75rem;opacity:0.75;}
 .cloze-chip:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 10px rgba(var(--purple-rgb),0.25);}
 .cloze-chip:disabled{cursor:default;}
 .cloze-chip.correct{border-color:var(--teal);background:#E3FBEA;color:#14532D;}
 .cloze-chip.wrong{border-color:var(--pink);background:#FCE6ED;color:#7A1338;}
-.cloze-chip-answer-hint{display:block;font-size:0.72rem;font-weight:600;margin-top:2px;color:inherit;opacity:0.85;}
+.cloze-chip-answer-hint{display:block;font-size:0.75rem;font-weight:600;margin-top:2px;color:inherit;opacity:0.85;}
 .cloze-dropdown{
   position:fixed;z-index:300;background:var(--surface);border:2px solid var(--ink);border-radius:var(--radius-md);
   box-shadow:var(--shadow-hard);min-width:180px;max-width:260px;padding:6px;
@@ -1030,7 +1075,7 @@ body.placement-locked .nav-link, body.placement-locked .nav-dropdown, body.place
 .rl-box:disabled{cursor:default;opacity:0.9;}
 .rl-box.correct{border-color:var(--teal);background:#E3FBEA;color:#14532D;}
 .rl-box.wrong{border-color:var(--pink);background:#FCE6ED;color:#7A1338;}
-.rl-answer-hint{display:inline-block;font-size:0.72rem;font-weight:600;margin-left:4px;color:#7A1338;opacity:0.85;}
+.rl-answer-hint{display:inline-block;font-size:0.75rem;font-weight:600;margin-left:4px;color:#7A1338;opacity:0.85;}
 @media(max-width:480px){.rl-box{width:19px;height:24px;font-size:0.98rem;}}
 
 /* ---------------- SIMPLE DATA TABLES (Verbos) ---------------- */
@@ -1109,9 +1154,28 @@ footer{max-width:1180px;margin:20px auto 0;padding:26px 24px;color:var(--ink-sof
   .profile-item:hover{border-color:var(--purple);background:var(--purple-soft);}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important;}}
+
+/* ---- Ronda 1: accesibilidad y legibilidad ---- */
+:root{--danger-ink:#99123F;--ok-ink:#14803A;}
+:root[data-theme="dark"]{--danger-ink:#FF8FAB;--ok-ink:#4ADE80;}
+:root[data-theme="dark"] .wr-sol,:root[data-theme="dark"] .wr-progress,:root[data-theme="dark"] .wr-trend.good{color:var(--ok-ink);}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.skip-link{position:absolute;left:12px;top:-64px;z-index:300;background:var(--purple);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none;transition:top .15s ease;}
+.skip-link:focus{top:12px;}
+:focus-visible{outline:3px solid var(--purple);outline-offset:2px;}
+.opt-btn.correct::after{content:" ✓";font-weight:800;}
+.opt-btn.wrong::after{content:" ✗";font-weight:800;}
+header{transition:transform .25s ease;}
+@media (max-width:768px){
+  header.hdr-hidden{transform:translateY(-100%);}
+  .nav-dropdown-item{min-height:44px;}
+  .main-nav .nav-link{min-height:44px;}
+}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Saltar al contenido</a>
+<div id="srLive" class="sr-only" role="status" aria-live="polite"></div>
 
 <div id="profileGate"></div>
 
@@ -1148,7 +1212,7 @@ footer{max-width:1180px;margin:20px auto 0;padding:26px 24px;color:var(--ink-sof
 
 <div class="nav-backdrop" id="navBackdrop"></div>
 
-<main id="main"></main>
+<main id="main" tabindex="-1"></main>
 
 <footer>Hecho con cariño para aprender inglés · Contenido basado en los estándares de gramática del inglés americano (US English) · English Lab</footer>
 
@@ -21841,6 +21905,9 @@ function goTo(sectionId){
     const inGroup = (d.dataset.groupIds||"").split(",").includes(sectionId);
     d.querySelector(".nav-dropdown-toggle").classList.toggle("active", inGroup);
   });
+  document.querySelectorAll(".nav-link:not(.nav-dropdown-toggle), .nav-dropdown-item").forEach(t=>{
+    if(t.dataset.id === sectionId) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current");
+  });
   document.querySelectorAll(".section-panel").forEach(p=>p.classList.toggle("active", p.id==="panel-"+sectionId));
   document.getElementById("levelBar").classList.toggle("show", (sectionId==="theory" && !(activeTheoryTopic && theoryReturnTo)) || sectionId==="exercises" || sectionId==="vocabtopics");
   if(LANG_GATED_SECTIONS.includes(sectionId) && !isSectionReadyForLang(sectionId, currentLang)){
@@ -21998,7 +22065,7 @@ function renderRadarSVG(skills){
     const [x,y] = pt(i,1.24);
     const anchor = Math.abs(x-cx)<4 ? "middle" : (x>cx ? "start" : "end");
     return `<text x="${x}" y="${y-4}" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="${anchor}">${s.label}</text>
-            <text x="${x}" y="${y+11}" font-size="11" fill="var(--ink-soft)" text-anchor="${anchor}">${s.value}%</text>`;
+            <text x="${x}" y="${y+11}" font-size="12" fill="var(--ink-soft)" text-anchor="${anchor}">${s.value}%</text>`;
   }).join("");
   return `<svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid meet" style="width:100%;height:230px;display:block;margin:0 auto;">
     <defs>
@@ -22064,7 +22131,7 @@ function renderDailyActivitySVG(daysData){
   const gridLines = [0,0.25,0.5,0.75,1].map(f=>{
     const y = padTop + plotH - f*plotH;
     return `<line x1="${padLeft}" y1="${y}" x2="${w-padRight}" y2="${y}" stroke="var(--line)" stroke-width="1"/>
-            <text x="${padLeft-8}" y="${y+4}" font-size="10" fill="var(--ink-soft)" text-anchor="end">${Math.round(f*niceMax)}</text>`;
+            <text x="${padLeft-8}" y="${y+4}" font-size="12" fill="var(--ink-soft)" text-anchor="end">${Math.round(f*niceMax)}</text>`;
   }).join("");
 
   const gradDefs = DAILY_ACTIVITY_CATS.map(c=>`
@@ -22095,8 +22162,8 @@ function renderDailyActivitySVG(daysData){
         ${d.total>0 ? `<rect x="${x-2}" y="${padTop+plotH-((d.total/niceMax)*plotH)-2}" width="${barW+4}" height="${(d.total/niceMax)*plotH+2}" fill="${isToday?'var(--purple)':'transparent'}" fill-opacity="0.06" rx="5"/>` : ""}
         ${rects}
       </g>
-      <text x="${x+barW/2}" y="${h-padBottom+16}" font-size="10" fill="${isToday?'var(--purple-dark)':'var(--ink-soft)'}" text-anchor="middle" font-weight="${isToday?800:400}">${dayLabel}</text>
-      ${d.total>0 ? `<text x="${x+barW/2}" y="${yCursor-6}" font-size="10" fill="var(--ink)" text-anchor="middle" font-weight="700">${d.total}</text>` : ""}`;
+      <text x="${x+barW/2}" y="${h-padBottom+16}" font-size="12" fill="${isToday?'var(--purple-dark)':'var(--ink-soft)'}" text-anchor="middle" font-weight="${isToday?800:400}">${dayLabel}</text>
+      ${d.total>0 ? `<text x="${x+barW/2}" y="${yCursor-6}" font-size="12" fill="var(--ink)" text-anchor="middle" font-weight="700">${d.total}</text>` : ""}`;
   }).join("");
 
   return `
@@ -22240,7 +22307,7 @@ function renderHome(){
   (document.getElementById("dashRecommendBtn") || {}).onclick = ()=>{
     activeExercise = weakId;
     goTo("exercises");
-    document.querySelectorAll(".ex-tab").forEach((b,i)=> b.classList.toggle("active", EX_TABS[i] && EX_TABS[i].id===weakId));
+    exRenderNav();
     renderExercise(weakId, true);
   };
   document.getElementById("practiceHoyStartBtn").onclick = ()=>{
@@ -22592,7 +22659,7 @@ function drawPlacementQuestion(){
       <div class="options" id="placementOpts">
         ${shuffle(q.opts).map(o=>`<button class="opt-btn" data-val="${escHtml(o)}">${escHtml(o)}</button>`).join("")}
       </div>
-      <div class="feedback" id="placementFb"></div>
+      <div class="feedback" role="status" aria-live="polite" id="placementFb"></div>
       <div class="btn-row"><button class="btn" id="placementNextBtn" style="display:none;">Siguiente →</button></div>
     </div>
     ${placementLocked() ? "" : `<div style="margin-top:10px;"><button class="practice-link" id="placementExitBtn" type="button">Salir de la prueba</button></div>`}`;
@@ -22612,6 +22679,7 @@ function drawPlacementQuestion(){
       const correctBtn = [...opts_el].find(o=> o.dataset.val === q.correct);
       if(ok){ b.classList.add("correct"); popHighlight(correctBtn, "#22C55E"); }
       else{ b.classList.add("wrong", "shake"); correctBtn.classList.add("correct"); }
+      announce(ok ? "Correcto" : "Incorrecto. La respuesta correcta es " + q.correct);
       s.answers.push({kind:q.kind || "g", level:q.level, topicIndex:q.topicIndex, q:q.q, chosen, correctAnswer:q.correct, correct:ok});
       const done = placementRecord(ok);
       const nb = document.getElementById("placementNextBtn");
@@ -22739,14 +22807,15 @@ function examCanRun(mod){
   return true;
 }
 function renderExams(){ examRun = null; drawExamsHome(); }
+let examTab = "mods";   // pestaña activa de la pantalla Exámenes
 function drawExamsHome(){
-  const html = `
-    <div class="section-head">
-      <div class="eyebrow">Evaluación</div>
-      <h2>Exámenes</h2>
-      <p><b>Para medir tu progreso con el tiempo</b>, destreza por destreza. Haz el módulo que quieras, sin cronómetro. Cada intento queda guardado con su puntaje y su nivel estimado; <b>no cambia tu nivel oficial</b>: te lo sugiere y tú decides si aplicarlo. Si solo quieres saber por dónde empezar, usa la Prueba de nivel.</p>
-    </div>
-    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-bottom:20px;">
+  const has = examModules.length > 0 || examHistory.length > 0;
+  if(!has) examTab = "mods";
+  const nPlan = examPlanItems().length;
+  const tabs = [["mods", "Módulos"], ["report", "Mi informe"], ["plan", nPlan ? `Plan de repaso (${nPlan})` : "Plan de repaso"], ["hist", "Historial"]];
+  const empty = t=> `<div class="card"><p style="margin:0;color:var(--ink-soft);font-size:0.9rem;">${t}</p></div>`;
+  const modsHTML = `
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));">
       ${EXAM_MODULES.map(m=>{
         const last = examLastOf(m.id), ok = examCanRun(m.id);
         return `<div class="card" style="margin:0;display:flex;flex-direction:column;gap:10px;">
@@ -22758,10 +22827,10 @@ function drawExamsHome(){
           <div class="btn-row" style="margin:0;"><button class="btn" data-exam-mod="${m.id}" ${ok ? "" : "disabled"}>${last ? "Repetir módulo" : "Empezar módulo"} →</button></div>
         </div>`;
       }).join("")}
-    </div>
-    ${examReportHTML()}
-    ${examChartHTML()}
-    ${examPlanHTML()}
+    </div>`;
+  const reportHTML = examModules.length ? examReportHTML() + examChartHTML() : empty("Haz al menos un módulo para ver tu informe por destreza y la evolución de tus puntajes.");
+  const planHTML = examModules.length ? examPlanHTML() : empty("Tu plan de repaso aparecerá cuando termines un módulo.");
+  const histHTML = `
     ${examModules.length ? `
     <div class="card" style="margin-bottom:20px;">
       <h3 style="margin:0 0 14px;font-size:1.05rem;">Intentos anteriores</h3>
@@ -22787,7 +22856,17 @@ function drawExamsHome(){
           </div>`).join("")}
       </div>
     </div>` : ""}`;
+  const body = {mods:modsHTML, report:reportHTML, plan:planHTML, hist:has ? histHTML : empty("Todavía no tienes intentos guardados.")}[examTab];
+  const html = `
+    <div class="section-head">
+      <div class="eyebrow">Evaluación</div>
+      <h2>Exámenes</h2>
+      <p><b>Para medir tu progreso con el tiempo</b>, destreza por destreza. Haz el módulo que quieras, sin cronómetro. Cada intento queda guardado con su puntaje y su nivel estimado; <b>no cambia tu nivel oficial</b>: te lo sugiere y tú decides si aplicarlo. Si solo quieres saber por dónde empezar, usa la Prueba de nivel.</p>
+    </div>
+    ${has ? `<div class="ex-tabbar" role="group" aria-label="Secciones de Exámenes">${tabs.map(([id, l])=> `<button type="button" class="ex-tab${id === examTab ? " active" : ""}" aria-pressed="${id === examTab}" data-exam-tab="${id}"><span>${l}</span></button>`).join("")}</div>` : ""}
+    ${body}`;
   document.getElementById("panel-exams").innerHTML = html;
+  document.querySelectorAll("[data-exam-tab]").forEach(b=> b.onclick = ()=>{ examTab = b.dataset.examTab; drawExamsHome(); });
   document.querySelectorAll("[data-exam-mod]").forEach(b=> b.onclick = ()=> startExamModule(b.dataset.examMod));
   examWireExtras();
 }
@@ -22847,7 +22926,7 @@ function examChartHTML(){
   const x = i=> shown.length === 1 ? (L + W - R) / 2 : L + (W - L - R) * i / (shown.length - 1);
   const y = s=> T + (H - T - B) * (1 - s / 100);
   const mods = EXAM_MODULES.filter(m=> shown.some(e=> e.mod === m.id));
-  const grid = [0, 25, 50, 75, 100].map(v=> `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--xc-grid)" stroke-width="1"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--xc-muted)">${v}</text>`).join("");
+  const grid = [0, 25, 50, 75, 100].map(v=> `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--xc-grid)" stroke-width="1"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="var(--xc-muted)">${v}</text>`).join("");
   const lines = mods.map(m=>{
     const pts = shown.map((e, i)=> ({e, i})).filter(p=> p.e.mod === m.id), c = `var(--xc-s${EXAM_SERIES_SLOT[m.id]})`;
     const path = pts.length > 1 ? `<polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${pts.map(p=> `${x(p.i).toFixed(1)},${y(p.e.score).toFixed(1)}`).join(" ")}"/>` : "";
@@ -22862,8 +22941,8 @@ function examChartHTML(){
     <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;">${legend}</div>
     <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Puntajes de tus intentos de examen a lo largo del tiempo" style="width:100%;height:auto;display:block;">
       ${grid}${lines}
-      <text x="${L}" y="${H - 6}" font-size="11" fill="var(--xc-muted)">${first}</text>
-      <text x="${W - R}" y="${H - 6}" text-anchor="end" font-size="11" fill="var(--xc-muted)">${last}</text>
+      <text x="${L}" y="${H - 6}" font-size="12" fill="var(--xc-muted)">${first}</text>
+      <text x="${W - R}" y="${H - 6}" text-anchor="end" font-size="12" fill="var(--xc-muted)">${last}</text>
     </svg>
     <details style="margin-top:10px;"><summary style="cursor:pointer;font-size:0.84rem;color:var(--ink-soft);">Ver como tabla</summary>
       <table style="width:100%;border-collapse:collapse;font-size:0.84rem;margin-top:8px;">
@@ -22966,6 +23045,7 @@ function drawExamQuestion(){
       const correctBtn = [...opts_el].find(o=> o.dataset.val === q.correct);
       if(ok){ b.classList.add("correct"); popHighlight(correctBtn, "#22C55E"); }
       else{ b.classList.add("wrong", "shake"); correctBtn.classList.add("correct"); }
+      announce(ok ? "Correcto" : "Incorrecto. La respuesta correcta es " + q.correct);
       r.answers.push({level:q.level, kind:q.kind, topicIndex:q.topicIndex, q:q.q, chosen, correctAnswer:q.correct, correct:ok});
       setTimeout(()=>{
         r.idx++;
@@ -23061,7 +23141,7 @@ function drawExamModuleResults(entry, wrong, beat){
   });
   examWireApply(entry.level);
   document.getElementById("examRetakeBtn").onclick = ()=> startExamModule(entry.mod);
-  document.getElementById("examBackBtn").onclick = ()=> drawExamsHome();
+  document.getElementById("examBackBtn").onclick = ()=>{ examTab = "mods"; drawExamsHome(); };
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -23136,7 +23216,7 @@ function drawExamSpeak(){
         <button class="btn secondary" id="examModelBtn" type="button">🔊 Escuchar modelo</button>
         <button class="btn" id="examRecBtn" type="button">🎤 Hablar</button>
       </div>
-      <div class="feedback" id="examSpeakFb"></div>
+      <div class="feedback" role="status" aria-live="polite" id="examSpeakFb"></div>
       <div class="btn-row"><button class="btn" id="examSpeakNext" type="button" style="display:none;">${r.sIdx + 1 < r.say.length ? "Siguiente →" : "Ver resultado →"}</button></div>
       <p style="margin:14px 0 0;font-size:0.8rem;"><button class="practice-link" id="examSkipSpeak" type="button">No puedo hablar ahora: terminar sin la parte de habla</button></p>
     </div>
@@ -23208,7 +23288,7 @@ function drawWriteSpeakResults(entry, w, wLevel, sLevel, nSpoken, beat){
   document.getElementById("panel-exams").innerHTML = html;
   examWireApply(entry.level);
   document.getElementById("examRetakeBtn").onclick = ()=> startExamModule("wspeak");
-  document.getElementById("examBackBtn").onclick = ()=> drawExamsHome();
+  document.getElementById("examBackBtn").onclick = ()=>{ examTab = "mods"; drawExamsHome(); };
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -23350,16 +23430,16 @@ function renderProfile(){
       </div>
     </div>
     <div class="card" style="margin-top:20px;border:1.5px solid var(--pink);background:#FCE6ED;">
-      <h3 class="dash-card-title" style="color:#99123F;">⚠️ Zona de peligro</h3>
-      <p style="color:#99123F;font-size:0.88rem;margin:0 0 14px;">Esto borra todo tu progreso en este perfil (aciertos, racha, nivel, errores guardados, historial) para empezar de cero. Tu perfil (nombre y avatar) sigue existiendo — solo se reinician los datos.</p>
-      <button class="ex-tab" id="resetProfileBtn" style="border-color:#99123F;color:#99123F;">🗑️ Borrar todos mis datos</button>
+      <h3 class="dash-card-title" style="color:var(--danger-ink);">⚠️ Zona de peligro</h3>
+      <p style="color:var(--danger-ink);font-size:0.88rem;margin:0 0 14px;">Esto borra todo tu progreso en este perfil (aciertos, racha, nivel, errores guardados, historial) para empezar de cero. Tu perfil (nombre y avatar) sigue existiendo — solo se reinician los datos.</p>
+      <button class="ex-tab" id="resetProfileBtn" style="border-color:var(--danger-ink);color:var(--danger-ink);">🗑️ Borrar todos mis datos</button>
     </div>
   `;
   document.getElementById("panel-profile").innerHTML = html;
   document.getElementById("profilePracticeBtn").onclick = ()=>{
     activeExercise = weakId;
     goTo("exercises");
-    document.querySelectorAll(".ex-tab").forEach((b,i)=> b.classList.toggle("active", EX_TABS[i] && EX_TABS[i].id===weakId));
+    exRenderNav();
     renderExercise(weakId, true);
   };
   document.getElementById("userNameInput").addEventListener("change", e=>{
@@ -23784,7 +23864,7 @@ function drawVocabTopicQuiz(topicId){
       <div class="options" id="vtQuizOpts">
         ${opts.map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join("")}
       </div>
-      <div class="feedback" id="vtQuizFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="vtQuizFeedback"></div>
       <div class="btn-row"><button class="btn" id="vtQuizNext" style="display:none;">Siguiente →</button></div>
     </div>
   `;
@@ -24097,6 +24177,37 @@ function drawVerbsTable(list){
   });
 }
 function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+/* Anuncia un mensaje a los lectores de pantalla (región aria-live oculta). */
+function announce(msg){
+  const el = document.getElementById("srLive");
+  if(!el) return;
+  el.textContent = "";
+  setTimeout(()=>{ el.textContent = msg; }, 30);
+}
+/* Chips de nivel: aria-pressed sigue a la clase «active» sin tocar cada sitio que la cambia. */
+(function levelChipsA11y(){
+  const sync = ()=> document.querySelectorAll(".level-chip").forEach(c=> c.setAttribute("aria-pressed", c.classList.contains("active") ? "true" : "false"));
+  const bar = document.getElementById("levelBar");
+  if(bar){ new MutationObserver(sync).observe(bar, {subtree:true, attributes:true, attributeFilter:["class"], childList:true}); sync(); }
+})();
+/* En móvil la cabecera se oculta al bajar y reaparece al subir, para ganar espacio de lectura. */
+(function autoHideHeader(){
+  const hd = document.querySelector("header");
+  if(!hd) return;
+  let last = window.scrollY, ticking = false;
+  window.addEventListener("scroll", ()=>{
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(()=>{
+      const y = window.scrollY, dy = y - last;
+      const menuOpen = document.getElementById("mainNav") && document.getElementById("mainNav").classList.contains("mobile-open");
+      if(window.innerWidth > 768 || y < 80 || menuOpen || hd.contains(document.activeElement)) hd.classList.remove("hdr-hidden");
+      else if(dy > 8) hd.classList.add("hdr-hidden");
+      else if(dy < -8) hd.classList.remove("hdr-hidden");
+      last = y; ticking = false;
+    });
+  }, {passive:true});
+})();
 function buildVerbExamples(v){
   return [
     {tense:"Presente simple",
@@ -24196,39 +24307,84 @@ function wireVerbDetailAudio(base){
 /* =========================================================
    EXERCISES (Ejercicios)
    ========================================================= */
+/* Navegación de Ejercicios en dos niveles: primero la destreza (6 grupos) y, si el grupo tiene varios, sus tipos de ejercicio. */
+const EX_GROUPS = [
+  {id:"vocab", label:"Vocabulario", icon:"flashcards", items:["vocab","matchpairs","wordclass","phrasal"]},
+  {id:"grammar", label:"Gramática", icon:"pencil", items:["gapfill","order","verbforms","translate"]},
+  {id:"reading", label:"Lectura", icon:"book", items:["reading","readingcloze","readingletters"]},
+  {id:"listen", label:"Escucha y habla", icon:"headphones", items:["listen","minimalpairs","dialogue"]},
+  {id:"writing", label:"Escritura", icon:"journalpen", items:["writing"]},
+  {id:"review", label:"Repaso", icon:"pin", items:["errorbank"]},
+];
+const exLastInGroup = {};
+function exSelect(id, scroll){
+  activeExercise = id;
+  const gr = EX_GROUPS.find(g=> g.items.includes(id));
+  if(gr) exLastInGroup[gr.id] = id;
+  exRenderNav();
+  renderExercise(id, true);
+  if(scroll && window.innerWidth <= 768){
+    const ep = document.getElementById("exPanel");
+    // scroll instantáneo tras pintar: el smooth se cancelaba cuando el nuevo ejercicio era más corto que el anterior
+    if(ep) requestAnimationFrame(()=> window.scrollTo({top:Math.max(0, ep.getBoundingClientRect().top + window.scrollY - 70), behavior:"auto"}));
+  }
+}
+const EX_GROUP_COLOR = {vocab:"icon-purple", grammar:"icon-teal", reading:"icon-blue", listen:"icon-pink", writing:"icon-amber", review:""};
+/* Dentro de su grupo, algunos tipos usan un nombre distinto para no repetir el del grupo. */
+const EX_SUB_LABEL = {vocab:"Tarjetas", gapfill:"Completar frases", reading:"Textos", listen:"Escucha"};
+const EX_SUB_DESC = {
+  vocab:"Elige el significado correcto de cada palabra.", matchpairs:"Une cada palabra con su pareja.", wordclass:"Clasifica palabras por su categoría.", phrasal:"Aprende verbos con partícula.",
+  gapfill:"Completa la oración con la opción correcta.", order:"Ordena las palabras para formar la frase.", verbforms:"Practica las formas de cada verbo.", translate:"Traduce frases entre tu idioma y el que aprendes.",
+  reading:"Lee un texto y responde preguntas.", readingcloze:"Completa los huecos dentro del texto.", readingletters:"Escribe las letras que faltan.",
+  listen:"Escucha una frase y escríbela o elígela.", minimalpairs:"Distingue sonidos muy parecidos.", dialogue:"Practica conversaciones reales.",
+};
+function exRenderNav(){
+  const gEl = document.getElementById("exGroups"), sEl = document.getElementById("exSubnav");
+  if(!gEl || !sEl) return;
+  const ready = id=> id === activeExercise || isExerciseReadyForLang(id, currentLang);
+  const groups = EX_GROUPS.map(g=> ({...g, items:g.items.filter(ready)})).filter(g=> g.items.length);
+  const cur = groups.find(g=> g.items.includes(activeExercise)) || groups[0];
+  gEl.innerHTML = ""; sEl.innerHTML = "";
+  groups.forEach(g=>{
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "ex-group" + (g === cur ? " active" : "");
+    b.setAttribute("aria-pressed", g === cur ? "true" : "false");
+    b.innerHTML = `<span class="ex-group-ico ${EX_GROUP_COLOR[g.id] || ""}">${svgIcon(g.icon, 20)}</span><span class="ex-group-txt"><b>${g.label}</b><small>${g.items.length === 1 ? "1 ejercicio" : g.items.length + " ejercicios"}</small></span>`;
+    b.onclick = ()=>{ if(g !== cur) exSelect(g.items.includes(exLastInGroup[g.id]) ? exLastInGroup[g.id] : g.items[0], false); };
+    gEl.appendChild(b);
+  });
+  sEl.style.display = cur && cur.items.length > 1 ? "" : "none";
+  if(cur && cur.items.length > 1){
+    sEl.innerHTML = `<div class="ex-sub-label"><span class="ex-sub-count">${cur.items.length}</span><span><b>${cur.label}</b> tiene ${cur.items.length} ejercicios: elige uno</span></div><div class="ex-choices" role="group" aria-label="Ejercicios de ${cur.label}"></div>`;
+    const box = sEl.querySelector(".ex-choices");
+    cur.items.forEach(id=>{
+      const t = EX_TABS.find(x=> x.id === id), b = document.createElement("button");
+      b.type = "button"; b.className = "ex-choice" + (id === activeExercise ? " active" : "");
+      b.setAttribute("aria-pressed", id === activeExercise ? "true" : "false");
+      b.innerHTML = `<span class="ex-choice-name">${svgIcon(t.icon, 16)}${EX_SUB_LABEL[id] || t.label}</span><span class="ex-choice-desc">${EX_SUB_DESC[id] || ""}</span>`;
+      b.onclick = ()=> exSelect(id, true);
+      box.appendChild(b);
+    });
+  }
+}
 function renderExercisesShell(){
   const html = `
     <div class="section-head">
       <div class="eyebrow">Práctica</div>
       <h2>Ejercicios interactivos</h2>
-      <p>Elige un tipo de ejercicio y practica según tu nivel.</p>
+      <p>Elige una destreza y practica según tu nivel.</p>
       <p class="kbd-hint">Atajo: pulsá <kbd>1</kbd>–<kbd>4</kbd> para elegir una opción.</p>
     </div>
-    <div class="exercise-subnav" id="exSubnav"></div>
+    <div class="ex-groups" id="exGroups" role="group" aria-label="Destreza"></div>
+    <div class="exercise-subnav" id="exSubnav" role="group" aria-label="Tipo de ejercicio"></div>
     <div id="exPanel"></div>
   `;
   document.getElementById("panel-exercises").innerHTML = html;
-  const nav = document.getElementById("exSubnav");
-  EX_TABS.forEach(t=>{
-    const b=document.createElement("button");
-    b.className="ex-tab"+(t.id===activeExercise?" active":"");
-    b.innerHTML = `${svgIcon(t.icon,16)}<span>${t.label}</span>`;
-    b.onclick = ()=>{
-      activeExercise = t.id;
-      document.querySelectorAll(".ex-tab").forEach(x=>x.classList.remove("active"));
-      b.classList.add("active");
-      renderExercise(t.id, true);
-      if(window.innerWidth <= 768){
-        const ep = document.getElementById("exPanel");
-        // scroll instantáneo tras pintar: el smooth se cancelaba cuando el nuevo ejercicio era más corto que el anterior
-        if(ep) requestAnimationFrame(()=> window.scrollTo({top:Math.max(0, ep.getBoundingClientRect().top + window.scrollY - 70), behavior:"auto"}));
-      }
-    };
-    nav.appendChild(b);
-  });
+  exRenderNav();
 }
 function renderExercise(id, forceNew){
   if(!document.getElementById("exSubnav")) renderExercisesShell();
+  else exRenderNav();   // por si el ejercicio activo se cambió desde fuera (Inicio, Perfil, plan de repaso)
   if(!isExerciseReadyForLang(id, currentLang)){
     renderExerciseComingSoon();
     return;
@@ -24511,7 +24667,7 @@ function drawVocab(){
       <div class="options" id="vocabOpts">
         ${opts.map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join("")}
       </div>
-      <div class="feedback" id="vocabFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="vocabFeedback"></div>
       <div class="btn-row"><button class="btn" id="vocabNext" style="display:none;">Siguiente pregunta →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
@@ -24564,7 +24720,7 @@ function drawGapfill(){
         ${reviewBadge(review)}
       </div>
       <input class="text-input" id="gapfillInput" placeholder="Escribe tu respuesta aquí..." autocomplete="off">
-      <div class="feedback" id="gapfillFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="gapfillFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="gapfillCheck">Comprobar</button>
         <button class="btn secondary" id="gapfillNext" style="display:none;">Siguiente →</button>
@@ -24859,7 +25015,7 @@ function drawWriting(){
         ${reviewBadge(review)}
       </div>
       <textarea class="text-input" id="writingInput" rows="6" placeholder="Escribe tu respuesta en ${LANG_META[currentLang].label.toLowerCase()} aquí..."></textarea>
-      <div class="feedback" id="writingFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="writingFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="writingCheck">Comprobar</button>
         <button class="btn secondary" id="writingNext" style="display:none;">Siguiente →</button>
@@ -24940,7 +25096,7 @@ function drawOrder(){
       </div>
       <div class="answer-line" id="orderAnswer"></div>
       <div class="word-bank" id="orderBank"></div>
-      <div class="feedback" id="orderFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="orderFeedback"></div>
       <div class="btn-row">
         <button class="btn secondary" id="orderReset">Reiniciar</button>
         <button class="btn" id="orderCheck">Comprobar</button>
@@ -25166,7 +25322,7 @@ function drawReading(){
       <div class="reading-qhead"><span class="score-pill">Pregunta ${readQi + 1} de ${item.qs.length}</span>${blurOn ? `<button type="button" class="wr-mini" id="readPeek">${peek ? "🙈 Ocultar texto" : "👁️ Ver texto"}</button>` : ""}</div>
       <div class="q-text" style="font-size:1rem;margin-bottom:10px;">${q.q}</div>
       <div class="options">${q.opts.map((o, oi)=>`<button class="opt-btn" data-oi="${oi}">${o}</button>`).join("")}</div>
-      <div class="feedback" id="readingFb"></div>
+      <div class="feedback" role="status" aria-live="polite" id="readingFb"></div>
       <div class="btn-row" id="readNextRow" style="display:none;"><button class="btn secondary" id="readNextQ">${readQi + 1 < item.qs.length ? "Siguiente pregunta →" : "Ver resumen →"}</button></div>`;
     const pk = document.getElementById("readPeek");
     if(pk) pk.onclick = ()=>{ peek = !peek; pk.textContent = peek ? "🙈 Ocultar texto" : "👁️ Ver texto"; setBlur(); };
@@ -25778,7 +25934,7 @@ function drawListenDictation(){
       ${listenBoxHTML()}
       <input class="text-input" id="listenInput" placeholder="Escribe la frase en ${LANG_META[currentLang].label.toLowerCase()}..." autocomplete="off">
       <div class="wr-tip" id="listenHint" style="margin:8px 0 0;"></div>
-      <div class="feedback" id="listenFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="listenFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="listenCheck">Comprobar</button>
         <button class="btn secondary" id="listenHintBtn" type="button">💡 Pista</button>
@@ -25851,7 +26007,7 @@ function drawListenChoose(){
       <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">Escucha y elige la frase que oíste:</div>${reviewBadge(review)}</div>
       ${listenBoxHTML()}
       <div class="options" id="listenOpts">${opts.map((o,i)=>`<button class="opt-btn" data-i="${i}">${escHtml(o)}</button>`).join("")}</div>
-      <div class="feedback" id="listenFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="listenFeedback"></div>
       <div class="btn-row"><button class="btn secondary" id="listenNext" style="display:none;">Siguiente →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
@@ -25908,7 +26064,7 @@ function drawListenCloze(){
       <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">Escucha y completa ${blanks.length === 1 ? "la palabra que falta" : "las palabras que faltan"}:</div>${reviewBadge(review)}</div>
       ${listenBoxHTML()}
       <div class="cloze-line">${line}</div>
-      <div class="feedback" id="listenFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="listenFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="listenCheck">Comprobar</button>
         <button class="btn secondary" id="listenNext" style="display:none;">Siguiente →</button>
@@ -25972,10 +26128,10 @@ function drawListenComp(){
         <div class="lc-q" data-qi="${qi}">
           <div class="q-text" style="font-size:1rem;margin:14px 0 10px;">${qi + 1}. ${escHtml(q.q)}</div>
           <div class="options">${q.opts.map((o, oi)=>`<button class="opt-btn" data-qi="${qi}" data-oi="${oi}">${escHtml(o)}</button>`).join("")}</div>
-          <div class="feedback" id="lcFb${qi}"></div>
+          <div class="feedback" role="status" aria-live="polite" id="lcFb${qi}"></div>
         </div>`).join("")}
       </div>
-      <div class="feedback" id="listenFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="listenFeedback"></div>
       <div class="btn-row"><button class="btn secondary" id="listenNext" style="display:none;">Siguiente texto →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
@@ -26218,7 +26374,7 @@ function drawTranslateWrite(){
       <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">"${item.es}"</div>${reviewBadge(review)}</div>
       <input class="text-input" id="translateInput" placeholder="Escribe tu respuesta en ${LANG_META[currentLang].label.toLowerCase()}..." autocomplete="off">
       <div class="wr-tip" id="translateHint" style="margin:8px 0 0;"></div>
-      <div class="feedback" id="translateFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="translateFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="translateCheck">Comprobar</button>
         <button class="btn secondary" id="translateHintBtn" type="button">💡 Pista</button>
@@ -26277,7 +26433,7 @@ function drawTranslateBank(){
       <div class="bank-answer" id="bankAnswer" aria-label="Tu frase"></div>
       <div class="bank-pool" id="bankPool"></div>
       <div class="wr-tip" id="translateHint" style="margin:8px 0 0;"></div>
-      <div class="feedback" id="translateFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="translateFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="translateCheck" disabled>Comprobar</button>
         <button class="btn secondary" id="bankClear" type="button">Borrar</button>
@@ -26341,7 +26497,7 @@ function drawTranslateChoose(){
       ${translateHeaderHTML(true)}
       <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">${choice.dir === "es2en" ? `Elige la mejor traducción ${currentLang === "pt" ? "al portugués" : "al inglés"}:` : "Elige qué significa en español:"}<span class="ex-es" style="display:block;margin-top:6px;">"${escHtml(choice.prompt)}"</span></div>${reviewBadge(review)}</div>
       <div class="options" id="translateOpts">${choice.opts.map((o,i)=>`<button class="opt-btn" data-i="${i}">${escHtml(o)}</button>`).join("")}</div>
-      <div class="feedback" id="translateFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="translateFeedback"></div>
       <div class="btn-row"><button class="btn secondary" id="translateNext" style="display:none;">Siguiente →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
@@ -26405,7 +26561,7 @@ function drawTranslateScene(){
       <div class="q-text" style="margin:8px 0 12px;">"${escHtml(item.es)}"</div>
       <input class="text-input" id="translateInput" placeholder="Escribe tu respuesta en ${LANG_META[currentLang].label.toLowerCase()}..." autocomplete="off">
       <div class="wr-tip" id="translateHint" style="margin:8px 0 0;"></div>
-      <div class="feedback" id="translateFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="translateFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="translateCheck">Comprobar</button>
         <button class="btn secondary" id="translateHintBtn" type="button">💡 Pista</button>
@@ -26748,7 +26904,7 @@ function dlgDrawChoose(st, d, node, area, kind){
     <div class="options" id="dialogueOpts">
       ${opts.map((o, i)=>`<div class="dlg-opt"><button class="opt-btn" data-i="${i}">${escHtml(o.text)}</button><button type="button" class="dlg-say dlg-say-opt" data-osay="${i}" title="Escuchar esta respuesta" aria-label="Escuchar esta respuesta">🔊</button></div>`).join("")}
     </div>
-    <div class="feedback" id="dialogueFeedback"></div>
+    <div class="feedback" role="status" aria-live="polite" id="dialogueFeedback"></div>
     <div class="btn-row"><button class="btn" id="dialogueNextTurnBtn" style="display:none;">Continuar →</button></div>`;
   area.querySelectorAll("[data-osay]").forEach(b=>{ b.onclick = (e)=>{ e.stopPropagation(); dialogueSpeak(opts[+b.dataset.osay].text, "B"); }; });
   const btns = [...area.querySelectorAll(".opt-btn")];
@@ -26784,7 +26940,7 @@ function dlgDrawProduce(st, d, node, area, kind, mode){
     ${canSpeak ? `<div class="btn-row" style="margin-top:0;"><button class="btn" id="dlgMic" type="button">🎤 Hablar</button><button class="btn secondary" id="dlgMicRetry" type="button" style="display:none;">🎤 Otra vez</button></div><div class="wr-body" id="dlgHeard" style="margin:8px 0;"></div>` : ""}
     <input class="text-input" id="dlgInput" placeholder="${canSpeak ? "…o escríbela aquí" : "Escribe tu respuesta en inglés..."}" autocomplete="off">
     <div class="wr-tip" id="dlgHint" style="margin:8px 0 0;"></div>
-    <div class="feedback" id="dialogueFeedback"></div>
+    <div class="feedback" role="status" aria-live="polite" id="dialogueFeedback"></div>
     <div class="btn-row"><button class="btn" id="dlgCheck">Comprobar</button><button class="btn secondary" id="dlgHintBtn" type="button">💡 Pista</button><button class="btn" id="dialogueNextTurnBtn" style="display:none;">Continuar →</button></div>`);
   const input = document.getElementById("dlgInput"), check = document.getElementById("dlgCheck"), hintBtn = document.getElementById("dlgHintBtn");
   let hints = 0, spoken = "";
@@ -26992,7 +27148,7 @@ function drawPhrasal(){
       <div class="options" id="phrasalOpts">
         ${opts.map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join("")}
       </div>
-      <div class="feedback" id="phrasalFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="phrasalFeedback"></div>
       <div class="btn-row"><button class="btn" id="phrasalNext">Siguiente →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
@@ -27059,7 +27215,7 @@ function drawVerbForm(){
       <div class="options" id="verbformOpts">
         ${opts.map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join("")}
       </div>
-      <div class="feedback" id="verbformFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="verbformFeedback"></div>
       <div class="btn-row"><button class="btn" id="verbformNext">Siguiente →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
@@ -27118,7 +27274,7 @@ function drawWordClass(){
       <div class="options" id="wordclassOpts">
         ${opts.map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join("")}
       </div>
-      <div class="feedback" id="wordclassFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="wordclassFeedback"></div>
       <div class="btn-row"><button class="btn" id="wordclassNext">Siguiente →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
@@ -27242,7 +27398,7 @@ function drawMinimalPair(){
         ${opts.map(o=>`<button class="opt-btn" data-val="${escHtml(o)}">${escHtml(o)}</button>`).join("")}
       </div>
       <p style="font-size:0.78rem;color:var(--ink-soft);margin:12px 0 0;">La voz depende de tu dispositivo. Si dos palabras te suenan igual, prueba 🐢 Lento o repite la palabra.</p>
-      <div class="feedback" id="mpFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="mpFeedback"></div>
       <div class="btn-row"><button class="btn" id="mpNext" style="display:none;">Siguiente →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
@@ -27926,7 +28082,7 @@ function drawTheoryq(){
       ${scoreRowHtml("theoryq")}
       <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text"><span class="ex-es" style="display:block;margin:0 0 6px;">📘 ${escHtml(topic.title)}</span>${item.k === "tf" ? "¿Verdadero o falso?" : ""} ${escHtml(item.q)}</div>${reviewBadge(review)}</div>
       <div class="options" id="theoryqOpts">${opts.map((o,i)=>`<button class="opt-btn" data-i="${i}">${escHtml(o.t)}</button>`).join("")}</div>
-      <div class="feedback" id="theoryqFeedback"></div>
+      <div class="feedback" role="status" aria-live="polite" id="theoryqFeedback"></div>
       <div class="btn-row"><button class="btn" id="theoryqNext" style="display:none;">Siguiente →</button></div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
