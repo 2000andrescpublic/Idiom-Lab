@@ -1165,6 +1165,50 @@ footer{max-width:1180px;margin:20px auto 0;padding:26px 24px;color:var(--ink-sof
 :focus-visible{outline:3px solid var(--purple);outline-offset:2px;}
 .opt-btn.correct::after{content:" ✓";font-weight:800;}
 .opt-btn.wrong::after{content:" ✗";font-weight:800;}
+/* ---- VISUAL-3D: iconos, fichas, Bolt, medallas y animaciones ---- */
+.ico3{filter:drop-shadow(0 1.2px 1.4px rgba(15,25,70,.32));flex:none;vertical-align:middle;overflow:visible;}
+.emo3d{display:inline-flex;align-items:center;justify-content:center;width:calc(var(--es,1) * 1.7em);height:calc(var(--es,1) * 1.7em);border-radius:32%;font-size:calc(var(--es,1) * 1em);line-height:1;vertical-align:middle;
+  background:linear-gradient(160deg,var(--e1),var(--e2));box-shadow:inset 0 2px 3px rgba(255,255,255,.65),inset 0 -3px 4px rgba(0,0,0,.18),0 3px 6px rgba(20,30,80,.25);}
+.emo3d::first-line{line-height:1;}
+h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
+.badge-level:has(.emo3d){background:none !important;border:0 !important;padding:0 !important;box-shadow:none !important;min-width:0;}
+.badge-level .emo3d{font-size:1.15rem;}
+.bolt{overflow:visible;display:block;margin:0 auto;}
+@keyframes boltBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes boltBlink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes boltPulse{0%,100%{opacity:1}50%{opacity:.45}}
+.bolt-bob{animation:boltBob 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center;}
+.bolt-eye{animation:boltBlink 4.2s infinite;transform-box:fill-box;transform-origin:center;}
+.bolt-led{animation:boltPulse 1.4s ease-in-out infinite;}
+.bolt-coach{display:flex;align-items:center;gap:12px;margin:2px 0 14px;max-width:520px;}
+.bolt-coach .bolt{margin:0;flex:none;}
+.bolt-bubble{position:relative;background:var(--bg);color:var(--ink);border:2px solid var(--line);border-radius:18px;padding:10px 14px;font-size:.92rem;line-height:1.45;box-shadow:0 3px 10px rgba(20,30,80,.12);}
+.bolt-bubble::before{content:"";position:absolute;left:-8px;top:50%;width:14px;height:14px;background:var(--bg);border-left:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateY(-50%) rotate(45deg);}
+.bolt-bubble b{color:var(--purple);}
+.medal{display:block;overflow:visible;transition:transform .25s cubic-bezier(.2,.9,.3,1.3);}
+.medal.locked{filter:grayscale(1) opacity(.4);}
+.ach-item:not(.is-locked):hover .medal{transform:translateY(-3px) rotate(-4deg) scale(1.06);}
+.ach-title{font-weight:800;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:14px 0 6px;}
+.ach-grid{display:flex;flex-wrap:wrap;gap:10px 14px;}
+.ach-item{display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;text-align:center;font-size:.72rem;color:var(--ink);}
+.ach-item.is-locked{color:var(--ink-soft);}
+.celeb-art{display:flex;align-items:flex-end;justify-content:center;gap:4px;}
+.celeb-badge{animation:badgePop .7s cubic-bezier(.2,.9,.3,1.4) .25s both;}
+@keyframes badgePop{0%{transform:scale(0) rotate(-30deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.big-celeb-overlay.show .bolt-bob{animation-duration:1.1s;}
+/* microinteracciones */
+.btn,.ex-tab,.level-chip,.theory-list-item,.landing-cta{transition:transform .15s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease;}
+.btn:active,.ex-tab:active,.landing-cta:active{transform:translateY(1px) scale(.985);}
+.theory-list-item:hover{transform:translateY(-2px);}
+.nav-link .ico3,.nav-dropdown-item .ico3{margin-right:2px;}
+.e3{display:inline-flex;vertical-align:-.3em;line-height:0;}
+.e3 .ico3{width:1.2em;height:1.2em;}
+.e3-animal .ico3{width:1.25em;height:1.25em;filter:drop-shadow(0 2px 2px rgba(15,25,70,.32));}
+.profile-avatar .e3-animal .ico3{width:1.35em;height:1.35em;}
+.profile-avatar{overflow:visible;}
+@media (prefers-reduced-motion:reduce){.bolt-bob,.bolt-eye,.bolt-led,.celeb-badge{animation:none !important;}}
+@media (max-width:520px){.bolt-coach{gap:8px;}.bolt-bubble{font-size:.85rem;padding:8px 11px;}}
+
 header{transition:transform .25s ease;}
 @media (max-width:768px){
   header.hdr-hidden{transform:translateY(-100%);}
@@ -19438,45 +19482,6 @@ function auroraBackgroundSVG(){
     ${shapes}
   </svg>`;
 }
-/* Mascota del fork "Impulse": un personaje geométrico en forma de rayo
-   (acorde al nombre y a la dirección visual editorial/audaz — nada de
-   redondeces suaves). Mismo patrón técnico que mascotSVG() en el fork
-   "vivo" (SVG inline vía template literal, colores 100% por var(--...)
-   para heredar tema claro/oscuro e idioma automáticamente), pero con un
-   diseño propio: contorno grueso, relleno plano y esquinas duras.
-   Poses: "wave" (default, saludo/bienvenida), "cheer" (celebración,
-   ambos brazos arriba, ojos felices, boca abierta), "sleepy" (ojos
-   cerrados, "z" flotando — recordatorio de racha/inactividad). */
-function mascotSVG(pose, size){
-  size = size || 72;
-  const eyesOpen = `<circle cx="44" cy="42" r="4.5" fill="var(--bg)"/><circle cx="44" cy="42" r="2" fill="var(--ink)"/><circle cx="60" cy="42" r="4.5" fill="var(--bg)"/><circle cx="60" cy="42" r="2" fill="var(--ink)"/>`;
-  const eyesClosed = `<path d="M40 42 Q44 46 48 42" stroke="var(--ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M56 42 Q60 46 64 42" stroke="var(--ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
-  const eyesHappy = `<path d="M39 44 Q44 37 49 44" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M55 44 Q60 37 65 44" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
-
-  let eyes = eyesOpen;
-  let mouth = `<path d="M46 58 Q52 63 58 58" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
-  let leftArm = `<path d="M30 66 Q18 60 16 46" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-  let extra = "";
-
-  if(pose === "cheer"){
-    eyes = eyesHappy;
-    mouth = `<ellipse cx="52" cy="60" rx="7" ry="6" fill="var(--ink)"/><ellipse cx="52" cy="58" rx="4.5" ry="3.5" fill="var(--pink)"/>`;
-    leftArm = `<path d="M30 66 Q14 54 18 36" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-    extra = `<path d="M74 66 Q90 54 86 36" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-  }else if(pose === "sleepy"){
-    eyes = eyesClosed;
-    mouth = `<path d="M48 60 Q52 58 56 60" stroke="var(--ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
-    extra = `<text x="76" y="26" font-family="Fraunces,serif" font-weight="700" font-size="15" fill="var(--ink-soft)">z</text><text x="85" y="15" font-family="Fraunces,serif" font-weight="700" font-size="10" fill="var(--ink-soft)">z</text>`;
-  }
-
-  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
-    <path d="M62 4 L28 52 L48 52 L38 96 L74 46 L52 46 Z" fill="var(--purple)" stroke="var(--ink)" stroke-width="3.5" stroke-linejoin="round"/>
-    ${leftArm}
-    ${eyes}
-    ${mouth}
-    ${extra}
-  </svg>`;
-}
 let currentLang = "en";
 /* Secciones cuyo contenido todavía está escrito solo en inglés.
    Mientras un idioma no esté en LANG_PACKS_READY, estas secciones
@@ -21731,13 +21736,14 @@ function milestoneOnce(key){ if(milestonesSeen.includes(key)) return false; mile
 function checkStreakMilestone(){
   const n = dailyStreak.count, hit = STREAK_MILESTONES.filter(m=> n >= m).pop();
   if(!hit || !milestoneOnce("s" + hit)) return false;
+  window._celebBadge = badgeSvg("streak", hit, 76);
   showBigCelebration(`🔥 ${hit} días seguidos`, hit >= 30 ? "Una constancia excepcional: así se aprende un idioma." : hit >= 7 ? "Una semana entera practicando. ¡Ya es un hábito!" : "Tres días seguidos: vas por buen camino.", "cheer");
   return true;
 }
 function checkAnswerMilestone(){
   const total = Object.keys(stats).reduce((s, k)=> s + (stats[k].total || 0), 0);
   const hit = ANSWER_MILESTONES.filter(m=> total >= m).pop();
-  if(hit && milestoneOnce("a" + hit)) showBigCelebration(`🎯 ${hit} respuestas`, "Cada respuesta cuenta. ¡Sigue sumando!", "cheer");
+  if(hit && milestoneOnce("a" + hit)){ window._celebBadge = badgeSvg("answers", hit, 76); showBigCelebration(`🎯 ${hit} respuestas`, "Cada respuesta cuenta. ¡Sigue sumando!", "cheer"); }
 }
 /* Días de la semana actual (lunes a domingo) con práctica. */
 function weekDaysInfo(){
@@ -21769,7 +21775,7 @@ function wireWeeklyGoal(){
   const days = weekDaysInfo();
   if(days.filter(d=> d.done).length >= weeklyGoalDays && milestoneOnce("w" + weekStartStr())){
     saveProgress();
-    setTimeout(()=> showBigCelebration("📅 ¡Objetivo semanal cumplido!", `Practicaste ${weeklyGoalDays} días esta semana.`, "cheer"), 600);
+    setTimeout(()=>{ window._celebBadge = badgeSvg("week", 0, 76); showBigCelebration("📅 ¡Objetivo semanal cumplido!", `Practicaste ${weeklyGoalDays} días esta semana.`, "cheer"); }, 600);
   }
 }
 const ONBOARDING_SLIDES = [
@@ -21784,7 +21790,7 @@ function showOnboarding(){
 function drawOnboarding(){
   const s = ONBOARDING_SLIDES[_obStep], last = _obStep === ONBOARDING_SLIDES.length - 1;
   openModal(`<div style="text-align:center;padding:6px 4px 2px;">
-    <div style="font-size:2.6rem;">${s.icon}</div>
+    <div style="display:flex;justify-content:center;">${boltSVG(["hype","coach","happy"][_obStep] || "happy", 104)}</div>
     <div class="eyebrow" style="margin-top:6px;">Bienvenida · ${_obStep + 1} de ${ONBOARDING_SLIDES.length}</div>
     <h3 style="margin:6px 0 10px;font-size:1.3rem;">${s.title}</h3>
     <p style="color:var(--ink-soft);font-size:0.95rem;line-height:1.6;margin:0 0 16px;">${s.text}</p>
@@ -21849,7 +21855,7 @@ function prefersReducedMotion(){
 function fireConfetti(count){
   if(prefersReducedMotion()) return;
   count = count || 120;
-  const colors = [brandHex(), brandHexLight(), brandAccent(), "#E0457A", "#22C55E"];
+  const colors = [brandHex(), brandHexLight(), brandAccent(), "#E0457A", "#22C55E", "#FFD23F", "#2F73EE"];
   const canvas = document.createElement("canvas");
   canvas.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:950;";
   canvas.width = window.innerWidth;
@@ -21865,6 +21871,7 @@ function fireConfetti(count){
     color: colors[Math.floor(Math.random()*colors.length)],
     rot: Math.random()*Math.PI*2,
     vrot: (Math.random()-0.5)*0.3,
+    round: Math.random() < 0.35,
   }));
   const gravity = 0.32;
   let frame = 0;
@@ -21882,7 +21889,7 @@ function fireConfetti(count){
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rot);
       ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size/2, -p.size/2*0.6, p.size, p.size*0.6);
+      if(p.round){ ctx.beginPath(); ctx.arc(0, 0, p.size*0.42, 0, Math.PI*2); ctx.fill(); } else ctx.fillRect(-p.size/2, -p.size/2*0.6, p.size, p.size*0.6);
       ctx.restore();
     });
     if(alive && frame < 240){ requestAnimationFrame(tick); }
@@ -21906,7 +21913,7 @@ function showBigCelebration(message, sub, pose){
     overlay.addEventListener("click", (e)=>{ if(e.target===overlay) hideBigCelebration(); });
     overlay.querySelector("#bigCelebCloseBtn").onclick = hideBigCelebration;
   }
-  overlay.querySelector("#bigCelebMascot").innerHTML = mascotSVG(pose, 88);
+  overlay.querySelector("#bigCelebMascot").innerHTML = celebArtHTML(pose);
   overlay.querySelector("#bigCelebTitle").textContent = message;
   overlay.querySelector("#bigCelebSub").textContent = sub || "";
   overlay.querySelector("#bigCelebSub").style.display = sub ? "" : "none";
@@ -22089,11 +22096,358 @@ const ICONS = {
   keyboard:`<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M6.5 14h11"/>`,
   route:`<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h5a3.5 3.5 0 000-7h-2a3.5 3.5 0 010-7h5"/>`,
 };
+/* VISUAL-3D:BEGIN
+   Identidad visual 3D: iconos SVG con volumen (reemplazan a los de línea), fichas 3D para los emoji de temas,
+   la mascota Bolt (robot coach) en 6 estados, medallas por nivel e insignias de logros. Todo en SVG dentro del HTML. */
+const I3_PAL = {
+  blue:["#7DB6FF","#2F6FE0","#173E9A"], purple:["#B9A2FF","#6A45E8","#3A1F9E"], yellow:["#FFE58A","#F5B400","#8F6100"],
+  teal:["#7CEBC0","#1FB58A","#0B6B52"], coral:["#FFA48A","#EF5A3C","#992A14"], pink:["#FF9CC2","#E23A83","#8E1450"], orange:["#FFC98A","#F58A1F","#9A4B00"]
+};
+const I3_MAP = {home:"blue", target:"coral", book:"purple", tag:"orange", puzzle:"teal", books:"blue", pencil:"yellow", clock:"purple", user:"blue", flashcards:"pink", headphones:"purple", shuffle:"orange", chat:"teal", lightning:"yellow", journalpen:"coral", pin:"coral", box:"orange", palette:"pink", speed:"orange", compass:"teal", link:"blue", search:"blue", burst:"yellow", play:"blue", chevron:"purple", chartbar:"teal", radar:"purple", keyboard:"blue", route:"teal"};
+const I3_STROKE = new Set(["chevron", "link", "shuffle", "route"]);
+/* Iconos 3D adicionales (sustituyen a los emoji de la interfaz): formas cerradas, aptas para relleno con degradado. */
+I3_PAL.silver = ["#FFFFFF", "#B7C0CE", "#5F6A80"]; I3_PAL.bronze = ["#F7C79C", "#C67B3F", "#6E3811"]; I3_PAL.green = ["#8DF0B0", "#22B866", "#0B6B3A"]; I3_PAL.red = ["#FF9A8A", "#E5372F", "#8E1410"];
+const W_ = 'stroke="#fff" fill="none"';
+Object.assign(ICONS, {
+  party:`<path d="M3.5 21l4.6-12.5 8 8z"/><path d="M13 4l.8 2.4M18.5 8.2l2.4.8M16.3 2.8h.01M20.8 13h.01M11 9.5c2-1 3-3 2.5-5" stroke-width="1.7"/>`,
+  speaker:`<path d="M3.5 9h4.2L13 4.5v15L7.7 15H3.5z"/><path d="M15.6 9.2c1.4 1.6 1.4 4 0 5.6M18.4 6.4c3 3 3 8.2 0 11.2" fill="none"/>`,
+  wink:`<circle cx="12" cy="12" r="9.5"/><path d="M8.4 10h.01" stroke-width="2.6"/><path d="M13.6 10.6q1.6-1.6 3 0" fill="none"/><path d="M8 14.4q4 4.2 8 0" fill="none"/>`,
+  bulb:`<path d="M12 2.5a6.2 6.2 0 00-3.6 11.2V16h7.2v-2.3A6.2 6.2 0 0012 2.5z"/><path d="M9.4 19h5.2M10.4 21.5h3.2" fill="none"/>`,
+  checkok:`<circle cx="12" cy="12" r="9.5"/><path d="M7.4 12.4l3.2 3.2 6-7" ${W_} stroke-width="2.6"/>`,
+  crossbad:`<circle cx="12" cy="12" r="9.5"/><path d="M8.4 8.4l7.2 7.2M15.6 8.4l-7.2 7.2" ${W_} stroke-width="2.6"/>`,
+  repeat:`<path d="M4 11V9a3 3 0 013-3h11l-3-3M20 13v2a3 3 0 01-3 3H6l3 3"/>`,
+  refresh:`<path d="M19.6 12A7.6 7.6 0 016 17.4M4.4 12A7.6 7.6 0 0118 6.6M18.4 2.8v4h-4M5.6 21.2v-4h4"/>`,
+  mic:`<path d="M12 2.5a3.2 3.2 0 013.2 3.2v5.6a3.2 3.2 0 01-6.4 0V5.7A3.2 3.2 0 0112 2.5z"/><path d="M5.6 10.5h2.2a4.2 4.2 0 008.4 0h2.2a6.4 6.4 0 01-12.8 0z"/><path d="M12 17.6v3.4M8.6 21h6.8" fill="none"/>`,
+  warn:`<path d="M12 2.8l10 17.6H2z"/><path d="M12 9.2v5M12 17.3h.01" ${W_} stroke-width="2.5"/>`,
+  turtle:`<path d="M2.5 16.2a7.6 6.6 0 0115.2 0z"/><path d="M17.2 12.6a2.5 2.5 0 105 0 2.5 2.5 0 10-5 0z"/><path d="M5.2 16.2v3M14.8 16.2v3" fill="none"/>`,
+  timer:`<path d="M12 5a8 8 0 100 16 8 8 0 000-16z"/><path d="M9.5 2h5" fill="none"/><path d="M12 9v4.4l2.6 1.8" ${W_} stroke-width="2"/>`,
+  trophy:`<path d="M7 3.5h10v6.5a5 5 0 01-10 0z"/><path d="M7 5.5H3.8v2a3.4 3.4 0 003.2 3.4M17 5.5h3.2v2a3.4 3.4 0 01-3.2 3.4"/><path d="M12 15v3M7.6 21h8.8l-1.2-3H8.8z"/>`,
+  flame:`<path d="M12 2c.8 4 6.2 6.2 6.2 12a6.2 6.2 0 01-12.4 0c0-3 1.8-4.6 3-7 .8 1.4 1.8 2 2.6 2C10.8 6.2 11 4 12 2z"/>`,
+  star:`<path d="M12 2.4l2.9 6.1 6.7.9-4.9 4.6 1.2 6.6L12 17.4l-5.9 3.2 1.2-6.6L2.4 9.4l6.7-.9z"/>`,
+  thumb:`<path d="M2.8 10.5h3.6V21H2.8z"/><path d="M6.4 10.5L10.6 3c1.7 0 2.7 1.3 2.4 2.9l-.8 4.6H19a2 2 0 012 2.3l-1.3 7A2 2 0 0117.7 21H6.4z"/>`,
+  flask:`<path d="M9.6 2.8h4.8v6.2l5.3 9.6a2 2 0 01-1.8 3H6.1a2 2 0 01-1.8-3L9.6 9z"/><path d="M6.8 15.4h10.4" fill="none"/>`,
+  reddot:`<circle cx="12" cy="12" r="8.5"/>`,
+  trend:`<path d="M3 20.5h18M4.2 16l5-5.2 3.8 3.2 7-8M14.8 6h5.2v5.2"/>`,
+  clapper:`<path d="M3 10h18v10.5H3z"/><path d="M3.4 5.8l16.4-2.6.9 4.2L4.3 10z"/><path d="M7 10l3.4-6.6M12.8 10l3.4-6.6" fill="none"/>`,
+  calendar:`<path d="M3.8 5.6h16.4V20.6H3.8z"/><path d="M8 3v4M16 3v4M3.8 10.6h16.4" fill="none"/>`,
+  cone:`<path d="M2.5 9.2h19v5.6h-19z"/><path d="M6 14.8v6M18 14.8v6" fill="none"/>`,
+  eye:`<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/>`,
+  radio:`<circle cx="12" cy="12" r="9.3"/><circle cx="12" cy="12" r="3.8" fill="currentColor"/>`,
+  leaf:`<path d="M20.5 3.5C10 3.5 4 8.6 4 15c0 2.2 1 4.2 3 5 6.4 0 13.5-4.4 13.5-16.5z"/><path d="M4 21c3-5.4 6-8.4 11-11.4" fill="none"/>`,
+  medalg:`<circle cx="12" cy="14.6" r="6.6"/><path d="M8 3h3.2l1 6.5M16 3h-3.2l-1 6.5"/>`,
+  moon:`<path d="M20.6 14.8A8.9 8.9 0 019.2 3.4a8.9 8.9 0 1011.4 11.4z"/>`,
+  sun:`<circle cx="12" cy="12" r="4.8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" fill="none"/>`,
+  plus:`<path d="M12 4v16M4 12h16"/>`,
+  trash:`<path d="M5.4 7.6h13.2L17.5 21H6.5z"/><path d="M9 7.6V4h6v3.6M3.4 7.6h17.2" fill="none"/>`,
+  hourglass:`<path d="M6.5 3h11c0 5.4-5.5 6.2-5.5 9s5.5 3.6 5.5 9h-11c0-5.4 5.5-6.2 5.5-9S6.5 8.4 6.5 3z"/>`,
+  tick:`<path d="M4.5 12.5l5 5 10-11"/>`,
+  prev:`<path d="M19 5v14L8.6 12z"/><path d="M5.5 5v14" fill="none"/>`,
+  next:`<path d="M5 5v14l10.4-7z"/><path d="M18.5 5v14" fill="none"/>`,
+  stop:`<rect x="5.5" y="5.5" width="13" height="13" rx="2.4"/>`,
+  gear:`<path d="M10.4 2.5h3.2l.6 2.7 2 .9 2.4-1.5 2.3 2.3-1.5 2.4.9 2 2.7.6v3.2l-2.7.6-.9 2 1.5 2.4-2.3 2.3-2.4-1.5-2 .9-.6 2.7h-3.2l-.6-2.7-2-.9-2.4 1.5-2.3-2.3 1.5-2.4-.9-2-2.7-.6v-3.2l2.7-.6.9-2-1.5-2.4 2.3-2.3 2.4 1.5 2-.9z"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/>`,
+  lock:`<path d="M5 10.5h14V21H5z"/><path d="M8 10.5V8a4 4 0 018 0v2.5" fill="none"/>`,
+  dice:`<rect x="3.8" y="3.8" width="16.4" height="16.4" rx="3.6"/><path d="M8.4 8.4h.01M15.6 8.4h.01M12 12h.01M8.4 15.6h.01M15.6 15.6h.01" ${W_} stroke-width="2.6"/>`,
+  diamond:`<path d="M12 2.8l7 9.2-7 9.2-7-9.2z"/>`,
+  smile:`<circle cx="12" cy="12" r="9.5"/><path d="M8.6 10h.01M15.4 10h.01" stroke-width="2.6"/><path d="M8 14q4 4.2 8 0" fill="none"/>`,
+  sad:`<circle cx="12" cy="12" r="9.5"/><path d="M8.6 10h.01M15.4 10h.01" stroke-width="2.6"/><path d="M8.2 17q3.8-3.6 7.6 0" fill="none"/>`,
+  arrowr:`<path d="M4 12h15M13 5.5l6.5 6.5-6.5 6.5"/>`,
+  question:`<circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.6a2.9 2.9 0 115.2 1.7c-.9 1.1-2.4 1.5-2.4 3.2M12 17.4h.01" ${W_} stroke-width="2.4"/>`
+});
+Object.assign(I3_MAP, {party:"orange", speaker:"blue", wink:"yellow", bulb:"yellow", checkok:"green", crossbad:"red", repeat:"blue", refresh:"blue", mic:"coral", warn:"yellow", turtle:"green", timer:"purple", trophy:"yellow", flame:"orange", star:"yellow", thumb:"orange", flask:"teal", reddot:"red", trend:"teal", clapper:"purple", calendar:"coral", cone:"orange", eye:"blue", radio:"blue", leaf:"green", medalg:"yellow", moon:"purple", sun:"yellow", plus:"coral", trash:"coral", hourglass:"orange", tick:"green", prev:"blue", next:"blue", stop:"red", gear:"silver", lock:"yellow", dice:"purple", diamond:"blue", question:"blue", smile:"yellow", sad:"blue", arrowr:"teal", medals:"silver", medalb:"bronze"});
+ICONS.medals = ICONS.medalg; ICONS.medalb = ICONS.medalg;
+["repeat", "refresh", "plus", "trend", "tick", "arrowr"].forEach(n=> I3_STROKE.add(n));
+(function injectVisual3dDefs(){
+  const grads = Object.keys(I3_PAL).map(k=> `<linearGradient id="i3g-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${I3_PAL[k][0]}"/><stop offset="1" stop-color="${I3_PAL[k][1]}"/></linearGradient>`).join("");
+  const clips = Object.keys(ICONS).map(n=> `<clipPath id="i3c-${n}">${ICONS[n]}</clipPath>`).join("");
+  const medals = `
+<linearGradient id="md-bronze" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2B98A"/><stop offset=".5" stop-color="#C67B3F"/><stop offset="1" stop-color="#8A4C1E"/></linearGradient>
+<linearGradient id="md-silver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#B7C0CE"/><stop offset="1" stop-color="#7B8598"/></linearGradient>
+<linearGradient id="md-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".5" stop-color="#F5B921"/><stop offset="1" stop-color="#B57B00"/></linearGradient>
+<linearGradient id="md-plat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0FBFF"/><stop offset=".5" stop-color="#8FD3F0"/><stop offset="1" stop-color="#4C8FB8"/></linearGradient>
+<linearGradient id="md-ruby" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC0D0"/><stop offset=".5" stop-color="#E23A6A"/><stop offset="1" stop-color="#8E1236"/></linearGradient>
+<linearGradient id="md-violet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E4D2FF"/><stop offset=".5" stop-color="#8E5CF0"/><stop offset="1" stop-color="#4A22A6"/></linearGradient>
+<linearGradient id="md-rb-blue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7AB8FF"/><stop offset="1" stop-color="#2F6FE0"/></linearGradient>
+<linearGradient id="md-rb-green" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7BE3A6"/><stop offset="1" stop-color="#1FA463"/></linearGradient>
+<linearGradient id="md-rb-orange" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC24A"/><stop offset="1" stop-color="#F0670F"/></linearGradient>
+<linearGradient id="md-rb-red" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A6B"/><stop offset="1" stop-color="#E12D2D"/></linearGradient>
+<linearGradient id="md-rb-purple" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B79BFF"/><stop offset="1" stop-color="#4523A8"/></linearGradient>
+<linearGradient id="md-fl-red" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A6B"/><stop offset="1" stop-color="#E12D2D"/></linearGradient>
+<linearGradient id="md-fl-or" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC24A"/><stop offset="1" stop-color="#F0670F"/></linearGradient>
+<linearGradient id="md-fl-yl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF0A0"/><stop offset="1" stop-color="#F2B400"/></linearGradient>
+<radialGradient id="md-shine" cx=".3" cy=".25" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<filter id="md-sh" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#1a1a3a" flood-opacity=".28"/></filter>`;
+  const bolt = `
+<linearGradient id="bo-hb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FB1FF"/><stop offset=".55" stop-color="#2F73EE"/><stop offset="1" stop-color="#1D46B8"/></linearGradient>
+<linearGradient id="bo-bb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4C8FF7"/><stop offset="1" stop-color="#1B3FA8"/></linearGradient>
+<linearGradient id="bo-yy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFEB7A"/><stop offset="1" stop-color="#F5B400"/></linearGradient>
+<linearGradient id="bo-sc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B2450"/><stop offset="1" stop-color="#0B1030"/></linearGradient>
+<radialGradient id="bo-gl" cx=".3" cy=".2" r=".7"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="bo-sd" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#0b1030" stop-opacity=".35"/><stop offset="1" stop-color="#0b1030" stop-opacity="0"/></radialGradient>
+<filter id="bo-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+  const svg = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${grads}<linearGradient id="i3gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>${clips}${medals}${bolt}</defs></svg>`;
+  document.body.insertAdjacentHTML("afterbegin", svg);
+})();
+
+/* Icono 3D: cara con degradado, contorno y grosor (extrusión) oscuro, brillo superior y sombra suave (CSS .ico3). */
 function svgIcon(name, size){
   size = size || 20;
-  const inner = ICONS[name] || ICONS.book;
-  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+  if(!ICONS[name]) name = "book";
+  const pk = I3_MAP[name] || "blue", p = I3_PAL[pk];
+  const face = ICONS[name].replace(/fill="currentColor"/g, name === "play" ? `fill="url(#i3g-${pk})"` : 'fill="#fff"');
+  const back = ICONS[name].replace(/fill="currentColor"/g, `fill="${p[2]}"`).replace(/stroke="#fff"/g, `stroke="${p[2]}"`);
+  if(I3_STROKE.has(name)){
+    return `<svg class="ico3" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g stroke="${p[2]}" stroke-width="4.4" transform="translate(0 1)">${back}</g><g stroke="url(#i3g-${pk})" stroke-width="2.8">${face}</g></svg>`;
+  }
+  return `<svg class="ico3" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g fill="${p[2]}" stroke="${p[2]}" stroke-width="1.9" transform="translate(0 1.1)">${back}</g><g fill="url(#i3g-${pk})" stroke="${p[2]}" stroke-width="1.3">${face}</g><rect x="0" y="0" width="24" height="12" fill="url(#i3gloss)" stroke="none" clip-path="url(#i3c-${name})"/></svg>`;
 }
+
+/* Ficha 3D para un emoji (temas, situaciones, módulos): base con degradado de color estable según el emoji. */
+const EMO3_HUES = [["#8BC2FF","#3D7BEF"],["#C3A6FF","#7A4FEA"],["#FFD877","#F2A80C"],["#7FEBC4","#1FB98C"],["#FFA98F","#EE5F42"],["#FF9EC7","#E2408A"],["#FFC58A","#F58F2A"]];
+function emo3d(e, size){
+  if(!e) return "";
+  let h = 0; for(const c of String(e)) h = (h * 31 + c.codePointAt(0)) >>> 0;
+  const p = EMO3_HUES[h % EMO3_HUES.length];
+  return `<span class="emo3d" style="--e1:${p[0]};--e2:${p[1]}${size ? `;--es:${size}` : ""}" aria-hidden="true">${e}</span>`;
+}
+
+/* ---- Bolt: robot coach (6 estados) ---- */
+function boltSVG(state, size){
+  size = size || 92;
+  const M = {
+    happy:{ant:"#3DE08D", mood:"eyes", mouth:"smile", armL:"down", armR:"wave"},
+    hype:{ant:"#FFD23F", mood:"arc", mouth:"open", armL:"up", armR:"up", stars:1},
+    coach:{ant:"#FFD23F", mood:"wink", mouth:"grin", armL:"down", armR:"fist"},
+    think:{ant:"#FF9A3D", mood:"think", mouth:"flat", armL:"down", armR:"chin", q:1},
+    sad:{ant:"#8A93B5", mood:"sad", mouth:"frown", armL:"down", armR:"down", tear:1}
+  }[state] || null;
+  const S = M || {ant:"#3DE08D", mood:"eyes", mouth:"smile", armL:"down", armR:"wave"};
+  const cy = "#7DF3FF", G = 'filter="url(#bo-glow)"';
+  const eyeMap = {
+    eyes:`<g class="bolt-eye" ${G}><ellipse cx="45" cy="58" rx="6" ry="8" fill="${cy}"/><ellipse cx="75" cy="58" rx="6" ry="8" fill="${cy}"/></g>`,
+    arc:`<g ${G} fill="none" stroke="${cy}" stroke-width="4.5" stroke-linecap="round"><path d="M38 62q7-12 14 0"/><path d="M68 62q7-12 14 0"/></g>`,
+    wink:`<g ${G}><ellipse cx="45" cy="58" rx="6" ry="8" fill="${cy}"/><path d="M68 60q7-8 14 0" fill="none" stroke="${cy}" stroke-width="4.5" stroke-linecap="round"/></g>`,
+    think:`<g ${G}><ellipse cx="45" cy="59" rx="6" ry="7" fill="${cy}"/><ellipse cx="75" cy="57" rx="6" ry="8" fill="${cy}"/><path d="M66 46l16-3" stroke="${cy}" stroke-width="3.5" stroke-linecap="round"/></g>`,
+    sad:`<g ${G}><ellipse cx="45" cy="61" rx="6" ry="7" fill="${cy}"/><ellipse cx="75" cy="61" rx="6" ry="7" fill="${cy}"/><path d="M36 50l16 4M84 50l-16 4" stroke="${cy}" stroke-width="3.5" stroke-linecap="round"/></g>`
+  };
+  const mouthMap = {
+    smile:`<path d="M50 74q10 9 20 0" fill="none" stroke="${cy}" stroke-width="4" stroke-linecap="round" ${G}/>`,
+    open:`<path d="M48 72h24a12 12 0 0 1-24 0z" fill="${cy}" ${G}/>`,
+    grin:`<path d="M48 72q12 12 24 0z" fill="${cy}" ${G}/>`,
+    flat:`<path d="M52 77h16" stroke="${cy}" stroke-width="4" stroke-linecap="round" ${G}/>`,
+    frown:`<path d="M50 80q10-9 20 0" fill="none" stroke="${cy}" stroke-width="4" stroke-linecap="round" ${G}/>`
+  };
+  const arm = (side, pose)=>{
+    const x = side === "L" ? 30 : 90, s = side === "L" ? -1 : 1;
+    if(pose === "up") return `<g><rect x="${side === "L" ? 14 : 96}" y="70" width="10" height="26" rx="5" fill="url(#bo-bb)" transform="rotate(${s * -28} ${x} 110)"/><circle cx="${side === "L" ? 10 : 110}" cy="72" r="7" fill="url(#bo-yy)"/></g>`;
+    if(pose === "wave") return `<g><rect x="93" y="92" width="10" height="24" rx="5" fill="url(#bo-bb)" transform="rotate(-38 98 112)"/><circle cx="112" cy="94" r="7" fill="url(#bo-yy)"/></g>`;
+    if(pose === "fist") return `<g><rect x="93" y="90" width="10" height="24" rx="5" fill="url(#bo-bb)" transform="rotate(-48 98 112)"/><circle cx="110" cy="88" r="8" fill="url(#bo-yy)"/><path d="M106 86h8M106 90h8" stroke="#B57B00" stroke-width="1.3" opacity=".6"/></g>`;
+    if(pose === "chin") return `<g><rect x="93" y="98" width="10" height="20" rx="5" fill="url(#bo-bb)" transform="rotate(30 98 112)"/><circle cx="90" cy="94" r="6" fill="url(#bo-yy)"/></g>`;
+    return `<rect x="${side === "L" ? 24 : 88}" y="112" width="9" height="20" rx="4.5" fill="url(#bo-bb)" transform="rotate(${s * -6} ${x} 112)"/><circle cx="${side === "L" ? 26 : 96}" cy="133" r="5.5" fill="url(#bo-yy)"/>`;
+  };
+  const stars = S.stars ? `<path d="M14 18l2.5 5.5 6 .8-4.5 4 1.2 6-5.2-3-5.2 3 1.2-6-4.5-4 6-.8z" fill="url(#bo-yy)"/><path d="M108 24l2 4.2 4.6.6-3.4 3 .9 4.6-4.1-2.3-4.1 2.3.9-4.6-3.4-3 4.6-.6z" fill="url(#bo-yy)"/><circle cx="104" cy="10" r="2.5" fill="#FF6B6B"/><circle cx="20" cy="40" r="2.5" fill="#3DE08D"/>` : "";
+  const q = S.q ? `<circle cx="106" cy="34" r="11" fill="#fff"/><text x="106" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#2F6FE0" font-family="Poppins,Inter,sans-serif">?</text>` : "";
+  const tear = S.tear ? `<path d="M40 74q-3 7 0 10q3-3 0-10z" fill="#9CD6FF"/>` : "";
+  const legY = state === "hype" ? 114 : 120;
+  return `<svg class="bolt" viewBox="-4 -6 128 158" width="${size}" height="${Math.round(size * 1.23)}" role="img" aria-label="Bolt, tu coach">
+  <ellipse cx="60" cy="146" rx="32" ry="5" fill="url(#bo-sd)"/>
+  <g class="bolt-bob">
+    <rect x="42" y="${legY}" width="14" height="18" rx="6" fill="url(#bo-bb)"/><rect x="64" y="${legY}" width="14" height="18" rx="6" fill="url(#bo-bb)"/>
+    <rect x="38" y="${legY + 13}" width="22" height="9" rx="4.5" fill="url(#bo-yy)"/><rect x="60" y="${legY + 13}" width="22" height="9" rx="4.5" fill="url(#bo-yy)"/>
+    <rect x="36" y="94" width="48" height="34" rx="16" fill="url(#bo-bb)"/>
+    <circle cx="60" cy="111" r="9" fill="url(#bo-yy)"/><path d="M62 104l-6 9h5l-2 7 7-10h-5z" fill="#B57B00"/>
+    <ellipse cx="46" cy="102" rx="8" ry="4" fill="url(#bo-gl)"/>
+    ${arm("L", S.armL)}${arm("R", S.armR)}
+    <line x1="60" y1="22" x2="60" y2="8" stroke="#1D46B8" stroke-width="3" stroke-linecap="round"/>
+    <circle class="bolt-led" cx="60" cy="6" r="6" fill="${S.ant}" ${G}/><circle cx="58" cy="4" r="2" fill="#fff" opacity=".8"/>
+    <path d="M14 46Q60 -8 106 46" fill="none" stroke="url(#bo-yy)" stroke-width="7" stroke-linecap="round"/>
+    <rect x="12" y="20" width="96" height="76" rx="34" fill="url(#bo-hb)"/>
+    <ellipse cx="38" cy="34" rx="20" ry="9" fill="url(#bo-gl)"/>
+    <rect x="24" y="36" width="72" height="50" rx="22" fill="url(#bo-sc)"/>
+    <ellipse cx="46" cy="42" rx="18" ry="4" fill="#fff" opacity=".12"/>
+    ${eyeMap[S.mood]}${mouthMap[S.mouth]}${tear}
+    <rect x="2" y="46" width="16" height="28" rx="8" fill="url(#bo-yy)"/><rect x="102" y="46" width="16" height="28" rx="8" fill="url(#bo-yy)"/>
+    <rect x="5" y="50" width="4" height="14" rx="2" fill="#fff" opacity=".55"/><rect x="105" y="50" width="4" height="14" rx="2" fill="#fff" opacity=".55"/>
+    ${stars}${q}
+  </g></svg>`;
+}
+/* Compatibilidad: las pantallas que ya llamaban a mascotSVG(pose) ahora muestran a Bolt. */
+function mascotSVG(pose, size){
+  const map = {cheer:"hype", wave:"happy", sleepy:"sad", "":"happy"};
+  const st = map[pose] || pose || "happy";
+  return boltSVG(st, size || 72);
+}
+/* Saludo de Bolt en Inicio, según racha y repaso pendiente. */
+function boltCoachHTML(reviewN, streak, returning){
+  let st = "happy", msg;
+  const lost = dailyStreak.lastDate && streak > 0 && Math.round((new Date(todayStr()) - new Date(dailyStreak.lastDate)) / 86400000) > 1;
+  if(!returning){ st = "hype"; msg = "<b>¡Soy Bolt, tu coach!</b> Empieza con tu primera práctica: solo unos minutos."; }
+  else if(lost){ st = "sad"; msg = "<b>Se cortó tu racha.</b> No pasa nada: ¡hoy empezamos otra!"; }
+  else if(reviewN){ st = "coach"; msg = `<b>Tienes ${reviewN} por repasar.</b> Cinco minutos y lo fijas. ¡Vamos!`; }
+  else if(streak >= 1){ st = "happy"; msg = `<b>Racha de ${streak} ${streak === 1 ? "día" : "días"}.</b> Una práctica hoy y sigues sumando.`; }
+  else{ st = "think"; msg = "<b>¿Qué practicamos hoy?</b> Elige un ejercicio o empieza la práctica de hoy."; }
+  return `<div class="bolt-coach">${boltSVG(st, 78)}<div class="bolt-bubble">${msg}</div></div>`;
+}
+
+/* ---- Medallas por nivel e insignias de logros ---- */
+const MEDAL_TIER = {
+  A1:{g:"md-bronze", rb:"md-rb-blue", ink:"#5B2F0E", ring:"#8A4C1E"}, A2:{g:"md-silver", rb:"md-rb-green", ink:"#39414F", ring:"#7B8598"},
+  B1:{g:"md-gold", rb:"md-rb-orange", ink:"#6B4500", ring:"#B57B00"}, B2:{g:"md-plat", rb:"md-rb-blue", ink:"#1E4E75", ring:"#2F6FA0"},
+  C1:{g:"md-ruby", rb:"md-rb-red", ink:"#fff", ring:"#8E1236"}, C2:{g:"md-violet", rb:"md-rb-purple", ink:"#fff", ring:"#4A22A6"}
+};
+function medalSvg(level, size, locked){
+  const t = MEDAL_TIER[level] || MEDAL_TIER.A1;
+  const ribbon = `<path d="M28 2h10l6 24H32zM52 2H42l-6 24h12z" fill="url(#${t.rb})"/>`;
+  let body;
+  if(level === "C1") body = `<path d="M40 24l25 12v24L40 84 15 60V36z" fill="url(#${t.g})"/><path d="M40 30l19 9v18L40 78 21 57V39z" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/><path d="M24 40l16-8v12z" fill="url(#md-shine)"/>`;
+  else if(level === "C2") body = `<path d="M40 22l24 16-8 30H24l-8-30z" fill="url(#${t.g})"/><path d="M40 28l17 12-6 22H29l-6-22z" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.5"/><path d="M26 40l14-14v14z" fill="url(#md-shine)"/>`;
+  else body = `<circle cx="40" cy="54" r="28" fill="url(#${t.g})"/><circle cx="40" cy="54" r="21" fill="none" stroke="${t.ring}" stroke-opacity=".55" stroke-width="2"/><circle cx="40" cy="54" r="19" fill="url(#${t.g})"/><ellipse cx="30" cy="40" rx="12" ry="6" fill="url(#md-shine)"/>`;
+  const ty = level === "C1" ? 60 : level === "C2" ? 58 : 62;
+  return `<svg class="medal${locked ? " locked" : ""}" viewBox="0 0 80 90" width="${size || 64}" height="${Math.round((size || 64) * 1.125)}" filter="url(#md-sh)" role="img" aria-label="Medalla nivel ${level}${locked ? " (bloqueada)" : ""}">${ribbon}${body}<text x="40" y="${ty}" text-anchor="middle" font-size="19" font-weight="700" fill="${t.ink}" font-family="Poppins,Inter,sans-serif">${level}</text></svg>`;
+}
+const BADGE_TIER = [[100, "C2"], [60, "C1"], [30, "B2"], [14, "B1"], [7, "A2"], [0, "A1"]];
+function badgeSvg(kind, n, size, locked){
+  const tierKey = kind === "streak" ? (BADGE_TIER.find(x=> n >= x[0]) || [0, "A1"])[1] : kind === "answers" ? ({100:"A1", 500:"A2", 1000:"B1", 2500:"C1"}[n] || "B1") : "B1";
+  const t = MEDAL_TIER[tierKey];
+  const label = kind === "answers" ? (n >= 1000 ? (n / 1000) + "K" : String(n)) : kind === "streak" ? String(n) : "";
+  let glyph;
+  if(kind === "streak") glyph = `<g transform="translate(40 47)"><path d="M0 -13c3 8 13 12 13 25a13 13 0 0 1-26 0c0-6 4-9 6-14 2 4 4 5 5 5-1-5-1-10 2-16z" fill="url(#md-fl-red)"/><path d="M0 -2c2 6 8 8 8 16a8 8 0 0 1-16 0c0-4 2-6 4-9 1 2 2 3 3 3-1-3-1-6 1-10z" fill="url(#md-fl-or)"/><path d="M0 8c1 3 4 4 4 8a4 4 0 0 1-8 0c0-3 2-4 4-8z" fill="url(#md-fl-yl)"/></g><text x="40" y="76" text-anchor="middle" font-size="12" font-weight="800" fill="${t.ink}" font-family="Poppins,Inter,sans-serif">${label}</text>`;
+  else if(kind === "answers") glyph = `<g transform="translate(40 50)"><circle r="14" fill="#fff" opacity=".92"/><circle r="10" fill="#E12D2D"/><circle r="6" fill="#fff"/><circle r="3" fill="#E12D2D"/></g><text x="40" y="76" text-anchor="middle" font-size="11" font-weight="800" fill="${t.ink}" font-family="Poppins,Inter,sans-serif">${label}</text>`;
+  else glyph = `<g transform="translate(40 54)"><rect x="-14" y="-13" width="28" height="26" rx="5" fill="#fff" opacity=".95"/><rect x="-14" y="-13" width="28" height="8" rx="4" fill="#2F6FE0"/><path d="M-6 3l5 5 8-10" fill="none" stroke="#1FA463" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+  return `<svg class="medal${locked ? " locked" : ""}" viewBox="0 0 80 90" width="${size || 64}" height="${Math.round((size || 64) * 1.125)}" filter="url(#md-sh)" role="img" aria-label="Insignia${locked ? " (bloqueada)" : ""}"><path d="M28 2h10l6 24H32zM52 2H42l-6 24h12z" fill="url(#${t.rb})"/><circle cx="40" cy="54" r="28" fill="url(#${t.g})"/><circle cx="40" cy="54" r="21" fill="none" stroke="${t.ring}" stroke-opacity=".55" stroke-width="2"/><ellipse cx="30" cy="40" rx="12" ry="6" fill="url(#md-shine)"/>${glyph}</svg>`;
+}
+/* Ilustración del cartel de celebración: Bolt y, si hay, la insignia o medalla ganada. */
+function celebArtHTML(pose){
+  const badge = window._celebBadge; window._celebBadge = null;
+  const bolt = mascotSVG(pose, 88);
+  return badge ? `<div class="celeb-art">${bolt}<div class="celeb-badge">${badge}</div></div>` : bolt;
+}
+/* Tarjeta "Mis insignias" del Perfil. */
+function achievementsHTML(){
+  const rl = typeof routeCurrentLevel === "function" ? routeCurrentLevel() : "A1";
+  const reached = Math.max(0, LEVELS.indexOf(rl), placementResult ? LEVELS.indexOf(placementResult.level) : 0, LEVELS.indexOf(currentLevel));
+  const weeks = milestonesSeen.filter(k=> k[0] === "w").length;
+  let got = 0, total = 0;
+  const item = (svg, lbl, locked)=>{ total++; if(!locked) got++; return `<div class="ach-item${locked ? " is-locked" : ""}">${svg}<span>${lbl}</span></div>`; };
+  const lv = LEVELS.map((l, i)=> item(medalSvg(l, 58, i > reached), `Nivel ${l}`, i > reached)).join("");
+  const st = STREAK_MILESTONES.map(n=> { const ok = milestonesSeen.includes("s" + n); return item(badgeSvg("streak", n, 58, !ok), `${n} días`, !ok); }).join("");
+  const an = ANSWER_MILESTONES.map(n=> { const ok = milestonesSeen.includes("a" + n); return item(badgeSvg("answers", n, 58, !ok), `${n} respuestas`, !ok); }).join("");
+  const wk = item(badgeSvg("week", 0, 58, !weeks), weeks ? `Objetivo semanal ×${weeks}` : "Objetivo semanal", !weeks);
+  return `<div class="card" style="margin-bottom:20px;">
+      <h3 class="dash-card-title">Mis insignias <span style="font-weight:600;color:var(--ink-soft);font-size:0.85rem;">· ${got} de ${total}</span></h3>
+      <p class="dash-card-sub">Medallas por nivel alcanzado e insignias por tus rachas, respuestas y objetivos. Las grises aún están por ganar.</p>
+      <div class="ach-title">Niveles</div><div class="ach-grid">${lv}</div>
+      <div class="ach-title">Rachas</div><div class="ach-grid">${st}</div>
+      <div class="ach-title">Práctica</div><div class="ach-grid">${an}${wk}</div>
+    </div>`;
+}
+/* ---- Animales 3D (avatares de perfil) ---- */
+const ANIMALS = {
+  "🦊":{c:["#FFB878","#E5641C"], ears:"tri", inner:"#FFE1C8", extra:`<path d="M32 60C19 58 10 48 10 41c9 4 15 4 22 1 7 3 13 3 22-1 0 7-9 17-22 19z" fill="#fff"/>`, nose:"#2A1A14"},
+  "🐱":{c:["#D9E0EE","#7E8BA8"], ears:"tri", inner:"#FFC4D2", extra:`<path d="M12 42h-9M12 46l-8 3M52 42h9M52 46l8 3" stroke="#4B5670" stroke-width="1.6" stroke-linecap="round" fill="none"/>`, nose:"#E8608A"},
+  "🐼":{c:["#FFFFFF","#D5DAE6"], ears:"round", earC:"#2B2F3E", extra:`<ellipse cx="22.5" cy="35" rx="6" ry="7.5" transform="rotate(-18 22.5 35)" fill="#2B2F3E"/><ellipse cx="41.5" cy="35" rx="6" ry="7.5" transform="rotate(18 41.5 35)" fill="#2B2F3E"/>`, nose:"#2B2F3E", eyeC:"#fff"},
+  "🐨":{c:["#CDD3DF","#7D8799"], ears:"biground", inner:"#F1F3F8", nose:"#2B2F3E", bignose:1},
+  "🦉":{c:["#D4A374","#7E5230"], ears:"tuft", extra:`<circle cx="23" cy="34" r="8.6" fill="#FFF4DC"/><circle cx="41" cy="34" r="8.6" fill="#FFF4DC"/>`, beak:1, eyeC:"#2B2F3E", bigeye:1},
+  "🐧":{c:["#5A6690","#1F2645"], ears:"none", extra:`<ellipse cx="32" cy="41" rx="15.5" ry="15" fill="#fff"/>`, beak:1, nose:null},
+  "🦁":{c:["#FFD684","#E59A2E"], ears:"none", mane:["#C9741E","#8E4A0E"], nose:"#7A3E12", inner:"#FFE9BE"},
+  "🐯":{c:["#FFB964","#E8721A"], ears:"round", earC:"#F08A2E", inner:"#FFF", extra:`<path d="M32 14v9M25 15.5l2.2 7M39 15.5l-2.2 7M11 34l7 1.5M11 40l7 .5M53 34l-7 1.5M53 40l-7 .5" stroke="#3B1D0A" stroke-width="2.4" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="46" rx="9" ry="6.5" fill="#FFF3E0"/>`, nose:"#E8608A"},
+  "🐰":{c:["#FFFFFF","#DFE3EF"], ears:"long", inner:"#FFC9D8", nose:"#FF7FA3"},
+  "🐵":{c:["#C98F5F","#7B4A26"], ears:"biground", earC:"#C98F5F", inner:"#F1C9A0", extra:`<ellipse cx="32" cy="43" rx="14.5" ry="12" fill="#F1C9A0"/>`, nose:"#5B341B"}
+};
+(function injectAnimalDefs(){
+  const g = Object.keys(ANIMALS).map((k, i)=>{ const a = ANIMALS[k];
+    let s = `<radialGradient id="an${i}" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="${a.c[0]}"/><stop offset="1" stop-color="${a.c[1]}"/></radialGradient>`;
+    if(a.mane) s += `<radialGradient id="an${i}m" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="${a.mane[0]}"/><stop offset="1" stop-color="${a.mane[1]}"/></radialGradient>`;
+    return s; }).join("");
+  document.body.insertAdjacentHTML("afterbegin", `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${g}<radialGradient id="anShine" cx=".3" cy=".22" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".8"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs></svg>`);
+})();
+function animalSvg(emoji, size){
+  const keys = Object.keys(ANIMALS), i = keys.indexOf(emoji), a = ANIMALS[emoji];
+  if(!a) return "";
+  const F = `url(#an${i})`, ink = "#241A2E";
+  let back = "", ears = "";
+  if(a.mane) back = `<circle cx="32" cy="35" r="27.5" fill="url(#an${i}m)"/><circle cx="32" cy="35" r="27.5" fill="none" stroke="#7A3E12" stroke-opacity=".35" stroke-width="1.4"/>`;
+  if(a.ears === "tri") ears = `<path d="M11 32L13 7l16 12z" fill="${F}"/><path d="M53 32L51 7 35 19z" fill="${F}"/><path d="M16 25l1-11 8 7zM48 25l-1-11-8 7z" fill="${a.inner || "#fff"}" opacity=".9"/>`;
+  if(a.ears === "round") ears = `<circle cx="14" cy="16" r="7.6" fill="${a.earC || F}"/><circle cx="50" cy="16" r="7.6" fill="${a.earC || F}"/>` + (a.inner ? `<circle cx="14" cy="16" r="3.6" fill="${a.inner}"/><circle cx="50" cy="16" r="3.6" fill="${a.inner}"/>` : "");
+  if(a.ears === "biground") ears = `<circle cx="12" cy="22" r="10" fill="${a.earC || F}"/><circle cx="52" cy="22" r="10" fill="${a.earC || F}"/><circle cx="12" cy="22" r="5.4" fill="${a.inner}"/><circle cx="52" cy="22" r="5.4" fill="${a.inner}"/>`;
+  if(a.ears === "tuft") ears = `<path d="M12 28L10 6l15 12zM52 28l2-22-15 12z" fill="${F}"/>`;
+  if(a.ears === "long") ears = `<ellipse cx="22" cy="12" rx="6.2" ry="14" fill="${F}"/><ellipse cx="42" cy="12" rx="6.2" ry="14" fill="${F}"/><ellipse cx="22" cy="13" rx="3" ry="9.5" fill="${a.inner}"/><ellipse cx="42" cy="13" rx="3" ry="9.5" fill="${a.inner}"/>`;
+  if(emoji === "🦁") ears = `<circle cx="17" cy="15" r="6" fill="url(#an${i}m)"/><circle cx="47" cy="15" r="6" fill="url(#an${i}m)"/><circle cx="17" cy="15" r="3" fill="${a.inner}"/><circle cx="47" cy="15" r="3" fill="${a.inner}"/>`;
+  const eyeC = a.eyeC || ink;
+  let eyes = `<circle cx="23.5" cy="34" r="3.4" fill="${eyeC}"/><circle cx="40.5" cy="34" r="3.4" fill="${eyeC}"/><circle cx="24.6" cy="32.8" r="1.2" fill="#fff"/><circle cx="41.6" cy="32.8" r="1.2" fill="#fff"/>`;
+  if(a.bigeye) eyes = `<circle cx="23" cy="34" r="4.6" fill="${ink}"/><circle cx="41" cy="34" r="4.6" fill="${ink}"/><circle cx="24.4" cy="32.6" r="1.5" fill="#fff"/><circle cx="42.4" cy="32.6" r="1.5" fill="#fff"/>`;
+  if(emoji === "🐼") eyes = `<circle cx="23" cy="34.5" r="2.6" fill="#fff"/><circle cx="41" cy="34.5" r="2.6" fill="#fff"/><circle cx="23.4" cy="34.8" r="1.2" fill="${ink}"/><circle cx="40.6" cy="34.8" r="1.2" fill="${ink}"/>`;
+  if(emoji === "🐧") eyes = `<circle cx="24" cy="32" r="3" fill="#fff"/><circle cx="40" cy="32" r="3" fill="#fff"/><circle cx="24.4" cy="32.3" r="1.5" fill="${ink}"/><circle cx="39.6" cy="32.3" r="1.5" fill="${ink}"/>`;
+  let nose = "";
+  if(a.beak) nose = `<path d="M27.5 40.5h9L32 47.5z" fill="#FFB320" stroke="#C97A00" stroke-width="1" stroke-linejoin="round"/>`;
+  else if(a.bignose) nose = `<ellipse cx="32" cy="42.5" rx="5" ry="6.8" fill="${a.nose}"/><ellipse cx="30.4" cy="40" rx="1.5" ry="1.1" fill="#fff" opacity=".6"/>`;
+  else if(a.nose) nose = `<ellipse cx="32" cy="43.2" rx="3.2" ry="2.5" fill="${a.nose}"/><path d="M32 45.6v2.4M27.6 49q4.4 3.6 4.4-1.2M36.4 49q-4.4 3.6-4.4-1.2" stroke="${ink}" stroke-width="1.6" stroke-linecap="round" fill="none"/>`;
+  const cheeks = a.beak ? "" : `<ellipse cx="17.5" cy="43.5" rx="3.4" ry="2.2" fill="#FF8FB0" opacity=".45"/><ellipse cx="46.5" cy="43.5" rx="3.4" ry="2.2" fill="#FF8FB0" opacity=".45"/>`;
+  return `<svg class="ico3 avatar3d" viewBox="0 0 64 64" width="${size || 40}" height="${size || 40}" aria-hidden="true">${back}${ears}<circle cx="32" cy="36" r="22" fill="${F}"/>${a.extra || ""}${eyes}${nose}${cheeks}<ellipse cx="24" cy="21.5" rx="10.5" ry="5.2" fill="url(#anShine)"/></svg>`;
+}
+
+/* ---- Capa de emoji -> icono 3D: reemplaza los emoji de la interfaz al mostrar cada pantalla ---- */
+const E3_MAP = {
+  "🎉":"party", "🎊":"party", "🔊":"speaker", "🔈":"speaker", "😉":"wink", "💡":"bulb", "✅":"checkok", "☑":"checkok", "❌":"crossbad", "✖":"crossbad", "🎯":"target",
+  "🔁":"repeat", "🔂":"repeat", "🔄":"refresh", "🎤":"mic", "🎙":"mic", "📖":"book", "📘":"book", "📕":"book", "📗":"book", "📚":"books", "⚠":"warn", "🐢":"turtle",
+  "⏱":"timer", "⏲":"timer", "⏰":"timer", "🕐":"clock", "🕰":"clock", "🏆":"trophy", "🧩":"puzzle", "🔥":"flame", "⭐":"star", "🌟":"star", "👏":"thumb", "👍":"thumb",
+  "🧭":"compass", "✍":"pencil", "✏":"pencil", "📝":"journalpen", "🔍":"search", "🔎":"search", "⌨":"keyboard", "🧪":"flask", "🎧":"headphones", "🔴":"reddot",
+  "📈":"trend", "📉":"trend", "📊":"chartbar", "🎬":"clapper", "📅":"calendar", "🗓":"calendar", "🚧":"cone", "🔀":"shuffle", "🏷":"tag", "👁":"eye", "🙈":"eye",
+  "🔘":"radio", "🌿":"leaf", "🌱":"leaf", "💬":"chat", "🥇":"medalg", "🥈":"medals", "🥉":"medalb", "🏅":"medalg", "🌙":"moon", "☀":"sun", "➕":"plus", "📌":"pin", "📍":"pin",
+  "👤":"user", "🗑":"trash", "⏳":"hourglass", "⌛":"hourglass", "✔":"tick", "▶":"play", "⏮":"prev", "⏭":"next", "⏹":"stop", "⚡":"lightning", "⚙":"gear", "🔧":"gear", "🔒":"lock",
+  "🎲":"dice", "🗣":"chat", "🙂":"smile", "😊":"smile", "😃":"smile", "😄":"smile", "😀":"smile", "😞":"sad", "😢":"sad", "😟":"sad", "😕":"sad", "😩":"sad", "➡":"arrowr", "🔹":"diamond", "🔷":"diamond", "❓":"question", "❔":"question", "🔗":"link", "🧱":"box", "📦":"box", "🎨":"palette", "🏁":"target", "🛠":"gear", "🔤":"tag", "📤":"box", "📥":"box"
+};
+const E3_ALT = {"🎉":"celebración", "🔊":"audio", "😉":"guiño", "💡":"idea", "✅":"correcto", "❌":"incorrecto", "🎯":"objetivo", "🔁":"repetir", "🎤":"micrófono", "📖":"libro", "⚠":"aviso", "🐢":"lento", "🏆":"trofeo", "🔥":"racha"};
+const E3_RE = /\p{Extended_Pictographic}️?(?:‍\p{Extended_Pictographic}️?)*/gu;
+function e3Html(em){
+  const key = em.replace(/️/g, "");
+  if(ANIMALS[key]) return `<span class="e3 e3-animal" data-e3="1">${animalSvg(key, "1.25em")}<span class="sr-only">${em}</span></span>`;
+  const name = E3_MAP[key];
+  if(!name) return null;
+  return `<span class="e3" data-e3="1">${svgIcon(name, "1.2em")}<span class="sr-only">${em}</span></span>`;
+}
+const E3_SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "OPTION", "TITLE", "INPUT", "SELECT", "CODE"]);
+function e3Process(root){
+  if(!root) return;
+  const base = root.nodeType === 1 ? root : root.parentElement;
+  if(!base || !document.body.contains(base)) return;
+  if(base.closest && base.closest(".e3,.emo3d,svg,#srLive,[data-no-e3],[contenteditable]")) return;
+  const w = document.createTreeWalker(root.nodeType === 3 ? root.parentNode : root, NodeFilter.SHOW_TEXT, {acceptNode(n){
+    if(!n.nodeValue || !E3_RE.test(n.nodeValue)){ E3_RE.lastIndex = 0; return NodeFilter.FILTER_REJECT; }
+    E3_RE.lastIndex = 0;
+    const p = n.parentElement;
+    if(!p || E3_SKIP.has(p.tagName) || p.closest(".e3,.emo3d,svg,#srLive,[data-no-e3],[contenteditable]")) return NodeFilter.FILTER_REJECT;
+    return NodeFilter.FILTER_ACCEPT;
+  }});
+  const nodes = []; let n; while((n = w.nextNode())) nodes.push(n);
+  nodes.forEach(t=>{
+    const txt = t.nodeValue; let out = "", last = 0, changed = false, m;
+    E3_RE.lastIndex = 0;
+    while((m = E3_RE.exec(txt))){
+      const h = e3Html(m[0]);
+      if(h){ out += escHtmlE3(txt.slice(last, m.index)) + h; last = m.index + m[0].length; changed = true; }
+    }
+    E3_RE.lastIndex = 0;
+    if(!changed) return;
+    out += escHtmlE3(txt.slice(last));
+    const span = document.createElement("span"); span.className = "e3-wrap"; span.style.display = "contents"; span.innerHTML = out;
+    t.replaceWith(span);
+  });
+}
+function escHtmlE3(s){ return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+(function startE3(){
+  let queued = new Set(), raf = 0;
+  const flush = ()=>{ raf = 0; const q = [...queued]; queued.clear(); q.forEach(e3Process); };
+  const mo = new MutationObserver(muts=>{
+    muts.forEach(m=>{
+      if(m.type === "childList") m.addedNodes.forEach(n=>{ if(n.nodeType === 1 || n.nodeType === 3) queued.add(n); });
+      else if(m.type === "characterData") queued.add(m.target);
+    });
+    if(queued.size && !raf) raf = requestAnimationFrame(flush);
+  });
+  mo.observe(document.body, {childList:true, subtree:true, characterData:true});
+  e3Process(document.body);
+})();
+/* VISUAL-3D:END */
 
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
@@ -22661,6 +23015,7 @@ function renderHome(){
         <div class="landing-hero-text">
           <h1>¡Hola${isReturning ? " de nuevo" : ""}${greetName ? ", " + greetName : ""}! 👋</h1>
           <p>Teoría clara, ejercicios interactivos y seguimiento real de tu progreso — de A1 a C2.</p>
+          ${boltCoachHTML(reviewN, dailyStreak.count, isReturning)}
           <button id="placementCta" class="landing-cta">${placementResult ? "📊 Mide tu progreso en los Exámenes →" : "🎯 ¿No sabes tu nivel? Haz la Prueba de nivel (unos 12 minutos) →"}</button>
           ${placementResult ? `<div style="margin-top:10px;font-size:0.85rem;color:var(--ink-soft);">Tu última Prueba de nivel: <b>${placementResult.level}</b> · <button class="practice-link" id="placementRetakeLink" type="button">Repetirla</button></div>` : ""}
         </div>
@@ -22723,12 +23078,12 @@ function renderHome(){
 
       <div class="features-strip">
         <div class="feature-item">
-          <div class="fi-icon icon-purple">🧠</div>
+          <div class="fi-icon icon-purple">${svgIcon("lightning",28)}</div>
           <h4>Explicaciones simples</h4>
           <p>Cada error se explica en un lenguaje claro, sin tecnicismos innecesarios.</p>
         </div>
         <div class="feature-item">
-          <div class="fi-icon icon-teal">🎚️</div>
+          <div class="fi-icon icon-teal">${svgIcon("chartbar",28)}</div>
           <h4>Todos los niveles</h4>
           <p>De A1 a C2, más un modo Random para retarte con cualquier nivel.</p>
         </div>
@@ -23153,7 +23508,7 @@ function drawPlacementResults(){
   const html = `
     <div class="section-head">
       <div class="eyebrow">Resultado</div>
-      <h2>Tu nivel estimado es ${r.level}${r.beginner ? " (inicial)" : ""}</h2>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">${medalSvg(r.level, 76)}<h2 style="margin:0;">Tu nivel estimado es ${r.level}${r.beginner ? " (inicial)" : ""}</h2></div>
       <p>Puntaje: <b>${r.score}/60</b> · Confianza de la estimación: <b>${r.confidence}</b>.${r.confidence === "media" ? ` Tus respuestas estuvieron muy parejas${next ? ` entre ${r.level} y ${next}: te conviene empezar por ${r.level} y repetir la prueba más adelante` : ""}.` : " Tus respuestas fueron consistentes."}${r.beginner ? " Empezarás desde cero con lo básico, sin prisa." : ""}</p>
     </div>
     <div class="card" style="margin-bottom:20px;">
@@ -23283,7 +23638,7 @@ function drawExamsHome(){
       ${EXAM_MODULES.map(m=>{
         const last = examLastOf(m.id), ok = examCanRun(m.id);
         return `<div class="card" style="margin:0;display:flex;flex-direction:column;gap:10px;">
-          <div style="font-size:1.6rem;">${m.icon}</div>
+          <div>${emo3d(m.icon, 1.6)}</div>
           <h3 style="margin:0;font-size:1.05rem;">${m.title}</h3>
           <p style="color:var(--ink-soft);font-size:0.86rem;margin:0;flex:1;">${m.desc}</p>
           ${last ? `<div style="font-size:0.82rem;color:var(--ink-soft);">Último intento: <span class="badge-level">${last.level}</span> · ${last.score}/100 · ${new Date(last.date).toLocaleDateString()}${examBest[m.id] ? `<br>🏆 Mejor: <b>${examBest[m.id].score}/100</b> (${examBest[m.id].level})` : ""}</div>` : `<div style="font-size:0.82rem;color:var(--ink-soft);">Aún no lo has hecho.</div>`}
@@ -23604,7 +23959,7 @@ function examWireApply(level){
     currentLevel = level;
     document.querySelectorAll(".level-chip").forEach(c=> c.classList.toggle("active", c.textContent === currentLevel));
     saveProgress();
-    if(LEVELS.indexOf(level) > prev) showBigCelebration(`🎉 Subiste a nivel ${level}`, "Tu nivel oficial se actualizó.");
+    if(LEVELS.indexOf(level) > prev){ window._celebBadge = medalSvg(level, 76); showBigCelebration(`🎉 Subiste a nivel ${level}`, "Tu nivel oficial se actualizó."); }
     b.disabled = true; b.textContent = `Nivel oficial: ${level} ✓`;
   };
 }
@@ -23612,7 +23967,7 @@ function drawExamModuleResults(entry, wrong, beat){
   const html = `
     <div class="section-head">
       <div class="eyebrow">Resultado del módulo</div>
-      <h2>${examModTitle(entry.mod)}: nivel estimado ${entry.level}</h2>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">${medalSvg(entry.level, 72)}<h2 style="margin:0;">${examModTitle(entry.mod)}: nivel estimado ${entry.level}</h2></div>
       <p>Acertaste <b>${entry.correct}</b> de <b>${entry.total}</b> preguntas (${entry.score}/100). Este intento quedó guardado en tu historial.</p>
     </div>
     ${examBestBanner(beat, entry)}
@@ -23783,7 +24138,7 @@ function drawWriteSpeakResults(entry, w, wLevel, sLevel, nSpoken, beat){
   const html = `
     <div class="section-head">
       <div class="eyebrow">Resultado del módulo</div>
-      <h2>Escritura y habla: nivel estimado ${entry.level}</h2>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">${medalSvg(entry.level, 72)}<h2 style="margin:0;">Escritura y habla: nivel estimado ${entry.level}</h2></div>
       <p>Puntaje del módulo: <b>${entry.score}/100</b> con consignas de nivel <b>${entry.parts.taskLevel}</b>. Este intento quedó guardado en tu historial.</p>
     </div>
     ${examBestBanner(beat, entry)}
@@ -23898,6 +24253,7 @@ function renderProfile(){
       <button class="ex-tab" id="switchProfileBtn">🔄 Cambiar de usuario</button>
       <button class="ex-tab" id="showGuideBtn" type="button">📘 Ver la guía de bienvenida</button>
     </div>
+    ${achievementsHTML()}
     <div class="card" style="margin-bottom:20px;">
       <h3 class="dash-card-title">Progreso semanal</h3>
       <p class="dash-card-sub">Ejercicios completados por semana (${weeks.length ? (weeks.length === 1 ? "tu semana con actividad" : `últimas ${weeks.length} semanas con actividad`) : "aún sin actividad"}).</p>
@@ -24038,7 +24394,7 @@ function drawPhrasalList(){
         <button class="theory-list-item" data-theme="${t.id}">
           <span class="badge-level">${t.level}</span>
           <div style="flex:1;">
-            <div class="theory-list-title">${t.icon} ${t.title}</div>
+            <div class="theory-list-title">${emo3d(t.icon)}${t.title}</div>
             <div class="theory-list-summary">${t.items.length} phrasal verbs · ${t.intro.slice(0,90)}…</div>
           </div>
           <span class="theory-list-arrow">→</span>
@@ -24099,7 +24455,7 @@ function drawPhrasalDetail(themeId){
     <div class="section-head">
       <button class="theory-back" id="phrasalBackBtn">← Volver a Phrasal Verbs</button>
       <div class="eyebrow">Phrasal Verbs · Nivel ${theme.level}</div>
-      <h2>${theme.icon} ${theme.title}</h2>
+      <h2>${emo3d(theme.icon)}${theme.title}</h2>
       <p>${theme.intro}</p>
     </div>
     <div class="card" style="overflow:auto;max-height:65vh;padding:0;">
@@ -24152,7 +24508,7 @@ function drawSituationList(){
     <div class="theory-list theory-list-grid">
       ${LANG_PACKS[currentLang].SITUATION_THEMES.map(t=>`
         <button class="theory-list-item" data-situation="${t.id}">
-          <span class="badge-level">${t.icon}</span>
+          <span class="badge-level">${emo3d(t.icon)}</span>
           <div style="flex:1;">
             <div class="theory-list-title">${t.title}</div>
             <div class="theory-list-summary">${t.phrases.length} frases · ${t.mistakes.length} errores comunes · ${t.intro}</div>
@@ -24173,7 +24529,7 @@ function drawSituationDetail(themeId){
     <div class="section-head">
       <button class="theory-back" id="situationBackBtn">← Volver a Frases Útiles</button>
       <div class="eyebrow">Frases Útiles</div>
-      <h2>${theme.icon} ${theme.title}</h2>
+      <h2>${emo3d(theme.icon)}${theme.title}</h2>
       <p>${theme.intro}</p>
     </div>
     <div class="card" style="overflow:auto;max-height:65vh;padding:0;margin-bottom:22px;">
@@ -24241,7 +24597,7 @@ function drawVocabTopicList(){
         return `
         <button class="theory-list-item" data-topic="${t.id}">
           <div style="flex:1;">
-            <div class="theory-list-title">${t.icon} ${t.label}</div>
+            <div class="theory-list-title">${emo3d(t.icon)}${t.label}</div>
             <div class="theory-list-summary">${wordCount} palabras · A1 a C2</div>
           </div>
           <span class="theory-list-arrow">→</span>
@@ -24271,7 +24627,7 @@ function drawVocabTopicDetail(topicId){
     <div class="section-head">
       <button class="theory-back" id="vocabTopicBackBtn">← Volver a Vocabulario por Temas</button>
       <div class="eyebrow">Vocabulario por Temas</div>
-      <h2>${topic.icon} ${topic.label}</h2>
+      <h2>${emo3d(topic.icon)}${topic.label}</h2>
       <p>Nivel ${lv} · ${words.length} palabras</p>
     </div>
     <div class="card" style="overflow:auto;padding:0;margin-bottom:22px;">
@@ -24344,7 +24700,7 @@ function drawVocabTopicQuiz(topicId){
       <div class="section-head">
         <button class="theory-back" id="vocabTopicBackBtn">← Volver a ${topic.label}</button>
         <div class="eyebrow">Vocabulario por Temas</div>
-        <h2>${topic.icon} ${topic.label}${finished ? " — resultado" : ""}</h2>
+        <h2>${emo3d(topic.icon)}${topic.label}${finished ? " — resultado" : ""}</h2>
       </div>
       <div class="card" style="text-align:center;">
         ${finished
@@ -24370,7 +24726,7 @@ function drawVocabTopicQuiz(topicId){
   const html = `
     <div class="section-head">
       <button class="theory-back" id="vocabTopicBackBtn">← Salir del cuestionario</button>
-      <div class="eyebrow">Vocabulario por Temas · ${topic.icon} ${topic.label}</div>
+      <div class="eyebrow">Vocabulario por Temas · ${emo3d(topic.icon)}${topic.label}</div>
       <h2>Nivel ${lv} — Pregunta ${state.index+1} de ${state.pool.length}</h2>
     </div>
     <div class="card">
@@ -24434,7 +24790,7 @@ function drawExpressionList(){
     <div class="theory-list theory-list-grid">
       ${LANG_PACKS[currentLang].EXPRESSION_THEMES.map(t=>`
         <button class="theory-list-item" data-expression="${t.id}">
-          <span class="badge-level">${t.icon}</span>
+          <span class="badge-level">${emo3d(t.icon)}</span>
           <div style="flex:1;">
             <div class="theory-list-title">${t.title}</div>
             <div class="theory-list-summary">${t.items.length} expresiones · ${t.intro}</div>
@@ -24455,7 +24811,7 @@ function drawExpressionDetail(themeId){
     <div class="section-head">
       <button class="theory-back" id="expressionBackBtn">← Volver a Expresiones</button>
       <div class="eyebrow">Expresiones · ${theme.title}</div>
-      <h2>${theme.icon} ${theme.title}</h2>
+      <h2>${emo3d(theme.icon)}${theme.title}</h2>
       <p>${theme.intro}</p>
     </div>
     <div class="card" style="overflow:auto;max-height:65vh;padding:0;">
@@ -24559,7 +24915,7 @@ function drawHowToSayList(){
     <div class="theory-list theory-list-grid">
       ${LANG_PACKS[currentLang].HOW_TO_SAY.map(w=>`
         <button class="theory-list-item" data-howtosay="${w.es}">
-          <span class="badge-level">${w.icon}</span>
+          <span class="badge-level">${emo3d(w.icon)}</span>
           <div style="flex:1;">
             <div class="theory-list-title">"${w.es}"</div>
             <div class="theory-list-summary">${w.options.length} formas en ${LANG_META[currentLang].label.toLowerCase()} · ${w.intro}</div>
@@ -24580,7 +24936,7 @@ function drawHowToSayDetail(es){
     <div class="section-head">
       <button class="theory-back" id="howToSayBackBtn">← Volver a Cómo se dice</button>
       <div class="eyebrow">Cómo se dice</div>
-      <h2>${w.icon} "${w.es}"</h2>
+      <h2>${emo3d(w.icon)}"${w.es}"</h2>
       <p>${w.intro}</p>
     </div>
     <div class="card" style="overflow:auto;max-height:65vh;padding:0;">
