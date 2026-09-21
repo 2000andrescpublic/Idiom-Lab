@@ -1602,6 +1602,38 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
   .cat-tile-ic{width:38px;height:38px;border-radius:12px;}
 }
 @media (prefers-reduced-motion:reduce){.cat-nav,.cat-track{transition:none;}}
+.vv-l{min-width:0;}
+.vv-pp{display:none;}
+.vv-band{grid-column:1/-1;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--ink-soft);padding:10px 2px 2px;scroll-margin-top:72px;}
+.vv-legend{display:none;}
+.vv-rail,.vv-pop{display:none;}
+@media (max-width:759px){
+  .vv-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.66rem;color:var(--ink-soft);margin:6px 2px 4px;}
+  .vv-legend span{display:inline-flex;align-items:center;gap:5px;}
+  .vv-legend i{width:4px;height:13px;border-radius:2px;display:inline-block;}
+  .vv-grid{grid-template-columns:1fr;gap:0;margin-bottom:20px;}
+  .vv-grid.has-rail{padding-right:26px;}
+  .vv-card{display:flex;align-items:center;gap:10px;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:9px 4px 9px 14px;transform:none !important;overflow:hidden;}
+  .vv-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:2px;background:var(--pc,var(--line));}
+  .vv-card[data-pc="reg"]{--pc:#34D399;}
+  .vv-card[data-pc="pp"]{--pc:#4C9AFF;}
+  .vv-card[data-pc="bp"]{--pc:#FF6B9A;}
+  .vv-card[data-pc="dist"]{--pc:#FFB020;}
+  .vv-l{flex:1;}
+  .vv-b{font-size:1.05rem;padding-right:0;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .vv-es{margin:0;font-size:.74rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .vv-chain,.vv-tag{display:none;}
+  .vv-pp{display:block;text-align:right;font-weight:700;font-size:.88rem;white-space:nowrap;flex:none;max-width:55%;overflow:hidden;text-overflow:ellipsis;}
+  .vv-pp i{font-style:normal;color:var(--ink-soft);opacity:.6;margin:0 4px;}
+  .vv-pp mark{background:rgba(255,201,60,.35);color:inherit;border-radius:4px;padding:0 1px;}
+  .vv-star{position:static;order:3;flex:none;}
+  .vv-rail{position:fixed;right:2px;top:96px;bottom:26px;width:22px;z-index:35;flex-direction:column;justify-content:space-between;align-items:center;touch-action:none;}
+  .vv-rail:not([hidden]){display:flex;}
+  .vv-rail button{border:0;background:none;color:var(--ink-soft);font-family:inherit;font-size:.62rem;font-weight:800;line-height:1;padding:0;cursor:pointer;min-width:20px;}
+  .vv-rail button.on{color:#fff;background:var(--purple);border-radius:50%;}
+  .vv-pop{position:fixed;right:46px;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:15px;background:var(--purple);color:#fff;font-size:1.7rem;font-weight:800;align-items:center;justify-content:center;z-index:36;box-shadow:0 8px 20px rgba(0,0,0,.4);}
+  .vv-pop.show{display:flex;}
+}
 .medal{display:block;overflow:visible;transition:transform .25s cubic-bezier(.2,.9,.3,1.3);}
 .medal.locked{filter:grayscale(1) opacity(.4);}
 .ach-item:not(.is-locked):hover .medal{transform:translateY(-3px) rotate(-4deg) scale(1.06);}
@@ -25898,6 +25930,50 @@ function verbDiff(base, form){
 function verbChainHtml(v){
   return `<span>${escHtml(v.base)}</span><i>→</i><span>${verbDiff(v.base, v.past)}</span><i>→</i><span>${verbDiff(v.base, v.participle)}</span>`;
 }
+/* Color de la columna lateral (móvil): 4 grupos fáciles de distinguir. Las tres iguales se agrupa con pasado = participio. */
+function verbColorKey(v){
+  const p = verbPattern(v);
+  return p === "Regular" ? "reg" : (p === "Pasado = participio" || p === "Las tres iguales") ? "pp" : p === "Base = participio" ? "bp" : "dist";
+}
+function verbBandLabel(rank){
+  return rank < 20 ? "Los 20 más usados" : rank < 50 ? "21 – 50" : rank < 100 ? "51 – 100" : rank < 200 ? "101 – 200" : rank < 300 ? "201 – 300" : "Otros verbos";
+}
+function verbRowsHtml(list){
+  const rank = verbRankFn(), az = verbView.mode === "az", bands = !az && !verbView.q && verbView.mode !== "fav";
+  let last = null, out = "";
+  list.forEach(v=>{
+    if(az){ const L = v.base[0].toUpperCase(); if(L !== last){ last = L; out += `<div class="vv-band vv-letter" id="vvL_${L}">${L}</div>`; } }
+    else if(bands){ const b = verbBandLabel(rank(v)); if(b !== last){ last = b; out += `<div class="vv-band">${b}</div>`; } }
+    const pat = verbPattern(v), fav = isWordSaved(verbFavId(v));
+    out += `<div class="vv-card" role="button" tabindex="0" data-base="${escHtml(v.base)}" data-pc="${verbColorKey(v)}" aria-label="${escHtml(v.base)}: ${escHtml(v.es)}. ${pat}">
+      <button type="button" class="vv-star${fav ? " on" : ""}" data-fav="${escHtml(v.base)}" aria-label="${fav ? "Quitar de favoritos" : "Guardar en favoritos"}" title="${fav ? "Quitar de favoritos" : "Guardar en favoritos"}">${fav ? "★" : "☆"}</button>
+      <div class="vv-l"><div class="vv-b">${escHtml(v.base)}</div><div class="vv-es">${escHtml(v.es)}</div></div>
+      <div class="vv-chain">${verbChainHtml(v)}</div>
+      <div class="vv-pp">${v.past === v.participle ? verbDiff(v.base, v.past) : `${verbDiff(v.base, v.past)}<i>·</i>${verbDiff(v.base, v.participle)}`}</div>
+      <span class="vv-tag${v.type === "Regular" ? " rg" : ""}">${pat}</span></div>`;
+  });
+  return out;
+}
+function verbBuildRail(list){
+  const rail = document.getElementById("vvRail"), grid = document.getElementById("vvGrid"), pop = document.getElementById("vvPop");
+  if(!rail) return;
+  const on = verbView.mode === "az" && list.length > 0;
+  rail.hidden = !on; grid.classList.toggle("has-rail", on);
+  if(!on){ rail.innerHTML = ""; return; }
+  const letters = [...new Set(list.map(v=> v.base[0].toUpperCase()))];
+  rail.innerHTML = letters.map(l=> `<button type="button" data-l="${l}" aria-label="Ir a la letra ${l}">${l}</button>`).join("");
+  let timer = 0;
+  const go = l=>{
+    const t = document.getElementById("vvL_" + l); if(!t) return;
+    window.scrollTo({top:Math.max(0, t.getBoundingClientRect().top + window.scrollY - 72), behavior:"instant"});
+    rail.querySelectorAll("button").forEach(x=> x.classList.toggle("on", x.dataset.l === l));
+    pop.textContent = l; pop.classList.add("show"); clearTimeout(timer); timer = setTimeout(()=> pop.classList.remove("show"), 700);
+  };
+  rail.querySelectorAll("button").forEach(b=> b.onclick = ()=> go(b.dataset.l));
+  const scrub = e=>{ const el = document.elementFromPoint(e.clientX, e.clientY); if(el && el.dataset && el.dataset.l) go(el.dataset.l); };
+  rail.onpointerdown = e=>{ rail.setPointerCapture && rail.setPointerCapture(e.pointerId); scrub(e); };
+  rail.onpointermove = e=>{ if(e.buttons) scrub(e); };
+}
 function verbFavId(v){ return `verb:${currentLang}:${v.base}`; }
 let _verbRank = {};
 function verbRankFn(){
@@ -25942,23 +26018,20 @@ function renderVerbs(){
       <button type="button" class="vv-chip on" data-pat="all" aria-pressed="true">Todos los patrones</button>
       ${patterns.map(p=> `<button type="button" class="vv-chip" data-pat="${escHtml(p)}" aria-pressed="false">${p}</button>`).join("")}
     </div>
+    <div class="vv-legend" aria-hidden="true"><span><i style="background:#34D399"></i>Regular</span><span><i style="background:#4C9AFF"></i>Pasado = participio</span><span><i style="background:#FF6B9A"></i>Base = participio</span><span><i style="background:#FFB020"></i>Las tres distintas</span></div>
     <input type="search" class="vv-search" id="verbSearch" placeholder="${meta.searchPh}" autocomplete="off" aria-label="Buscar verbo">
     <div class="vv-count" id="vvCount" role="status" aria-live="polite"></div>
     <div class="vv-grid" id="vvGrid"></div>
+    <div class="vv-rail" id="vvRail" role="navigation" aria-label="Índice de letras" hidden></div>
+    <div class="vv-pop" id="vvPop" aria-hidden="true"></div>
     <button class="practice-link" id="verbsPracticeBtn">Practicar conjugación →</button>`;
   document.getElementById("panel-verbs").innerHTML = html;
   const paint = ()=>{
     const list = verbList(), grid = document.getElementById("vvGrid");
     document.getElementById("vvCount").textContent = `${list.length} ${list.length === 1 ? "verbo" : "verbos"}`;
     document.getElementById("vvPatterns").hidden = verbView.mode === "reg";
-    grid.innerHTML = list.length ? list.map(v=>{
-      const pat = verbPattern(v), fav = isWordSaved(verbFavId(v));
-      return `<div class="vv-card" role="button" tabindex="0" data-base="${escHtml(v.base)}" aria-label="${escHtml(v.base)}: ${escHtml(v.es)}. ${pat}">
-        <button type="button" class="vv-star${fav ? " on" : ""}" data-fav="${escHtml(v.base)}" aria-label="${fav ? "Quitar de favoritos" : "Guardar en favoritos"}" title="${fav ? "Quitar de favoritos" : "Guardar en favoritos"}">${fav ? "★" : "☆"}</button>
-        <div class="vv-b">${escHtml(v.base)}</div><div class="vv-es">${escHtml(v.es)}</div>
-        <div class="vv-chain">${verbChainHtml(v)}</div>
-        <span class="vv-tag${v.type === "Regular" ? " rg" : ""}">${pat}</span></div>`;
-    }).join("") : `<div class="vv-empty">${boltSVG("think", 64)}<div><b>${verbView.mode === "fav" && !verbView.q ? "Aún no tienes verbos favoritos." : "No encontré verbos con ese filtro."}</b><p>${verbView.mode === "fav" && !verbView.q ? "Toca la ★ de una ficha para guardarla aquí." : "Prueba con otra palabra o quita algún filtro."}</p></div></div>`;
+    grid.innerHTML = list.length ? verbRowsHtml(list) : `<div class="vv-empty">${boltSVG("think", 64)}<div><b>${verbView.mode === "fav" && !verbView.q ? "Aún no tienes verbos favoritos." : "No encontré verbos con ese filtro."}</b><p>${verbView.mode === "fav" && !verbView.q ? "Toca la ★ de una ficha para guardarla aquí." : "Prueba con otra palabra o quita algún filtro."}</p></div></div>`;
+    verbBuildRail(list);
     grid.querySelectorAll(".vv-card").forEach(c=>{
       const open = ()=> openVerbSheet(c.dataset.base, c);
       c.onclick = e=>{ if(e.target.closest(".vv-star")) return; open(); };
