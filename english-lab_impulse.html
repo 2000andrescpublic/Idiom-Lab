@@ -1487,11 +1487,32 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 /* PHRASAL-UI-CSS:BEGIN */
 .pv-p{color:var(--purple);font-weight:800;}
 :root[data-theme="dark"] .pv-p{color:#B7A5FF;}
-.pv-parts{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 8px;margin:6px 0 2px;scrollbar-width:thin;}
-.pv-chip{flex:none;border:1.5px solid var(--line);background:var(--bg-soft);color:var(--purple);font-weight:800;font-size:.78rem;letter-spacing:.04em;border-radius:999px;padding:6px 13px;cursor:pointer;font-family:inherit;}
-:root[data-theme="dark"] .pv-chip{color:#B7A5FF;}
-.pv-chip.active{background:var(--purple);border-color:var(--purple);color:#fff;}
-.pv-lvl{display:inline-block;color:#111;font-weight:800;font-size:.68rem;border-radius:99px;padding:2px 9px;letter-spacing:.03em;}
+.pv-bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 14px;}
+.pv-bar .vv-search{margin:0;max-width:none;min-width:0;}
+.pv-topb{border:1.5px solid var(--purple);background:var(--purple-soft);color:var(--purple-dark);font-family:inherit;font-weight:800;font-size:.88rem;border-radius:14px;cursor:pointer;padding:0 10px;white-space:nowrap;}
+:root[data-theme="dark"] .pv-topb{background:rgba(124,92,255,.2);color:#B7A5FF;}
+.pv-topb:hover{background:var(--purple);color:#fff;}
+.pv-sec{font-size:.8rem;font-weight:800;color:var(--ink-soft);margin:4px 0 8px;}
+.pv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+@media (min-width:700px){.pv-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
+@media (min-width:1100px){.pv-grid{grid-template-columns:repeat(5,minmax(0,1fr));}}
+.pv-pc{display:block;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;cursor:pointer;font-family:inherit;color:var(--ink);transition:border-color .12s ease,transform .12s ease;}
+.pv-pc:hover{border-color:var(--purple);transform:translateY(-1px);}
+.pv-pc-p{display:flex;justify-content:space-between;align-items:baseline;font-size:1.25rem;font-weight:800;letter-spacing:.02em;color:var(--purple);}
+:root[data-theme="dark"] .pv-pc-p{color:#B7A5FF;}
+.pv-pc-p i{font-style:normal;font-size:.72rem;font-weight:700;color:var(--ink-soft);}
+.pv-pc-k{display:block;font-size:.76rem;color:var(--ink-soft);line-height:1.35;margin-top:3px;}
+.pv-all{display:block;margin:14px auto 0;border:0;background:none;color:var(--purple);font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer;}
+.pv-count{font-size:.82rem;color:var(--ink-soft);margin:0 0 6px;}
+.pv-big{font-size:2.6rem;font-weight:800;color:var(--purple);letter-spacing:.02em;line-height:1.1;margin:2px 0 8px;}
+:root[data-theme="dark"] .pv-big{color:#B7A5FF;}
+.pv-lead{color:var(--ink-soft);font-size:.92rem;line-height:1.55;margin:4px 0 0;}
+.pv-exp{background:var(--bg-soft);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:6px 0 4px;font-size:.92rem;line-height:1.65;}
+.pv-exp p{margin:0 0 10px;}
+.pv-exp p:last-child{margin:0;}
+.pv-exp em{font-style:normal;color:var(--purple);font-weight:700;}
+:root[data-theme="dark"] .pv-exp em{color:#B7A5FF;}
+.pv-s{display:block;font-size:.82rem;color:var(--ink-soft);}
 .pv-list{border-top:1px solid var(--line);}
 .pv-row{position:relative;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);border-left:5px solid var(--lv,#8E6CFF);padding:9px 4px 9px 12px;cursor:pointer;outline-offset:-2px;}
 .pv-row:hover{background:var(--bg-soft);}
@@ -1502,32 +1523,32 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .pv-n > span{display:block;font-size:.8rem;color:var(--ink-soft);}
 .pv-star{position:static;flex:none;}
 .pv-none{padding:16px 4px;color:var(--ink-soft);font-size:.9rem;margin:0;}
+.pv-bd{flex:none;font-size:.66rem;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;}
+.pv-bd-rk{color:var(--purple);background:var(--purple-soft);}
+.pv-bd-cm{color:#0E7A5A;background:rgba(31,181,138,.16);}
+:root[data-theme="dark"] .pv-bd-rk{color:#B7A5FF;background:rgba(124,92,255,.2);}
+:root[data-theme="dark"] .pv-bd-cm{color:#5FE3B8;}
+.pv-rk{flex:none;font-size:.7rem;font-weight:800;color:var(--purple);background:var(--purple-soft);border-radius:999px;padding:2px 8px;min-width:34px;text-align:center;}
+:root[data-theme="dark"] .pv-rk{color:#B7A5FF;background:rgba(124,92,255,.2);}
+.pv-lvl{display:inline-block;color:#111;font-weight:800;font-size:.68rem;border-radius:99px;padding:2px 9px;letter-spacing:.03em;}
+.pv-tag{font-size:.7rem;font-weight:700;color:var(--ink-soft);background:var(--bg-soft);border:1px solid var(--line);border-radius:999px;padding:2px 9px;}
+.pv-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.7rem;color:var(--ink-soft);margin:6px 0;}
+.pv-legend span{display:inline-flex;align-items:center;gap:4px;}
+.pv-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.pv-info{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 8px;font-size:.85rem;color:var(--ink-soft);}
+.pv-prac{border:0;background:var(--purple);color:#fff;font-family:inherit;font-weight:700;font-size:.8rem;border-radius:999px;padding:7px 14px;cursor:pointer;flex:none;}
 .pv-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px;align-items:start;}
 .pv-card{position:sticky;top:90px;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:16px 18px;}
 .pv-card-h{display:flex;align-items:center;gap:8px;}
 .pv-card-t{font-size:1.5rem;font-weight:800;flex:1;}
-.pv-card-es{color:var(--ink-soft);margin:0 0 12px;}
+.pv-card-es{color:var(--ink-soft);margin:0 0 6px;}
 .pv-fr{border-left:4px solid var(--fc);background:var(--bg-soft);border-radius:0 12px 12px 0;padding:8px 12px;margin-bottom:8px;}
 .pv-fr small{display:block;font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;font-weight:800;color:var(--fc);margin-bottom:2px;}
 .pv-en{font-weight:700;font-size:1rem;line-height:1.35;}
 .pv-es{font-size:.85rem;color:var(--ink-soft);margin-top:2px;}
-.pv-sheet-lv{margin:8px 0 10px;font-size:.8rem;color:var(--ink-soft);display:flex;align-items:center;gap:8px;}
+.pv-sheet-lv{margin:8px 0 10px;font-size:.8rem;color:var(--ink-soft);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .pv-filter{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--purple-soft);border-radius:12px;padding:7px 12px;margin-bottom:10px;font-size:.85rem;}
 :root[data-theme="dark"] .pv-filter{background:rgba(124,92,255,.2);}
-.pv-chip i{font-style:normal;font-weight:700;opacity:.7;margin-left:3px;}
-.pv-chip-main{color:var(--ink);}
-.pv-chip-main.active{color:#fff;}
-:root[data-theme="dark"] .pv-chip-main{color:var(--ink);}
-.pv-info{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 0 6px;font-size:.85rem;color:var(--ink-soft);line-height:1.5;}
-.pv-info #pvInfoTxt{flex:1 1 240px;}
-.pv-prac{border:0;background:var(--purple);color:#fff;font-family:inherit;font-weight:700;font-size:.8rem;border-radius:999px;padding:7px 14px;cursor:pointer;flex:none;}
-.pv-prac[hidden]{display:none;}
-.pv-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.7rem;color:var(--ink-soft);margin:0 0 8px;}
-.pv-legend span{display:inline-flex;align-items:center;gap:4px;}
-.pv-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
-.pv-rk{flex:none;font-size:.68rem;font-weight:800;color:var(--purple);background:var(--purple-soft);border-radius:999px;padding:2px 7px;min-width:32px;text-align:center;}
-:root[data-theme="dark"] .pv-rk{color:#B7A5FF;background:rgba(124,92,255,.2);}
-.pv-tag{font-size:.7rem;font-weight:700;color:var(--ink-soft);background:var(--bg-soft);border:1px solid var(--line);border-radius:999px;padding:2px 9px;}
 /* PHRASAL-UI-CSS:END */
 :root[data-theme="dark"] .vv-tag.rg{color:#5FE3B8;}
 /* VERBCARDS-CSS:BEGIN */
@@ -23289,7 +23310,7 @@ document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); }
 const NAV_ICONS = {utils:"compass", home:"home", route:"route", placement:"target", theory:"book", categories:"tag", phrasal:"puzzle", situations:"compass", expressions:"chat", falsefriends:"burst", howtosay:"search", vocabtopics:"flashcards", es2pt:"shuffle", verbs:"books", exercises:"pencil", exams:"clock", profile:"user"};
 function resetSectionState(id){
   if(id==="theory"){ activeTheoryTopic = null; theoryReturnTo = null; }
-  if(id==="phrasal") activePhrasalTheme = null;
+  if(id==="phrasal"){ activePhrasalTheme = null; pvPage = "home"; pvQ = ""; }
   if(id==="exercises") exOpenMenu = true;
   if(id==="situations"){ activeSituationTheme = null; situationQuizActive = false; situationQuiz = null; }
   if(id==="expressions") activeExpressionTheme = null;
@@ -23416,6 +23437,7 @@ window.addEventListener("popstate", e=>{
   const s = (e.state && e.state.sec) || "home";
   if(e.state && e.state.exStep != null) window._exPopStep = e.state.exStep;
   if(e.state && e.state.catStep != null) window._catPopStep = e.state.catStep;
+  if(s === "phrasal") window._pvPopV = (e.state && e.state.pvV != null) ? e.state.pvV : "home";
   _navFromPop = true;
   try{ goTo(s); }finally{ _navFromPop = false; }
 });
@@ -25417,7 +25439,7 @@ function renderPhrasal(){
   if(activePhrasalTheme){ drawPhrasalDetail(activePhrasalTheme); }
   else { drawPhrasalList(); }
 }
-/* PHRASAL-UI:BEGIN — Phrasal Verbs sin temas: buscador, «Más comunes» (ranking de frecuencia), partículas y «Todos». Filas con franja de nivel, ficha en columnas (escritorio) o panel inferior (móvil), favoritos y práctica del grupo mostrado. */
+/* PHRASAL-UI:BEGIN — Phrasal Verbs: inicio con buscador + «Top 25» + tarjetas de partículas; página por partícula (explicación extensa, lista A–Z con insignias), Top 25 y Todos. Ficha en columnas (escritorio) o panel inferior (móvil), favoritos y práctica del grupo mostrado. */
 const PV_LV = {A1:"#34D399", A2:"#2CC0D8", B1:"#4C9AFF", B2:"#8E6CFF", C1:"#FF6B9A", C2:"#FFB020"};
 const PV_PARTS = new Set("up down on off out in over away back for with about around through by along apart across ahead forward into to from of at after against together behind aside".split(" "));
 const PV_FRAMES = [["Afirmación", "example", "esExample", "#1FB58A"], ["Negación", "neg", "esNeg", "#E2408A"], ["Pregunta", "q", "esQ", "#3D8BFF"]];
@@ -25425,7 +25447,26 @@ const PV_FRAMES = [["Afirmación", "example", "esExample", "#1FB58A"], ["Negaci�
 const PV_RANK = Object.fromEntries("go on,pick up,come back,come up,go back,find out,come out,go out,point out,grow up,set up,turn out,get out,come in,take on,give up,make up,end up,get back,look up,figure out,sit down,get up,take out,come on".split(",").map((p, i)=> [p, i + 1]));
 /* Otros de los 100 más comunes de uso diario (sin orden de frecuencia). */
 const PV_COMMON = new Set("ask out,back up,break down,bring up,call off,carry on,catch up,check in,cheer up,clean up,come across,come up with,count on,cut off,deal with,do away with,dress up,drop off,fall apart,fill in,get along,get away,get by,get off,get on,get over,go ahead,hand out,hang up,hold on,keep up,knock out,look after,mess up,pass away,pay back,put off,put up with,read out,run into,show off,sort out,stand by,stand out,take off,take over,talk over,tear up,think over,throw away,try on,turn down,turn up,use up,wait for,wake up,warm up,watch out,wear out,work out,write down,zip up,act out,blow up,brush up on,burn down,call back,calm down,carry out,check out,cut down on,die down,do over,draw up,drop by,eat out,fill out,follow through,give in,go over,keep on,hand in,look forward to,pass out,show up".split(","));
-let pvView = "common", pvQ = "", pvSel = null, pvWasWide = null, pvSheetFrom = null, _pvItems = null, PHRASAL_FILTER = null;
+/* Explicación de cada partícula: k = idea clave (tarjeta); t = [sentido principal, truco para intuir verbos nuevos, ejemplo]. */
+const PV_INFO = {
+  UP:{k:"Hacia arriba, aumento o terminar del todo", t:["La partícula <em>up</em> suele añadir la idea de movimiento hacia arriba, pero en los phrasal verbs pesa más su sentido figurado: <em>aumento</em> (turn up the volume), <em>acercarse</em> (come up to me) y, sobre todo, <em>terminar del todo</em> (use up, eat up, clean up).", "Cuando dudes con un verbo nuevo con <em>up</em>, prueba a pensar en «hasta el final» o «completamente»: <em>drink up</em> es beberlo todo y <em>write up</em> es dejar el texto terminado. Es una de las partículas que forma más phrasal verbs en inglés.", "<em>pick up</em>: I'll pick you up at eight.<span class=\"pv-s\">Te recojo a las ocho.</span>"]},
+  OUT:{k:"Hacia fuera, agotar o descubrir", t:["La partícula <em>out</em> expresa salida hacia fuera (get out, go out), pero también <em>agotar o terminar</em> (run out of, sell out) y <em>hacer visible o descubrir</em> (find out, point out, figure out).", "Si el verbo trata de información o de algo que se revela, casi siempre encaja la idea de «sacar a la luz». Si trata de recursos, piensa en «se acabó»: <em>run out</em> es quedarse sin nada.", "<em>find out</em>: I found out he'd left.<span class=\"pv-s\">Descubrí que se había ido.</span>"]},
+  ON:{k:"Continuidad o algo en marcha", t:["La partícula <em>on</em> aporta continuidad («seguir haciendo algo»: go on, carry on) y también que algo está <em>encendido o en marcha</em> (turn on, switch on). Con ropa o vehículos indica «encima»: put on, get on.", "En muchos casos es el contrario de <em>off</em>: turn on / turn off, put on / take off. Si el verbo habla de continuar, de encender o de ponerse algo encima, piensa en <em>on</em>.", "<em>go on</em>: The party went on until midnight.<span class=\"pv-s\">La fiesta siguió hasta la medianoche.</span>"]},
+  OFF:{k:"Separar, detener o salir", t:["La partícula <em>off</em> indica separación o distancia: algo que se aparta de una superficie o de un lugar (take off, get off), algo que se detiene o se apaga (turn off, switch off) y también el inicio de un viaje o de una acción (set off, kick off).", "Suele ser el contrario de <em>on</em>. Cuando un verbo con <em>off</em> trata de cancelar o posponer, piensa en «cortar la conexión»: call off, put off.", "<em>turn off</em>: Turn off the TV before bed.<span class=\"pv-s\">Apaga la televisión antes de dormir.</span>"]},
+  DOWN:{k:"Hacia abajo, reducir o calmar", t:["La partícula <em>down</em> expresa movimiento hacia abajo (sit down, get down), pero también disminución (turn down the music, cut down on sugar), calma o pérdida de intensidad (calm down, die down) y fallo o avería (break down).", "Si algo baja de intensidad, de cantidad o de energía, lo más probable es que lleve <em>down</em>. También aparece en la idea de «anotar»: write down, note down.", "<em>calm down</em>: Please calm down and breathe.<span class=\"pv-s\">Por favor, cálmate y respira.</span>"]},
+  IN:{k:"Entrar o incorporarse", t:["La partícula <em>in</em> aporta la idea de entrar o de pasar al interior de algo: come in, get in, fill in. Por extensión, indica participación o incorporación (move in, fit in) y también entregar o registrarse (hand in, check in, log in).", "Cuando el verbo habla de acceder a un lugar, un grupo o un sistema, piensa en «dentro». Muchos se separan si llevan pronombre: <em>fill it in</em>, <em>hand it in</em>.", "<em>hand in</em>: Please hand in your homework.<span class=\"pv-s\">Por favor, entrega tu tarea.</span>"]},
+  OVER:{k:"Repasar, superar o traspasar", t:["La partícula <em>over</em> expresa pasar por encima de algo: superar un obstáculo (get over an illness), atropellar o desbordar (run over), dar la vuelta (turn over) y, en sentido figurado, revisar de principio a fin (go over the details, think over, talk over).", "También puede indicar que algo se repite o se rehace (do over) o que el control pasa a otra persona (take over). Piensa en «por encima» o «de un lado a otro».", "<em>go over</em>: Let's go over the details.<span class=\"pv-s\">Repasemos los detalles.</span>"]},
+  BACK:{k:"Volver o devolver", t:["La partícula <em>back</em> indica regreso al punto de origen: volver a un lugar (come back, go back, get back), devolver algo (pay back, bring back) o responder (call back). También aparece con la idea de contener o frenar (hold back).", "Es una de las partículas más fáciles de intuir: casi siempre significa «de vuelta». Si el verbo cambia «ir» por «volver» o «dar» por «devolver», el responsable es <em>back</em>.", "<em>call back</em>: I'll call you back later.<span class=\"pv-s\">Te devolveré la llamada más tarde.</span>"]},
+  FOR:{k:"Pedir, buscar o esperar", t:["La partícula <em>for</em> aparece cuando hay un objetivo o una necesidad: esperar (wait for), pedir (ask for), reclamar o requerir (call for, send for), defender (stand up for) y algunos con sentido propio, como <em>fall for</em> (enamorarse o dejarse engañar) o <em>account for</em> (explicar o representar).", "Aquí la partícula conecta el verbo con aquello que se busca o se espera, por eso casi nunca se separa del verbo: wait for the bus, nunca «wait the bus for». Piensa en «en busca de» o «a favor de».", "<em>wait for</em>: I'm waiting for the bus.<span class=\"pv-s\">Estoy esperando el autobús.</span>"]},
+  AWAY:{k:"Alejar, quitar o descartar", t:["La partícula <em>away</em> expresa distancia o separación: alejarse (get away), guardar o quitar de en medio (put away), descartar (throw away), regalar (give away) y desaparecer o morir (pass away).", "Si algo se va, se aparta o deja de estar presente, lleva <em>away</em>. Suele ser un sentido bastante literal: casi siempre se entiende sin traducir mentalmente.", "<em>throw away</em>: Don't throw away your notes.<span class=\"pv-s\">No tires tus apuntes.</span>"]},
+  BY:{k:"Pasar cerca o arreglárselas", t:["La partícula <em>by</em> tiene dos usos frecuentes: pasar cerca o de visita (pass by, drop by) y salir adelante o apoyar a alguien (get by, stand by).", "Con <em>by</em> suele haber la idea de «al lado» o «de paso»: <em>drop by</em> es una visita breve y sin ceremonia. Con <em>get by</em> piensa en «pasar por la vida con lo justo».", "<em>get by</em>: I get by on a small salary.<span class=\"pv-s\">Me las arreglo con un sueldo pequeño.</span>"]},
+  INTO:{k:"Entrar en algo o toparse", t:["La partícula <em>into</em> indica entrar en algo, físico o figurado: investigar (look into, delve into), transformarse (turn into) o encontrarse por casualidad con algo o alguien (run into).", "Cuando algo se convierte en otra cosa, <em>into</em> marca el resultado: turn into, break into pieces. Cuando te encuentras a alguien sin querer, <em>run into</em> significa «chocarse con».", "<em>run into</em>: I ran into an old friend yesterday.<span class=\"pv-s\">Me encontré con un viejo amigo ayer.</span>"]},
+  WITH:{k:"Soportar o acompañar", t:["La partícula <em>with</em> acompaña sobre todo a phrasal verbs de tres partes: idear (come up with), lidiar con algo (deal with), soportar (put up with) o eliminar (do away with).", "Estos phrasal verbs son inseparables: el objeto siempre va al final (<em>put up with the noise</em>). Piensa en «con» o «junto a» seguido de aquello que se maneja o se tolera.", "<em>put up with</em>: I can't put up with the noise.<span class=\"pv-s\">No soporto el ruido.</span>"]},
+  ABOUT:{k:"Acerca de, alrededor", t:["La partícula <em>about</em> señala el tema o el asunto de algo (talk about) y también la idea de poner algo en marcha: <em>set about</em> es ponerse a hacer algo con decisión y <em>bring about</em> es provocar un resultado.", "Con <em>about</em> piensa en «acerca de» o «alrededor de». Hay pocos phrasal verbs con esta partícula, pero <em>talk about</em> aparece en casi cualquier conversación.", "<em>talk about</em>: We talked about the trip all night.<span class=\"pv-s\">Hablamos del viaje toda la noche.</span>"]},
+  THROUGH:{k:"Atravesar hasta el final", t:["La partícula <em>through</em> expresa atravesar algo de un extremo al otro: pasar por una experiencia difícil (go through), superarla o completarla (get through) y llevar algo hasta el final (follow through).", "Piensa en un túnel: entras, avanzas y sales por el otro lado. Por eso muchos verbos con <em>through</em> hablan de aguantar, avanzar y terminar.", "<em>get through</em>: I finally got through the exam.<span class=\"pv-s\">Por fin logré superar el examen.</span>"]},
+  TO:{k:"Dirección u objetivo", t:["La partícula <em>to</em> aparece al final de phrasal verbs de tres partes que expresan actitud o resultado: anticipar con ganas (look forward to), admitir algo (own up to) o resumirse en (boil down to).", "Aquí <em>to</em> es una preposición, no el infinitivo: después va un sustantivo o un verbo en -ing (<em>look forward to seeing you</em>). Es un error frecuente decir «look forward to see».", "<em>look forward to</em>: I look forward to meeting you.<span class=\"pv-s\">Tengo ganas de conocerte.</span>"]}
+};
+let pvPage = "home", pvQ = "", pvSel = null, pvWasWide = null, pvSheetFrom = null, _pvItems = null, PHRASAL_FILTER = null;
 function pvWide(){ return window.matchMedia("(min-width: 900px)").matches; }
 function pvHl(phrase){ return String(phrase).split(" ").map((w, i)=> i > 0 && PV_PARTS.has(w.toLowerCase()) ? `<span class="pv-p">${escHtml(w)}</span>` : escHtml(w)).join(" "); }
 function pvFavId(pv){ return `pvfav:${pv.phrase}`; }
@@ -25443,35 +25484,28 @@ function pvItems(){
   });
   return _pvItems = out;
 }
-function pvSort(a, b){ return ((a.rank || 999) - (b.rank || 999)) || (b.common - a.common) || a.pv.phrase.localeCompare(b.pv.phrase); }
+const pvAz = (a, b)=> a.pv.phrase.localeCompare(b.pv.phrase);
 function pvParticles(){
   const c = {}; pvItems().forEach(it=>{ const w = it.key.split(" ").pop(); if(PV_PARTS.has(w)) c[w] = (c[w] || 0) + 1; });
-  const tips = PARTICLE_TIPS.map(p=> p.particle.toLowerCase());
-  return Object.keys(c).filter(w=> tips.includes(w) || c[w] >= 3).sort((a, b)=> c[b] - c[a] || a.localeCompare(b)).map(w=> ({w, n:c[w]}));
+  return Object.keys(c).filter(w=> PV_INFO[w.toUpperCase()] || c[w] >= 3).sort((a, b)=> c[b] - c[a] || a.localeCompare(b)).map(w=> ({w, n:c[w]}));
 }
-function pvViewItems(){
-  const all = pvItems(), q = tsNorm(pvQ).trim();
-  if(q) return all.filter(x=> tsNorm(x.pv.phrase).includes(q) || tsNorm(x.pv.es).includes(q)).sort(pvSort);
-  if(pvView === "all") return [...all].sort((a, b)=> a.pv.phrase.localeCompare(b.pv.phrase));
-  if(pvView === "common") return all.filter(x=> x.common).sort(pvSort);
-  return all.filter(x=> x.key.split(" ").pop() === pvView).sort(pvSort);
+function pvGroupItems(page){
+  const all = pvItems();
+  if(page === "top") return all.filter(x=> x.rank).sort((a, b)=> a.rank - b.rank);
+  if(page === "all") return [...all].sort(pvAz);
+  return all.filter(x=> x.key.split(" ").pop() === page).sort(pvAz);
 }
-function pvLabel(){
-  const q = pvQ.trim();
-  return q ? `«${q}»` : pvView === "common" ? "Más comunes" : pvView === "all" ? "Todos" : pvView.toUpperCase();
+function pvSearchItems(){
+  const q = tsNorm(pvQ).trim();
+  return pvItems().filter(x=> tsNorm(x.pv.phrase).includes(q) || tsNorm(x.pv.es).includes(q)).sort(pvAz);
 }
-function pvInfoText(n){
-  if(pvQ.trim()) return `${n} ${n === 1 ? "resultado" : "resultados"} para «${escHtml(pvQ.trim())}»`;
-  if(pvView === "common") return "Los 25 primeros van en su orden real de frecuencia (#1 es el más usado). Después, otros de los más comunes del uso diario.";
-  if(pvView === "all") return `Todos los phrasal verbs (${n}), de la A a la Z.`;
-  const tip = PARTICLE_TIPS.find(p=> p.particle.toLowerCase() === pvView);
-  return `<b>${escHtml(pvView.toUpperCase())}</b> — ${escHtml(tip ? tip.tip : `Phrasal verbs que terminan en «${pvView}».`)}`;
-}
-function pvRow(it, on){
+function pvLabel(){ return pvPage === "top" ? "Top 25" : pvPage === "all" ? "Todos" : pvPage.toUpperCase(); }
+function pvRow(it, on, lead){
   const fav = isWordSaved(pvFavId(it.pv));
   return `<div class="pv-row${on ? " on" : ""}" role="button" tabindex="0" data-k="${escHtml(it.key)}" style="--lv:${PV_LV[it.level] || "#8E6CFF"}" aria-label="${escHtml(it.pv.phrase)}: ${escHtml(it.pv.es)}">
-    ${it.rank ? `<span class="pv-rk" title="Puesto ${it.rank} en frecuencia">#${it.rank}</span>` : ""}
+    ${lead && it.rank ? `<span class="pv-rk">#${it.rank}</span>` : ""}
     <div class="pv-n"><b>${pvHl(it.pv.phrase)}</b><span>${escHtml(it.pv.es)}</span></div>
+    ${!lead && it.rank ? `<span class="pv-bd pv-bd-rk">#${it.rank}</span>` : !lead && it.common ? `<span class="pv-bd pv-bd-cm">Muy común</span>` : ""}
     <button type="button" class="vv-star pv-star${fav ? " on" : ""}" aria-label="${fav ? "Quitar de favoritos" : "Guardar en favoritos"}">${fav ? "★" : "☆"}</button></div>`;
 }
 function pvBadges(it){
@@ -25480,7 +25514,7 @@ function pvBadges(it){
 function pvBindRows(root){
   const find = k=> pvItems().find(x=> x.key === k);
   root.querySelectorAll(".pv-row").forEach(r=>{
-    const open = ()=>{ const it = find(r.dataset.k); if(!it) return; if(pvWide()){ pvSel = it.key; pvPaint(); } else pvOpenSheet(it, r); };
+    const open = ()=>{ const it = find(r.dataset.k); if(!it) return; if(pvWide() && document.getElementById("pvCard")){ pvSel = it.key; pvPaint(); } else pvOpenSheet(it, r); };
     r.onclick = e=>{ if(e.target.closest(".pv-star")) return; open(); };
     r.onkeydown = e=>{ if((e.key === "Enter" || e.key === " ") && !e.target.closest(".pv-star")){ e.preventDefault(); open(); } };
   });
@@ -25513,20 +25547,58 @@ function pvOpenSheet(it, fromEl){
       <div class="vs-cards">${PV_FRAMES.map(f=> `<div class="vs-tc" style="border-left-color:${f[3]}"><div class="uc-t"><small style="color:${f[3]}">${f[0]}</small><div class="uc-en">${wz(pv[f[1]])}</div><div class="uc-es">${escHtml(pv[f[2]])}</div></div></div>`).join("")}</div>
     </div>`;
     o.querySelector("#pvsClose").onclick = pvCloseSheet;
-    o.querySelector("#pvsFav").onclick = ()=>{ pvToggleFav(it); draw(); pvPaint(); o.querySelector("#pvsFav").focus(); };
+    o.querySelector("#pvsFav").onclick = ()=>{ pvToggleFav(it); draw(); if(document.getElementById("pvRows")) pvPaint(); o.querySelector("#pvsFav").focus(); };
   };
   draw();
   requestAnimationFrame(()=>{ o.classList.add("show"); const x = o.querySelector("#pvsClose"); if(x) x.focus(); });
   document.body.style.overflow = "hidden"; document.addEventListener("keydown", pvSheetKey);
 }
+/* ---- Navegación (historial: el botón atrás vuelve al inicio) ---- */
+function pvGo(page){
+  pvPage = page; pvSel = null; pvQ = "";
+  try{ history.pushState({sec:"phrasal", pvV:page}, "", "#phrasal"); }catch(e){}
+  drawPhrasalList(); window.scrollTo({top:0, behavior:"auto"});
+}
+function pvBack(){
+  if(history.state && history.state.pvV != null){ history.back(); return; }
+  pvPage = "home"; pvSel = null; drawPhrasalList(); window.scrollTo({top:0, behavior:"auto"});
+}
+/* ---- Inicio ---- */
+function pvDrawHome(){
+  const parts = pvParticles(), total = pvItems().length;
+  document.getElementById("panel-phrasal").innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Vocabulario</div>
+      <h2>Phrasal Verbs</h2>
+      <p>Empieza por los más usados o explora por partícula: cada una cambia el sentido del verbo de una forma reconocible. La partícula va en <span class="pv-p">morado</span> y la franja de cada fila indica el nivel.</p>
+    </div>
+    <div class="pv-bar">
+      <input type="search" class="vv-search" id="pvSearch" placeholder="Buscar…" autocomplete="off" aria-label="Buscar phrasal verb o significado" value="${escHtml(pvQ)}">
+      <button type="button" class="pv-topb" id="pvTop">Top 25 más usados ›</button>
+    </div>
+    <div id="pvHomeBody"></div>`;
+  const body = document.getElementById("pvHomeBody");
+  const paint = ()=>{
+    if(pvQ.trim()){
+      const hits = pvSearchItems();
+      body.innerHTML = `<div class="pv-count" role="status" aria-live="polite">${hits.length} ${hits.length === 1 ? "resultado" : "resultados"} para «${escHtml(pvQ.trim())}»</div><div class="pv-list">${hits.length ? hits.map(it=> pvRow(it, false)).join("") : `<p class="pv-none">No encontré phrasal verbs con esa búsqueda.</p>`}</div>`;
+      pvBindRows(body); return;
+    }
+    body.innerHTML = `<div class="pv-sec">Explora por partícula</div>
+      <div class="pv-grid">${parts.map(p=> `<button type="button" class="pv-pc" data-v="${p.w}"><span class="pv-pc-p">${p.w.toUpperCase()}<i>${p.n}</i></span><span class="pv-pc-k">${escHtml((PV_INFO[p.w.toUpperCase()] || {}).k || `Phrasal verbs con «${p.w}»`)}</span></button>`).join("")}</div>
+      <button type="button" class="pv-all" id="pvAll">Ver todos los phrasal verbs (${total}) ›</button>`;
+    body.querySelectorAll(".pv-pc").forEach(b=> b.onclick = ()=> pvGo(b.dataset.v));
+    document.getElementById("pvAll").onclick = ()=> pvGo("all");
+  };
+  document.getElementById("pvTop").onclick = ()=> pvGo("top");
+  document.getElementById("pvSearch").addEventListener("input", e=>{ pvQ = e.target.value; paint(); });
+  paint();
+}
+/* ---- Página de grupo: una partícula, Top 25 o Todos ---- */
 function pvPaint(){
-  const items = pvViewItems(), wide = pvWide(), rows = document.getElementById("pvRows"); if(!rows) return;
+  const items = pvGroupItems(pvPage), wide = pvWide(), rows = document.getElementById("pvRows"); if(!rows) return;
   if(wide){ const cur = items.find(x=> x.key === pvSel) || items[0]; pvSel = cur ? cur.key : null; }
-  document.querySelectorAll("#pvParts .pv-chip").forEach(c=>{ const on = !pvQ.trim() && c.dataset.v === pvView; c.classList.toggle("active", on); c.setAttribute("aria-pressed", String(on)); });
-  document.getElementById("pvInfoTxt").innerHTML = pvInfoText(items.length);
-  document.getElementById("pvPractice").hidden = !items.length;
-  document.getElementById("pvPractice").textContent = `Practicar estos (${items.length}) →`;
-  rows.innerHTML = items.length ? items.map(it=> pvRow(it, wide && it.key === pvSel)).join("") : `<p class="pv-none">No encontré phrasal verbs con esa búsqueda.</p>`;
+  rows.innerHTML = items.map(it=> pvRow(it, wide && it.key === pvSel, pvPage === "top")).join("");
   const card = document.getElementById("pvCard");
   if(card){
     const it = items.find(x=> x.key === pvSel), fav = it && isWordSaved(pvFavId(it.pv));
@@ -25536,35 +25608,32 @@ function pvPaint(){
   }
   pvBindRows(rows);
 }
-function drawPhrasalList(){
-  const wide = pvWide(); pvWasWide = wide;
-  const parts = pvParticles();
+function pvDrawGroup(){
+  const wide = pvWide(), items = pvGroupItems(pvPage), U = pvPage.toUpperCase(), info = PV_INFO[U];
+  let head;
+  if(pvPage === "top") head = `<div class="eyebrow">Ranking de frecuencia</div><h2>Top 25 más usados</h2><p class="pv-lead">Ordenados por frecuencia real en inglés (PHaVE List, Garnier y Schmitt, 2015). El #1 es el más usado.</p>`;
+  else if(pvPage === "all") head = `<div class="eyebrow">Phrasal Verbs</div><h2>Todos los phrasal verbs</h2>`;
+  else head = `<div class="eyebrow">Partícula</div><div class="pv-big">${U}</div>${info ? `<div class="pv-exp">${info.t.map(t=> `<p>${t}</p>`).join("")}</div>` : `<p class="pv-lead">Phrasal verbs que terminan en «${pvPage}».</p>`}`;
+  const count = pvPage === "top" ? `${items.length} phrasal verbs · por frecuencia` : pvPage === "all" ? `${items.length} phrasal verbs · A–Z` : `${items.length} phrasal verbs con ${U} · A–Z`;
   document.getElementById("panel-phrasal").innerHTML = `
-    <div class="section-head">
-      <div class="eyebrow">Vocabulario</div>
-      <h2>Phrasal Verbs</h2>
-      <p>Busca uno, empieza por los más comunes o explora por partícula. La partícula va en <span class="pv-p">morado</span> y la franja de cada fila indica el nivel.</p>
-    </div>
-    <input type="search" class="vv-search" id="pvSearch" placeholder="Buscar phrasal verb o significado" autocomplete="off" aria-label="Buscar phrasal verb" value="${escHtml(pvQ)}">
-    <div class="pv-parts" id="pvParts" role="group" aria-label="Ver por">
-      <button type="button" class="pv-chip pv-chip-main" data-v="common">Más comunes</button>
-      ${parts.map(p=> `<button type="button" class="pv-chip" data-v="${p.w}">${p.w.toUpperCase()} <i>${p.n}</i></button>`).join("")}
-      <button type="button" class="pv-chip pv-chip-main" data-v="all">Todos</button>
-    </div>
-    <div class="pv-info"><span id="pvInfoTxt"></span><button type="button" class="pv-prac" id="pvPractice"></button></div>
+    <div class="section-head"><button type="button" class="theory-back" id="pvBack">← Volver a Phrasal Verbs</button>${head}</div>
     <div class="pv-legend" aria-hidden="true">${Object.entries(PV_LV).map(([l, c])=> `<span><i style="background:${c}"></i>${l}</span>`).join("")}</div>
+    <div class="pv-info"><span>${count}</span><button type="button" class="pv-prac" id="pvPractice">Practicar estos ›</button></div>
     <div class="${wide ? "pv-cols" : ""}"><div class="pv-list" id="pvRows"></div>${wide ? `<aside class="pv-card" id="pvCard" aria-live="polite"></aside>` : ""}</div>`;
-  document.querySelectorAll("#pvParts .pv-chip").forEach(c=> c.onclick = ()=>{ pvView = c.dataset.v; pvQ = ""; document.getElementById("pvSearch").value = ""; pvSel = null; pvPaint(); });
-  document.getElementById("pvSearch").addEventListener("input", e=>{ pvQ = e.target.value; pvSel = null; pvPaint(); });
+  document.getElementById("pvBack").onclick = pvBack;
   document.getElementById("pvPractice").onclick = ()=>{
-    const items = pvViewItems(); if(!items.length) return;
-    PHRASAL_FILTER = {label:pvLabel(), idxs:items.flatMap(x=> x.idxs)};
+    PHRASAL_FILTER = {label:pvLabel(), idxs:pvGroupItems(pvPage).flatMap(x=> x.idxs)};
     delete current.phrasal; activeExercise = "phrasal"; goTo("exercises");
   };
   pvPaint();
 }
+function drawPhrasalList(){
+  if(window._pvPopV != null){ pvPage = window._pvPopV; window._pvPopV = null; pvQ = ""; }
+  pvWasWide = pvWide();
+  if(pvPage === "home") pvDrawHome(); else pvDrawGroup();
+}
 function drawPhrasalDetail(){ drawPhrasalList(); }
-window.addEventListener("resize", ()=>{ if(activeSection === "phrasal" && pvWasWide !== null && pvWasWide !== pvWide()){ pvCloseSheet(); drawPhrasalList(); } });
+window.addEventListener("resize", ()=>{ if(activeSection === "phrasal" && pvPage !== "home" && pvWasWide !== null && pvWasWide !== pvWide()){ pvCloseSheet(); drawPhrasalList(); } });
 /* Ejercicio filtrado: elige entre los verbos del grupo conservando los ids del SRS (posición en ALL_PHRASAL). */
 function pvFilterOn(){ return !!PHRASAL_FILTER && activeSection === "exercises" && activeExercise === "phrasal" && !(typeof practiceTodaySession !== "undefined" && practiceTodaySession); }
 function phrasalFilterHtml(){
