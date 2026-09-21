@@ -25212,7 +25212,7 @@ function drawSituationList(){
     btn.onclick = ()=>{ activeSituationTheme = btn.dataset.situation; renderSituations(); window.scrollTo({top:0, behavior:"smooth"}); };
   });
 }
-/* UTILIDADES-UI: tarjetas en lugar de tablas, modo Consultar/Voltear, favoritos, copiar, practicar frases y página de inicio de Utilidades. */
+/* UTILIDADES-UI: tarjetas en lugar de tablas, modo Consultar/Voltear, favoritos, practicar frases y página de inicio de Utilidades. */
 const UC_FLIP_KEY = "englishlab_util_flip_v1_impulse";
 function ucFlipOn(){ try{ return localStorage.getItem(UC_FLIP_KEY) === "1"; }catch(e){ return false; } }
 function ucSetFlip(on){ try{ localStorage.setItem(UC_FLIP_KEY, on ? "1" : "0"); }catch(e){} }
@@ -25222,17 +25222,7 @@ function ucBtn(act, i, label, inner, extra){
 function ucActs(i, opt){
   opt = opt || {};
   const saved = opt.saveId ? isWordSaved(opt.saveId) : false;
-  return `<div class="uc-acts">${opt.saveId ? ucBtn("save", i, saved ? "Quitar de Para repasar" : "Guardar para repasar", saved ? "★" : "☆", saved ? " on" : "") : ""}${ucBtn("copy", i, "Copiar", svgIcon("copy", 16))}${ucBtn("speak", i, "Escuchar", svgIcon("speaker", 16), " play")}</div>`;
-}
-function ucCopy(text, btn){
-  const done = ()=>{ if(!btn) return; const old = btn.innerHTML; btn.innerHTML = svgIcon("tick", 16); btn.classList.add("ok"); if(typeof announce === "function") announce("Copiado"); setTimeout(()=>{ btn.innerHTML = old; btn.classList.remove("ok"); }, 1200); };
-  try{
-    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, ()=> ucCopyFallback(text, done)); return; }
-  }catch(e){}
-  ucCopyFallback(text, done);
-}
-function ucCopyFallback(text, done){
-  try{ const ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;left:-9999px;top:0;"; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); done(); }catch(e){}
+  return `<div class="uc-acts">${opt.saveId ? ucBtn("save", i, saved ? "Quitar de Para repasar" : "Guardar para repasar", saved ? "★" : "☆", saved ? " on" : "") : ""}${ucBtn("speak", i, "Escuchar", svgIcon("speaker", 16), " play")}</div>`;
 }
 /* Barra superior de las páginas de detalle: Consultar | Voltear (opcional), Mostrar respuestas y un botón extra. */
 function ucBarHTML(opt){
@@ -25252,7 +25242,6 @@ function ucWire(root, items, redraw){
     const it = items[+b.dataset.ui]; if(!it) return;
     const act = b.dataset.uact;
     if(act === "speak") speak(it.speak);
-    else if(act === "copy") ucCopy(it.copy, b);
     else if(act === "save"){
       toggleSavedWord(it.saveId, "vocabtopics", it.level || "A1", it.savePrompt, it.saveAnswer, it.saveExplain || "");
       const on = isWordSaved(it.saveId);
@@ -25884,7 +25873,7 @@ function openVerbSheet(base, fromEl){
       <div class="vs-cards">${exs.map((ex, i)=> `
         <div class="vs-tc" style="border-left-color:${VERB_TENSE_COLORS[i % VERB_TENSE_COLORS.length]}">
           <div class="uc-t"><small>${escHtml(ex.tense)}</small><div class="uc-en">${wz(ex[col])}</div><div class="uc-es">${escHtml(ex[col === "aff" ? "esAff" : col === "neg" ? "esNeg" : "esQ"])}</div></div>
-          <div class="uc-acts"><button type="button" class="uc-ic" data-vcopy="${i}" aria-label="Copiar" title="Copiar">${svgIcon("copy", 16)}</button><button type="button" class="uc-ic play" data-vspeak="${i}" aria-label="Escuchar" title="Escuchar">${svgIcon("speaker", 16)}</button></div>
+          <div class="uc-acts"><button type="button" class="uc-ic play" data-vspeak="${i}" aria-label="Escuchar" title="Escuchar">${svgIcon("speaker", 16)}</button></div>
         </div>`).join("")}</div>
       <button type="button" class="btn vs-cta" id="vsPractice">${svgIcon("target", 18)} Practicar este verbo →</button>
     </div>`;
@@ -25893,7 +25882,6 @@ function openVerbSheet(base, fromEl){
     overlay.querySelector("#vsFav").onclick = ()=>{ toggleSavedWord(verbFavId(v), "verbforms", "B1", `Formas de «${v.base}» (${v.es})`, `${v.base} → ${v.past} → ${v.participle}`, `${v.s3} · ${v.gerund}`); draw(); overlay.querySelector("#vsFav").focus(); };
     overlay.querySelectorAll("[data-col]").forEach(b=> b.onclick = ()=>{ col = b.dataset.col; draw(); overlay.querySelector(`[data-col="${col}"]`).focus(); });
     overlay.querySelectorAll("[data-vspeak]").forEach(b=> b.onclick = ()=> speak(exs[+b.dataset.vspeak][col]));
-    overlay.querySelectorAll("[data-vcopy]").forEach(b=> b.onclick = ()=> ucCopy(exs[+b.dataset.vcopy][col], b));
     overlay.querySelector("#vsPractice").onclick = ()=>{ closeVerbSheet(); drawVerbQuiz(v.base); };
   };
   draw();
