@@ -1246,6 +1246,56 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 @keyframes comboIn{0%{opacity:0;transform:translateY(-12px) scale(.7)}12%{opacity:1;transform:translateY(0) scale(1.12)}22%{transform:scale(1)}85%{opacity:1}100%{opacity:0;transform:translateY(-8px) scale(.95)}}
 @media (prefers-reduced-motion:reduce){.combo-badge.show{opacity:1;}}
 @media (max-width:520px){.combo-badge{top:64px;right:10px;font-size:.95rem;}.feedback.fx-has-bolt{padding-right:60px;}.fb-bolt .bolt{width:38px;height:auto;}}
+/* ---- Ruta: mapa en zigzag ---- */
+.route-info{background:none;border:0;padding:0;margin-left:6px;cursor:pointer;vertical-align:middle;line-height:0;}
+.route-hero{display:flex;align-items:center;gap:16px;background:var(--grad-hero);border-radius:26px;padding:16px 20px;margin-top:6px;flex-wrap:wrap;position:relative;overflow:hidden;}
+.route-ring{position:relative;width:104px;height:114px;flex:none;}
+.route-ring .rring{position:absolute;inset:0;}
+.route-ring .rmedal{position:absolute;left:50%;top:60px;transform:translate(-50%,-50%);line-height:0;}
+.route-hero-msg{flex:1;min-width:200px;position:relative;z-index:1;}
+.route-hero-title{color:#fff;font-weight:800;font-size:1.15rem;}
+.route-bubble{display:inline-block;margin-top:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:8px 12px;color:#fff;font-size:.9rem;line-height:1.4;}
+.route-bubble b{color:#FFD23F;}
+.route-cont{display:block;margin-top:10px;border:0;border-radius:14px;padding:10px 18px;font-weight:800;font-family:inherit;font-size:.95rem;cursor:pointer;background:linear-gradient(135deg,#FFC93C,#F58A1F);color:#3B2600;box-shadow:0 6px 16px rgba(245,138,31,.38);max-width:100%;text-align:left;}
+.route-cont:active{transform:translateY(1px) scale(.985);}
+.route-hero-bolt{flex:none;position:relative;z-index:1;}
+.route-hero-bolt .bolt{margin:0;}
+.route-tabs{display:flex;gap:8px;margin:14px 0 4px;overflow-x:auto;padding-bottom:4px;}
+.route-tab{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px 4px;border-radius:16px;border:2px solid transparent;background:none;cursor:pointer;color:var(--ink-soft);font-family:inherit;}
+.route-tab span{font-size:.72rem;font-weight:700;}
+.route-tab.active{background:var(--purple-soft);border-color:var(--purple);color:var(--purple-dark);}
+.route-map{position:relative;width:100%;max-width:520px;margin:6px auto 0;}
+.route-path{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.rnode{position:absolute;transform:translateX(-50%);width:118px;text-align:center;background:none;border:0;padding:0;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:3px;z-index:2;}
+.rcirc{position:relative;width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:800;transition:transform .15s ease;}
+.rnode:hover .rcirc{transform:translateY(-3px);}
+.rnode:active .rcirc{transform:translateY(2px);}
+.rnode.done .rcirc{background:radial-gradient(circle at 35% 30%,#8DF0B0,#1FA463);box-shadow:0 5px 0 #0E6A3B,0 9px 14px rgba(0,0,0,.3);color:#fff;}
+.rnode.cur .rcirc{width:74px;height:74px;font-size:1.5rem;background:radial-gradient(circle at 35% 30%,#FFE58A,#F58A1F);box-shadow:0 6px 0 #9A4B00,0 0 0 6px rgba(255,201,60,.25),0 10px 20px rgba(0,0,0,.35);color:#3B2600;}
+.rnode.open .rcirc{background:radial-gradient(circle at 35% 30%,#9DB8FF,#4F3DFF);box-shadow:0 5px 0 #2C2196,0 9px 14px rgba(0,0,0,.3);color:#fff;}
+.rnode.locked .rcirc{background:var(--bg-soft);border:2px solid var(--line);box-shadow:0 5px 0 var(--line);color:var(--ink-soft);}
+.rnode.locked .rname{color:var(--ink-soft);opacity:.75;}
+.rcirc b{position:relative;z-index:1;line-height:0;display:flex;}
+.rcirc b:not(:has(svg)){line-height:1;}
+.rpulse{position:absolute;inset:-7px;border-radius:50%;border:3px solid #FFC93C;animation:rpulse 1.8s ease-out infinite;}
+@keyframes rpulse{0%{transform:scale(.88);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.rstars{margin-top:-8px;position:relative;z-index:2;line-height:0;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));}
+.rbest{font-size:.68rem;color:var(--ink-soft);font-weight:700;margin-top:-2px;}
+.rname{font-size:.78rem;line-height:1.25;font-weight:600;max-width:118px;}
+.rnode.cur .rname{color:var(--purple);font-weight:800;}
+.rbolt{position:absolute;z-index:1;line-height:0;pointer-events:none;}
+.rbolt .bolt{margin:0;}
+.route-sheet{position:absolute;left:5%;right:5%;z-index:5;background:var(--surface,var(--bg));border:2px solid var(--purple);border-radius:18px;padding:14px 16px 14px;box-shadow:0 16px 36px rgba(0,0,0,.4);animation:fadein .2s ease;}
+.route-sheet[hidden]{display:none;}
+.route-sheet h4{margin:0 0 4px;font-size:1rem;padding-right:26px;}
+.route-sheet p{margin:0 0 8px;font-size:.85rem;line-height:1.45;color:var(--ink-soft);}
+.route-sheet-x{position:absolute;right:8px;top:6px;border:0;background:none;color:var(--ink-soft);font-size:1.5rem;line-height:1;cursor:pointer;padding:4px 8px;}
+.route-sheet-stars{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.8rem;color:var(--ink-soft);}
+.route-sheet-btns{display:flex;flex-wrap:wrap;gap:8px;}
+.route-sheet-btns .btn{display:inline-flex;align-items:center;gap:6px;flex:1 1 130px;justify-content:center;}
+.route-sheet-note{margin-top:8px;font-size:.75rem;color:var(--ink-soft);line-height:1.4;}
+@media (prefers-reduced-motion:reduce){.rpulse{animation:none;opacity:.6;}}
+@media (max-width:520px){.route-hero{padding:14px;}.route-hero-bolt{display:none;}.route-ring{width:88px;height:96px;}.route-ring .rring{width:88px;height:96px;}.route-ring .rmedal{top:51px;}.route-ring .rmedal svg{width:52px;height:58px;}.rbolt{display:none;}}
 .medal{display:block;overflow:visible;transition:transform .25s cubic-bezier(.2,.9,.3,1.3);}
 .medal.locked{filter:grayscale(1) opacity(.4);}
 .ach-item:not(.is-locked):hover .medal{transform:translateY(-3px) rotate(-4deg) scale(1.06);}
@@ -29004,7 +29054,8 @@ function renderPracticeHoy(){
   });
   progressBar.setAttribute("aria-label", `Progreso: ejercicio ${s.index+1} de ${s.queue.length}`);
   if(!exPanel){
-    if(!document.getElementById("exSubnav")) renderExercisesShell();
+    /* Tras una pantalla de resultado (que reemplaza el HTML del panel) el nodo #exPanel ya no existe: se recrea. */
+    renderExercisesShell();
     exPanel = document.getElementById("exPanel");
   }
   panel.appendChild(exPanel);
@@ -29258,10 +29309,9 @@ function renderTopicComplete(s){
     const rp = routeTouch(s.level, s.unit);
     rp.attempts = (rp.attempts || 0) + 1;
     rp.best = Math.max(rp.best || 0, pct);
-    const canPass = routeIsOpen(s.level, s.unit);   // una unidad bloqueada se entrena, pero solo el cierre (o «Saltar») la supera
-    newlyPassed = passed && canPass && !rp.passed;
-    if(passed && canPass) rp.passed = true;
+    /* El entrenamiento ya no supera la unidad: se supera con el cierre, que se ofrece al terminar. */
   }
+  const canClose = routeIsOpen(s.level, s.unit);
   saveProgress();
   const rows = Object.keys(s.byType).map(id=>`<tr><td>${TOPIC_TYPE_LABELS[id] || id}</td><td>${s.byType[id].correct}/${s.byType[id].total}</td></tr>`).join("");
   const missed = s.missed.filter(Boolean);
@@ -29275,19 +29325,22 @@ function renderTopicComplete(s){
     <div class="card" style="max-width:520px;margin:0 auto 18px;">
       <div class="topic-practice-head"><b>Dominio del tema</b><span>${topicMedal(m.pct) ? topicMedal(m.pct) + " " : ""}${s.before}% → <b>${m.pct}%</b>${delta > 0 ? ` (+${delta})` : ""}</span></div>
       <div class="wr-progress-bar" aria-hidden="true"><span style="width:${m.pct}%"></span></div>
-      ${newlyPassed ? `<div class="wr-progress" style="margin-top:8px;">✅ ¡Unidad superada en la Ruta ${s.level}!</div>` : ""}
+      ${canClose ? `<div class="wr-progress" style="margin-top:8px;">Para superar la unidad y ganar estrellas, haz el cierre de ${ROUTE_CLOSE_SIZE} preguntas.</div>` : ""}
     </div>
     <div class="card" style="max-width:520px;margin:0 auto 18px;overflow:auto;">
       <table class="data-table"><thead><tr><th>Tipo</th><th>Aciertos</th></tr></thead><tbody>${rows}</tbody></table>
     </div>
     ${missed.length ? `<div class="card" style="max-width:520px;margin:0 auto 18px;"><h3 style="margin:0 0 6px;font-size:1rem;">Para repasar</h3>${missed.map(x=>`<div class="route-missed"><span>${escHtml(x.prompt)}</span><b>${escHtml(x.answer)}</b></div>`).join("")}</div>` : ""}
     <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
-      <button class="btn" id="topicAgainBtn">Otra ronda →</button>
+      ${canClose ? `<button class="btn" id="topicCloseBtn">Hacer el cierre (${ROUTE_CLOSE_SIZE} preguntas) →</button>` : ""}
+      <button class="btn ${canClose ? "secondary" : ""}" id="topicAgainBtn">Otra ronda →</button>
       <button class="btn secondary" id="topicTheoryBtn">📖 Ver la teoría</button>
       <button class="btn secondary" id="topicBackBtn">Volver a la lista</button>
     </div>`;
   if(pct >= 70) fireConfetti();
   document.getElementById("topicAgainBtn").onclick = ()=>{ practiceTodaySession = buildTopicSession(s.level, s.unit); renderPracticeHoy(); };
+  const closeBtn = document.getElementById("topicCloseBtn");
+  if(closeBtn) closeBtn.onclick = ()=>{ practiceTodaySession = buildUnitSession(s.level, s.unit); renderPracticeHoy(); };
   document.getElementById("topicTheoryBtn").onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(s.tHome, s.tIdx); };
   document.getElementById("topicBackBtn").onclick = ()=>{ practiceTodaySession = null; activeTheoryTopic = null; theoryReturnTo = null; currentLevel = s.tHome; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.tHome)); goTo("theory"); };
   window.scrollTo({top:0, behavior:"smooth"});
@@ -29551,78 +29604,118 @@ function renderUnitComplete(s){
   if(th) th.onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(u.home, u.index, {id:"route", label:"Volver a la Ruta", level, unit:s.unit}); };
   window.scrollTo({top:0, behavior:"smooth"});
 }
+/* RUTA-MAPA: mapa en zigzag con estrellas, medalla del nivel, Continuar y Bolt. El cierre se hace al terminar «Entrenar». */
+const ROUTE_ROW_H = 104, ROUTE_ZIG = [50, 80, 50, 20];
+let routeSheet = null;   // {level, k} de la unidad con panel abierto
+function routeStars(st){
+  if(!st.passed) return 0;
+  const b = st.best || 0;
+  return b >= 90 ? 3 : b >= 80 ? 2 : 1;
+}
+function routeStarsSvg(n){
+  const star = (x, on)=> `<path d="M${x} 1.5l2.1 4.6 5 .6-3.7 3.4 1 5L${x} 12.7l-4.4 2.4 1-5-3.7-3.4 5-.6z" fill="${on ? "url(#i3g-yellow)" : "#3A3560"}" stroke="${on ? "#8F6100" : "#2A2645"}" stroke-width=".8" stroke-linejoin="round"/>`;
+  return `<svg width="56" height="17" viewBox="0 0 56 17" aria-hidden="true">${star(9, n >= 1)}${star(28, n >= 2)}${star(47, n >= 3)}</svg>`;
+}
+function routeBoltMsg(level, passed, total, cur){
+  const left = total - passed, nextLevel = ROUTE_LEVELS[ROUTE_LEVELS.indexOf(level) + 1];
+  if(cur === -1) return {st:"hype", msg:`<b>¡Ruta ${level} completa!</b> ${nextLevel ? `Sigue con ${nextLevel}.` : "Lo lograste todo."}`};
+  if(!passed) return {st:"hype", msg:"<b>¡Empecemos!</b> Toca la unidad que brilla para comenzar."};
+  if(left <= 3) return {st:"hype", msg:`<b>¡Casi!</b> Te ${left === 1 ? "falta 1 unidad" : `faltan ${left} unidades`} para la medalla ${level}.`};
+  return {st:"coach", msg:`<b>¡Vas genial!</b> Ahora toca la unidad ${cur + 1}. Sigue sumando estrellas.`};
+}
 function renderRoute(){
   const level = routeSelectedLevel || routeCurrentLevel();
-  routeSelectedLevel = level;
-  const units = routeUnits(level);
-  const passedCount = routeLevelPassed(level);
-  const cur = routeCurrentIndex(level);
+  routeSelectedLevel = level; routeSheet = null;
+  const units = routeUnits(level), n = units.length;
+  const passedCount = routeLevelPassed(level), cur = routeCurrentIndex(level);
   const inReview = currentLang === "pt" || ROUTE_REVIEW_LEVELS.includes(level);
-  const tabs = ROUTE_LEVELS.map(l=>`
-    <button class="route-tab${l===level?" active":""}" data-route-level="${l}" aria-pressed="${l===level}">${l}<span>${routeLevelPassed(l)}/${routeUnits(l).length}</span></button>`).join("");
-  const card = (u,k)=>{
-    const st = routeState(level,k), open = routeIsOpen(level,k);
-    const status = st.passed ? `✅ Superada · ${st.best}%`
-      : st.attempts ? `🔁 Por reforzar · mejor ${st.best}%`
-      : open ? (k===cur ? "⭐ Siguiente" : "Disponible")
-      : "🔒 Bloqueada";
-    const cls = "card route-unit" + (st.passed ? " done" : "") + (!open ? " locked" : "") + (k===cur ? " next" : "");
-    return `
-      <div class="${cls}" id="route-unit-${level}-${k}">
-        <div class="route-unit-head">
-          <span class="route-num">${st.passed ? "✓" : k+1}</span>
-          <div style="flex:1;min-width:0;">
-            <h3>${escHtml(u.title)}</h3>
-            <p>${escHtml(u.summary)}</p>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <span class="score-pill">${status}</span>
-          ${st.theory ? `<span class="score-pill">📖 Teoría vista</span>` : ""}
-          ${topicBadgeHTML(u.home, u.index).replace('topic-badge', 'score-pill')}
-          ${inReview ? `<span class="score-pill" style="background:#FFF3C9;color:#5B4300;">🧪 En revisión</span>` : ""}
-        </div>
-        <div class="btn-row" style="margin-top:0;">
-          <button class="btn secondary" data-route-theory="${k}">📖 Teoría</button>
-          ${open
-            ? `<button class="btn secondary" data-route-topic="${k}">🎯 Entrenar el tema</button>
-          <button class="btn" data-route-close="${k}">${st.passed ? "Repetir el cierre" : st.attempts ? "Reintentar el cierre" : "✔ Cierre para superar"}</button>`
-            : `<button class="btn secondary" data-route-skip="${k}">Saltar: ya lo sé</button>`}
-        </div>
-      </div>`;
-  };
+  const pct = n ? Math.round(passedCount / n * 100) : 0;
+  const curLv = routeCurrentLevel();
+  const tabs = ROUTE_LEVELS.map(l=>{
+    const tot = routeUnits(l).length, ps = routeLevelPassed(l), locked = ROUTE_LEVELS.indexOf(l) > ROUTE_LEVELS.indexOf(curLv) && !ps;
+    return `<button class="route-tab${l === level ? " active" : ""}" data-route-level="${l}" aria-pressed="${l === level}" aria-label="Nivel ${l}: ${ps} de ${tot} unidades">${medalSvg(l, 38, locked)}<span>${ps}/${tot}</span></button>`;
+  }).join("");
+  const bm = routeBoltMsg(level, passedCount, n, cur);
+  const contLabel = cur === -1 ? "Repasar la ruta" : !passedCount && !Object.keys(routeProgress).length ? "Empezar" : `Continuar: ${escHtml(units[cur].title)}`;
+  const H = ROUTE_ROW_H, xOf = i=> ROUTE_ZIG[i % ROUTE_ZIG.length], yOf = i=> 46 + i * H;
+  const seg = (i)=> ` C ${xOf(i)} ${yOf(i) + H * 0.55}, ${xOf(i + 1)} ${yOf(i + 1) - H * 0.55}, ${xOf(i + 1)} ${yOf(i + 1)}`;
+  let pathAll = n ? `M ${xOf(0)} ${yOf(0)}` : "", pathDone = pathAll;
+  const doneTo = cur === -1 ? n - 1 : cur;
+  for(let i = 0; i < n - 1; i++){ pathAll += seg(i); if(i < doneTo) pathDone += seg(i); }
+  const nodes = units.map((u, k)=>{
+    const st = routeState(level, k), open = routeIsOpen(level, k), isCur = k === cur;
+    const cls = st.passed ? "done" : isCur ? "cur" : open ? "open" : "locked";
+    const stars = routeStars(st);
+    const stTxt = st.passed ? `superada, ${stars} de 3 estrellas` : st.attempts ? `por reforzar, mejor ${st.best}%` : isCur ? "siguiente" : open ? "disponible" : "bloqueada";
+    const glyph = st.passed ? svgIcon("tick", 30).replace('class="ico3"', 'class="ico3 rn-tick"') : !open ? svgIcon("lock", 26) : String(k + 1);
+    return `<button type="button" class="rnode ${cls}" id="route-unit-${level}-${k}" data-route-node="${k}" style="left:${xOf(k)}%;top:${yOf(k) - 32}px" aria-label="Unidad ${k + 1}: ${escHtml(u.title)}, ${stTxt}">
+      <span class="rcirc">${isCur ? '<i class="rpulse"></i>' : ""}<b>${glyph}</b></span>
+      ${st.passed ? `<span class="rstars">${routeStarsSvg(stars)}</span>` : st.attempts ? `<span class="rbest">mejor ${st.best}%</span>` : ""}
+      <span class="rname">${escHtml(u.title)}</span>
+    </button>`;
+  }).join("");
+  const bolt = cur >= 0 ? `<span class="rbolt" style="left:${xOf(cur) < 50 ? "calc(" + xOf(cur) + "% + 72px)" : "calc(" + xOf(cur) + "% - 122px)"};top:${yOf(cur) - 44}px">${boltSVG("coach", 56)}</span>` : "";
+  const ring = `<svg class="rring" viewBox="0 0 100 110" width="104" height="114" role="img" aria-label="${pct}% de la Ruta ${level}">
+      <circle cx="50" cy="60" r="44" fill="none" stroke="var(--line)" stroke-width="8"/>
+      <circle cx="50" cy="60" r="44" fill="none" stroke="#3DE08D" stroke-width="8" stroke-linecap="round" stroke-dasharray="${Math.round(pct * 2.765)} 277" transform="rotate(-90 50 60)"/>
+    </svg><span class="rmedal">${medalSvg(level, 62)}</span>`;
   const html = `
     <div class="section-head">
       <div class="eyebrow">Ruta de aprendizaje</div>
-      <h2>Ruta ${level}</h2>
-      <p>${units.length} unidades guiadas: lee la teoría, entrena el tema las veces que quieras y haz el cierre de ${ROUTE_CLOSE_SIZE} preguntas (se aprueba con ${ROUTE_PASS_PCT}%) para abrir la siguiente. ¿Ya dominas un tema? Usa «Saltar».</p>
-      <div class="route-tabs" role="group" aria-label="Nivel">${tabs}</div>
-      ${inReview ? `<p class="route-review-note">🧪 Las unidades de ${level} están <b>en revisión</b>: las preguntas y explicaciones las redactó una IA y todavía no las ha revisado un profesor. Si ves algún error, avísalo.</p>` : ""}
-      <div class="route-progress" role="progressbar" aria-valuemin="0" aria-valuemax="${units.length}" aria-valuenow="${passedCount}"><span style="width:${passedCount/units.length*100}%"></span></div>
-      <div class="dash-card-sub">${passedCount} de ${units.length} unidades superadas</div>
+      <h2>Ruta ${level}${inReview ? ` <button type="button" class="route-info" id="routeInfoBtn" aria-expanded="false" aria-controls="routeInfoNote" title="Contenido en revisión">${svgIcon("question", 18)}</button>` : ""}</h2>
+      ${inReview ? `<p class="route-review-note" id="routeInfoNote" hidden>Las unidades de ${level} están <b>en revisión</b>: las preguntas y explicaciones las redactó una IA y todavía no las ha revisado un profesor. Si ves algún error, avísalo.</p>` : ""}
     </div>
-    <div class="route-list">${units.map(card).join("")}</div>`;
+    <div class="route-hero">
+      <div class="route-ring">${ring}</div>
+      <div class="route-hero-msg">
+        <div class="route-hero-title">${passedCount} de ${n} unidades · ${pct} %</div>
+        <div class="route-bubble">${bm.msg}</div>
+        <button class="route-cont" id="routeContBtn" type="button">${contLabel} →</button>
+      </div>
+      <div class="route-hero-bolt">${boltSVG(bm.st, 74)}</div>
+    </div>
+    <div class="route-tabs" role="group" aria-label="Nivel">${tabs}</div>
+    <div class="route-map" id="routeMap" style="height:${n * H + 230}px">
+      <svg class="route-path" viewBox="0 0 100 ${n * H + 230}" preserveAspectRatio="none" aria-hidden="true">
+        <path d="${pathAll}" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round" stroke-dasharray="1 15" vector-effect="non-scaling-stroke"/>
+        <path d="${pathDone}" fill="none" stroke="#3DE08D" stroke-width="10" stroke-linecap="round" stroke-dasharray="1 15" vector-effect="non-scaling-stroke"/>
+      </svg>
+      ${nodes}${bolt}
+      <div class="route-sheet" id="routeSheet" hidden></div>
+    </div>`;
   const panel = document.getElementById("panel-route");
   panel.innerHTML = html;
+  const info = document.getElementById("routeInfoBtn");
+  if(info) info.onclick = ()=>{ const note = document.getElementById("routeInfoNote"); note.hidden = !note.hidden; info.setAttribute("aria-expanded", String(!note.hidden)); };
   panel.querySelectorAll("[data-route-level]").forEach(b=>{
     b.onclick = ()=>{ routeSelectedLevel = b.dataset.routeLevel; renderRoute(); window.scrollTo({top:0, behavior:"smooth"}); };
   });
-  panel.querySelectorAll("[data-route-theory]").forEach(b=>{
-    b.onclick = ()=>{
-      const k = parseInt(b.dataset.routeTheory);
-      routeTouch(level, k).theory = true; saveProgress();
-      openTheoryTopic(units[k].home, units[k].index, {id:"route", label:"Volver a la Ruta", level, unit:k});
-    };
-  });
-  panel.querySelectorAll("[data-route-topic]").forEach(b=>{ b.onclick = ()=>{ const u = units[parseInt(b.dataset.routeTopic)]; startTopicPractice(u.home, u.index); }; });
-  panel.querySelectorAll("[data-route-close]").forEach(b=>{ b.onclick = ()=> routeStartClose(level, parseInt(b.dataset.routeClose)); });
-  panel.querySelectorAll("[data-route-skip]").forEach(b=>{
-    b.onclick = ()=>{
-      const k = parseInt(b.dataset.routeSkip);
-      routeTouch(level, k).skipped = true; saveProgress();
-      renderRoute();
-    };
-  });
+  const openSheet = (k)=>{
+    const u = units[k], st = routeState(level, k), open = routeIsOpen(level, k), sheet = document.getElementById("routeSheet");
+    if(routeSheet && routeSheet.k === k){ sheet.hidden = true; routeSheet = null; return; }
+    routeSheet = {level, k};
+    sheet.style.top = (yOf(k) + 108) + "px";
+    sheet.innerHTML = `<button type="button" class="route-sheet-x" id="routeSheetX" aria-label="Cerrar">×</button>
+      <h4>${k + 1} · ${escHtml(u.title)}</h4>
+      <p>${escHtml(u.summary)}</p>
+      ${st.passed ? `<div class="route-sheet-stars">${routeStarsSvg(routeStars(st))}<span>Mejor resultado: ${st.best}%</span></div>` : st.attempts ? `<div class="route-sheet-stars"><span>Por reforzar · mejor ${st.best}%</span></div>` : ""}
+      <div class="route-sheet-btns">
+        <button class="btn secondary" data-sheet="theory">${svgIcon("book", 18)} Teoría</button>
+        ${open ? `<button class="btn" data-sheet="train">${svgIcon("target", 18)} ${st.passed ? "Entrenar y repetir el cierre" : "Entrenar y hacer el cierre"}</button>` : `<button class="btn secondary" data-sheet="skip">Saltar: ya lo sé</button>`}
+      </div>
+      ${open ? `<div class="route-sheet-note">Al terminar el entrenamiento harás el cierre de ${ROUTE_CLOSE_SIZE} preguntas (se aprueba con ${ROUTE_PASS_PCT}%) para superar la unidad.</div>` : `<div class="route-sheet-note">Se abre al superar la unidad anterior.</div>`}`;
+    sheet.hidden = false;
+    document.getElementById("routeSheetX").onclick = ()=>{ sheet.hidden = true; routeSheet = null; };
+    sheet.querySelectorAll("[data-sheet]").forEach(b=> b.onclick = ()=>{
+      if(b.dataset.sheet === "theory"){ routeTouch(level, k).theory = true; saveProgress(); openTheoryTopic(u.home, u.index, {id:"route", label:"Volver a la Ruta", level, unit:k}); }
+      else if(b.dataset.sheet === "train") startTopicPractice(u.home, u.index);
+      else{ routeTouch(level, k).skipped = true; saveProgress(); renderRoute(); }
+    });
+    setTimeout(()=>{ const r = sheet.getBoundingClientRect(); if(r.bottom > innerHeight - 10 || r.top < 80) sheet.scrollIntoView({block:"center", behavior:"smooth"}); }, 60);
+  };
+  panel.querySelectorAll("[data-route-node]").forEach(b=> b.onclick = ()=> openSheet(parseInt(b.dataset.routeNode)));
+  const cont = document.getElementById("routeContBtn");
+  if(cont) cont.onclick = ()=>{ const k = cur === -1 ? 0 : cur; const el = document.getElementById(`route-unit-${level}-${k}`); if(el){ el.scrollIntoView({block:"center", behavior:"smooth"}); setTimeout(()=> el.click(), 350); } };
 }
 function routeHomeCardHtml(){
   const level = routeCurrentLevel();
