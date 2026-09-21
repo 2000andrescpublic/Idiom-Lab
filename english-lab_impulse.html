@@ -1281,7 +1281,7 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 @keyframes rpulse{0%{transform:scale(.88);opacity:.9}100%{transform:scale(1.35);opacity:0}}
 .rstars{margin-top:-8px;position:relative;z-index:2;line-height:0;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));}
 .rbest{font-size:.68rem;color:var(--ink-soft);font-weight:700;margin-top:-2px;}
-.rname{font-size:.78rem;line-height:1.25;font-weight:600;max-width:118px;}
+.rname{font-size:.8rem;line-height:1.25;font-weight:600;max-width:118px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .rnode.cur .rname{color:var(--purple);font-weight:800;}
 .rbolt{position:absolute;z-index:1;line-height:0;pointer-events:none;}
 .rbolt .bolt{margin:0;}
@@ -1296,6 +1296,29 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .route-sheet-note{margin-top:8px;font-size:.75rem;color:var(--ink-soft);line-height:1.4;}
 @media (prefers-reduced-motion:reduce){.rpulse{animation:none;opacity:.6;}}
 @media (max-width:520px){.route-hero{padding:14px;}.route-hero-bolt{display:none;}.route-ring{width:88px;height:96px;}.route-ring .rring{width:88px;height:96px;}.route-ring .rmedal{top:51px;}.route-ring .rmedal svg{width:52px;height:58px;}.rbolt{display:none;}}
+/* ---- Buscador de temas de Gramática ---- */
+.ts-bar{position:relative;display:flex;align-items:center;margin:4px 0 8px;}
+.ts-ico{position:absolute;left:14px;line-height:0;pointer-events:none;}
+.ts-input{width:100%;padding:13px 44px 13px 44px;border-radius:16px;border:2px solid var(--line);background:var(--bg-soft);color:var(--ink);font-family:inherit;font-size:1rem;transition:border-color .15s ease,box-shadow .15s ease;}
+.ts-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 4px rgba(var(--purple-rgb),.18);}
+.ts-input::-webkit-search-cancel-button{display:none;}
+.ts-clear{position:absolute;right:8px;width:32px;height:32px;border:0;border-radius:50%;background:var(--line);color:var(--ink);font-size:1.3rem;line-height:1;cursor:pointer;}
+.ts-clear[hidden],.ts-opts[hidden]{display:none;}
+.ts-opts{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 2px 10px;font-size:.85rem;color:var(--ink-soft);}
+.ts-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;}
+.ts-toggle input{width:18px;height:18px;}
+.ts-count{font-weight:700;}
+.ts-snip mark,.theory-list-title mark,.ts-mark{background:linear-gradient(transparent 50%,rgba(255,201,60,.6) 0);color:inherit;border-radius:3px;padding:0 1px;}
+.ts-item .badge-level{margin-right:6px;}
+.ts-empty{display:flex;align-items:center;gap:16px;background:var(--bg-soft);border:1px dashed var(--line);border-radius:22px;padding:16px 20px;margin:8px 0 20px;}
+.ts-empty .bolt{margin:0;flex:none;}
+.ts-empty h3{margin:0 0 4px;font-size:1.05rem;}
+.ts-empty p{margin:0 0 8px;color:var(--ink-soft);font-size:.9rem;line-height:1.5;}
+.ts-sug{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.82rem;color:var(--ink-soft);margin-top:6px;}
+.ts-chip{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:4px 12px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;}
+.ts-chip:hover{border-color:var(--purple);color:var(--purple-dark);}
+.ts-note{margin:0 0 12px;padding:8px 12px;border-radius:12px;background:var(--purple-soft);color:var(--purple-dark);font-size:.85rem;}
+@media (max-width:520px){.ts-empty{flex-direction:column;text-align:center;}.ts-sug{justify-content:center;}}
 .medal{display:block;overflow:visible;transition:transform .25s cubic-bezier(.2,.9,.3,1.3);}
 .medal.locked{filter:grayscale(1) opacity(.4);}
 .ach-item:not(.is-locked):hover .medal{transform:translateY(-3px) rotate(-4deg) scale(1.06);}
@@ -23338,6 +23361,7 @@ function renderHome(){
 let activeTheoryTopic = null; // {level, index} | null (null = vista de lista)
 let theoryReturnTo = null;    // {id, label, unit} | null: a dónde vuelve el botón "Volver" si la teoría se abrió desde otra sección (ej. la Ruta)
 function openTheoryTopic(level, index, returnTo){
+  theoryHighlight = null;
   currentLevel = level;
   document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent===level));
   activeTheoryTopic = {level, index};
@@ -23348,8 +23372,133 @@ function renderTheory(){
   if(activeTheoryTopic){ drawTheoryDetail(activeTheoryTopic.level, activeTheoryTopic.index); }
   else { drawTheoryListView(); }
 }
+/* THEORY-SEARCH: buscador de temas de Gramática (todos los niveles, texto completo, con ranking, equivalencias ES/EN/PT y resaltado). */
+const TS_GROUPS = [
+  ["pasiva","pasivo","pasivas","passive","passiva","passivo"], ["futuro","future","will","going to"], ["pasado","past","preterito"], ["presente","present"],
+  ["condicional","condicionais","conditional","conditionals"], ["whose","relativo","relativa","relativas","relativos","relative","pronomes relativos"], ["which","who","relative","relativo","relativas"],
+  ["comparativo","comparativos","comparative","comparison","comparaciones"], ["superlativo","superlativos","superlative"], ["articulo","articulos","artigo","artigos","article","articles"],
+  ["posesivo","posesivos","possessive","possessivo"], ["reflexivo","reflexivos","reflexive","reflexivo"], ["modal","modales","modais","modals"], ["gerundio","gerund","gerundio"],
+  ["infinitivo","infinitive"], ["subjuntivo","subjunctive"], ["indirecto","indirecta","indireto","reportado","reported","reported speech"], ["adverbio","adverbios","adverb","adverbs"],
+  ["adjetivo","adjetivos","adjective","adjectives"], ["preposicion","preposiciones","preposicao","preposicoes","preposition","prepositions"], ["conector","conectores","conectivos","linker","connector","conjuncao","conjunciones"],
+  ["pregunta","preguntas","perguntas","question","questions","wh"], ["negativo","negativa","negativas","negative"], ["contable","contables","countable"], ["incontable","incontables","uncountable"],
+  ["cuantificador","cuantificadores","quantifier","quantifiers"], ["imperativo","imperativos","imperative"], ["habito","habitos","habit","used to"], ["obligacion","obligacao","obligation","must","have to"],
+  ["permiso","permissao","permission"], ["enfasis","enfatico","emphasis","emphatic"], ["concesion","concessao","concession","although","however"], ["sustantivo","sustantivos","substantivo","noun"],
+  ["pronombre","pronombres","pronome","pronomes","pronoun"], ["verbo","verbos","verb","verbs"], ["plural","plurales"], ["perfecto","perfeito","perfect"], ["continuo","continuous","progressive"],
+  ["condicional","if"], ["deduccion","deducao","deduction"], ["voz","voice"]
+];
+const TS_EXAMPLES = ["whose", "used to", "pasiva", "condicional", "unless"];
+let theorySearch = {q:"", onlyLevel:false}, theoryHighlight = null, _tsIdx = {};
+function tsNorm(s){ return String(s == null ? "" : s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+function tsEsc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function tsPlain(html){ return String(html == null ? "" : html).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(); }
+function theoryIndex(){
+  if(_tsIdx[currentLang]) return _tsIdx[currentLang];
+  const T = LANG_PACKS[currentLang].THEORY, out = [];
+  LEVELS.forEach(lv=> (T[lv] || []).forEach((t, i)=>{
+    const f = {title: tsPlain(t.title), summary: tsPlain(t.summary), tip: tsPlain(t.tip), detail: tsPlain(t.detail),
+      ex: (t.examples || []).map(e=> tsPlain(e.en) + " — " + tsPlain(e.es)).join("  |  "), mm: tsPlain(JSON.stringify(t.mindmap || {}).replace(/[{}\[\]"]/g, " "))};
+    const n = {}; Object.keys(f).forEach(k=> n[k] = tsNorm(f[k]));
+    out.push({lv, i, f, n});
+  }));
+  return (_tsIdx[currentLang] = out);
+}
+function tsTokenRe(tok, whole, flags){
+  const e = tok.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(whole ? `(?<![a-z0-9])${e}(?![a-z0-9])` : `(?<![a-z0-9])${e}[a-z0-9']*`, flags || "");
+}
+/* Consulta -> {q, tokens:[{t, alts:[...], whole}], phrase} */
+function tsParse(q){
+  const nq = tsNorm(q).replace(/[^a-z0-9'\s-]/g, " ").replace(/\s+/g, " ").trim();
+  if(!nq) return null;
+  const tokens = nq.split(" ").filter(Boolean).map(t=>{
+    const bare = t.replace(/^-+|-+$/g, "") || t;
+    const alts = [];
+    TS_GROUPS.forEach(g=>{ if(g.includes(bare)) g.forEach(a=>{ if(a !== bare && !alts.includes(a)) alts.push(a); }); });
+    return {t: bare, alts, whole: bare.length <= 3, titleOnly: bare.length <= 2};
+  });
+  return {nq, tokens, phrase: tokens.length > 1 ? nq : null};
+}
+const TS_W = {title:10, summary:5, tip:4, detail:3, mm:2, ex:1.5};
+function tsScore(entry, P, any){
+  let score = 0, matched = 0;
+  for(const tk of P.tokens){
+    let best = 0;
+    for(const k of Object.keys(TS_W)){
+      if(tk.titleOnly && k !== "title") continue;
+      if(tsTokenRe(tk.t, tk.whole).test(entry.n[k])) best = Math.max(best, TS_W[k] * (k === "title" && tk.whole ? 1.2 : 1));
+    }
+    if(!best){
+      for(const a of tk.alts){
+        for(const k of ["title", "summary", "tip"]){
+          if(tsTokenRe(a, a.length <= 3).test(entry.n[k])) best = Math.max(best, TS_W[k] * 0.55);
+        }
+      }
+    }
+    if(!best){ if(any) continue; return 0; }
+    score += best; matched++;
+  }
+  if(any && !matched) return 0;
+  if(P.phrase){
+    if(entry.n.title.includes(P.phrase)) score += 8;
+    else if(entry.n.detail.includes(P.phrase) || entry.n.ex.includes(P.phrase) || entry.n.summary.includes(P.phrase)) score += 4;
+  }
+  return score;
+}
+function tsHighlight(orig, P, extraAlts){
+  const n = tsNorm(orig);
+  if(n.length !== orig.length) return tsEsc(orig);
+  const ranges = [];
+  const terms = [];
+  P.tokens.forEach(tk=>{ terms.push([tk.t, tk.whole]); if(extraAlts) tk.alts.forEach(a=> terms.push([a, a.length <= 3])); });
+  terms.forEach(([t, whole])=>{ const re = tsTokenRe(t, whole, "g"); let m; while((m = re.exec(n))){ if(!m[0]) break; ranges.push([m.index, m.index + m[0].length]); } });
+  ranges.sort((a, b)=> a[0] - b[0]);
+  const merged = [];
+  ranges.forEach(r=>{ const last = merged[merged.length - 1]; if(last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]); else merged.push(r.slice()); });
+  let out = "", pos = 0;
+  merged.forEach(([a, b])=>{ out += tsEsc(orig.slice(pos, a)) + "<mark>" + tsEsc(orig.slice(a, b)) + "</mark>"; pos = b; });
+  return out + tsEsc(orig.slice(pos));
+}
+function tsSnippet(entry, P){
+  const order = ["summary", "tip", "detail", "ex", "mm"];
+  let field = null, idx = -1, hitAlt = false;
+  for(const k of order){
+    for(const tk of P.tokens){
+      const m = tsTokenRe(tk.t, tk.whole).exec(entry.n[k]);
+      if(m && (idx < 0 || m.index < idx || field !== k)){ if(!field){ field = k; idx = m.index; } }
+    }
+    if(field) break;
+  }
+  if(!field){ field = "summary"; idx = 0; hitAlt = true; }
+  const txt = entry.f[field], len = txt.length;
+  let a = Math.max(0, idx - 48), b = Math.min(len, idx + 100);
+  if(a > 0){ const sp = txt.indexOf(" ", a); if(sp > -1 && sp < idx) a = sp + 1; }
+  if(b < len){ const sp = txt.lastIndexOf(" ", b); if(sp > idx) b = sp; }
+  const slice = txt.slice(a, b);
+  return (a > 0 ? "…" : "") + tsHighlight(slice, P, hitAlt) + (b < len ? "…" : "");
+}
+function theorySearchRun(q, lv){
+  const P = tsParse(q); if(!P) return null;
+  let res = [], partial = false;
+  const run = any=> theoryIndex().forEach(e=>{
+    if(theorySearch.onlyLevel && e.lv !== lv) return;
+    const s = tsScore(e, P, any);
+    if(s > 0) res.push({e, s});
+  });
+  run(false);
+  if(!res.length && P.tokens.length > 1){ run(true); partial = res.length > 0; }
+  res.sort((x, y)=> y.s - x.s || LEVELS.indexOf(x.e.lv) - LEVELS.indexOf(y.e.lv) || x.e.i - y.e.i);
+  return {P, res, partial};
+}
+function tsSuggest(P){
+  const seen = new Set(), out = [];
+  P.tokens.forEach(tk=>{
+    const pre = tk.t.slice(0, 3); if(pre.length < 3) return;
+    theoryIndex().forEach(e=>{ if(out.length < 3 && !seen.has(e.lv + e.i) && tsTokenRe(pre, false).test(e.n.title)){ seen.add(e.lv + e.i); out.push(e); } });
+  });
+  return out;
+}
 function drawTheoryListView(){
-  const lv = currentLevel==="Random" ? pick(LEVELS) : currentLevel;
+  const lv = currentLevel === "Random" ? pick(LEVELS) : currentLevel;
   const topics = LANG_PACKS[currentLang].THEORY[lv];
   const html = `
     <div class="section-head">
@@ -23357,7 +23506,18 @@ function drawTheoryListView(){
       <h2>Gramática por nivel</h2>
       <p>Elige un tema para ver la explicación completa, el mapa mental y todos los ejemplos · Nivel ${lv}</p>
     </div>
-    <div class="theory-list">
+    <div class="ts-bar" role="search">
+      <label class="sr-only" for="tsInput">Buscar un tema de gramática</label>
+      <span class="ts-ico">${svgIcon("search", 20)}</span>
+      <input type="search" id="tsInput" class="ts-input" placeholder="Busca un tema o una palabra: whose, used to, pasiva…" autocomplete="off" spellcheck="false" value="${tsEsc(theorySearch.q)}">
+      <button type="button" class="ts-clear" id="tsClear" aria-label="Borrar la búsqueda" ${theorySearch.q ? "" : "hidden"}>×</button>
+    </div>
+    <div class="ts-opts" id="tsOpts" ${theorySearch.q ? "" : "hidden"}>
+      <label class="ts-toggle"><input type="checkbox" id="tsOnly" ${theorySearch.onlyLevel ? "checked" : ""}> Solo nivel ${lv}</label>
+      <span class="ts-count" id="tsCount" role="status" aria-live="polite"></span>
+    </div>
+    <div id="tsResults"></div>
+    <div class="theory-list" id="theoryList">
       ${topics.map((t,i)=>`
         <button class="theory-list-item" data-idx="${i}">
           <div>
@@ -23370,13 +23530,77 @@ function drawTheoryListView(){
     </div>
   `;
   document.getElementById("panel-theory").innerHTML = html;
-  document.querySelectorAll(".theory-list-item").forEach(btn=>{
-    btn.onclick = ()=>{
-      activeTheoryTopic = {level: lv, index: parseInt(btn.dataset.idx)};
-      renderTheory();
-      window.scrollTo({top:0, behavior:"smooth"});
-    };
+  const openTopic = (level, index, hl)=>{
+    theoryHighlight = hl || null;
+    activeTheoryTopic = {level, index};
+    renderTheory();
+    window.scrollTo({top:0, behavior:"smooth"});
+  };
+  document.querySelectorAll("#theoryList .theory-list-item").forEach(btn=>{
+    btn.onclick = ()=> openTopic(lv, parseInt(btn.dataset.idx), null);
   });
+  const input = document.getElementById("tsInput"), clear = document.getElementById("tsClear"), only = document.getElementById("tsOnly");
+  const paint = ()=>{
+    const q = theorySearch.q, box = document.getElementById("tsResults"), list = document.getElementById("theoryList"), count = document.getElementById("tsCount");
+    clear.hidden = !q; document.getElementById("tsOpts").hidden = !q;
+    const r = q ? theorySearchRun(q, lv) : null;
+    if(!r){ box.innerHTML = ""; list.hidden = false; if(count) count.textContent = ""; return; }
+    list.hidden = true;
+    count.textContent = r.res.length ? `${r.res.length} ${r.res.length === 1 ? "tema" : "temas"} para «${q.trim()}»${r.partial ? " (coinciden con alguna palabra)" : ""}` : "";
+    if(!r.res.length){
+      const sug = tsSuggest(r.P);
+      box.innerHTML = `<div class="ts-empty">${boltSVG("think", 70)}<div>
+        <h3>No encontré «${tsEsc(q.trim())}»</h3>
+        <p>Prueba con otra palabra, en español o en inglés${theorySearch.onlyLevel ? ", o quita el filtro «Solo nivel " + lv + "»" : ""}.</p>
+        ${sug.length ? `<div class="ts-sug">¿Buscabas…? ${sug.map(e=> `<button type="button" class="ts-chip" data-sug="${tsEsc(e.f.title.split(/[:(]/)[0].trim())}">${tsEsc(e.f.title.split(/[:(]/)[0].trim())}</button>`).join("")}</div>` : ""}
+        <div class="ts-sug">Ideas: ${TS_EXAMPLES.map(w=> `<button type="button" class="ts-chip" data-sug="${tsEsc(w)}">${tsEsc(w)}</button>`).join("")}</div>
+      </div></div>`;
+      box.querySelectorAll("[data-sug]").forEach(b=> b.onclick = ()=>{ theorySearch.q = b.dataset.sug; input.value = theorySearch.q; paint(); input.focus(); });
+      return;
+    }
+    box.innerHTML = `<div class="theory-list ts-list">${r.res.map(({e})=> `
+      <button class="theory-list-item ts-item" data-lv="${e.lv}" data-idx="${e.i}">
+        <div>
+          <div class="theory-list-title"><span class="badge-level">${e.lv}</span> ${tsHighlight(e.f.title, r.P, true)}</div>
+          <div class="theory-list-summary ts-snip">${tsSnippet(e, r.P)}</div>
+        </div>
+        <span class="theory-list-arrow">→</span>
+      </button>`).join("")}</div>`;
+    box.querySelectorAll(".ts-item").forEach(b=> b.onclick = ()=> openTopic(b.dataset.lv, parseInt(b.dataset.idx), {q: theorySearch.q, P: r.P}));
+  };
+  input.oninput = ()=>{ theorySearch.q = input.value; paint(); };
+  input.onkeydown = e=>{ if(e.key === "Enter"){ const first = document.querySelector("#tsResults .ts-item"); if(first){ e.preventDefault(); first.click(); } } else if(e.key === "Escape" && theorySearch.q){ theorySearch.q = ""; input.value = ""; paint(); } };
+  clear.onclick = ()=>{ theorySearch.q = ""; input.value = ""; paint(); input.focus(); };
+  only.onchange = ()=>{ theorySearch.onlyLevel = only.checked; paint(); };
+  paint();
+}
+/* Resalta en la explicación los términos buscados y ofrece quitar el resaltado. */
+function theoryApplyHighlight(){
+  const hl = theoryHighlight, card = document.querySelector("#panel-theory .topic-card");
+  if(!hl || !card) return;
+  const terms = [];
+  hl.P.tokens.forEach(tk=>{ terms.push([tk.t, tk.whole]); tk.alts.forEach(a=> terms.push([a, a.length <= 3])); });
+  const w = document.createTreeWalker(card, NodeFilter.SHOW_TEXT, {acceptNode(n){ const p = n.parentElement; return p && !/^(SCRIPT|STYLE|MARK|TEXTAREA)$/.test(p.tagName) && n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; }});
+  const nodes = []; let nd; while((nd = w.nextNode())) nodes.push(nd);
+  let first = null;
+  nodes.forEach(t=>{
+    const orig = t.nodeValue, n = tsNorm(orig); if(n.length !== orig.length) return;
+    const ranges = [];
+    terms.forEach(([tm, whole])=>{ const re = tsTokenRe(tm, whole, "g"); let m; while((m = re.exec(n))){ if(!m[0]) break; ranges.push([m.index, m.index + m[0].length]); } });
+    if(!ranges.length) return;
+    ranges.sort((a, b)=> a[0] - b[0]);
+    const merged = []; ranges.forEach(r=>{ const l = merged[merged.length - 1]; if(l && r[0] <= l[1]) l[1] = Math.max(l[1], r[1]); else merged.push(r.slice()); });
+    const frag = document.createDocumentFragment(); let pos = 0;
+    merged.forEach(([a, b])=>{ if(a > pos) frag.appendChild(document.createTextNode(orig.slice(pos, a))); const mk = document.createElement("mark"); mk.className = "ts-mark"; mk.textContent = orig.slice(a, b); frag.appendChild(mk); if(!first) first = mk; pos = b; });
+    if(pos < orig.length) frag.appendChild(document.createTextNode(orig.slice(pos)));
+    t.parentNode.replaceChild(frag, t);
+  });
+  const note = document.createElement("div");
+  note.className = "ts-note";
+  note.innerHTML = `Resaltando «<b>${tsEsc(hl.q.trim())}</b>» · <button type="button" class="practice-link" id="tsNoHl">quitar resaltado</button>`;
+  card.prepend(note);
+  document.getElementById("tsNoHl").onclick = ()=>{ theoryHighlight = null; card.querySelectorAll("mark.ts-mark").forEach(m=> m.replaceWith(document.createTextNode(m.textContent))); note.remove(); };
+  if(first) setTimeout(()=> first.scrollIntoView({block:"center", behavior:"smooth"}), 250);
 }
 function topicLevelNote(lv, index){
   try{
@@ -23389,7 +23613,7 @@ function drawTheoryDetail(lv, index){
   const t = LANG_PACKS[currentLang].THEORY[lv][index];
   const html = `
     <div class="section-head">
-      <button class="theory-back" id="theoryBackBtn">← ${theoryReturnTo ? theoryReturnTo.label : "Volver a Gramática"}</button>
+      <button class="theory-back" id="theoryBackBtn">← ${theoryReturnTo ? theoryReturnTo.label : theoryHighlight ? "Volver a los resultados" : "Volver a Gramática"}</button>
       <div class="eyebrow">Teoría · Nivel ${lv}${topicLevelNote(lv, index)}</div>
       <h2>${t.title}</h2>
     </div>
@@ -23405,6 +23629,7 @@ function drawTheoryDetail(lv, index){
     </div>
   `;
   document.getElementById("panel-theory").innerHTML = html;
+  theoryApplyHighlight();
   document.getElementById("theoryBackBtn").onclick = ()=>{
     const back = theoryReturnTo;
     activeTheoryTopic = null; theoryReturnTo = null;
@@ -29623,6 +29848,39 @@ function routeBoltMsg(level, passed, total, cur){
   if(left <= 3) return {st:"hype", msg:`<b>¡Casi!</b> Te ${left === 1 ? "falta 1 unidad" : `faltan ${left} unidades`} para la medalla ${level}.`};
   return {st:"coach", msg:`<b>¡Vas genial!</b> Ahora toca la unidad ${cur + 1}. Sigue sumando estrellas.`};
 }
+/* Nombre corto de cada unidad para el mapa de la Ruta (el título completo se conserva en el panel, el tooltip y la etiqueta accesible). */
+const ROUTE_SHORT = {
+  "Adverbios de frecuencia y preposiciones de tiempo":"Frecuencia y tiempo", "Like, love, hate + verbo con -ing (y want to)":"Like, love + -ing",
+  "Presente simple vs presente continuo":"Simple vs continuo", "Sustantivos contables e incontables":"Contables e incontables",
+  "Pronombres posesivos y reflexivos (mine, yours, myself)":"Posesivos y reflexivos", "Presente perfecto vs pasado simple":"Perfecto vs pasado",
+  "Gerundios e infinitivos después de verbos":"Gerundio o infinitivo", "May, could y be allowed to (permiso y posibilidad)":"May, could, allowed to",
+  "Presente perfecto continuo vs. simple":"Perfecto continuo", "Pasado perfecto continuo y tiempos narrativos":"Tiempos narrativos",
+  "Futuro perfecto y futuro continuo":"Futuro perfecto y continuo", "Both, either, neither, all, whole":"Both, either, neither",
+  "Verbos + gerundio o infinitivo: cambio de significado":"-ing o to: matices", "Relativas con whose, where, when y whom":"Whose, where, whom",
+  "Cláusulas relativas no definitorias":"Relativas no definitorias", "Énfasis con do / does / did":"Énfasis con do",
+  "Pasiva con verbos de opinión: it is said that, he is said to":"Pasiva de opinión", "Infinitivo y gerundio perfectos (having done, to have done)":"Formas perfectas",
+  "Colocaciones y phrasal verbs avanzados":"Colocaciones avanzadas", "Nominalización y registro formal":"Nominalización",
+  "Inversión condicional formal":"Inversión condicional", "Would rather, had better, it's time (+ pasado)":"Would rather, had better",
+  "Fronting y orden de palabras marcado":"Fronting y orden marcado", "Cohesión y marcadores del discurso":"Cohesión y marcadores",
+  "However, whatever, no matter: concesión enfática":"However, whatever",
+  "Perguntas com palavras interrogativas":"Palavras interrogativas", "Verbos 'Poder' e 'Querer' + infinitivo":"Poder e Querer + infinitivo",
+  "Advérbios de frequência e as horas":"Frequência e as horas", "Ordem dos Adjetivos e Concordância":"Ordem dos adjetivos",
+  "Pretérito Perfeito vs Imperfeito":"Perfeito vs Imperfeito", "Experiencias con «já» y «nunca»":"«Já» e «nunca»",
+  "Orações Condicionais com 'Se'":"Condicionais com 'Se'", "Pretérito Imperfeito do Subjuntivo":"Imperfeito do Subjuntivo",
+  "Pretérito Mais-que-perfeito Composto":"Mais-que-perfeito composto", "Pronomes relativos com preposição":"Relativos com preposição",
+  "Conjunções temporais com subjuntivo: quando, assim que, logo que":"Conjunções temporais", "Discurso Indireto e Pretérito Mais-que-perfeito":"Discurso indireto",
+  "Orações subordinadas adverbiais":"Subordinadas adverbiais", "Verbos de ligação e predicativo":"Verbos de ligação",
+  "Expressões idiomáticas comuns":"Expressões idiomáticas", "Nominalização e Registro Formal":"Nominalização",
+  "Concordância em Casos Complexos":"Concordância complexa", "Subjuntivo Futuro Composto e Expressões Fixas":"Subjuntivo futuro composto",
+  "Variação regional do português brasileiro":"Variação regional", "Expressões idiomáticas avançadas e provérbios":"Idiomáticas e provérbios",
+  "Coesão e marcadores do discurso":"Coesão e marcadores"
+};
+function routeShortTitle(title){
+  if(ROUTE_SHORT[title]) return ROUTE_SHORT[title];
+  let s = String(title).replace(/\s*\([^)]*\)/g, "").split(":")[0].trim();
+  if(s.length > 28){ s = s.slice(0, 27); s = s.slice(0, s.lastIndexOf(" ") > 12 ? s.lastIndexOf(" ") : 27) + "…"; }
+  return s;
+}
 function renderRoute(){
   const level = routeSelectedLevel || routeCurrentLevel();
   routeSelectedLevel = level; routeSheet = null;
@@ -29651,7 +29909,7 @@ function renderRoute(){
     return `<button type="button" class="rnode ${cls}" id="route-unit-${level}-${k}" data-route-node="${k}" style="left:${xOf(k)}%;top:${yOf(k) - 32}px" aria-label="Unidad ${k + 1}: ${escHtml(u.title)}, ${stTxt}">
       <span class="rcirc">${isCur ? '<i class="rpulse"></i>' : ""}<b>${glyph}</b></span>
       ${st.passed ? `<span class="rstars">${routeStarsSvg(stars)}</span>` : st.attempts ? `<span class="rbest">mejor ${st.best}%</span>` : ""}
-      <span class="rname">${escHtml(u.title)}</span>
+      <span class="rname" title="${escHtml(u.title)}">${escHtml(routeShortTitle(u.title))}</span>
     </button>`;
   }).join("");
   const bolt = cur >= 0 ? `<span class="rbolt" style="left:${xOf(cur) < 50 ? "calc(" + xOf(cur) + "% + 72px)" : "calc(" + xOf(cur) + "% - 122px)"};top:${yOf(cur) - 44}px">${boltSVG("coach", 56)}</span>` : "";
