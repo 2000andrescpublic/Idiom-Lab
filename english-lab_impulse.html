@@ -1401,11 +1401,12 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .cat-w{display:inline-block;padding:0 9px;margin:0 1px;border:0;border-radius:10px;font:inherit;color:#fff;cursor:pointer;transition:transform .12s ease,box-shadow .15s ease;text-shadow:0 1px 2px rgba(0,0,0,.25);}
 .cat-w:hover{transform:translateY(-2px);}
 .cat-w.sel{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 6px 14px rgba(0,0,0,.3);}
+.cat-w,.cat-tile,.cat-p,.cat-leg span{transition:opacity .25s ease,filter .25s ease,transform .12s ease,box-shadow .15s ease;}
+.cat-w.lit{box-shadow:0 5px 12px rgba(0,0,0,.3);}
+.cat-w.dim{opacity:.25;filter:grayscale(.8);}
+.cat-p.dim,.cat-leg span.dim{opacity:.35;}
+.cat-tile.dim{opacity:.32;filter:grayscale(.85);}
 .cat-p{color:var(--ink-soft);}
-.cat-ana-info{margin-top:8px;background:var(--bg-soft);border-radius:14px;padding:10px 12px;font-size:.9rem;line-height:1.45;display:flex;gap:10px;align-items:flex-start;min-height:46px;}
-.cat-ana-info b{font-size:.95rem;}
-.cat-chip{width:14px;height:14px;border-radius:5px;flex:none;margin-top:4px;}
-.cat-hint{color:var(--ink-soft);}
 .cat-leg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px;font-size:.75rem;color:var(--ink-soft);}
 .cat-leg span{display:inline-flex;align-items:center;gap:5px;}
 .cat-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;}
@@ -1424,10 +1425,6 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .cat-detail-head h3{margin:0;font-size:1.4rem;}
 .cat-detail-head .en{font-size:.9rem;color:var(--ink-soft);font-weight:600;}
 .cat-def{font-size:.95rem;font-weight:600;line-height:1.55;margin:0 0 12px;}
-.cat-analogy-d{background:var(--bg-soft);border-radius:14px;padding:0 14px;margin-bottom:14px;border-left:4px solid var(--purple);}
-.cat-analogy-d summary{cursor:pointer;padding:11px 0;font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;list-style:none;}
-.cat-analogy-d summary::-webkit-details-marker{display:none;}
-.cat-analogy-d p{margin:0 0 12px;color:var(--ink-soft);font-size:.9rem;line-height:1.55;}
 .cat-groups{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
 .cat-group{border:2px solid var(--line);background:none;color:var(--ink);border-radius:14px;padding:7px 14px;cursor:pointer;font-family:inherit;text-align:left;display:flex;flex-direction:column;line-height:1.25;}
 .cat-group b{font-size:.9rem;}
@@ -24002,12 +23999,14 @@ function renderCategories(){
   document.querySelectorAll("#catGrid .cat-tile").forEach(b=> b.onclick = ()=>{ selectCategory(b.dataset.cat, true); });
   if(_catRO){ try{ _catRO.disconnect(); }catch(e){} }
   if("ResizeObserver" in window){ _catRO = new ResizeObserver(catSyncHeight); document.querySelectorAll("#catNav .cat-pg").forEach(p=> _catRO.observe(p)); }
-  drawCategoryAnatomy(null);
+  catFocus = null; catFocusIdx = null;
+  drawCategoryAnatomy();
   drawCategoryDetail();
   catStep = window._catPopStep != null ? window._catPopStep : 0; window._catPopStep = null;
   catApplyStep(false);
 }
 function selectCategory(id, go){
+  if(go && catFocus){ catFocus = null; catFocusIdx = null; drawCategoryAnatomy(); }
   activeCategory = id; activeCategoryGroup = 0; catTenseFilter = "all";
   document.querySelectorAll("#catGrid .cat-tile").forEach(x=>{ const on = x.dataset.cat === id; x.classList.toggle("act", on); x.setAttribute("aria-pressed", String(on)); });
   drawCategoryDetail();
@@ -24037,25 +24036,33 @@ function catApplyStep(push){
   }
 }
 window.addEventListener("resize", ()=>{ if(activeSection === "categories" && document.getElementById("catTrack")) catApplyStep(false); });
-function drawCategoryAnatomy(selIdx){
+let catFocus = null, catFocusIdx = null;   // categoría enfocada al tocar una palabra de la frase
+function catApplyFocus(){
+  document.querySelectorAll("#catGrid .cat-tile").forEach(t=> t.classList.toggle("dim", !!catFocus && t.dataset.cat !== catFocus));
+}
+function drawCategoryAnatomy(){
   const sents = CAT_SENTENCES[currentLang] || CAT_SENTENCES.en;
   const s = sents[catSentenceIdx % sents.length];
   const legendIds = [...new Set(s.filter(t=> t[1]).map(t=> t[1]))];
   const box = document.getElementById("catAna");
-  const info = selIdx != null ? s[selIdx] : null;
   box.innerHTML = `
     <div class="cat-ana-head"><h3>Anatomía de una oración</h3><button type="button" class="uc-link" id="catNextSent">Otra frase</button></div>
-    <div class="cat-sent" role="group" aria-label="Frase de ejemplo: toca una palabra">${s.map((t, i)=> t[1]
-      ? `<button type="button" class="cat-w${selIdx === i ? " sel" : ""}" data-i="${i}" style="background:${catChipBg(t[1])}" aria-label="${escHtml(t[0])}: ${catName(t[1])}">${escHtml(t[0])}</button>`
-      : `<span class="cat-p">${escHtml(t[0])}</span>`).join(" ")}</div>
-    <div class="cat-ana-info" aria-live="polite">${info
-      ? `<span class="cat-chip" style="background:${catChipBg(info[1])}"></span><div><b>${catName(info[1])}</b><br>${info[2]} <button type="button" class="uc-link" id="catGoCat">Ver la categoría →</button></div>`
-      : `<span class="cat-hint">Toca una palabra para ver de qué categoría es.</span>`}</div>
-    <div class="cat-leg">${legendIds.map(id=> `<span><i style="background:${catChipBg(id)}"></i>${catName(id)}</span>`).join("")}</div>`;
-  box.querySelectorAll(".cat-w").forEach(b=> b.onclick = ()=> drawCategoryAnatomy(+b.dataset.i));
-  document.getElementById("catNextSent").onclick = ()=>{ catSentenceIdx++; drawCategoryAnatomy(null); };
-  const go = document.getElementById("catGoCat");
-  if(go) go.onclick = ()=> selectCategory(info[1], true);
+    <div class="cat-sent" role="group" aria-label="Frase de ejemplo: toca una palabra para ver su categoría">${s.map((t, i)=>{
+      if(!t[1]) return `<span class="cat-p${catFocus ? " dim" : ""}">${escHtml(t[0])}</span>`;
+      const lit = catFocus && t[1] === catFocus, off = catFocus && t[1] !== catFocus;
+      return `<button type="button" class="cat-w${lit ? " lit" : ""}${catFocusIdx === i ? " sel" : ""}${off ? " dim" : ""}" data-i="${i}" data-c="${t[1]}" style="background:${catChipBg(t[1])}" aria-pressed="${!!lit}" aria-label="${escHtml(t[0])}: ${catName(t[1])}">${escHtml(t[0])}</button>`;
+    }).join(" ")}</div>
+    <div class="cat-leg">${legendIds.map(id=> `<span class="${catFocus && id !== catFocus ? "dim" : ""}"><i style="background:${catChipBg(id)}"></i>${catName(id)}</span>`).join("")}</div>`;
+  box.querySelectorAll(".cat-w").forEach(b=> b.onclick = e=>{
+    e.stopPropagation();
+    const c = b.dataset.c, i = +b.dataset.i;
+    if(catFocusIdx === i){ catFocus = null; catFocusIdx = null; }
+    else{ catFocus = c; catFocusIdx = i; selectCategory(c, false); }
+    drawCategoryAnatomy(); catApplyFocus();
+  });
+  document.getElementById("catNextSent").onclick = e=>{ e.stopPropagation(); catSentenceIdx++; catFocus = null; catFocusIdx = null; drawCategoryAnatomy(); catApplyFocus(); };
+  box.onclick = e=>{ if(!catFocus || e.target.closest(".cat-w,#catNextSent")) return; catFocus = null; catFocusIdx = null; drawCategoryAnatomy(); catApplyFocus(); };
+  catApplyFocus();
 }
 function drawCategoryDetail(){
   const pack = LANG_PACKS[currentLang], c = pack.CATEGORIES.find(x=> x.id === activeCategory) || pack.CATEGORIES[0];
@@ -24066,7 +24073,6 @@ function drawCategoryDetail(){
       <div><h3>${c.name} <span class="en">(${c.en})</span></h3></div>
     </div>
     <p class="cat-def">${c.def}</p>
-    <details class="cat-analogy-d"><summary>${svgIcon("bulb", 20)} Una forma fácil de recordarlo</summary><p>${c.analogy}</p></details>
     <div class="cat-groups" id="catTypes" role="tablist" aria-label="Grupos">
       ${c.types.map((t, i)=>{ const [nm, ex] = t.split(/:\s*/); return `<button type="button" role="tab" class="cat-group${i === activeCategoryGroup ? " on" : ""}" data-idx="${i}" aria-selected="${i === activeCategoryGroup}"><b>${escHtml(nm)}</b>${ex ? `<small>${escHtml(ex)}</small>` : ""}</button>`; }).join("")}
     </div>
