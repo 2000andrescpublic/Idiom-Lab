@@ -1523,7 +1523,7 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .exn-dots i.on{width:20px;border-radius:99px;background:var(--purple);}
 .exn{position:relative;overflow:hidden;transition:height .3s ease;}
 .exn-track{display:flex;align-items:flex-start;width:300%;transition:transform .38s cubic-bezier(.3,.9,.3,1);}
-.exn-pg{width:33.3333%;flex:none;box-sizing:border-box;padding:2px;min-width:0;}
+.exn-pg{width:33.3333%;flex:none;box-sizing:border-box;padding:6px;min-width:0;}
 .exn-h{font-size:1.15rem;font-weight:800;margin:2px 0 4px;}
 .exn-sub{margin:0 0 12px;color:var(--ink-soft);font-size:.88rem;}
 .exn-p1 .exn-h{margin-bottom:12px;}
@@ -1585,6 +1585,26 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
   .exn-p1,.exn-p2{position:sticky;top:96px;}
 }
 @media (prefers-reduced-motion:reduce){.exn,.exn-track,.exn-dots i{transition:none;}}
+/* ---- Categorías: dos pantallas (deslizante en móvil, dos columnas en escritorio) ---- */
+.cat-nav{position:relative;overflow:hidden;transition:height .3s ease;max-width:1040px;margin:0 auto;}
+.cat-track{display:flex;align-items:flex-start;width:200%;transition:transform .38s cubic-bezier(.3,.9,.3,1);}
+.cat-pg{width:50%;flex:none;box-sizing:border-box;padding:6px;min-width:0;display:flex;flex-direction:column;gap:16px;}
+#catBar{max-width:1040px;margin-left:auto;margin-right:auto;}
+@media (max-width:959px){
+  #panel-categories[data-catstep="1"] .section-head p{display:none;}
+  #panel-categories[data-catstep="1"] .section-head{margin-bottom:8px;}
+}
+@media (min-width:960px){
+  #catBar{display:none;}
+  .cat-nav{overflow:visible;height:auto !important;}
+  .cat-track{display:grid;grid-template-columns:minmax(300px,400px) minmax(0,1fr);gap:22px;width:100%;transform:none !important;}
+  .cat-pg{width:auto;}
+  .cat-tile{padding:12px 6px 10px;}
+  .cat-tile b{font-size:.82rem;}
+  .cat-tile small{font-size:.66rem;}
+  .cat-tile-ic{width:38px;height:38px;border-radius:12px;}
+}
+@media (prefers-reduced-motion:reduce){.cat-nav,.cat-track{transition:none;}}
 .medal{display:block;overflow:visible;transition:transform .25s cubic-bezier(.2,.9,.3,1.3);}
 .medal.locked{filter:grayscale(1) opacity(.4);}
 .ach-item:not(.is-locked):hover .medal{transform:translateY(-3px) rotate(-4deg) scale(1.06);}
@@ -23185,6 +23205,7 @@ window.addEventListener("popstate", e=>{
   if(!document.getElementById("panel-home")) return;
   const s = (e.state && e.state.sec) || "home";
   if(e.state && e.state.exStep != null) window._exPopStep = e.state.exStep;
+  if(e.state && e.state.catStep != null) window._catPopStep = e.state.catStep;
   _navFromPop = true;
   try{ goTo(s); }finally{ _navFromPop = false; }
 });
@@ -23952,6 +23973,7 @@ const CAT_SENTENCES = {
 let catSentenceIdx = 0, catTenseFilter = "all";
 function catName(id){ const c = LANG_PACKS[currentLang].CATEGORIES.find(x=> x.id === id); return c ? c.name : id; }
 function catChipBg(id){ const h = CAT_HUES[id] || ["#7C5CFF", "#4F3DFF"]; return `linear-gradient(135deg,${h[0]},${h[1]})`; }
+let catStep = 0, _catRO = null;
 function renderCategories(){
   const cats = LANG_PACKS[currentLang].CATEGORIES;
   const html = `
@@ -23960,25 +23982,61 @@ function renderCategories(){
       <h2>Categorías gramaticales</h2>
       <p>Las piezas que forman toda oración, explicadas de forma simple y visual. Toca una palabra de la frase o elige una categoría.</p>
     </div>
-    <div class="cat2">
-      <div class="card cat-ana" id="catAna"></div>
-      <div class="cat-grid" id="catGrid" role="group" aria-label="Categorías">
-        ${cats.map(c=> `<button type="button" class="cat-tile${c.id === activeCategory ? " act" : ""}" data-cat="${c.id}" style="background:${catChipBg(c.id)}" aria-pressed="${c.id === activeCategory}">
-          <span class="cat-tile-ic">${svgIcon(c.icon, 26)}</span><b>${c.name}</b><small>${c.en}</small></button>`).join("")}
-      </div>
-      <div class="card cat-detail" id="catDetail"></div>
-    </div>`;
+    <div class="exn-bar" id="catBar">
+      <button type="button" class="exn-back" id="catBack" aria-label="Volver a las categorías">‹</button>
+      <span class="exn-crumb" id="catCrumb" aria-live="polite"></span>
+      <span class="exn-dots" id="catDots" aria-hidden="true"></span>
+    </div>
+    <div class="cat-nav" id="catNav"><div class="cat-track" id="catTrack">
+      <section class="cat-pg cat-p1" id="catP1" aria-label="Categorías">
+        <div class="card cat-ana" id="catAna"></div>
+        <div class="cat-grid" id="catGrid" role="group" aria-label="Categorías">
+          ${cats.map(c=> `<button type="button" class="cat-tile${c.id === activeCategory ? " act" : ""}" data-cat="${c.id}" style="background:${catChipBg(c.id)}" aria-pressed="${c.id === activeCategory}">
+            <span class="cat-tile-ic">${svgIcon(c.icon, 26)}</span><b>${c.name}</b><small>${c.en}</small></button>`).join("")}
+        </div>
+      </section>
+      <section class="cat-pg cat-p2" id="catP2" aria-label="Detalle de la categoría"><div class="card cat-detail" id="catDetail"></div></section>
+    </div></div>`;
   document.getElementById("panel-categories").innerHTML = html;
+  document.getElementById("catBack").onclick = catBack;
   document.querySelectorAll("#catGrid .cat-tile").forEach(b=> b.onclick = ()=>{ selectCategory(b.dataset.cat, true); });
+  if(_catRO){ try{ _catRO.disconnect(); }catch(e){} }
+  if("ResizeObserver" in window){ _catRO = new ResizeObserver(catSyncHeight); document.querySelectorAll("#catNav .cat-pg").forEach(p=> _catRO.observe(p)); }
   drawCategoryAnatomy(null);
   drawCategoryDetail();
+  catStep = window._catPopStep != null ? window._catPopStep : 0; window._catPopStep = null;
+  catApplyStep(false);
 }
-function selectCategory(id, scroll){
+function selectCategory(id, go){
   activeCategory = id; activeCategoryGroup = 0; catTenseFilter = "all";
   document.querySelectorAll("#catGrid .cat-tile").forEach(x=>{ const on = x.dataset.cat === id; x.classList.toggle("act", on); x.setAttribute("aria-pressed", String(on)); });
   drawCategoryDetail();
-  if(scroll){ const d = document.getElementById("catDetail"); if(d) d.scrollIntoView({behavior:"smooth", block:"start"}); }
+  if(go && exMobile()){ catStep = 1; catApplyStep(true); }
 }
+function catBack(){ catStep = 0; catApplyStep(false); }
+function catSyncHeight(){
+  const box = document.getElementById("catNav"); if(!box) return;
+  if(!exMobile()){ box.style.height = ""; return; }
+  const pg = box.querySelectorAll(".cat-pg")[catStep]; if(pg) box.style.height = pg.offsetHeight + "px";
+}
+function catApplyStep(push){
+  const track = document.getElementById("catTrack"); if(!track) return;
+  const mobile = exMobile(), panel = document.getElementById("panel-categories");
+  panel.dataset.catstep = String(catStep);
+  track.style.transform = mobile ? `translateX(-${catStep * 50}%)` : "";
+  track.querySelectorAll(".cat-pg").forEach((p, i)=>{ if(mobile && i !== catStep) p.setAttribute("inert", ""); else p.removeAttribute("inert"); p.setAttribute("aria-hidden", mobile && i !== catStep ? "true" : "false"); });
+  const c = LANG_PACKS[currentLang].CATEGORIES.find(x=> x.id === activeCategory);
+  const back = document.getElementById("catBack"), crumb = document.getElementById("catCrumb"), dots = document.getElementById("catDots");
+  if(back) back.style.display = catStep > 0 ? "" : "none";
+  if(crumb) crumb.innerHTML = catStep === 0 ? "<b>Categorías</b>" : `Categorías › <b>${c ? c.name : ""}</b>`;
+  if(dots) dots.innerHTML = [0, 1].map(i=> `<i class="${i === catStep ? "on" : ""}"></i>`).join("");
+  catSyncHeight();
+  if(mobile){
+    if(push){ try{ history.pushState({sec:"categories", catStep}, "", "#categories"); }catch(e){} }
+    const bar = document.getElementById("catBar"); if(bar) window.scrollTo({top:Math.max(0, bar.getBoundingClientRect().top + window.scrollY - 70), behavior:"instant"});
+  }
+}
+window.addEventListener("resize", ()=>{ if(activeSection === "categories" && document.getElementById("catTrack")) catApplyStep(false); });
 function drawCategoryAnatomy(selIdx){
   const sents = CAT_SENTENCES[currentLang] || CAT_SENTENCES.en;
   const s = sents[catSentenceIdx % sents.length];
