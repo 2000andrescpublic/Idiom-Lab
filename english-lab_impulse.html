@@ -20106,6 +20106,13 @@ const DIALOGUES_PT = {
    STATE
    ========================================================= */
 let currentLevel = "A1";
+/* Nivel oficial (de la Prueba de nivel o "Usar X como mi nivel" en Exámenes): a diferencia de currentLevel
+   (el chip de nivel que se navega en Teoría/Ejercicios/Vocabtopics), este es el que se persiste y el que
+   usan Ejercicios por defecto al entrar desde fuera de la sección. */
+let officialLevel = "A1";
+/* Nivel explícito para la próxima entrada a Ejercicios (ej. "Practicar" desde un tema de Teoría en un nivel
+   concreto). Si no se define, goTo("exercises") arranca en officialLevel. Se consume una sola vez. */
+let _exerciseLevelOverride = null;
 let activeSection = "home";
 let activeExercise = "vocab";
 const stats = {};
@@ -22342,7 +22349,7 @@ function saveProgress(){
   if(!ACTIVE_PROFILE_ID) return;
   try{
     localStorage.setItem(progressKeyFor(ACTIVE_PROFILE_ID, currentLang), JSON.stringify({
-      stats, srs: SRS_DATA, errors: ERROR_BANK, level: currentLevel, ts: Date.now(),
+      stats, srs: SRS_DATA, errors: ERROR_BANK, level: officialLevel, ts: Date.now(),
       dailyStreak, weeklyHistory, examHistory, examModules, examBest, dailyActivity, uiLangPref, dailyGoal, notificationsEnabled, weeklyGoalDays, milestonesSeen, onboardingSeen, userName, matchPairsBest, routeProgress, writingHistory, dialogueProgress, dialogueMeta, topicProgress, placementResult, placementSeen
     }));
   }catch(e){ /* almacenamiento no disponible: el progreso queda solo en esta sesión */ }
@@ -22356,7 +22363,7 @@ function loadProgress(){
     if(data.stats) Object.keys(data.stats).forEach(k=>{ if(stats[k]) Object.assign(stats[k], data.stats[k]); });
     if(data.srs) Object.assign(SRS_DATA, data.srs);
     if(Array.isArray(data.errors)) ERROR_BANK.splice(0, ERROR_BANK.length, ...data.errors);
-    if(data.level) currentLevel = data.level;
+    if(data.level){ officialLevel = data.level; currentLevel = data.level; }
     if(data.dailyStreak) Object.assign(dailyStreak, data.dailyStreak);
     if(Array.isArray(data.weeklyHistory)) weeklyHistory.splice(0, weeklyHistory.length, ...data.weeklyHistory);
     if(Array.isArray(data.examHistory)) examHistory.splice(0, examHistory.length, ...data.examHistory);
@@ -22387,7 +22394,7 @@ function resetActiveProfileData(){
   Object.keys(stats).forEach(k=>{ stats[k].correct=0; stats[k].total=0; stats[k].streak=0; });
   Object.keys(SRS_DATA).forEach(k=> delete SRS_DATA[k]);
   ERROR_BANK.length = 0;
-  currentLevel = "A1";
+  currentLevel = "A1"; officialLevel = "A1";
   dailyStreak.count = 0; dailyStreak.lastDate = null;
   weeklyHistory.length = 0;
   examHistory.length = 0; examModules.length = 0; Object.keys(examBest).forEach(k=> delete examBest[k]);
@@ -23533,7 +23540,15 @@ function goTo(sectionId){
     if(sectionId==="vocabtopics") renderVocabTopics();
     if(sectionId==="es2pt") renderEs2pt();
     if(sectionId==="verbs") renderVerbs();
-    if(sectionId==="exercises") renderExercise(activeExercise, false);
+    if(sectionId==="exercises"){
+      /* Al entrar a Ejercicios desde fuera (nav, "Practicar X ahora"...) siempre se arranca en el nivel
+         oficial de la persona, salvo que la propia llamada haya pedido un nivel concreto (ej. "Practicar"
+         desde un tema de Teoría). Así, navegar Teoría a otro nivel no deja "contaminado" el chip de Ejercicios. */
+      currentLevel = _exerciseLevelOverride || officialLevel;
+      _exerciseLevelOverride = null;
+      document.querySelectorAll(".level-chip").forEach(c=> c.classList.toggle("active", c.textContent === currentLevel));
+      renderExercise(activeExercise, false);
+    }
     if(sectionId==="practicehoy") renderPracticeHoy();
     if(sectionId==="route") renderRoute();
     if(sectionId==="exams") renderExams();
@@ -24220,10 +24235,7 @@ function drawTheoryDetail(lv, index){
     renderTheory(); window.scrollTo({top:0, behavior:"smooth"});
   };
   document.getElementById("theoryPracticeBtn").onclick = ()=>{
-    currentLevel = lv;
-    document.querySelectorAll(".level-chip").forEach(c=>{
-      c.classList.toggle("active", c.textContent===currentLevel);
-    });
+    _exerciseLevelOverride = lv;   // este botón sí quiere practicar justo el nivel del tema que se estaba leyendo
     activeExercise = "gapfill";
     goTo("exercises");
   };
@@ -24543,7 +24555,7 @@ function placementFinish(top){   // top = índice del nivel más alto aprobado (
   const level = LEVELS[idx];
   s.result = {level, beginner, score:Math.round(score), confidence: clean ? "alta" : "media", date:Date.now(), asked:s.n};
   placementResult = s.result;
-  currentLevel = level;
+  officialLevel = level; currentLevel = level;
   document.querySelectorAll(".level-chip").forEach(c=> c.classList.toggle("active", c.textContent === currentLevel));
   const wasPending = placementLocked();
   if(wasPending) placementSetLock(false);
@@ -24824,7 +24836,7 @@ function examReportHTML(){
   if(!Object.keys(lv).length) return "";
   return `<div class="card" style="margin-bottom:20px;">
     <h3 style="margin:0 0 4px;font-size:1.05rem;">Tu informe por destreza</h3>
-    <p style="color:var(--ink-soft);font-size:0.82rem;margin:0 0 14px;">Según tu último intento en cada módulo. Nivel oficial actual: <b>${currentLevel}</b>.</p>
+    <p style="color:var(--ink-soft);font-size:0.82rem;margin:0 0 14px;">Según tu último intento en cada módulo. Nivel oficial actual: <b>${officialLevel}</b>.</p>
     <div style="display:grid;gap:12px;">
       ${EXAM_SKILLS.map(s=>{
         const x = lv[s.id];
@@ -24879,10 +24891,10 @@ function examPlanItems(){
   const lv = examSkillLevels(), items = [], idxOf = id=> LEVELS.indexOf(lv[id].level);
   const evaluated = EXAM_SKILLS.filter(s=> lv[s.id]);
   if(!evaluated.length) return items;
-  const min = Math.min(...evaluated.map(s=> idxOf(s.id))), max = Math.max(...evaluated.map(s=> idxOf(s.id))), official = LEVELS.indexOf(currentLevel);
+  const min = Math.min(...evaluated.map(s=> idxOf(s.id))), max = Math.max(...evaluated.map(s=> idxOf(s.id))), official = LEVELS.indexOf(officialLevel);
   evaluated.forEach(s=>{
     const i = idxOf(s.id);
-    if(i < official) items.push({icon:"⚠️", title:`Refuerza ${s.label}`, why:`Tu nivel estimado es ${LEVELS[i]}, por debajo de tu nivel oficial (${currentLevel}).`, ex:s.practice, pri:0});
+    if(i < official) items.push({icon:"⚠️", title:`Refuerza ${s.label}`, why:`Tu nivel estimado es ${LEVELS[i]}, por debajo de tu nivel oficial (${officialLevel}).`, ex:s.practice, pri:0});
     else if(i === min && min < max) items.push({icon:"🎯", title:`Refuerza ${s.label}`, why:`Es tu destreza más baja (${LEVELS[i]}) frente a otras de ${LEVELS[max]}.`, ex:s.practice, pri:1});
   });
   const g = examLastOf("gv");
@@ -25046,9 +25058,9 @@ function finishExamModule(){
   examRun = null;
 }
 function examApplyBlock(level){
-  const differs = level !== currentLevel;
+  const differs = level !== officialLevel;
   return `<div class="card" style="margin-bottom:20px;">
-    <p style="margin:0 0 10px;font-size:0.92rem;">Tu nivel oficial es <b>${currentLevel}</b>. ${differs ? `Este módulo indica <b>${level}</b>.` : "Este módulo coincide con tu nivel oficial."} El examen no lo cambia por su cuenta.</p>
+    <p style="margin:0 0 10px;font-size:0.92rem;">Tu nivel oficial es <b>${officialLevel}</b>. ${differs ? `Este módulo indica <b>${level}</b>.` : "Este módulo coincide con tu nivel oficial."} El examen no lo cambia por su cuenta.</p>
     ${differs ? `<button class="btn secondary" id="examApplyLevelBtn" type="button">Usar ${level} como mi nivel</button>` : ""}
   </div>`;
 }
@@ -25056,8 +25068,8 @@ function examWireApply(level){
   const b = document.getElementById("examApplyLevelBtn");
   if(!b) return;
   b.onclick = ()=>{
-    const prev = LEVELS.indexOf(currentLevel);
-    currentLevel = level;
+    const prev = LEVELS.indexOf(officialLevel);
+    officialLevel = level; currentLevel = level;
     document.querySelectorAll(".level-chip").forEach(c=> c.classList.toggle("active", c.textContent === currentLevel));
     saveProgress();
     if(LEVELS.indexOf(level) > prev){ window._celebBadge = medalSvg(level, 76); showBigCelebration(`🎉 Subiste a nivel ${level}`, "Tu nivel oficial se actualizó."); }
@@ -25379,7 +25391,7 @@ function pfDrawTab(){
 }
 /* ---- Progreso ---- */
 function pfDrawProgress(body){
-  const lvl = typeof routeCurrentLevel === "function" ? routeCurrentLevel() : currentLevel, pr = placementResult, all = pfTotals();
+  const lvl = typeof routeCurrentLevel === "function" ? routeCurrentLevel() : officialLevel, pr = placementResult, all = pfTotals();
   const weakId = weakestExerciseType(), weakLabel = (EX_TABS.find(t=> t.id === weakId) || {label:weakId}).label;
   const weeks = weeklyHistory.slice(-8), maxDone = Math.max(1, ...weeks.map(w=> w.exercisesDone));
   const streak = dailyStreak.count || 0;
@@ -25406,7 +25418,7 @@ function pfDrawProgress(body){
       </div>
       <div class="card">
         <h3 class="dash-card-title">Plan de estudio sugerido</h3>
-        <p class="dash-card-sub">Basado en tu nivel oficial (${currentLevel}) y tu destreza más débil.</p>
+        <p class="dash-card-sub">Basado en tu nivel oficial (${officialLevel}) y tu destreza más débil.</p>
         <p style="font-size:0.92rem;line-height:1.6;margin:0 0 14px;">Tu destreza con menor porcentaje de aciertos ahora mismo es <b>${weakLabel}</b>. Te recomendamos practicar ${dailyGoal} ejercicios de este tipo cada día durante la próxima semana antes de intentar un nuevo Examen para subir de nivel.</p>
         <button class="btn" id="profilePracticeBtn">Practicar ${weakLabel} ahora →</button>
       </div>
