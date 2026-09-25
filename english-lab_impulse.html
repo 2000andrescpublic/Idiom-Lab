@@ -1943,6 +1943,99 @@ header{transition:transform .25s ease;}
   .nav-dropdown-item{min-height:44px;}
   .main-nav .nav-link{min-height:44px;}
 }
+/* RES-SUM-CSS:BEGIN — Resúmenes por nivel */
+.ts-summ-btn{display:flex;align-items:center;gap:14px;width:100%;text-align:left;font-family:inherit;cursor:pointer;margin:0 0 16px;padding:14px 18px;border-radius:16px;border:1.5px solid var(--purple-soft-border);background:linear-gradient(135deg,var(--purple-soft),var(--surface));color:var(--ink);}
+.ts-summ-btn:hover{border-color:var(--purple);}
+.ts-summ-btn b{display:block;font-family:'Fraunces',serif;font-size:1.05rem;}
+.ts-summ-btn span.s{display:block;color:var(--ink-soft);font-size:.86rem;margin-top:2px;}
+.ts-summ-btn .go{margin-left:auto;font-weight:800;color:var(--purple);font-size:1.3rem;}
+.rs{--rs-t:color-mix(in srgb,var(--lc) 55%,var(--ink));--rs-amb:#B26B00;--rs-ok:var(--ok-ink);--rs-bad:var(--danger-ink);container-type:inline-size;display:flex;flex-direction:column;gap:18px;}
+:root[data-theme="dark"] .rs{--rs-t:var(--lc);--rs-amb:#F5A623;}
+.rs .rs-h{color:var(--rs-t);font-weight:800;}
+.rs .rs-a{color:var(--rs-amb);font-weight:800;}
+.rs-lvh{display:flex;align-items:center;gap:18px;}
+.rs-num{flex:none;font-family:'Fraunces',serif;font-weight:800;font-size:5.2rem;line-height:.9;color:transparent;-webkit-text-stroke:2.5px var(--lc);letter-spacing:-.02em;}
+.rs-lvn{font-family:'Fraunces',serif;font-weight:800;font-size:2rem;line-height:1.05;margin:3px 0 0;letter-spacing:-.01em;}
+.rs-tagl{font-size:1rem;color:var(--ink-soft);margin-top:3px;}
+.rs-cap{font-size:.68rem;font-weight:800;letter-spacing:.09em;color:var(--ink-soft);text-transform:uppercase;}
+.rs-cap.l{color:var(--rs-t);} .rs-cap.a{color:var(--rs-amb);} .rs-cap.c{text-align:center;}
+.rs-es{font-size:.85rem;color:var(--ink-soft);margin-top:2px;line-height:1.35;}
+.rs-en{font-size:1rem;line-height:1.4;color:var(--ink);margin-top:2px;} .rs-en.sm{font-size:.9rem;} .rs-en.top{font-weight:700;}
+.rs-big{font-size:1.1rem;font-weight:600;line-height:1.35;margin-top:5px;}
+.rs-sub{font-size:.76rem;color:var(--ink-soft);margin-top:2px;line-height:1.3;}
+.rs-note{font-size:.84rem;color:var(--ink-soft);line-height:1.4;}
+.rs-note b,.rs-trap-n b{font-weight:800;}
+.rs-box{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:11px 13px;min-width:0;}
+.rs-box.l{border-color:color-mix(in srgb,var(--lc) 60%,transparent);box-shadow:0 0 16px color-mix(in srgb,var(--lc) 14%,transparent);}
+.rs-box.a{border-color:color-mix(in srgb,var(--rs-amb) 60%,transparent);}
+.rs-pill{display:inline-flex;align-items:center;border-radius:999px;padding:3px 11px;font-weight:700;font-size:.78rem;line-height:1.3;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);}
+.rs-pill.big{font-size:.95rem;padding:5px 13px;border-radius:11px;}
+.rs-pill.l{background:color-mix(in srgb,var(--lc) 16%,transparent);border-color:color-mix(in srgb,var(--lc) 60%,transparent);color:var(--rs-t);}
+.rs-pill.a{background:color-mix(in srgb,var(--rs-amb) 16%,transparent);border-color:color-mix(in srgb,var(--rs-amb) 60%,transparent);color:var(--rs-amb);}
+.rs-pill.f{background:var(--lc);border-color:var(--lc);color:var(--lci);}
+.rs-pill.g{background:color-mix(in srgb,var(--rs-ok) 16%,transparent);border-color:color-mix(in srgb,var(--rs-ok) 60%,transparent);color:var(--rs-ok);}
+.rs-pill.r{background:color-mix(in srgb,var(--rs-bad) 14%,transparent);border-color:color-mix(in srgb,var(--rs-bad) 55%,transparent);color:var(--rs-bad);}
+.rs-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.rs-tag{margin-top:6px;}
+.rs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(var(--min),100%),1fr));gap:10px;}
+.rs-stack{display:flex;flex-direction:column;gap:8px;min-width:0;}
+.rs-arr{text-align:center;font-weight:800;font-size:1.1rem;line-height:1;color:var(--rs-t);}
+.rs-trap{background:color-mix(in srgb,var(--rs-bad) 8%,transparent);border:1.5px solid color-mix(in srgb,var(--rs-bad) 40%,transparent);border-radius:12px;padding:8px 12px;font-size:.88rem;line-height:1.45;}
+.rs-trap div:first-child{color:var(--rs-bad);font-weight:800;} .rs-trap s{color:var(--ink-soft);font-weight:500;text-decoration-color:var(--rs-bad);}
+.rs-trap div:nth-child(2){color:var(--rs-ok);font-weight:800;} .rs-trap b{color:var(--ink);}
+.rs-trap-n{color:var(--ink-soft);font-size:.8rem;margin-top:3px;}
+/* héroe */
+.rs-hero{background:linear-gradient(135deg,color-mix(in srgb,var(--lc) 14%,transparent),var(--surface) 62%);border:1.5px solid color-mix(in srgb,var(--lc) 55%,transparent);border-radius:22px;padding:18px 20px 20px;display:flex;flex-direction:column;gap:13px;}
+.rs-ht{font-family:'Fraunces',serif;font-weight:800;font-size:1.45rem;line-height:1.15;margin:-6px 0 0;}
+.rs-hrow{display:flex;flex-wrap:wrap;gap:10px 14px;} .rs-hc{display:flex;flex-direction:column;gap:4px;align-items:flex-start;} .rs-hc>span{font-size:.72rem;font-weight:600;color:var(--ink-soft);}
+.rs-hline{position:relative;height:16px;} .rs-hline i{position:absolute;left:0;right:0;top:5px;height:6px;border-radius:99px;background:linear-gradient(90deg,#8E6CFF,var(--lc) 50%,#F5A623);} .rs-hline b{position:absolute;top:0;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--lc);border:3px solid var(--surface);}
+.rs-hcols{display:grid;gap:10px;} .rs-hcolw{display:flex;flex-direction:column;gap:8px;min-width:0;}
+.rs-hbar{height:8px;border-radius:99px;} .rs-hbar.thin{height:6px;}
+.rs-hl{display:flex;flex-direction:column;gap:10px;} .rs-hs{margin-left:calc(var(--i) * 36px);margin-right:calc((2 - var(--i)) * 36px);}
+@container (max-width:520px){.rs-hs{margin-left:calc(var(--i) * 12px);margin-right:0;}}
+.rs-hg{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:8px 10px;} .rs-hcell{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 11px;font-size:.88rem;line-height:1.35;}
+/* tarjetas */
+.rs-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:stretch;}
+@container (max-width:640px){.rs-tiles{grid-template-columns:1fr;}}
+.rs-tile{grid-column:span 1;background:linear-gradient(160deg,color-mix(in srgb,var(--lc) 9%,transparent),var(--surface) 45%);border:1.5px solid var(--line);border-radius:22px;padding:18px 18px 15px;display:flex;flex-direction:column;gap:12px;min-width:0;box-shadow:var(--shadow-card);}
+.rs-tile.wide{grid-column:1 / -1;}
+.rs-th-row{display:flex;align-items:center;gap:12px;}
+.rs-ico{flex:none;width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--lc) 18%,transparent);border:1.5px solid color-mix(in srgb,var(--lc) 55%,transparent);color:var(--rs-t);display:flex;align-items:center;justify-content:center;}
+.rs-tt{flex:1;min-width:0;margin:0;font-family:'Fraunces',serif;font-weight:800;font-size:1.28rem;line-height:1.1;}
+.rs-star{flex:none;border:0;background:none;cursor:pointer;font-size:1.35rem;line-height:1;color:var(--rs-amb);padding:2px 4px;}
+.rs-rule{margin:0;font-size:.95rem;line-height:1.45;color:var(--ink);}
+.rs-tf{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:2px;}
+.rs-lk{border:0;background:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:.86rem;color:var(--purple);padding:4px 0;} .rs-lk.pr{color:var(--rs-t);}
+.rs-lk:hover{text-decoration:underline;}
+/* formatos */
+.rs-table{display:grid;} .rs-th{font-size:.68rem;font-weight:800;letter-spacing:.09em;color:var(--rs-t);padding:0 4px 4px;text-transform:uppercase;} .rs-th.c{text-align:center;color:var(--ink-soft);}
+.rs-td{padding:6px 4px;border-top:1px solid var(--line-soft);font-size:.95rem;line-height:1.35;} .rs-td.lab{font-size:.8rem;font-weight:700;color:var(--ink-soft);}
+.rs-lane{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 14px;} .rs-lane-t{flex:1;min-width:190px;}
+.rs-tl{flex:none;} .rs-tl .ln{stroke:var(--line);stroke-width:2;} .rs-tl .bar{fill:var(--lc);} .rs-tl .now{fill:var(--lc);} .rs-tl .dt{fill:var(--rs-amb);} .rs-tl .dash{stroke:var(--lc);stroke-width:2;stroke-dasharray:3 4;} .rs-tl .bolt{stroke:var(--rs-amb);stroke-width:3;stroke-dasharray:4 3;} .rs-tl .lb{font-size:9px;font-weight:800;fill:var(--ink-soft);}
+.rs-icons .cat{fill:color-mix(in srgb,var(--lc) 25%,transparent);stroke:var(--rs-t);stroke-width:1.8;stroke-linejoin:round;} .rs-icons .eye{fill:var(--rs-t);}
+.rs-gh{display:flex;justify-content:space-between;align-items:baseline;gap:6px;} .rs-gh b{font-size:1rem;} .rs-gh span{font-size:.72rem;font-weight:700;color:var(--ink-soft);}
+.rs-meter{height:7px;border-radius:99px;background:var(--surface-2);margin:6px 0;overflow:hidden;border:1px solid var(--line-soft);} .rs-meter i{display:block;height:100%;border-radius:99px;}
+.rs-flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;} .rs-fs{flex:1;min-width:170px;} .rs-fa{display:flex;align-items:center;color:var(--rs-t);font-size:1.5rem;font-weight:800;}
+.rs-blks{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;align-items:center;} .rs-blk{display:inline-block;background:var(--surface);border:1.5px solid var(--line);border-radius:9px;padding:5px 10px;font-weight:600;font-size:.95rem;} .rs-blk.on{background:color-mix(in srgb,var(--lc) 20%,transparent);border-color:var(--lc);color:var(--rs-t);font-weight:800;} .rs-tail{color:var(--ink-soft);}
+.rs-mx{display:grid;gap:8px;align-items:stretch;} .rs-mc{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;} .rs-mc.mix{background:color-mix(in srgb,var(--lc) 12%,transparent);border:2px solid var(--lc);} .rs-mc .rs-pill{align-self:flex-start;}
+.rs-from{font-size:.9rem;color:var(--ink-soft);} .rs-from:not(.plain){text-decoration:line-through;text-decoration-color:var(--ink-soft);} .rs-to{font-size:1.05rem;margin-top:2px;font-weight:600;}
+.rs-row{display:grid;grid-template-columns:minmax(96px,150px) minmax(0,1fr);gap:4px 14px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:9px 13px;}
+.rs-ladder{display:flex;align-items:flex-end;gap:6px;} .rs-step{background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:5px 9px;display:flex;flex-direction:column;justify-content:center;min-width:0;} .rs-step b{font-size:.9rem;} .rs-step span{font-size:.68rem;color:var(--ink-soft);line-height:1.2;} .rs-step.on{background:color-mix(in srgb,var(--lc) 18%,transparent);border-color:var(--lc);} .rs-step.on b{color:var(--rs-t);}
+.rs-place .pb{fill:color-mix(in srgb,var(--lc) 22%,transparent);stroke:var(--rs-t);stroke-width:1.8;} .rs-place .pl{fill:var(--rs-amb);} .rs-place .pg{stroke:var(--line);stroke-width:2;}
+/* pie, índice y paginado */
+.rs-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:var(--purple-soft);border:1.5px solid var(--purple-soft-border);border-radius:20px;padding:14px 18px;}
+.rs-ft{font-size:.9rem;color:var(--ink);max-width:360px;} .rs-fb{display:flex;gap:8px;flex-wrap:wrap;}
+.rs-btn{border:0;cursor:pointer;font-family:inherit;font-weight:800;font-size:.86rem;border-radius:999px;padding:9px 18px;background:var(--lc);color:var(--lci);} .rs-btn.ghost{background:transparent;border:1.5px solid var(--purple);color:var(--purple);}
+.rs-pager{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.rs-cards{display:grid;gap:12px;}
+.rs-card{display:flex;align-items:center;gap:14px;text-align:left;width:100%;font-family:inherit;cursor:pointer;color:var(--ink);background:linear-gradient(135deg,color-mix(in srgb,var(--lc) 12%,transparent),var(--surface) 55%);border:1.5px solid var(--line);border-radius:20px;padding:16px 18px;box-shadow:var(--shadow-card);transition:transform .15s ease,border-color .15s ease;}
+.rs-card:hover{transform:translateY(-2px);border-color:var(--lc);}
+.rs-cn{flex:none;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:800;font-size:1.4rem;background:var(--lc);color:var(--lci);}
+.rs-cb{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;} .rs-ct{font-family:'Fraunces',serif;font-size:1.15rem;} .rs-cs{color:var(--ink-soft);font-size:.9rem;}
+.rs-cl{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;} .rs-cl i{font-style:normal;font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 9px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-soft);}
+.rs-go{flex:none;font-size:1.6rem;font-weight:800;color:var(--rs-t);}
+@container (max-width:520px){.rs-num{font-size:3.6rem;}.rs-lvn{font-size:1.5rem;}.rs-ht{font-size:1.2rem;}}
+/* RES-SUM-CSS:END */
 </style>
 </head>
 <body>
@@ -21656,6 +21749,14 @@ Object.keys(P7_EN).forEach(lv=>{ P7_EN[lv].forEach(x=>{
   ROUTE_NEW[lv] = ROUTE_NEW[lv] || {}; ROUTE_NEW[lv][x.idx] = x.r;
 }); });
 /* P7-EN:END */
+/* P8-EN:BEGIN
+   Fase 8 (B2): preguntas con preposición al final (preposition stranding), al final del array de B2. */
+const P8_EN = {"B2":[{"t":{"title":"Preguntas con preposición al final (preposition stranding)","summary":"En las preguntas con Wh-, la preposición se queda al final: «Who are you talking to?». En español la preposición va siempre delante del pronombre («¿Con quién hablas?»).","detail":"Muchos verbos llevan una preposición fija: talk to, look at, wait for, work for, listen to, come from. En español, al preguntar por esa persona o cosa, la preposición va delante: «¿Con quién hablas?», «¿De dónde eres?». En inglés lo normal es dejar la preposición al final de la pregunta: Who are you talking to? Where are you from? What are you looking at? La estructura es palabra Wh- + auxiliar + sujeto + verbo + preposición. Terminar una pregunta con preposición NO es un error: es lo natural al hablar y en mensajes. La versión con la preposición delante (To whom are you talking? / For whom do you work?) también es correcta, pero es muy formal y en una conversación suena rebuscada. Ojo con dos errores típicos de quien piensa en español: no se puede omitir la preposición (✗ Who are you talking?) porque pertenece al verbo (talk TO), y en conversación tampoco se pone delante con who (✗ With who are you talking?).","mindmap":{"center":"Preposición al final","branches":[{"label":"Estructura","items":["Wh- + auxiliar + sujeto + verbo","+ preposición al final"]},{"label":"Ejemplos","items":["Who are you talking to?","Where are you from?","What are you looking at?"]},{"label":"Registro","items":["hablado: preposición al final","muy formal: To whom…?"]}]},"visual":{"type":"contrast","cols":["En español","En inglés"],"rows":[{"label":"ORDEN","cells":["La preposición va delante: «¿Con quién hablas?»","La preposición se queda al final: Who are you talking to?"]},{"label":"OTROS EJEMPLOS","cells":["«¿De dónde eres?» · «¿A qué miras?»","Where are you from? · What are you looking at?"]},{"label":"REGISTRO","cells":["Es la forma normal en todos los registros.","Al final: conversación. Delante (To whom…?): muy formal."]},{"label":"ERROR TÍPICO","cells":["Traducir tal cual el orden en español.","✗ With who are you talking?  ✓ Who are you talking to?"]}]},"examples":[{"en":"Who are you talking to?","es":"¿Con quién estás hablando?"},{"en":"Where are you from?","es":"¿De dónde eres?"},{"en":"What are you looking at?","es":"¿Qué estás mirando?"},{"en":"Who do you work for?","es":"¿Para quién trabajas?"},{"en":"What is the book about?","es":"¿De qué trata el libro?"},{"en":"Who is she waiting for?","es":"¿A quién está esperando ella?"}],"tip":"Truco: el verbo se lleva su preposición (talk TO, look AT, wait FOR, come FROM). Haz la pregunta con Wh- y deja la preposición al final: Who … to? What … at?"},"q":[{"k":"tf","q":"«Who are you talking to?» es una pregunta correcta.","a":true,"e":"Sí: en inglés la preposición se queda al final; es lo natural al hablar."},{"k":"tf","q":"En inglés la preposición debe ir siempre delante del pronombre, como en español.","a":false,"e":"Lo normal es dejarla al final: Who are you talking to? La versión To whom…? es correcta, pero muy formal."},{"k":"tf","q":"«Who are you talking?» es correcto.","a":false,"e":"Falta la preposición: talk TO. Who are you talking to?"},{"k":"mc","q":"¿Cuál es la pregunta natural para «¿De dónde eres?»?","o":["From where are you?","Where are you from?","Where from are you?"],"a":1,"e":"Where are you from? La preposición from se queda al final."},{"k":"mc","q":"¿Cuál es la pregunta natural para «¿A quién esperas?»?","o":["Who are you waiting?","Who are you waiting for?","For who are you waiting?"],"a":1,"e":"Wait FOR necesita su preposición, y en conversación va al final: Who are you waiting for?"}],"r":{"gapfill":[{"sentence":"Who are you talking ___? (to/at)","answer":"to","explain":"Talk to: la preposición se queda al final de la pregunta."},{"sentence":"Where are you ___? (from/of)","answer":"from","explain":"Where … from: la preposición va al final."},{"sentence":"What are you looking ___? (at/to)","answer":"at","explain":"Look at: la preposición se queda al final."},{"sentence":"Who does she work ___? (for/to)","answer":"for","explain":"Work for: ¿para quién trabaja?"},{"sentence":"What is the movie ___? (about/on)","answer":"about","explain":"What … about: ¿de qué trata?"}],"order":[{"words":["who","are","you","talking","to"],"correct":"Who are you talking to?","explain":"Wh- + auxiliar + sujeto + verbo + preposición al final."},{"words":["where","is","she","from"],"correct":"Where is she from?","explain":"La preposición from se queda al final."}],"translate":[{"es":"¿Con quién estás hablando?","en":["who are you talking to"],"explain":"Preposición al final: Who … to?"},{"es":"¿De qué trata la película?","en":["what is the movie about","what's the movie about","what is the film about","what's the film about"],"explain":"What … about: la preposición va al final."}]}}]};
+Object.keys(P8_EN).forEach(lv=>{ P8_EN[lv].forEach(x=>{
+  THEORY[lv].push(x.t); x.idx = THEORY[lv].length - 1;
+  ROUTE_NEW[lv] = ROUTE_NEW[lv] || {}; ROUTE_NEW[lv][x.idx] = x.r;
+}); });
+/* P8-EN:END */
 const ROUTE_NEW_IDX = {};   // nivel -> unidad -> {gapfill:[índices], order:[...], translate:[...]}
 Object.keys(ROUTE_NEW).forEach(lv=>{
   ROUTE_NEW_IDX[lv] = {};
@@ -22097,6 +22198,7 @@ Object.keys(P4_EN).forEach(lv=> P4_EN[lv].forEach(x=>{ THEORY_Q[lv + ":" + x.idx
 Object.keys(P5_EN).forEach(lv=> P5_EN[lv].forEach(x=>{ THEORY_Q[lv + ":" + x.idx] = x.q; }));   // Fase 5: preguntas de teoría de in/on/at
 Object.keys(P6_EN).forEach(lv=> P6_EN[lv].forEach(x=>{ THEORY_Q[lv + ":" + x.idx] = x.q; }));   // Fase 6: preguntas de teoría de so/neither y clausulas de tiempo futuro
 Object.keys(P7_EN).forEach(lv=> P7_EN[lv].forEach(x=>{ THEORY_Q[lv + ":" + x.idx] = x.q; }));   // Fase 7: preguntas de teoría de used to / be used to / get used to
+Object.keys(P8_EN).forEach(lv=> P8_EN[lv].forEach(x=>{ THEORY_Q[lv + ":" + x.idx] = x.q; }));   // Fase 8: preguntas de teoría de preposición al final
 const LISTEN_TOPIC = {"A1:8":[["A1",0],["A1",4],["A1",6]],"A1:2":[["A1",0],["A1",38]],"A1:0":[["A1",1],["A1",2],["A1",3],["A1",5],["A1",8],["A1",11],["A1",32],["A1",39],["A1",41]],"A1:1":[["A1",7],["A1",10],["A1",13],["A1",29]],"A1:7":[["A1",9]],"A1:12":[["A1",12],["A1",15],["A1",24],["A1",36]],"A1:10":[["A1",14],["A1",22],["A1",28],["A1",31]],"A1:11":[["A1",16],["A1",21],["A1",34]],"A1:4":[["A1",17],["A1",20],["A1",23],["A1",33],["A1",35]],"A1:9":[["A1",18],["A1",30]],"A1:6":[["A1",18]],"A1:5":[["A1",19]],"A2:8":[["A1",25],["A1",37],["A2",29]],"A1:13":[["A1",26],["A1",40]],"A1:3":[["A1",27]],"A2:0":[["A2",0],["A2",3],["A2",20],["A2",24]],"A2:1":[["A2",1],["A2",13],["A2",34]],"A2:2":[["A2",2],["A2",8],["A2",19],["A2",40]],"A2:11":[["A2",4],["A2",12]],"A2:3":[["A2",5],["A2",14],["A2",33]],"A2:16":[["A2",6],["A2",16],["A2",28]],"A2:12":[["A2",7],["A2",9],["A2",15],["A2",37]],"A2:4":[["A2",10],["A2",17],["A2",25],["A2",32],["A2",39]],"A2:5":[["A2",11]],"A2:7":[["A2",17],["A2",39]],"A2:15":[["A2",18],["A2",32],["A2",41]],"A2:14":[["A2",21],["A2",35],["B1",27],["B1",28]],"A2:13":[["A2",22],["A2",23],["A2",31]],"A2:17":[["A2",26],["A2",27]],"B1:0":[["B1",0],["B1",3],["B1",12],["B1",14],["B1",25],["B1",32]],"B1:7":[["B1",0],["B1",12],["B1",30]],"B1:2":[["B1",1],["B1",4],["B1",15]],"B1:1":[["B1",2],["B1",11],["B1",13]],"B1:5":[["B1",5],["B1",6],["B1",22]],"B1:4":[["B1",7],["B1",16],["B2",40]],"B1:3":[["B1",8],["B1",9],["B1",29]],"B2:4":[["B1",10],["B1",18],["B2",6]],"B1:12":[["B1",17]],"B2:2":[["B1",19],["B1",23],["B1",33],["B1",35],["B2",2],["B2",4],["B2",16],["B2",34]],"C1:0":[["B1",20],["B1",39],["C1",0]],"B1:9":[["B1",21],["B1",40],["B2",26],["B2",36],["C1",40]],"B1:8":[["B1",24],["B1",35],["C1",11]],"B2:14":[["B1",26],["B2",28],["B2",29]],"B2:0":[["B1",28],["B1",32],["B2",0],["B2",3],["B2",11],["B2",13],["B2",33]],"B2:1":[["B1",31],["B2",1],["B2",9],["B2",12]],"B2:3":[["B1",37],["B2",5],["B2",10],["B2",14],["B2",38]],"C2:6":[["B1",38],["B2",27],["B2",32],["C2",13]],"B1:10":[["B1",41]],"B2:5":[["B2",7],["B2",30],["B2",37]],"C1:1":[["B2",15],["C1",1],["C1",4],["C1",10]],"B2:8":[["B2",17]],"B2:9":[["B2",18]],"B2:7":[["B2",19],["B2",37]],"B2:10":[["B2",21],["B2",35]],"B2:13":[["B2",22],["B2",41]],"B2:12":[["B2",24],["B2",39]],"C2:3":[["B2",25],["C1",34],["C2",4],["C2",27],["C2",41]],"C1:2":[["B2",30],["C1",2],["C1",9],["C1",12],["C1",13],["C1",19],["C1",24],["C1",29],["C1",30],["C1",33],["C1",36],["C1",41],["C2",16],["C2",29],["C2",31],["C2",34]],"C1:7":[["B2",31],["C1",14],["C1",25],["C1",37]],"C2:7":[["B2",33],["C2",35]],"C1:3":[["C1",5],["C1",15],["C1",23],["C1",35]],"C1:4":[["C1",6],["C1",16],["C1",20],["C1",31]],"C2:0":[["C1",7],["C2",0]],"C1:12":[["C1",8],["C1",18]],"C2:5":[["C1",13],["C1",33],["C1",41],["C2",6],["C2",7],["C2",11],["C2",12],["C2",15]],"C1:8":[["C1",17],["C1",39]],"C1:11":[["C1",21],["C2",24]],"C1:9":[["C1",22]],"C1:6":[["C1",23]],"C2:14":[["C1",26],["C1",38],["C2",17],["C2",25]],"C2:10":[["C1",28],["C2",11],["C2",15],["C2",22],["C2",23],["C2",26],["C2",30]],"C2:1":[["C2",1],["C2",3]],"C2:2":[["C2",2],["C2",8],["C2",9]],"C2:4":[["C2",5],["C2",18],["C2",32],["C2",33],["C2",38]],"C2:12":[["C2",10],["C2",28],["C2",40]],"C2:8":[["C2",20],["C2",21],["C2",36]]};
 
 /* PT-EXPANSION:BEGIN
@@ -23902,6 +24004,7 @@ function goTo(sectionId){
     try{ if(_navInit) history.pushState({sec:sectionId}, "", "#" + sectionId); else history.replaceState({sec:sectionId}, "", "#" + sectionId); }catch(e){}
   }
   _navInit = true;
+  if(sectionId !== "theory") rsView = null;
   if(sectionId !== "practicehoy" && practiceTodaySession){
     practiceTodayCleanup();
     practiceTodaySession = null;
@@ -24423,6 +24526,7 @@ function openTheoryTopic(level, index, returnTo){
 }
 function renderTheory(){
   if(activeTheoryTopic){ drawTheoryDetail(activeTheoryTopic.level, activeTheoryTopic.index); }
+  else if(rsView && currentLang === "en"){ drawSummaries(); }
   else { drawTheoryListView(); }
 }
 /* THEORY-SEARCH: buscador de temas de Gramática (todos los niveles, texto completo, con ranking, equivalencias ES/EN/PT y resaltado). */
@@ -24559,6 +24663,7 @@ function drawTheoryListView(){
       <h2>Gramática por nivel</h2>
       <p>Elige un tema para ver la explicación completa, el mapa mental y todos los ejemplos · Nivel ${lv}</p>
     </div>
+    ${currentLang === "en" && (RS[lv] || []).length ? `<button type="button" class="ts-summ-btn" id="rsOpenBtn"><span style="font-size:1.6rem;">🗺️</span><span><b>Resúmenes por nivel ${lv}</b><span class="s">5 infografías que resumen todos los temas del nivel, cada uno en el formato que mejor lo explica</span></span><span class="go">›</span></button>` : ""}
     <div class="ts-bar" role="search">
       <label class="sr-only" for="tsInput">Buscar un tema de gramática</label>
       <span class="ts-ico">${svgIcon("search", 20)}</span>
@@ -24583,6 +24688,7 @@ function drawTheoryListView(){
     </div>
   `;
   document.getElementById("panel-theory").innerHTML = html;
+  const rsBtn = document.getElementById("rsOpenBtn"); if(rsBtn) rsBtn.onclick = ()=> rsOpen(null, lv);
   const openTopic = (level, index, hl)=>{
     theoryHighlight = hl || null;
     activeTheoryTopic = {level, index};
@@ -31519,6 +31625,7 @@ function reviewWhenText(ts){
 function practiceTodayLabels(s){
   if(s.mode==="topic") return {eyebrow:`📘 Practicando: ${s.title}`, exit:"← Salir de la práctica del tema", done:""};
   if(s.mode==="unit") return {eyebrow:`🧭 Ruta ${s.level} · Unidad ${s.unit+1}`, exit:"← Salir del repaso de cierre", done:""};
+  if(s.mode==="summary") return {eyebrow:`🗺️ Practicando el resumen: ${s.title}`, exit:"← Volver al resumen", done:"¡Grupo practicado! 🎉"};
   return s.mode==="review"
     ? {eyebrow:"🔁 Repaso de hoy", exit:"← Salir del repaso", done:"¡Repaso completado! 🎉"}
     : {eyebrow:"🎯 Práctica de hoy", exit:"← Salir de Práctica de hoy", done:"¡Práctica de hoy completada! 🎉"};
@@ -31573,6 +31680,7 @@ function renderPracticeHoy(){
   panel.appendChild(exPanel);
   document.getElementById("practiceHoyExitBtn").onclick = ()=>{
     if(s.mode === "topic"){ practiceTodaySession = null; openTheoryTopic(s.tHome, s.tIdx); }
+    else if(s.mode === "summary"){ practiceTodaySession = null; currentLevel = s.level; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.level)); activeTheoryTopic = null; goTo("theory"); rsView = {lv:s.level, i:s.gi}; renderTheory(); }
     else goTo(s.mode==="unit" ? "route" : "home");
   };
   practiceTodayLoadStep(entry);
@@ -31637,11 +31745,14 @@ function renderPracticeHoyComplete(){
       </table>
     </div>
     ${moreDue ? `<button class="btn" id="practiceHoyMoreBtn" style="display:block;margin:0 auto 12px;">Repasar ${Math.min(moreDue, REVIEW_SESSION_SIZE)} más →</button>` : ""}
-    <button class="btn ${moreDue?"secondary":""}" id="practiceHoyDoneBtn" style="display:block;margin:0 auto;">Volver a Inicio →</button>
+    <button class="btn ${moreDue?"secondary":""}" id="practiceHoyDoneBtn" style="display:block;margin:0 auto;">${s.mode === "summary" ? "Volver al resumen →" : "Volver a Inicio →"}</button>
   `;
   document.getElementById("panel-practicehoy").innerHTML = html;
   fireConfetti();
-  document.getElementById("practiceHoyDoneBtn").onclick = ()=>{ practiceTodaySession = null; goTo("home"); };
+  document.getElementById("practiceHoyDoneBtn").onclick = ()=>{
+    if(s.mode === "summary"){ practiceTodaySession = null; currentLevel = s.level; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.level)); activeTheoryTopic = null; goTo("theory"); rsView = {lv:s.level, i:s.gi}; renderTheory(); return; }
+    practiceTodaySession = null; goTo("home");
+  };
   const moreBtn = document.getElementById("practiceHoyMoreBtn");
   if(moreBtn) moreBtn.onclick = ()=>{ practiceTodaySession = buildReviewSession(); renderPracticeHoy(); };
   window.scrollTo({top:0, behavior:"smooth"});
@@ -31808,6 +31919,786 @@ function startTopicPractice(home, idx){
   practiceTodaySession = buildTopicSession(info.level, info.k);
   goTo("practicehoy");
 }
+/* RES-SUM:BEGIN — Resúmenes por nivel (Teoría, solo inglés): 5 infografías por nivel, cada tema con el formato que mejor lo explica */
+const RS = {};   // RS[nivel] = [ {title, tag, hero, tiles:[{k, n, ty, ...}]} ×5 ] (datos abajo, uno por nivel)
+const RS_LV = {
+  A1:{c:"#34D399", ink:"#062B1E", name:"Los básicos", tag:"Piezas para armar tus primeras frases."},
+  A2:{c:"#2CC0D8", ink:"#052E36", name:"Ahora, ayer y mañana", tag:"Los tiempos básicos, ubicados en una línea."},
+  B1:{c:"#4C9AFF", ink:"#072556", name:"Conecta pasado y presente", tag:"¿Cuándo pasó? Todo depende de eso."},
+  B2:{c:"#8E6CFF", ink:"#1E1160", name:"Hipótesis y suposiciones", tag:"Qué tan real, improbable o imposible es."},
+  C1:{c:"#FF6B9A", ink:"#560F2B", name:"Énfasis y estilo", tag:"Sube el volumen de tus frases."},
+  C2:{c:"#FFB020", ink:"#3F2700", name:"Formalidad y matices", tag:"El mismo mensaje, con otro registro."}
+};
+const RS_ICON = {
+  user:"M20 21v-1a5 5 0 0 0-5-5H9a5 5 0 0 0-5 5v1 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8",
+  repeat:"M17 2l4 4-4 4 M3 11V9a3 3 0 0 1 3-3h15 M7 22l-4-4 4-4 M21 13v2a3 3 0 0 1-3 3H3",
+  pin:"M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z M12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5",
+  key:"M8 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M11 12h10 M18 12v4 M15 12v3",
+  play:"M6 3l14 9-14 9V3z", check:"M20 6L9 17l-5-5", rewind:"M11 19l-9-7 9-7v14z M22 19l-9-7 9-7v14z", arrow:"M5 12h14 M13 6l6 6-6 6",
+  link:"M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1 M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1",
+  scale:"M12 3v18 M5 21h14 M5 7l-3 8a4 3 0 0 0 6 0L5 7z M19 7l-3 8a4 3 0 0 0 6 0l-3-8z",
+  refresh:"M21 12a9 9 0 0 1-15.5 6.2 M3 12a9 9 0 0 1 15.5-6.2 M18 2v4h-4 M6 22v-4h4",
+  branch:"M6 3v12 M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 9a9 9 0 0 1-9 9",
+  question:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3 M12 17h.01",
+  history:"M3 12a9 9 0 1 0 3-6.7L3 8 M3 3v5h5 M12 7v5l4 2", zap:"M13 2L3 14h9l-1 8 10-12h-9l1-8z",
+  target:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+  sparkle:"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16z",
+  comma:"M9 4a5 5 0 0 0-5 5v3h5V9H7 M20 4a5 5 0 0 0-5 5v3h5V9h-2",
+  wrench:"M14.7 6.3a4 4 0 0 1 5.6 5.6l-9.5 9.5a2.1 2.1 0 0 1-3-3l9.5-9.5z",
+  shuffle:"M16 3h5v5 M4 20L21 3 M21 16v5h-5 M15 15l6 6 M4 4l5 5", swap:"M7 16V4 M3 8l4-4 4 4 M17 8v12 M21 16l-4 4-4-4",
+  book:"M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5",
+  chat:"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+  list:"M8 6h13 M8 12h13 M8 18h13 M3 6h.01 M3 12h.01 M3 18h.01",
+  layers:"M12 2l10 5-10 5L2 7l10-5z M2 17l10 5 10-5 M2 12l10 5 10-5",
+  clock:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2",
+  hash:"M4 9h16 M4 15h16 M10 3L8 21 M16 3l-2 18",
+  eye:"M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+  home:"M3 11l9-8 9 8 M5 10v10h14V10 M10 20v-6h4v6",
+  star:"M12 2l3 7 7 .6-5.4 4.8L18.2 22 12 18l-6.2 4 1.6-7.6L2 9.6 9 9l3-7z",
+  mapPin:"M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z",
+  shield:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", edit:"M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z",
+  scissors:"M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M20 4L8.1 15.9 M14.5 14.5L20 20 M8.1 8.1L12 12"
+};
+const rsEsc = s=> String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+/* [x] = resalte del nivel · {x} = pista de tiempo (ámbar) */
+const rsX = s=> rsEsc(s).replace(/\[([^\]]+)\]/g,'<b class="rs-h">$1</b>').replace(/\{([^}]+)\}/g,'<b class="rs-a">$1</b>').replace(/\|/g,"<br>");
+const rsPlain = s=> String(s).replace(/[\[\]{}]/g,"");
+const rsIcon = (n, size)=> `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${RS_ICON[n] || RS_ICON.book}"/></svg>`;
+const rsCap = (t, tone)=> `<div class="rs-cap ${tone || ""}">${rsX(t)}</div>`;
+const rsEs = t=> t ? `<div class="rs-es">${rsX(t)}</div>` : "";
+const rsPill = (t, tone)=> `<span class="rs-pill ${tone || "n"}">${rsX(t)}</span>`;
+const rsChips = list=> list && list.length ? `<div class="rs-chips">${list.map(c=> typeof c === "string" ? rsPill(c, "n") : rsPill(c[0], c[1])).join("")}</div>` : "";
+const rsBox = (inner, tone)=> `<div class="rs-box ${tone || ""}">${inner}</div>`;
+const rsTrap = t=> t ? `<div class="rs-trap"><div>✗ <s>${rsEsc(t[0])}</s></div><div>✓ <b>${rsEsc(t[1])}</b></div>${t[2] ? `<div class="rs-trap-n">${rsX(t[2])}</div>` : ""}</div>` : "";
+const rsNote = t=> t ? `<div class="rs-note">${rsX(t)}</div>` : "";
+const rsGrid = (min, inner, gap)=> `<div class="rs-grid" style="--min:${min}px;${gap ? `gap:${gap}px;` : ""}">${Array.isArray(inner) ? inner.join("") : inner}</div>`;
+const rsStack = inner=> `<div class="rs-stack">${inner}</div>`;
+const rsArrow = (dir)=> `<div class="rs-arr ${dir === "r" ? "r" : ""}">${dir === "r" ? "→" : "↓"}</div>`;
+const rsBlock = (w, on)=> `<span class="rs-blk ${on ? "on" : ""}">${rsEsc(w)}</span>`;
+
+/* mini línea de tiempo (SVG) para las tarjetas "lanes" */
+function rsLine(kind){
+  const W = 200, n = 184, base = `<line class="ln" x1="4" y1="15" x2="${n - 6}" y2="15"/>`;
+  const now = `<circle class="now" cx="${n}" cy="15" r="6"/><text class="lb" x="${n}" y="34" text-anchor="middle">HOY</text>`;
+  const dot = x=> `<circle class="dt" cx="${x}" cy="15" r="4.5"/>`;
+  let body = "";
+  if(kind === "exp") body = [30, 78, 120].map(dot).join("");
+  else if(kind === "unf") body = `<rect class="bar" x="30" y="11" width="${n - 32}" height="8" rx="4"/>`;
+  else if(kind === "res") body = `${dot(90)}<path class="dash" d="M96 15H${n - 8}"/>`;
+  else if(kind === "past") body = dot(70);
+  else if(kind === "two") body = dot(50) + dot(110);
+  else if(kind === "cont") body = `<rect class="bar" x="20" y="11" width="${n - 60}" height="8" rx="4"/><path class="bolt" d="M122 4v22"/>`;
+  else if(kind === "fut") return `<svg class="rs-tl" viewBox="0 0 ${W} 38" width="${W}" height="38" aria-hidden="true"><line class="ln" x1="4" y1="15" x2="${W - 4}" y2="15"/><circle class="now" cx="40" cy="15" r="6"/><text class="lb" x="40" y="34" text-anchor="middle">HOY</text>${dot(150)}</svg>`;
+  return `<svg class="rs-tl" viewBox="0 0 ${W} 38" width="${W}" height="38" aria-hidden="true">${base}${body}${now}</svg>`;
+}
+const RS_CAT = `<g transform="translate(X,4)"><path class="cat" d="M2 20V6l6 5h8l6-5v14a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><circle class="eye" cx="9" cy="16" r="1.4"/><circle class="eye" cx="15" cy="16" r="1.4"/></g>`;
+const rsIcons = (kind, n)=> kind === "cat" ? `<svg viewBox="0 0 ${n * 30 + 6} 34" width="${n * 30 + 6}" height="34" class="rs-icons" aria-hidden="true">${Array.from({length:n}, (_, i)=> RS_CAT.replace("X", i * 30)).join("")}</svg>` : "";
+
+/* ---------- cuerpos de tarjeta (uno por formato) ---------- */
+const RS_BODY = {
+  /* tabla: cabecera + filas (la 1.ª columna es la etiqueta) */
+  table(t){
+    const cols = t.head.length, tpl = t.cols || `${t.first === false ? "" : "minmax(46px,.5fr) "}repeat(${t.first === false ? cols : cols - 1},minmax(0,1fr))`;
+    return `<div class="rs-table" style="grid-template-columns:${tpl}">${t.head.map(h=> `<div class="rs-th">${rsX(h)}</div>`).join("")}${t.rows.map(r=> r.map((c, i)=> `<div class="rs-td ${i === 0 && t.first !== false ? "lab" : ""}">${rsX(c)}</div>`).join("")).join("")}</div>`;
+  },
+  /* tarjetas: bloques de comparación con etiqueta, frase, traducción y opcional icono/pastilla */
+  cards(t){
+    return rsGrid(t.min || 220, t.cards.map(c=> rsBox(`${c.icon ? rsIcons(c.icon[0], c.icon[1]) : ""}${c.cap ? rsCap(c.cap, c.tone) : ""}${c.big ? `<div class="rs-big">${rsX(c.big)}</div>` : ""}${c.en ? `<div class="rs-en">${rsX(c.en)}</div>` : ""}${rsEs(c.es)}${c.pill ? `<div class="rs-tag">${rsPill(c.pill[0], c.pill[1])}</div>` : ""}`, c.tone), t.gap || 8));
+  },
+  /* carriles de tiempo: mini línea + frase */
+  lanes(t){
+    return rsStack(t.lanes.map(l=> `<div class="rs-lane">${rsLine(l.line)}<div class="rs-lane-t">${rsCap(l.cap, "l")}<div class="rs-en">${rsX(l.en)}</div>${rsEs(l.es)}</div></div>`).join(""));
+  },
+  /* medidores: barras con porcentaje */
+  gauge(t){
+    const tone = {l:"var(--rs-t)", a:"var(--rs-amb)", r:"var(--rs-bad)", g:"var(--rs-ok)"};
+    return rsGrid(t.min || 190, t.bars.map(b=> `<div class="rs-box"><div class="rs-gh"><b style="color:${tone[b.tone || "l"]}">${rsX(b.lbl)}</b><span>${rsX(b.right || (b.pct + " %"))}</span></div><div class="rs-meter"><i style="width:${b.pct}%;background:${tone[b.tone || "l"]}"></i></div><div class="rs-en">${rsX(b.en)}</div>${rsEs(b.es)}</div>`).join(""), 8);
+  },
+  /* flujo: pasos con flechas */
+  flow(t){
+    const steps = t.steps.map((s, i)=> `${i ? `<div class="rs-fa">→</div>` : ""}<div class="rs-fs">${rsBox(`${rsCap(s.cap, s.tone)}<div class="rs-big">${rsX(s.en)}</div>${rsEs(s.es)}`, s.tone)}</div>`).join("");
+    return `<div class="rs-flow">${steps}</div>`;
+  },
+  /* bloques de palabras que se reordenan */
+  blocks(t){
+    return rsStack(t.rows.map((r, i)=> `${i ? rsArrow() : ""}${rsBox(`${rsCap(r.cap, r.tone)}<div class="rs-blks">${r.words.map(w=> rsBlock(w[0], w[1])).join("")}${r.tail ? `<span class="rs-tail">${rsX(r.tail)}</span>` : ""}</div>${rsEs(r.es)}`, r.tone)}`).join(""));
+  },
+  /* matriz 2 × 2 (o m × n) */
+  matrix(t){
+    const n = t.cols.length;
+    return `<div class="rs-mx" style="grid-template-columns:78px repeat(${n},minmax(0,1fr))"><div></div>${t.cols.map(c=> `<div class="rs-th c">${rsX(c)}</div>`).join("")}${t.rows.map(r=> `<div class="rs-th">${rsX(r.h)}</div>${r.cells.map(c=> `<div class="rs-mc ${c.mix ? "mix" : ""}">${c.mix ? rsPill(c.cap, "f") : rsCap(c.cap)}<div class="rs-en">${rsX(c.en)}</div></div>`).join("")}`).join("")}</div>`;
+  },
+  /* conversor: de → a */
+  convert(t){
+    return rsGrid(t.min || 200, t.rows.map(r=> rsBox(`<div class="rs-from ${t.plain ? "plain" : ""}">${rsX(r.from)}</div><div class="rs-to">${rsX(r.to)}</div>${r.tag ? `<div class="rs-tag">${rsPill(r.tag, "n")}</div>` : ""}${r.es ? rsEs(r.es) : ""}`)).join(""), 8);
+  },
+  /* lista etiquetada: etiqueta a la izquierda + frase (+ traducción) */
+  list(t){
+    return rsStack(t.rows.map(r=> `<div class="rs-row"><div class="rs-rl">${rsCap(r.cap, "l")}${r.sub ? `<div class="rs-sub">${rsX(r.sub)}</div>` : ""}</div><div><div class="rs-en">${rsX(r.en)}</div>${rsEs(r.es)}</div></div>`).join(""));
+  },
+  /* escalera de intensidad */
+  ladder(t){
+    return `<div class="rs-ladder">${t.steps.map(s=> `<div class="rs-step ${s.on ? "on" : ""}" style="flex:${s.f || 1};height:${s.h}px"><b>${rsX(s.lbl)}</b><span>${rsX(s.sub || "")}</span></div>`).join("")}</div>`;
+  },
+  /* dos columnas independientes con su propio contenido (para temas con dos mitades) */
+  duo(t){ return rsGrid(t.min || 260, t.parts.map(p=> `<div class="rs-stack">${RS_BODY[p.ty](p)}${rsChips(p.chips)}${rsTrap(p.trap)}${rsNote(p.note)}</div>`).join(""), 14); }
+};
+
+
+/* escenas de lugar: una caja y una pelota en distintas posiciones */
+function rsPlaceSvg(k){
+  const box = x=> `<rect class="pb" x="${x}" y="26" width="34" height="24" rx="4"/>`, ball = (x, y)=> `<circle class="pl" cx="${x}" cy="${y}" r="6"/>`;
+  let b = "";
+  if(k === "in") b = box(28) + ball(45, 40);
+  else if(k === "on") b = box(28) + ball(45, 18);
+  else if(k === "under") b = `<rect class="pb" x="24" y="14" width="42" height="7" rx="3"/><rect class="pb" x="28" y="21" width="4" height="29"/><rect class="pb" x="58" y="21" width="4" height="29"/>` + ball(45, 43);
+  else if(k === "next") b = box(14) + ball(64, 44);
+  else if(k === "between") b = box(4) + box(52) + ball(45, 44);
+  else if(k === "behind") b = ball(58, 28) + box(28);
+  else if(k === "front") b = box(28) + ball(45, 44).replace('class="pl"', 'class="pl top"');
+  return `<svg viewBox="0 0 90 58" width="90" height="58" class="rs-place" aria-hidden="true">${b}<line class="pg" x1="4" y1="52" x2="86" y2="52"/></svg>`;
+}
+RS_BODY.place = t=> rsGrid(t.min || 120, t.items.map(i=> rsBox(`${rsPlaceSvg(i.k)}<div class="rs-big">${rsX(i.en)}</div>${rsEs(i.es)}`)).join(""), 8);
+
+function rsTile(tl, lv){
+  const body = (RS_BODY[tl.ty] || RS_BODY.cards)(tl);
+  const id = `rs:${lv}:${tl.gi}:${tl.k}`;
+  const saved = typeof isWordSaved === "function" && isWordSaved(id);
+  return `<article class="rs-tile ${tl.w === 2 ? "wide" : ""}" data-k="${tl.k}">
+    <div class="rs-th-row">
+      <span class="rs-ico">${rsIcon(tl.ic, 22)}</span>
+      <h3 class="rs-tt">${rsX(tl.n)}</h3>
+      <button class="rs-star ${saved ? "on" : ""}" type="button" data-star="${tl.k}" aria-pressed="${saved}" aria-label="Guardar ${rsEsc(rsPlain(tl.n))}">${saved ? "★" : "☆"}</button>
+    </div>
+    <p class="rs-rule">${rsX(tl.rule)}</p>
+    ${body}
+    ${rsChips(tl.chips)}${rsTrap(tl.trap)}${rsNote(tl.note)}
+    <div class="rs-tf">
+      <button class="rs-lk" type="button" data-open="${tl.k}">Ver tema completo ›</button>
+      <button class="rs-lk pr" type="button" data-prac="${tl.k}">Practicar ›</button>
+    </div>
+  </article>`;
+}
+
+/* ---------- héroes ---------- */
+const RS_TONE = {l:"l", a:"a", n:"n", g:"g", r:"r"};
+function rsCol(en, lbl, tone){ return `<div class="rs-hc">${rsPill(en, tone || "n").replace("rs-pill", "rs-pill big")}<span>${rsX(lbl)}</span></div>`; }
+const RS_HERO = {
+  /* filas de piezas etiquetadas (anatomía de la frase) */
+  chips(h){ return h.rows.map(r=> `<div class="rs-hrow">${r.map(c=> rsCol(c[0], c[1], c[2])).join("")}</div>`).join(""); },
+  /* línea de tiempo con 3 momentos */
+  timeline(h){
+    return `<div class="rs-hline"><i></i>${h.points.map((p, i)=> `<b style="left:${p.at}%"></b>`).join("")}</div>
+    <div class="rs-hcols" style="grid-template-columns:repeat(${h.points.length},minmax(0,1fr))">${h.points.map(p=> `<div class="rs-hcolw"><div class="rs-cap ${p.tone || ""} c">${rsX(p.label)}</div>${p.items.map(it=> rsBox(`${rsPill(it[0], it[2] || "n")}<div class="rs-en sm">${rsX(it[1])}</div>`)).join("")}</div>`).join("")}</div>`;
+  },
+  /* bifurcación: dos caminos */
+  fork(h){
+    return rsGrid(240, h.paths.map(p=> rsBox(`${rsCap(p.cap, p.tone)}<div class="rs-chips">${p.chips.map(c=> rsPill(c, "a")).join("")}</div>${rsArrow()}${rsPill(p.to, p.tone === "l" ? "l" : "n").replace("rs-pill", "rs-pill big")}<div class="rs-en">${rsX(p.en)}</div>`, p.tone)), 12);
+  },
+  /* escala de 3 (barra con degradado + ejemplos) */
+  scale(h){
+    return `<div class="rs-hbar" style="background:linear-gradient(90deg,${h.grad || "#34D399,#F5A623,#E0457A"})"></div>${rsGrid(180, h.items.map(i=> rsBox(`${rsPill(i.lbl, i.tone || "n")}<div class="rs-en sm">${rsX(i.en)}</div>`)), 10)}${rsChips(h.chips)}`;
+  },
+  /* escalera de énfasis */
+  ladder(h){
+    return `<div class="rs-hl">${h.steps.map((s, i)=> `<div class="rs-hs" style="--i:${i}">${rsBox(`${rsCap(s.cap, s.tone)}<div class="rs-en ${i === h.steps.length - 1 ? "top" : ""}">${rsX(s.en)}</div>`, s.tone)}</div>`).join("")}</div>`;
+  },
+  /* rejilla: cabeceras + filas de 3 celdas */
+  grid(h){
+    return `<div class="rs-hg" style="--n:${h.cols.length}"><div class="rs-hbar thin" style="grid-column:1/-1;background:linear-gradient(90deg,${h.grad || "#2CC0D8,#F5F0FF,#FFB020"})"></div>${h.cols.map((c, i)=> `<div class="rs-cap ${h.tones ? h.tones[i] : ""}">${rsX(c)}</div>`).join("")}${h.rows.map(r=> r.map(c=> `<div class="rs-hcell">${rsX(c)}</div>`).join("")).join("")}</div>`;
+  }
+};
+function rsHero(h){
+  return `<section class="rs-hero"><div class="rs-cap l">${rsX(h.eyebrow || "EL MAPA")}</div><h3 class="rs-ht">${rsX(h.title)}</h3>${RS_HERO[h.kind](h)}${h.note ? rsNote(h.note) : ""}</section>`;
+}
+
+/* ---------- vistas ---------- */
+let rsView = null;   // null = no se está viendo el resumen · {lv, i} con i=null → lista de las 5 infografías del nivel
+function rsLevel(){ return currentLevel === "Random" ? ((rsView && rsView.lv) || "A1") : currentLevel; }
+function rsOpen(i, lv){ rsView = {lv:lv || rsLevel(), i:(i === undefined || i === null ? null : i)}; renderTheory(); window.scrollTo({top:0, behavior:"smooth"}); }
+function rsClose(){ rsView = null; renderTheory(); window.scrollTo({top:0, behavior:"smooth"}); }
+function rsStyleVars(lv){ const L = RS_LV[lv]; return `--lc:${L.c};--lci:${L.ink}`; }
+/* Quitar la estrella no debe dejar la infografía como un «error» en Mis errores */
+function rsCleanSaved(id){
+  const on = isWordSaved(id);
+  if(!on){ const i = ERROR_BANK.findIndex(e=> e.id === id); if(i >= 0){ ERROR_BANK.splice(i, 1); saveProgress(); } }
+  return on;
+}
+function rsSavedTile(lv, gi, tl){
+  const id = `rs:${lv}:${gi}:${tl.k}`;
+  const t = LANG_PACKS.en.THEORY[lv][tl.k];
+  toggleSavedWord(id, "summary", lv, `📌 Resumen ${lv}: ${rsPlain(tl.n)}`, rsPlain(t.title), rsPlain(tl.rule));
+  return rsCleanSaved(id);
+}
+function drawSummaries(){
+  const lv = rsLevel();
+  if(!rsView || rsView.lv !== lv) rsView = {lv, i:null};
+  const L = RS_LV[lv], groups = RS[lv] || [];
+  const topics = LANG_PACKS.en.THEORY[lv];
+  let html;
+  if(rsView.i === null || !groups[rsView.i]){
+    html = `<div class="section-head">
+        <button class="theory-back" id="rsBack">← Volver a Gramática</button>
+        <div class="eyebrow">Teoría · Nivel ${lv}</div>
+        <h2>Resúmenes por nivel</h2>
+        <p>Cada nivel se resume en 5 infografías. Elige una para repasar sus temas de un vistazo, con la explicación en el formato que mejor le va a cada uno.</p>
+      </div>
+      <div class="rs rs-index" style="${rsStyleVars(lv)}">
+        <div class="rs-lvh"><div class="rs-num">${lv}</div><div><div class="rs-cap">RESUMEN DE GRAMÁTICA · ${topics.length} TEMAS</div><div class="rs-lvn">${rsEsc(L.name)}</div><div class="rs-tagl">${rsEsc(L.tag)}</div></div></div>
+        <div class="rs-cards">${groups.map((g, i)=> `<button class="rs-card" type="button" data-i="${i}">
+          <span class="rs-cn">${i + 1}</span>
+          <span class="rs-cb"><b class="rs-ct">${rsEsc(g.title)}</b><span class="rs-cs">${rsEsc(g.tag)}</span>
+          <span class="rs-cl">${g.tiles.map(t=> `<i>${rsEsc(rsPlain(t.n))}</i>`).join("")}</span></span><span class="rs-go">›</span></button>`).join("")}</div>
+      </div>`;
+  }else{
+    const gi = rsView.i, g = groups[gi];
+    g.tiles.forEach(t=> t.gi = gi);
+    const saved = isWordSaved(`rs:${lv}:${gi}`);
+    html = `<div class="section-head">
+        <button class="theory-back" id="rsBack">← Resúmenes ${lv}</button>
+      </div>
+      <div class="rs" style="${rsStyleVars(lv)}">
+        <div class="rs-lvh"><div class="rs-num">${lv}</div><div class="rs-lvt"><div class="rs-cap">INFOGRAFÍA ${gi + 1} DE ${groups.length} · ${g.tiles.length} TEMAS</div><h2 class="rs-lvn">${rsEsc(g.title)}</h2><div class="rs-tagl">${rsEsc(g.tag)}</div></div></div>
+        ${rsHero(g.hero)}
+        <div class="rs-tiles">${g.tiles.map(t=> rsTile(t, lv)).join("")}</div>
+        <div class="rs-foot">
+          <div class="rs-ft">Repasa este grupo cuando quieras. Cada tema abre su explicación con mapa y práctica.</div>
+          <div class="rs-fb">
+            <button class="rs-btn ghost" type="button" id="rsSaveG">${saved ? "★ Guardada" : "☆ Guardar"}</button>
+            <button class="rs-btn" type="button" id="rsPracG">Practicar el grupo ›</button>
+          </div>
+        </div>
+        <div class="rs-pager">
+          ${gi > 0 ? `<button class="rs-btn ghost" type="button" data-go="${gi - 1}">‹ ${rsEsc(groups[gi - 1].title)}</button>` : "<span></span>"}
+          ${gi < groups.length - 1 ? `<button class="rs-btn ghost" type="button" data-go="${gi + 1}">${rsEsc(groups[gi + 1].title)} ›</button>` : "<span></span>"}
+        </div>
+      </div>`;
+  }
+  const panelEl = document.getElementById("panel-theory");
+  panelEl.innerHTML = html;
+  document.getElementById("rsBack").onclick = ()=>{
+    if(rsView.i === null) rsClose(); else { rsView.i = null; renderTheory(); window.scrollTo({top:0, behavior:"smooth"}); }
+  };
+  panelEl.querySelectorAll(".rs-card").forEach(b=> b.onclick = ()=> rsOpen(+b.dataset.i));
+  panelEl.querySelectorAll("[data-go]").forEach(b=> b.onclick = ()=> rsOpen(+b.dataset.go));
+  if(rsView.i === null || !groups[rsView.i]) return;
+  const gi = rsView.i, g = groups[gi];
+  panelEl.querySelectorAll("[data-open]").forEach(b=> b.onclick = ()=> openTheoryTopic(lv, +b.dataset.open, {id:"theory", label:"Volver al resumen"}));
+  panelEl.querySelectorAll("[data-prac]").forEach(b=> b.onclick = ()=> startTopicPractice(lv, +b.dataset.prac));
+  panelEl.querySelectorAll("[data-star]").forEach(b=> b.onclick = ()=>{
+    const tl = g.tiles.find(x=> x.k === +b.dataset.star), on = rsSavedTile(lv, gi, tl);
+    b.classList.toggle("on", on); b.textContent = on ? "★" : "☆"; b.setAttribute("aria-pressed", on);
+  });
+  document.getElementById("rsSaveG").onclick = e=>{
+    const id = `rs:${lv}:${gi}`;
+    toggleSavedWord(id, "summary", lv, `📚 Resumen ${lv}: ${g.title}`, g.tiles.map(t=> rsPlain(t.n)).join(" · "), g.tag);
+    e.currentTarget.textContent = rsCleanSaved(id) ? "★ Guardada" : "☆ Guardar";
+  };
+  document.getElementById("rsPracG").onclick = ()=>{
+    const s = rsBuildGroupSession(lv, gi);
+    if(!s.queue.length) return;
+    practiceTodaySession = s;
+    goTo("practicehoy");
+  };
+}
+/* Practicar el grupo: mezcla preguntas de los temas de la infografía (teoría, ejercicios y escucha del tema) */
+function rsBuildGroupSession(lv, gi){
+  const g = RS[lv][gi], parts = [];
+  g.tiles.forEach(t=>{
+    const info = topicUnitFor(lv, t.k);
+    if(info) parts.push(buildTopicSession(info.level, info.k).queue);
+  });
+  const q = [];
+  for(let r = 0; q.length < 12; r++){
+    let any = false;
+    parts.forEach(p=>{ if(p[r] && q.length < 12){ q.push(p[r]); any = true; } });
+    if(!any) break;
+  }
+  return {mode:"summary", level:lv, gi, title:g.title, queue:shuffle(q), index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set()};
+}
+/* RES-SUM-DATA:BEGIN */
+/* --- A1 --- */
+RS.A1 = [
+  {title:"Ser, hay y tener", tag:"Tres formas de decir qué es, qué hay y qué tienes.",
+   hero:{kind:"chips", eyebrow:"EL MAPA", title:"Ser, hay y tener: cambia una sola pieza", rows:[
+     [["She","sujeto"],["is","to be","l"],["a teacher","complemento"]],
+     [["There","existencia"],["are","plural","l"],["two cats","lo que hay"]],
+     [["I","sujeto"],["have got","posesión","l"],["a bike","lo que tengo"]]]},
+   tiles:[
+    {k:0, n:"Verbo To Be", ic:"user", w:2, ty:"table", rule:"Ser o estar: el verbo cambia según quién habla.",
+     head:["","AFIRMAR","NEGAR","PREGUNTAR"],
+     rows:[["I","I [am]","I [am] not","[Am] I?"],["you","you [are]","you [aren't]","[Are] you?"],["he","he [is]","he [isn't]","[Is] he?"],["she","she [is]","she [isn't]","[Is] she?"],["it","it [is]","it [isn't]","[Is] it?"],["we","we [are]","we [aren't]","[Are] we?"],["they","they [are]","they [aren't]","[Are] they?"]],
+     chips:[["Se abrevia: I'm · you're · she's · they're","n"]],
+     trap:["I have 20 years.","I am 20 years old.","La edad y las sensaciones (hambre, frío) llevan to be, no have."]},
+    {k:3, n:"There is / There are", ic:"pin", ty:"cards", min:140, rule:"Decir que algo existe. El verbo concuerda con lo que hay.",
+     cards:[{icon:["cat",1], big:"There [is] a cat.", es:"Hay un gato."},{icon:["cat",3], big:"There [are] three cats.", es:"Hay tres gatos."}],
+     chips:[["There isn't a cat","n"],["Is there a cat?","n"]],
+     trap:["Have a cat in the garden.","There is a cat in the garden.","«Hay» no se traduce con have."]},
+    {k:8, n:"Have got y have", ic:"key", ty:"cards", min:150, rule:"Posesión: have got es más informal; con have se usa do / does.",
+     cards:[{cap:"I · YOU · WE · THEY", en:"I [have] got a dog.|I [haven't] got a dog.|[Have] you got a dog?"},{cap:"HE · SHE · IT", tone:"l", en:"She [has] got a dog.|She [hasn't] got a dog.|[Has] she got a dog?"}],
+     note:"Sin got: I [have] a dog · I [don't] have a dog · [Do] you have a dog?"}
+   ]},
+  {title:"Tu día a día", tag:"Rutinas, hechos y con qué frecuencia pasan.",
+   hero:{kind:"chips", eyebrow:"EL MAPA", title:"La -s solo aparece una vez", rows:[
+     [["He","sujeto"],["works","verbo + s","l"],["every day","señal","a"]],
+     [["He","sujeto"],["doesn't","auxiliar","l"],["work","verbo base"]],
+     [["Does","auxiliar","l"],["he","sujeto"],["work","verbo base"],["here?","lugar"]]]},
+   tiles:[
+    {k:1, n:"Presente simple", ic:"repeat", ty:"cards", min:130, rule:"Rutinas y hechos. Solo con he / she / it el verbo lleva -s.",
+     cards:[{cap:"HE · SHE · IT", tone:"l", big:"work[s]"},{cap:"I · YOU · WE · THEY", big:"work"}],
+     chips:[["study → studies","n"],["go → goes","n"],["watch → watches","n"]],
+     note:"Terminados en -o, -ch, -sh, -s, -x llevan -es; consonante + y cambia a -ies."},
+    {k:11, n:"Negar y preguntar con do / does", ic:"question", ty:"list", rule:"El auxiliar carga con la -s; el verbo siempre vuelve a la base.",
+     rows:[{cap:"AFIRMAR", en:"She [works] here."},{cap:"NEGAR", en:"She [doesn't] work here."},{cap:"PREGUNTAR", en:"[Does] she work here?"}],
+     trap:["Does she works here?","Does she work here?","La -s ya viajó al auxiliar."]},
+    {k:12, n:"Adverbios de frecuencia", ic:"clock", w:2, ty:"gauge", min:150, rule:"Cuántas veces pasa algo. Van antes del verbo principal y después de to be.",
+     bars:[{lbl:"always",pct:100,en:"I [always] wake up early."},{lbl:"usually",pct:80,en:"She [usually] walks."},{lbl:"often",pct:60,en:"We [often] eat out."},{lbl:"sometimes",pct:40,en:"He [sometimes] cooks.",tone:"a"},{lbl:"rarely",pct:15,en:"They [rarely] call.",tone:"a"},{lbl:"never",pct:0,en:"I [never] smoke.",tone:"r",right:"0 %"}],
+     note:"Con to be van después: She is [always] late."}
+   ]},
+  {title:"Los dueños y las cosas", tag:"A quién pertenece algo y cómo nombrarlo.",
+   hero:{kind:"chips", eyebrow:"EL MAPA", title:"Lo que va antes del sustantivo", rows:[
+     [["the","artículo","l"],["dog","cosa"]],
+     [["my","posesivo","l"],["dog","cosa"]],
+     [["Anna's","genitivo","l"],["dog","cosa"]],
+     [["She likes","sujeto + verbo"],["him","objeto","l"]]]},
+   tiles:[
+    {k:2, n:"Artículos y plurales", ic:"hash", ty:"cards", min:140, rule:"Uno nuevo lleva a / an; uno ya conocido lleva the.",
+     cards:[{cap:"A / AN · UNO CUALQUIERA", en:"[a] dog · [an] apple", es:"an va ante sonido de vocal: an hour, a university"},{cap:"THE · UNO CONOCIDO", tone:"l", en:"[The] dog is big.", es:"el perro del que ya hablamos"}],
+     chips:[["book → books","n"],["box → boxes","n"],["city → cities","n"],["man → men","n"]]},
+    {k:14, n:"Genitivo sajón: 's", ic:"edit", ty:"cards", min:150, rule:"De quién es algo: el dueño va primero.",
+     cards:[{cap:"UN DUEÑO", tone:"l", big:"Anna[’s] dog", es:"el perro de Anna"},{cap:"VARIOS DUEÑOS", big:"the students[’] books", es:"los libros de los estudiantes"},{cap:"PLURAL IRREGULAR", big:"the children[’s] toys", es:"los juguetes de los niños"}]},
+    {k:4, n:"Adjetivos posesivos", ic:"key", w:2, ty:"convert", plain:true, min:120, rule:"De quién es algo. Va siempre antes del sustantivo y depende del dueño, no de la cosa.",
+     rows:[{from:"I",to:"[my] phone"},{from:"you",to:"[your] phone"},{from:"he",to:"[his] phone"},{from:"she",to:"[her] phone"},{from:"it",to:"[its] tail"},{from:"we",to:"[our] phone"},{from:"they",to:"[their] phone"}],
+     chips:[["its ≠ it's (= it is)","a"],["mine va solo, sin sustantivo","n"]]},
+    {k:6, n:"Pronombres de objeto", ic:"user", w:2, ty:"table", first:true, cols:"minmax(60px,.6fr) repeat(2,minmax(0,1fr)) minmax(0,1.6fr)", rule:"Después de un verbo o preposición se usa la forma de objeto.",
+     head:["","SUJETO","OBJETO","EJEMPLO"],
+     rows:[["yo","I","[me]","She calls [me]."],["tú","you","[you]","I help [you]."],["él","he","[him]","We know [him]."],["ella","she","[her]","Look at [her]."],["ello","it","[it]","I like [it]."],["nosotros","we","[us]","He sees [us]."],["ellos","they","[them]","Ask [them]."]]}
+   ]},
+  {title:"Dónde y cuál", tag:"Ubicar cosas, señalarlas y preguntar por ellas.",
+   hero:{kind:"chips", eyebrow:"EL MAPA", title:"Pregunta y respuesta encajan", rows:[
+     [["Where","pregunta","l"],["is","to be"],["the cat","sujeto"],["?",""]],
+     [["It's","respuesta"],["on","preposición","l"],["the sofa","lugar"]]]},
+   tiles:[
+    {k:5, n:"Preposiciones de lugar", ic:"mapPin", ty:"place", min:100, rule:"Dónde está algo respecto a otra cosa.",
+     items:[{k:"in",en:"[in]",es:"dentro"},{k:"on",en:"[on]",es:"encima, apoyado"},{k:"under",en:"[under]",es:"debajo"},{k:"next",en:"[next to]",es:"al lado"},{k:"between",en:"[between]",es:"entre"},{k:"behind",en:"[behind]",es:"detrás"}]},
+    {k:7, n:"This, that, these, those", ic:"eye", ty:"matrix", rule:"Señalar algo: uno o varios, cerca o lejos.",
+     cols:["CERCA","LEJOS"],
+     rows:[{h:"UNO",cells:[{cap:"THIS",en:"[This] book is mine."},{cap:"THAT",en:"[That] book is yours."}]},{h:"VARIOS",cells:[{cap:"THESE",en:"[These] shoes are new."},{cap:"THOSE",en:"[Those] shoes are old."}]}]},
+    {k:10, n:"Preguntas con Wh-", ic:"question", w:2, ty:"cards", min:170, rule:"Cada palabra pregunta por algo distinto.",
+     cards:[{cap:"WHAT · QUÉ",en:"[What] is this?"},{cap:"WHERE · DÓNDE",en:"[Where] do you live?"},{cap:"WHO · QUIÉN",en:"[Who] is she?"},{cap:"WHEN · CUÁNDO",en:"[When] is the class?"},{cap:"WHY · POR QUÉ",en:"[Why] are you sad?"},{cap:"HOW · CÓMO",en:"[How] are you?"}]}
+   ]},
+  {title:"Puedo y me gusta", tag:"Lo que sabes hacer y lo que te gusta hacer.",
+   hero:{kind:"scale", eyebrow:"EL MAPA", title:"Lo que sientes y lo que puedes", grad:"#E0457A,#F5A623,#34D399", items:[
+     {lbl:"hate",tone:"r",en:"I [hate] getting up early."},{lbl:"like",tone:"n",en:"I [like] drinking tea."},{lbl:"love",tone:"g",en:"I [love] dancing."}],
+     chips:[["can = puedo / sé","l"],["can't = no puedo","n"],["want to = quiero","n"]]},
+   tiles:[
+    {k:9, n:"Can / can't", ic:"check", ty:"list", rule:"Habilidad, permiso y pedir algo. Nunca lleva -s y después va el verbo base.",
+     rows:[{cap:"HABILIDAD", en:"I [can] swim.", es:"Sé nadar."},{cap:"PERMISO", en:"[Can] I sit here?", es:"¿Puedo sentarme aquí?"},{cap:"PEDIR", en:"[Can] you help me?", es:"¿Puedes ayudarme?"},{cap:"NEGAR", en:"He [can't] swim.", es:"Él no sabe nadar."}],
+     trap:["He cans swim.","He can swim.","Can es igual para todos y no lleva -s."]},
+    {k:13, n:"Like, love, hate + -ing", ic:"sparkle", ty:"flow", rule:"Para gustos, el segundo verbo lleva -ing; para querer, se usa to + verbo.",
+     steps:[{cap:"SENTIMIENTO",en:"[like] · [love] · [hate]"},{cap:"+ VERBO CON -ING",en:"[dancing]",tone:"l"}],
+     note:"I [love] dancing · She [hates] cooking. Y para deseos: I [want to] dance.",
+     trap:["I like dance.","I like dancing.","Tras like, love y hate el verbo lleva -ing."]}
+   ]}
+];
+
+/* --- A2 --- */
+RS.A2 = [
+  {title:"Ayer: terminado o en progreso", tag:"Lo que ya pasó y lo que estaba pasando.",
+   hero:{kind:"timeline", eyebrow:"EL MAPA", title:"El pasado tiene dos caras", points:[
+     {at:16, label:"LO QUE TERMINÓ", items:[["Pasado simple","We [visited] Rome last year.","n"]]},
+     {at:50, label:"LO QUE ESTABA PASANDO", tone:"l", items:[["Pasado continuo","She [was cooking] at 8 pm.","l"]]},
+     {at:84, label:"AHORA", tone:"a", items:[["Presente","We [live] in Rome now.","a"]]}]},
+   tiles:[
+    {k:0, n:"Pasado simple", ic:"check", w:2, ty:"cards", min:230, rule:"Acciones terminadas en un momento del pasado.",
+     cards:[{cap:"REGULARES · +ED", en:"work → [worked]|stop → [stopped]|study → [studied]"},{cap:"IRREGULARES · SE MEMORIZAN", en:"go → [went]|have → [had]|see → [saw]|buy → [bought]"}],
+     chips:[["yesterday","a"],["last week","a"],["in 2019","a"],["ago","a"]]},
+    {k:11, n:"Was / were", ic:"user", ty:"table", cols:"minmax(74px,.9fr) repeat(3,minmax(0,1fr))", rule:"El pasado de to be: dos formas.",
+     head:["","AFIRMAR","NEGAR","PREGUNTAR"],
+     rows:[["I","I [was]","I [wasn't]","[Was] I?"],["he · she · it","she [was]","she [wasn't]","[Was] she?"],["you · we · they","they [were]","they [weren't]","[Were] they?"]]},
+    {k:12, n:"Did: negar y preguntar", ic:"question", ty:"list", rule:"Did carga con el pasado; el verbo vuelve a la base.",
+     rows:[{cap:"AFIRMAR", en:"She [visited] Rome."},{cap:"NEGAR", en:"She [didn't] visit Rome."},{cap:"PREGUNTAR", en:"[Did] she visit Rome?"}],
+     trap:["She didn't visited Rome.","She didn't visit Rome.","Tras did / didn't el verbo va en base."]},
+    {k:5, n:"Pasado continuo", ic:"rewind", w:2, ty:"lanes", rule:"Una acción en progreso en el pasado, a menudo interrumpida.",
+     lanes:[{line:"cont", cap:"EN PROGRESO + INTERRUPCIÓN", en:"She [was cooking] when he {called}.", es:"Cocinaba cuando él llamó."},{line:"cont", cap:"DOS A LA VEZ", en:"I [was reading] while he [was sleeping].", es:"Yo leía mientras él dormía."}],
+     chips:[["was / were + -ing","l"],["while = duración","n"],["when = interrupción","a"]]}
+   ]},
+  {title:"Ahora y mañana", tag:"Rutina, lo de este momento, planes y experiencias.",
+   hero:{kind:"timeline", eyebrow:"EL MAPA", title:"Rutina, ahora y planes", points:[
+     {at:16, label:"TODOS LOS DÍAS", items:[["Presente simple","I [work] here.","n"]]},
+     {at:50, label:"AHORA MISMO", tone:"l", items:[["Presente continuo","I [am working] now.","l"]]},
+     {at:84, label:"LO QUE VIENE", tone:"a", items:[["Be going to","I'm [going to] work.","a"]]}]},
+   tiles:[
+    {k:1, n:"Presente continuo", ic:"play", ty:"convert", plain:true, min:150, rule:"Lo que pasa ahora mismo: am / is / are + verbo con -ing.",
+     rows:[{from:"work",to:"work[ing]",tag:"normal"},{from:"make",to:"mak[ing]",tag:"quita la -e"},{from:"run",to:"run[ning]",tag:"duplica la consonante"}],
+     chips:[["I am","l"],["he · she · it is","l"],["you · we · they are","l"],["now","a"],["right now","a"]]},
+    {k:9, n:"Verbos estativos", ic:"eye", ty:"cards", min:200, rule:"Verbos de estado, gusto o pensamiento casi nunca van en continuo.",
+     cards:[{cap:"USAN PRESENTE SIMPLE", tone:"l", en:"I [know] the answer.|She [loves] music.|We [need] help."}],
+     chips:[["know","n"],["love","n"],["need","n"],["want","n"],["believe","n"]],
+     trap:["I am knowing the answer.","I know the answer.","Con verbos de estado se usa el simple."]},
+    {k:13, n:"Presente simple vs continuo", ic:"scale", w:2, ty:"cards", min:240, rule:"¿Es habitual o está pasando ahora?",
+     cards:[{cap:"PRESENTE SIMPLE · LO HABITUAL", en:"She [works] in a bank.|He [plays] tennis on Sundays."},{cap:"PRESENTE CONTINUO · LO DE AHORA", tone:"l", en:"She [is working] from home today.|He [is playing] tennis now."}],
+     chips:[["every day","a"],["usually","a"],["now","a"],["at the moment","a"]]},
+    {k:3, n:"Be going to", ic:"arrow", ty:"cards", min:180, rule:"Dos usos: lo que ya decidiste, o lo que ves venir.",
+     cards:[{cap:"PLAN · YA LO DECIDÍ", tone:"l", en:"I'm [going to] travel in July.", es:"Voy a viajar en julio."},{cap:"PREDICCIÓN · VEO LA PRUEBA", tone:"a", en:"Look at the clouds! It's [going to] rain.", es:"¡Mira las nubes! Va a llover."}]},
+    {k:19, n:"Presente perfecto: primer contacto", ic:"link", ty:"lanes", rule:"Une el pasado con hoy usando have / has + participio.",
+     lanes:[{line:"exp", cap:"EVER / NEVER · EXPERIENCIA", en:"Have you [ever] been to Japan?", es:"¿Has estado alguna vez en Japón?"},{line:"res", cap:"JUST / ALREADY · ACABA DE PASAR", en:"I've [just] finished.", es:"Acabo de terminar."},{line:"past", cap:"YET · TODAVÍA", en:"She hasn't called [yet].", es:"Todavía no ha llamado."}]}
+   ]},
+  {title:"Deber, pedir y aconsejar", tag:"Qué debes hacer, cómo pedirlo y cómo sugerirlo.",
+   hero:{kind:"ladder", eyebrow:"EL MAPA", title:"De sugerir a prohibir", steps:[
+     {cap:"SUAVE · CONSEJO", en:"You [should] rest."},
+     {cap:"FUERTE · OBLIGACIÓN", en:"You [have to] wear a helmet.", tone:"l"},
+     {cap:"PROHIBIDO", en:"You [mustn't] park here.", tone:"l"}]},
+   tiles:[
+    {k:14, n:"Have to / don't have to", ic:"shield", ty:"cards", min:180, rule:"Obligación y ausencia de obligación.",
+     cards:[{cap:"HAVE TO · OBLIGACIÓN", en:"I [have to] work today."},{cap:"DON'T HAVE TO · NO HACE FALTA", tone:"l", en:"You [don't have to] come."}],
+     trap:["You mustn't come (no hace falta).","You don't have to come.","«No hace falta» es don't have to; mustn't es «prohibido»."]},
+    {k:18, n:"Should, must y mustn't", ic:"scale", ty:"gauge", min:200, rule:"Consejo, obligación y prohibición: de menos a más fuerte.",
+     bars:[{lbl:"should",pct:40,right:"consejo",en:"You [should] sleep more."},{lbl:"must",pct:80,right:"obligación",en:"You [must] stop.",tone:"a"},{lbl:"mustn't",pct:100,right:"prohibición",tone:"r",en:"You [mustn't] smoke here."}]},
+    {k:8, n:"Imperativos", ic:"zap", ty:"list", rule:"Órdenes e indicaciones: el verbo base, sin sujeto.",
+     rows:[{cap:"AFIRMAR", en:"[Open] the door."},{cap:"NEGAR", en:"[Don't] open the door."},{cap:"SUGERIR", en:"[Let's] go home."},{cap:"CORTÉS", en:"[Please] sit down."}]},
+    {k:6, n:"Condicional cero", ic:"branch", ty:"flow", rule:"Verdades generales y hechos científicos.",
+     steps:[{cap:"IF + PRESENTE",en:"If you [heat] ice,"},{cap:"PRESENTE",en:"it [melts].",tone:"l"}],
+     note:"Se puede invertir el orden: Ice [melts] if you heat it."},
+    {k:15, n:"Would like, Can I y Shall we", ic:"chat", w:2, ty:"cards", min:200, rule:"Pedir, ofrecer y sugerir con cortesía.",
+     cards:[{cap:"PEDIR", en:"[Can I] have a coffee?|I'd [like] a coffee, please."},{cap:"OFRECER", tone:"l", en:"[Would you like] some tea?|[Can I] help you?"},{cap:"SUGERIR", en:"[Shall we] go out?|[Let's] have lunch."}]}
+   ]},
+  {title:"Cantidad y comparación", tag:"Cuánto hay, cuánto es demasiado y qué es más que qué.",
+   hero:{kind:"fork", eyebrow:"EL MAPA", title:"Antes de elegir: ¿se puede contar?", paths:[
+     {cap:"CONTABLE · apples, chairs", tone:"n", chips:["many","a few","few"], to:"How many?", en:"There are [many] apples."},
+     {cap:"INCONTABLE · water, money", tone:"l", chips:["much","a little","little"], to:"How much?", en:"There isn't [much] water."}]},
+   tiles:[
+    {k:2, n:"Comparativos y superlativos", ic:"scale", w:2, ty:"table", cols:"minmax(90px,.8fr) repeat(2,minmax(0,1fr))", rule:"Comparar dos cosas o destacar una entre muchas.",
+     head:["","COMPARATIVO","SUPERLATIVO"],
+     rows:[["corto","tall → [taller]","the [tallest]"],["termina en -y","happy → [happier]","the [happiest]"],["largo","expensive → [more expensive]","the [most expensive]"],["irregular","good → [better]","the [best]"]],
+     note:"Comparativo + than: She is [taller than] me."},
+    {k:4, n:"Some, any, much, many", ic:"hash", ty:"cards", min:170, rule:"Cuánto o cuántos: depende de si es afirmar, negar o preguntar.",
+     cards:[{cap:"SOME · AFIRMAR", en:"I have [some] milk."},{cap:"ANY · NEGAR Y PREGUNTAR", tone:"l", en:"I don't have [any] milk.|Do you have [any]?"},{cap:"MUCH · MANY", en:"How [much] water?|How [many] apples?"}]},
+    {k:7, n:"Contables e incontables", ic:"list", ty:"cards", min:170, rule:"Lo que se cuenta y lo que no.",
+     cards:[{cap:"CONTABLES · SE CUENTAN", en:"a book · two books|a chair · three chairs"},{cap:"INCONTABLES · SIN PLURAL", tone:"l", en:"water · rice · money|information · advice"}],
+     trap:["an information","some information","Los incontables no llevan a/an ni plural."]},
+    {k:17, n:"Too, enough y very", ic:"scale", w:2, ty:"cards", min:200, rule:"Mucho, demasiado y suficiente.",
+     cards:[{cap:"VERY · MUCHO", en:"It's [very] cold."},{cap:"TOO · DEMASIADO (PROBLEMA)", tone:"a", en:"It's [too] cold to swim."},{cap:"ENOUGH · SUFICIENTE", tone:"l", en:"It isn't warm [enough]."}]}
+   ]},
+  {title:"Describe y ubica", tag:"Cómo es, cómo se hace, de quién es y cuándo o dónde.",
+   hero:{kind:"chips", eyebrow:"EL MAPA", title:"Describir: qué, cómo y de quién", rows:[
+     [["She","sujeto"],["carries","verbo"],["a lovely red bag","adjetivos: opinión → color","l"]],
+     [["He","sujeto"],["drives","verbo"],["carefully","adverbio de modo","l"]],
+     [["The bag","sujeto"],["is","to be"],["hers","posesivo","l"]]]},
+   tiles:[
+    {k:10, n:"Orden de los adjetivos", ic:"list", ty:"blocks", rule:"Cuando se juntan varios: opinión, tamaño, color, material.",
+     rows:[{cap:"OPINIÓN → TAMAÑO → COLOR → MATERIAL", tone:"l", words:[["a",0],["lovely",1],["small",1],["red",1],["wooden",1],["box",0]]}],
+     note:"Nunca al revés: ✗ a wooden red small box."},
+    {k:16, n:"Adverbios de modo", ic:"zap", ty:"convert", plain:true, min:130, rule:"Cómo se hace algo: el adjetivo casi siempre añade -ly.",
+     rows:[{from:"quick",to:"quick[ly]"},{from:"happy",to:"happi[ly]"},{from:"good",to:"[well]",tag:"irregular"},{from:"fast",to:"[fast]",tag:"igual"}],
+     trap:["She speaks English good.","She speaks English well.","good es adjetivo; el adverbio es well."]},
+    {k:20, n:"Pronombres posesivos y reflexivos", ic:"user", ty:"table", cols:"minmax(50px,.5fr) repeat(2,minmax(0,1fr))", rule:"Posesivo: va solo. Reflexivo: la acción vuelve a quien la hace.",
+     head:["","POSESIVO","REFLEXIVO"],
+     rows:[["I","[mine]","[myself]"],["you","[yours]","[yourself]"],["he","[his]","[himself]"],["she","[hers]","[herself]"],["we","[ours]","[ourselves]"],["they","[theirs]","[themselves]"]],
+     note:"This book is [mine] · She hurt [herself]."},
+    {k:21, n:"In, on y at", ic:"mapPin", ty:"table", cols:"minmax(44px,.4fr) repeat(2,minmax(0,1fr))", rule:"Tiempo y lugar: de lo más grande a lo más puntual.",
+     head:["","TIEMPO","LUGAR"],
+     rows:[["[IN]","[in] July · [in] 2024","[in] the room · [in] Peru"],["[ON]","[on] Monday · [on] May 5","[on] the table · [on] the wall"],["[AT]","[at] 6 pm · [at] night","[at] school · [at] the door"]]}
+   ]}
+];
+
+/* --- B1 --- */
+RS.B1 = [
+  {title:"Pasado y presente", tag:"¿Cuándo pasó? Todo depende de eso.",
+   hero:{kind:"fork", eyebrow:"EL MAPA", title:"La pregunta que lo decide todo: ¿cuándo pasó?", paths:[
+     {cap:"CON FECHA CONCRETA", tone:"n", chips:["yesterday","in 2019","ago"], to:"Pasado simple", en:"I [saw] him yesterday."},
+     {cap:"SIN FECHA O HASTA HOY", tone:"l", chips:["ever","already","yet","for / since"], to:"Presente perfecto", en:"I [have seen] him."}]},
+   tiles:[
+    {k:0, n:"Presente perfecto", ic:"link", w:2, ty:"lanes", rule:"Une el pasado con hoy. No importa cuándo, importa la conexión.",
+     lanes:[{line:"exp", cap:"EXPERIENCIA · ALGUNA VEZ", en:"I [have been] to Japan.", es:"He estado en Japón. (no digo cuándo)"},{line:"unf", cap:"HASTA HOY · SIGUE VIGENTE", en:"I [have lived] here for five years.", es:"Vivo aquí desde hace cinco años."},{line:"res", cap:"RESULTADO · SE NOTA AHORA", en:"I [have lost] my keys.", es:"Perdí las llaves (y no las tengo)."}],
+     chips:[["have / has + participio","l"],["ever","a"],["never","a"],["already","a"],["yet","a"],["for","a"],["since","a"]]},
+    {k:7, n:"Perfecto vs pasado simple", ic:"scale", ty:"list", rule:"En español mezclamos los dos. En inglés, la fecha manda.",
+     rows:[{cap:"FECHA CONCRETA", sub:"Ayer vi a Ana.", en:"I [saw] Ana yesterday."},{cap:"SIN FECHA", sub:"Ya he visto a Ana.", en:"I've [already seen] Ana."},{cap:"PERIODO ABIERTO", sub:"Esta semana he trabajado mucho.", en:"I've [worked] a lot this week."}],
+     trap:["I have seen him yesterday.","I saw him yesterday.","Con «ayer», «en 2019» o «hace»… no va el perfecto."]},
+    {k:8, n:"Pasado perfecto", ic:"history", ty:"lanes", rule:"Lo que pasó antes de otro momento del pasado.",
+     lanes:[{line:"two", cap:"PRIMERO · LUEGO", en:"When I arrived, the film [had started].", es:"Cuando llegué, la película ya había empezado."}],
+     chips:[["had + participio","l"],["already","a"],["by the time","a"],["before","a"]]}
+   ]},
+  {title:"Futuro y condiciones", tag:"Lo que decides, lo que planeas y lo que podría pasar.",
+   hero:{kind:"fork", eyebrow:"EL MAPA", title:"¿Lo decidiste antes o lo decides ahora?", paths:[
+     {cap:"YA LO TENÍA DECIDIDO", tone:"n", chips:["plan","evidencia"], to:"be going to", en:"We're [going to] move in May."},
+     {cap:"LO DECIDO AHORA", tone:"l", chips:["oferta","promesa"], to:"will", en:"I'll help you with that."}]},
+   tiles:[
+    {k:3, n:"Will vs going to", ic:"scale", w:2, ty:"cards", min:240, rule:"Los dos hablan del futuro, pero no se usan igual.",
+     cards:[{cap:"WILL · EN EL MOMENTO", en:"The phone's ringing. I'[ll] get it.|I think it [will] rain. (opinión)|I [will] call you. (promesa)"},{cap:"BE GOING TO · PLAN O EVIDENCIA", tone:"l", en:"I'm [going to] study medicine. (plan)|Look! It's [going to] rain. (evidencia)"}]},
+    {k:1, n:"Condicional tipo 1", ic:"branch", ty:"flow", rule:"Cosas reales o posibles en el futuro.",
+     steps:[{cap:"SI PASA ESTO…",en:"If it [rains],",es:"presente simple",tone:"l"},{cap:"…PASA ESTO",en:"I [will stay] home.",es:"will + verbo base"}],
+     chips:[["unless = if not","n"],["when","n"]],
+     trap:["If it will rain, I stay home.","If it rains, I will stay home.","Nunca will justo después de if."]},
+    {k:15, n:"Condicional tipo 2: primeros pasos", ic:"branch", ty:"flow", rule:"Imaginar algo que hoy no es real.",
+     steps:[{cap:"REALIDAD",en:"I don't have a car."},{cap:"LO IMAGINO",en:"If I [had] a car, I [would] drive.",tone:"l"}],
+     note:"Pasado en el if, would en el resultado."}
+   ]},
+  {title:"Modales y acuerdos", tag:"Poder, deber, permitir y ponerte de acuerdo.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Un mismo modal, varios usos", cols:["HABILIDAD","PERMISO","DEBER / CONSEJO"], tones:["l","l","l"], grad:"#4C9AFF,#8E6CFF,#F5A623", rows:[["I [can] swim.","[May] I sit here?","You [should] rest."],["She [could] swim at five.","[Could] I borrow it?","You [must] go."]]},
+   tiles:[
+    {k:2, n:"Can, must y should", ic:"shield", ty:"table", cols:"minmax(60px,.6fr) minmax(0,1fr) minmax(0,1.4fr)", rule:"Tres modales, tres ideas. Nunca llevan -s.",
+     head:["","IDEA","EJEMPLO"],
+     rows:[["[can]","habilidad, permiso","I [can] drive."],["[must]","obligación fuerte","You [must] wear a belt."],["[should]","consejo","You [should] see a doctor."]]},
+    {k:16, n:"May, could y be allowed to", ic:"key", ty:"cards", min:200, rule:"Pedir permiso, hablar de posibilidad y de lo permitido.",
+     cards:[{cap:"PEDIR PERMISO · MUY FORMAL → NORMAL", en:"[May] I come in?|[Could] I borrow your pen?"},{cap:"POSIBILIDAD", tone:"l", en:"It [may] rain later.|It [could] rain later."},{cap:"LO PERMITIDO", en:"You [are allowed to] park here."}]},
+    {k:17, n:"So / Neither + auxiliar", ic:"swap", ty:"convert", plain:true, min:200, rule:"Estar de acuerdo. El auxiliar repite el de la primera frase.",
+     rows:[{from:"I like tea.",to:"[So] do I.",tag:"acuerdo con afirmación"},{from:"I don't like tea.",to:"[Neither] do I.",tag:"acuerdo con negación"},{from:"I'm tired.",to:"[So] am I."},{from:"I can't swim.",to:"[Neither] can I."}]},
+    {k:6, n:"Question tags", ic:"question", ty:"convert", plain:true, min:200, rule:"Confirmar algo: si la frase es afirmativa, el tag es negativo, y al revés.",
+     rows:[{from:"You like it,",to:"[don't you]?",tag:"afirmativa → negativa"},{from:"She isn't here,",to:"[is she]?",tag:"negativa → afirmativa"},{from:"They can swim,",to:"[can't they]?"},{from:"I am late,",to:"[aren't I]?",tag:"excepción"}]}
+   ]},
+  {title:"Voz y discurso", tag:"Decir lo mismo con otra forma.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Cambiar la forma sin cambiar el mensaje", cols:["ORIGINAL","OTRA FORMA"], tones:["","l"], grad:"#4C9AFF,#8E6CFF", rows:[["Shakespeare wrote Hamlet.","Hamlet [was written] by Shakespeare."],["“I'm tired,” she said.","She said she [was] tired."],["Where is the bank?","Do you know where the bank [is]?"]]},
+   tiles:[
+    {k:13, n:"Voz pasiva", ic:"refresh", ty:"blocks", rule:"El objeto pasa al frente. Quien lo hace queda al final (o desaparece).",
+     rows:[{cap:"ACTIVA", words:[["Shakespeare",1],["wrote",0],["Hamlet",0]]},{cap:"PASIVA", tone:"l", words:[["Hamlet",0],["was written",1],["by Shakespeare",0]]}],
+     chips:[["is written","n"],["was written","n"],["will be written","n"]]},
+    {k:14, n:"Estilo indirecto", ic:"chat", ty:"convert", plain:true, min:230, rule:"Al contar lo que alguien dijo, el verbo suele retroceder un tiempo.",
+     rows:[{from:"“I am tired,” she said.",to:"She said she [was] tired.",tag:"presente → pasado"},{from:"“I work here,” he said.",to:"He said he [worked] here.",tag:"presente → pasado"},{from:"“I will call,” she said.",to:"She said she [would] call.",tag:"will → would"}]},
+    {k:12, n:"Preguntas indirectas", ic:"question", ty:"convert", plain:true, min:230, rule:"Preguntar con cortesía: después de la palabra wh- el orden es de afirmación.",
+     rows:[{from:"Where is the bank?",to:"Do you know where the bank [is]?"},{from:"What time does it start?",to:"Can you tell me what time it [starts]?"}],
+     trap:["Do you know where is the bank?","Do you know where the bank is?","Sin inversión y sin do / does."]},
+    {k:4, n:"Who, which y that", ic:"link", ty:"cards", min:220, rule:"Unir información sobre una persona o cosa.",
+     cards:[{cap:"WHO · PERSONAS", en:"The man [who] called is my boss."},{cap:"WHICH · COSAS", en:"The car [which] I bought is red."},{cap:"THAT · PERSONAS O COSAS", tone:"l", en:"The book [that] I read is good."}]}
+   ]},
+  {title:"Conectar ideas", tag:"Unir frases, verbos y comparaciones.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Tres razones para unir ideas", cols:["CAUSA","RESULTADO","CONTRASTE"], tones:["l","l","l"], grad:"#4C9AFF,#34D399,#F5A623", rows:[["I stayed [because] it rained.","It rained, [so] I stayed.","[Although] it rained, I went out."],["[Because of] the rain, we stayed.","It rained; [therefore], we stayed.","It rained; [however], we went out."]]},
+   tiles:[
+    {k:9, n:"Conectores", ic:"link", w:2, ty:"table", cols:"minmax(80px,.7fr) minmax(0,1.1fr) minmax(0,1.3fr)", rule:"Cada conector pide una estructura distinta.",
+     head:["","CONECTOR","EJEMPLO"],
+     rows:[["causa","[because] + oración","I stayed because it rained."],["efecto","[so] + oración","It rained, so I stayed."],["contraste","[although] + oración","Although it rained, I went."],["contraste","[however], + oración","It rained. However, I went."],["a pesar de","[despite] + nombre o -ing","Despite the rain, I went."]]},
+    {k:10, n:"Phrasal verbs", ic:"zap", ty:"cards", min:200, rule:"Unos se pueden separar; otros, nunca.",
+     cards:[{cap:"SEPARABLES", en:"Turn [off] the light.|Turn the light [off].|Turn [it] off."},{cap:"INSEPARABLES", tone:"l", en:"Look [after] the kids.|Look [after] them."}],
+     trap:["Turn off it.","Turn it off.","Con pronombre, el pronombre va en medio."]},
+    {k:11, n:"Comparaciones", ic:"scale", ty:"cards", min:200, rule:"Igualdad, menos y proporción.",
+     cards:[{cap:"AS … AS · IGUAL", en:"She is [as tall as] her brother."},{cap:"LESS … THAN · MENOS", en:"It is [less expensive than] that one."},{cap:"THE MORE … THE MORE", tone:"l", en:"[The more] you practice, [the better] you get."}]},
+    {k:5, n:"Gerundios e infinitivos", ic:"list", w:2, ty:"cards", min:230, rule:"Tras cada verbo hay que saber qué forma sigue.",
+     cards:[{cap:"+ -ING", en:"I [enjoy] [reading].|She [avoids] [driving]."},{cap:"+ TO + VERBO", tone:"l", en:"I [want] [to travel].|He [decided] [to stay]."}],
+     note:"Tras una preposición siempre -ing: interested [in learning]."}
+   ]}
+];
+
+/* --- B2 --- */
+RS.B2 = [
+  {title:"Si… entonces", tag:"Qué tan real, improbable o imposible es lo que imaginas.",
+   hero:{kind:"scale", eyebrow:"EL MAPA", title:"Qué tan real es lo que dices", grad:"#34D399,#F5A623,#E0457A", items:[
+     {lbl:"Posible", tone:"g", en:"If it rains, I [will] stay."},
+     {lbl:"Improbable", tone:"a", en:"If I [had] time, I [would] go."},
+     {lbl:"Imposible (ya pasó)", tone:"r", en:"If I [had gone], I [would have] seen it."}]},
+   tiles:[
+    {k:1, n:"Condicional tipo 2", ic:"branch", ty:"flow", rule:"Imaginas algo que hoy no es real (o es poco probable).",
+     steps:[{cap:"REALIDAD",en:"I don't have time."},{cap:"IMAGINACIÓN",en:"If I [had] time, I [would] travel.",es:"Si tuviera tiempo, viajaría.",tone:"l"}],
+     note:"Pasado en el if, would en el resultado. Con be: If I [were] you… (were para todos)."},
+    {k:5, n:"Condicional tipo 3", ic:"history", ty:"cards", min:220, rule:"Un pasado que ya no puedes cambiar: lo que pasó y lo que no.",
+     cards:[{cap:"LO QUE PASÓ", en:"I didn't study. → I failed."},{cap:"LO QUE NO PASÓ (IMAGINADO)", tone:"l", en:"If I [had studied], I [would have passed].", es:"Si hubiera estudiado, habría aprobado."}],
+     chips:[["arrepentimiento","n"],["reproche","n"]]},
+    {k:8, n:"Alternativas a if", ic:"key", w:2, ty:"cards", min:200, rule:"Otras formas de poner una condición.",
+     cards:[{cap:"UNLESS · SALVO QUE (= if … not)", en:"I'll go [unless] it rains."},{cap:"AS LONG AS · PROVIDED THAT · SOLO SI", tone:"l", en:"You can go [as long as] you're back by ten."},{cap:"IN CASE · POR SI ACASO", en:"Take an umbrella [in case] it rains."}]}
+   ]},
+  {title:"Deducir, reprochar y enfatizar", tag:"Suponer, criticar el pasado y subir el volumen.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Suponer: del presente al pasado", cols:["PRESENTE","PASADO"], tones:["l","l"], grad:"#8E6CFF,#F5A623", rows:[["She [must be] tired.","She [must have been] tired."],["It [can't be] true.","It [can't have been] true."],["He [might be] late.","He [might have been] late."]]},
+   tiles:[
+    {k:3, n:"Modales de deducción", ic:"question", w:2, ty:"gauge", min:200, rule:"Qué tan seguro estás de lo que supones.",
+     bars:[{lbl:"must be",pct:95,right:"≈ 95 % seguro",en:"She [must be] tired.",es:"Debe de estar cansada.",tone:"l"},{lbl:"may / might / could",pct:50,right:"≈ 50 % seguro",en:"She [might be] at home.",es:"Puede que esté en casa.",tone:"a"},{lbl:"can't be",pct:5,right:"≈ 5 % seguro",en:"It [can't be] true.",es:"No puede ser verdad.",tone:"r"}],
+     note:"Sobre el pasado: [must have] + participio · [can't have] + participio."},
+    {k:7, n:"Modales de pasado", ic:"history", ty:"list", rule:"Reproches, oportunidades perdidas y cosas innecesarias.",
+     rows:[{cap:"SHOULD HAVE", sub:"reproche o lamento", en:"I [should have] called.", es:"Debí llamar (no lo hice)."},{cap:"COULD HAVE", sub:"posibilidad perdida", en:"We [could have] won.", es:"Podríamos haber ganado."},{cap:"NEEDN'T HAVE", sub:"fue innecesario", en:"You [needn't have] come.", es:"No hacía falta que vinieras."}]},
+    {k:6, n:"Énfasis con do / does / did", ic:"zap", ty:"blocks", rule:"Para insistir o corregir, se añade el auxiliar y se pronuncia con fuerza.",
+     rows:[{cap:"NORMAL", words:[["I",0],["like",0],["it",0]]},{cap:"ÉNFASIS", tone:"l", words:[["I",0],["do",1],["like",1],["it",0]], tail:"(¡y de verdad!)"}],
+     chips:[["do / does / did + verbo base","l"]]}
+   ]},
+  {title:"Tiempo: hábitos, narración y futuro", tag:"Antes, ahora y después, con el tiempo verbal exacto.",
+   hero:{kind:"timeline", eyebrow:"EL MAPA", title:"Tres momentos, tres estructuras", points:[
+     {at:16, label:"ANTES", items:[["used to","I [used to] smoke.","n"]]},
+     {at:50, label:"AHORA", tone:"l", items:[["be used to","I'm [used to] this city.","l"]]},
+     {at:84, label:"DESPUÉS", tone:"a", items:[["future perfect","By June I [will have finished].","a"]]}]},
+   tiles:[
+    {k:4, n:"Used to / would", ic:"history", ty:"cards", min:200, rule:"Hábitos del pasado que ya no existen.",
+     cards:[{cap:"USED TO · ESTADOS Y HÁBITOS", en:"I [used to] live in Lima.|We [used to] swim every day."},{cap:"WOULD · SOLO HÁBITOS", tone:"l", en:"Every summer we [would] swim."}],
+     trap:["I would live in Lima.","I used to live in Lima.","would no sirve para estados: solo para hábitos repetidos."]},
+    {k:16, n:"Cláusulas de tiempo futuro", ic:"clock", ty:"flow", rule:"Tras when, as soon as y until el futuro se dice en presente.",
+     steps:[{cap:"WHEN / AS SOON AS / UNTIL",en:"When she [arrives],",es:"presente simple",tone:"l"},{cap:"FUTURO",en:"I [will] call you."}],
+     trap:["When she will arrive, I call.","When she arrives, I will call.","Nunca will tras when."]},
+    {k:17, n:"Used to · be used to · get used to", ic:"history", w:2, ty:"cards", min:200, rule:"Se parecen, pero significan tres cosas distintas.",
+     cards:[{cap:"USED TO + VERBO", tone:"l", big:"I [used to] smoke.", es:"Solía fumar (ya no)."},{cap:"BE USED TO + -ING", big:"I'm [used to] waking up early.", es:"Estoy acostumbrado a madrugar."},{cap:"GET USED TO + -ING", big:"I'm [getting used to] it.", es:"Me estoy acostumbrando."}],
+     trap:["I'm used to wake up early.","I'm used to waking up early.","Tras be / get used to va -ing, porque «to» es una preposición."]},
+    {k:9, n:"Pasado perfecto continuo y narración", ic:"rewind", ty:"lanes", rule:"Cuánto duraba algo antes de otro momento del pasado.",
+     lanes:[{line:"unf", cap:"HAD BEEN + -ING · DURACIÓN PREVIA", en:"She [had been waiting] for an hour when he arrived.", es:"Llevaba una hora esperando cuando él llegó."}],
+     chips:[["simple = lo que pasó","n"],["continuo = la escena","n"],["perfecto = lo anterior","l"]]},
+    {k:13, n:"Futuro perfecto y continuo", ic:"arrow", ty:"cards", min:200, rule:"Qué estará pasando y qué habrá terminado.",
+     cards:[{cap:"FUTURE CONTINUOUS · EN PROGRESO", en:"This time tomorrow I [will be flying].", es:"Mañana a esta hora estaré volando."},{cap:"FUTURE PERFECT · TERMINADO PARA ENTONCES", tone:"l", en:"By June I [will have finished].", es:"Para junio habré terminado."}]}
+   ]},
+  {title:"Voz y discurso", tag:"Quién hace qué y qué dijo cada uno.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Contar lo que otros dijeron", cols:["LO QUE DIJO","LO QUE CUENTAS"], tones:["","l"], grad:"#8E6CFF,#4C9AFF", rows:[["“I will call you,” he said.","He said he [would] call me."],["“Are you ready?” she asked.","She asked [if] I [was] ready."]]},
+   tiles:[
+    {k:0, n:"Voz pasiva", ic:"refresh", w:2, ty:"table", cols:"minmax(70px,.6fr) repeat(2,minmax(0,1fr))", rule:"Be en el tiempo que corresponda + participio.",
+     head:["","ACTIVA","PASIVA"],
+     rows:[["presente","They [make] it.","It [is made]."],["pasado","They [made] it.","It [was made]."],["futuro","They [will make] it.","It [will be made]."],["perfecto","They [have made] it.","It [has been made]."],["modal","They [can make] it.","It [can be made]."]]},
+    {k:2, n:"Estilo indirecto", ic:"chat", ty:"convert", plain:true, min:230, rule:"El verbo retrocede un tiempo; los pronombres y lugares cambian.",
+     rows:[{from:"“I am busy.”",to:"He said he [was] busy.",tag:"am → was"},{from:"“I have finished.”",to:"She said she [had] finished.",tag:"have → had"},{from:"“I will help.”",to:"He said he [would] help.",tag:"will → would"},{from:"“Are you ready?”",to:"She asked [if] I [was] ready.",tag:"pregunta: if + orden normal"}]},
+    {k:15, n:"Whose, where, when y whom", ic:"link", ty:"cards", min:150, rule:"Relativos que añaden posesión, lugar, tiempo o persona.",
+     cards:[{cap:"WHOSE · POSESIÓN", en:"The man [whose] car was stolen…"},{cap:"WHERE · LUGAR", en:"The town [where] I grew up…"},{cap:"WHEN · TIEMPO", en:"The day [when] we met…"},{cap:"WHOM · OBJETO (FORMAL)", en:"The woman [whom] I met…"}]}
+   ]},
+  {title:"Patrones y contrastes", tag:"Palabras que se repiten en estructuras fijas.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Patrones que se repiten", cols:["CONTRASTE","PROPÓSITO","CANTIDAD"], tones:["l","l","l"], grad:"#8E6CFF,#34D399,#F5A623", rows:[["[Although] it rained, we went.","I saved [in order to] travel.","[Both] friends came."],["[Whereas] he is shy, she isn't.","I left early [so that] I could rest.","[Neither] friend came."]]},
+   tiles:[
+    {k:12, n:"Contraste y propósito", ic:"scale", ty:"cards", min:200, rule:"Oponer ideas y explicar para qué.",
+     cards:[{cap:"CONTRASTE", en:"[In spite of] the rain, we went.|She is tall, [whereas] he is short."},{cap:"PROPÓSITO", tone:"l", en:"I study [in order to] pass.|I left early [so that] I could rest."}]},
+    {k:10, n:"Both, either, neither, all, whole", ic:"hash", ty:"table", cols:"minmax(64px,.7fr) minmax(0,1fr) minmax(0,1.3fr)", rule:"Cuántos o cuánto: de dos, de todos, de algo entero.",
+     head:["","SIGNIFICA","EJEMPLO"],
+     rows:[["[both]","los dos","[Both] are right."],["[either]","uno u otro","[Either] is fine."],["[neither]","ninguno","[Neither] is here."],["[all]","todos, todo","[All] the students came."],["[whole]","entero","the [whole] cake"]]},
+    {k:11, n:"Verbos + -ing o to: cambio de significado", ic:"swap", w:2, ty:"table", cols:"minmax(70px,.6fr) repeat(2,minmax(0,1fr))", rule:"El mismo verbo cambia de significado según lo que sigue.",
+     head:["","+ -ING","+ TO + VERBO"],
+     rows:[["[remember]","[remember locking] = recuerdo haberlo hecho","[remember to lock] = no olvidar hacerlo"],["[stop]","[stop smoking] = dejar de fumar","[stop to smoke] = parar para fumar"],["[try]","[try adding] = probar a añadir","[try to add] = intentar añadir"]]},
+    {k:14, n:"Preposiciones dependientes", ic:"link", w:2, ty:"cards", min:200, rule:"Muchos adjetivos y verbos piden una preposición fija.",
+     cards:[{cap:"ADJETIVO + PREP.", en:"good [at] · afraid [of]|interested [in] · proud [of]"},{cap:"VERBO + PREP.", en:"depend [on] · listen [to]|wait [for] · apologize [for]"}],
+     note:"Tras la preposición, -ing: interested [in learning]."},
+    {k:18, n:"Preposición al final en preguntas", ic:"shuffle", w:2, ty:"cards", min:240, rule:"En español la preposición va delante; en inglés se queda con el verbo, al final.",
+     cards:[{cap:"EN ESPAÑOL · PREPOSICIÓN DELANTE", en:"¿[Con] quién hablas?|¿[De] dónde eres?"},{cap:"EN INGLÉS · PREPOSICIÓN AL FINAL", tone:"l", en:"Who are you talking [to]?|Where are you [from]?"}],
+     chips:[["Who do you work for?","n"],["What are you looking at?","n"],["To whom…? = muy formal","a"]],
+     trap:["With who are you talking?","Who are you talking to?","En conversación la preposición se queda al final; delante suena rebuscado."]}
+   ]}
+];
+
+/* --- C1 --- */
+RS.C1 = [
+  {title:"Énfasis", tag:"Poner el foco donde tú quieres.",
+   hero:{kind:"ladder", eyebrow:"EL MAPA", title:"La escalera del énfasis", steps:[
+     {cap:"NEUTRO", en:"I have never seen such a view."},
+     {cap:"ENFÁTICO · CLEFT", en:"[What] I have never seen [is] such a view.", tone:"l"},
+     {cap:"MUY ENFÁTICO · INVERSIÓN", en:"[Never have I] seen such a view.", tone:"l"}]},
+   tiles:[
+    {k:2, n:"Inversión enfática", ic:"zap", ty:"blocks", rule:"Un adverbio negativo abre la frase y el auxiliar salta delante del sujeto.",
+     rows:[{cap:"NORMAL", words:[["I",0],["have",0],["never",0],["seen",0]], tail:"it."},{cap:"CON INVERSIÓN", tone:"l", words:[["Never",1],["have",1],["I",1],["seen",0]], tail:"it."}],
+     chips:[["never","l"],["rarely","l"],["seldom","l"],["hardly","l"],["not only","l"],["no sooner","l"]],
+     note:"Muy formal: discursos y textos escritos."},
+    {k:4, n:"Cleft sentences", ic:"target", ty:"list", rule:"Elige qué parte de la frase quieres poner bajo el foco.",
+     rows:[{cap:"FRASE BASE", en:"Tom broke the window."},{cap:"QUIÉN", en:"It was [Tom] who broke the window."},{cap:"QUÉ", en:"It was [the window] that Tom broke."},{cap:"LA ACCIÓN", en:"What Tom did was [break] the window."}]},
+    {k:14, n:"Modificadores de grado", ic:"scale", w:2, ty:"gauge", min:150, rule:"Cuánto de un adjetivo: de leve a extremo.",
+     bars:[{lbl:"fairly",pct:30,en:"It's [fairly] good.",tone:"g",right:"leve"},{lbl:"quite",pct:50,en:"It's [quite] good.",tone:"g",right:"medio"},{lbl:"very",pct:70,en:"It's [very] good.",tone:"a",right:"alto"},{lbl:"extremely",pct:90,en:"It's [extremely] good.",tone:"a",right:"muy alto"},{lbl:"absolutely",pct:100,en:"It's [absolutely] fantastic.",tone:"r",right:"extremo"}],
+     trap:["It's absolutely good.","It's very good / absolutely fantastic.","absolutely, utterly y completely van con adjetivos extremos."]}
+   ]},
+  {title:"Tiempos y deseos", tag:"Lo que ha sido, lo que habría sido y lo que deseas.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Lo que es y lo que fue", cols:["PRESENTE","PASADO"], tones:["l","l"], grad:"#FF6B9A,#FFB020", rows:[["I [wish] I knew.","I [wish] I had known."],["She [must be] home.","She [must have been] home."]]},
+   tiles:[
+    {k:0, n:"Perfecto continuo vs simple", ic:"link", ty:"cards", min:200, rule:"¿Importa el resultado o la actividad?",
+     cards:[{cap:"PERFECTO SIMPLE · RESULTADO", en:"I [have written] three emails."},{cap:"PERFECTO CONTINUO · ACTIVIDAD", tone:"l", en:"I [have been writing] all morning."}]},
+    {k:12, n:"Infinitivo y gerundio perfectos", ic:"history", ty:"convert", plain:true, min:230, rule:"Para hablar de algo anterior al verbo principal.",
+     rows:[{from:"He denied that he took it.",to:"He denied [having taken] it.",tag:"gerundio perfecto"},{from:"It seems that she left.",to:"She seems [to have left].",tag:"infinitivo perfecto"}]},
+    {k:1, n:"Wish / if only", ic:"sparkle", w:2, ty:"list", rule:"Lo que lamentas o quieres distinto. El verbo retrocede un tiempo.",
+     rows:[{cap:"AHORA", sub:"wish + pasado simple", en:"I wish I [were] taller.", es:"Ojalá fuera más alto."},{cap:"PASADO", sub:"wish + had + participio", en:"I wish I [had studied].", es:"Ojalá hubiera estudiado."},{cap:"QUEJA / CAMBIO AJENO", sub:"wish + would + verbo", en:"I wish you [would listen].", es:"Ojalá me escucharas."}],
+     note:"[If only] = lo mismo, con más emoción: If only I were taller!"},
+    {k:6, n:"Deducción en el pasado", ic:"question", w:2, ty:"gauge", min:200, rule:"Qué tan seguro estás de lo que pasó.",
+     bars:[{lbl:"must have",pct:95,right:"≈ 95 % seguro",en:"She [must have left].",tone:"l"},{lbl:"might / may have",pct:50,right:"≈ 50 % seguro",en:"He [might have forgotten].",tone:"a"},{lbl:"can't / couldn't have",pct:5,right:"≈ 5 % seguro",en:"They [can't have known].",tone:"r"}]}
+   ]},
+  {title:"Relativas, participios y elipsis", tag:"Decir lo mismo con menos palabras.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Decir lo mismo con menos palabras", cols:["LARGA","CORTA"], tones:["","l"], grad:"#FF6B9A,#8E6CFF", rows:[["The man who is standing there is my boss.","The man [standing] there is my boss."],["Because she was tired, she left.","[Being tired], she left."]]},
+   tiles:[
+    {k:8, n:"Cláusulas de participio", ic:"scissors", ty:"convert", plain:true, min:230, rule:"Un participio reemplaza una oración completa.",
+     rows:[{from:"The girl who is sitting there…",to:"The girl [sitting] there…",tag:"-ing: acción en curso"},{from:"The food that was cooked by him…",to:"The food [cooked] by him…",tag:"-ed: sentido pasivo"},{from:"After he had eaten, he left.",to:"[Having eaten], he left.",tag:"having + part.: antes"}]},
+    {k:10, n:"Elipsis y sustitución", ic:"edit", ty:"list", rule:"Evitar repetir lo que ya se sabe.",
+     rows:[{cap:"SO / NOT", en:"Will it rain? I think [so] · I hope [not]."},{cap:"ONE / ONES", en:"I like the red [one]."},{cap:"DO SO", en:"She was asked to leave and [did so]."},{cap:"OMITIR", en:"She can swim, and I [can] too."}]},
+    {k:3, n:"Relativas no definitorias", ic:"comma", w:2, ty:"cards", min:260, rule:"Las comas cambian el significado, no solo la puntuación.",
+     cards:[{cap:"SIN COMAS · IDENTIFICA", en:"My brother [who] lives in Lima is a chef.", es:"Tengo varios hermanos; el de Lima es chef."},{cap:"CON COMAS · DATO EXTRA", tone:"l", en:"My brother[,] [who] lives in Lima[,] is a chef.", es:"Tengo un solo hermano, y vive en Lima."}],
+     chips:[["con comas: who / which","l"],["nunca that","r"]]}
+   ]},
+  {title:"Decir con distancia", tag:"Contar lo que otros dijeron y suavizar tus opiniones.",
+   hero:{kind:"scale", eyebrow:"EL MAPA", title:"Suavizar lo que dices", grad:"#E0457A,#F5A623,#34D399", items:[
+     {lbl:"Directo", tone:"r", en:"This is wrong."},
+     {lbl:"Matizado", tone:"a", en:"This [seems] wrong."},
+     {lbl:"Muy cauteloso", tone:"g", en:"This [could be] seen as [somewhat] wrong."}]},
+   tiles:[
+    {k:5, n:"Discurso reportado avanzado", ic:"chat", ty:"cards", min:200, rule:"Verbos que resumen lo dicho y qué estructura piden.",
+     cards:[{cap:"+ -ING", en:"She [admitted] making a mistake.|He [denied] taking it."},{cap:"+ TO + VERBO", tone:"l", en:"He [promised] to help.|She [refused] to pay."},{cap:"+ THAT", en:"He [explained] that he was late."}]},
+    {k:7, n:"Pasiva con verbos de opinión", ic:"refresh", ty:"blocks", rule:"Para decir «se dice que…» sin nombrar a nadie.",
+     rows:[{cap:"ACTIVA", words:[["People",0],["say",0],["he",0],["is",0],["rich",0]]},{cap:"IMPERSONAL", tone:"l", words:[["It",1],["is said",1],["that",0],["he",0],["is",0],["rich",0]]},{cap:"PERSONAL", tone:"l", words:[["He",1],["is said",1],["to be",1],["rich",0]]}]},
+    {k:11, n:"Lenguaje cauteloso (hedging)", ic:"shield", w:2, ty:"table", cols:"minmax(70px,.6fr) repeat(2,minmax(0,1fr))", rule:"Suavizar afirmaciones para sonar académico y prudente.",
+     head:["","EN LUGAR DE","MEJOR"],
+     rows:[["verbo","This [is] wrong.","This [seems to be] wrong."],["modal","He [is] late.","He [may be] late."],["adverbio","It's a problem.","It's [somewhat of] a problem."],["frase","I think it's bad.","[It could be argued that] it's bad."]]}
+   ]},
+  {title:"Cohesión y detalle", tag:"Hilar frases y afinar artículos.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Un detalle pequeño, un significado distinto", cols:["A / AN","THE","SIN ARTÍCULO"], tones:["l","l","l"], grad:"#FF6B9A,#FFB020,#8E6CFF", rows:[["I need [a] pen.","[The] pen on the table.","[∅] Life is short."],["She is [an] engineer.","[The] sun is hot.","I love [∅] music."]]},
+   tiles:[
+    {k:9, n:"Conectores formales", ic:"link", w:2, ty:"table", cols:"minmax(80px,.6fr) minmax(0,1fr) minmax(0,1.4fr)", rule:"Conectores que suben el registro del texto.",
+     head:["","CONECTOR","EJEMPLO"],
+     rows:[["añadir","[moreover] · [furthermore]","It is cheap. Moreover, it is fast."],["contrastar","[nevertheless] · [nonetheless]","It rained. Nevertheless, we went."],["consecuencia","[consequently] · [therefore]","We were late. Consequently, we left."]]},
+    {k:13, n:"Artículos: uso y omisión", ic:"hash", w:2, ty:"cards", min:200, rule:"Cuándo usar a / an, the o nada.",
+     cards:[{cap:"A / AN · PRIMERA MENCIÓN", en:"I saw [a] dog."},{cap:"THE · CONOCIDO O ÚNICO", tone:"l", en:"[The] dog was big. [The] sun is hot."},{cap:"SIN ARTÍCULO · GENERAL", en:"[∅] Dogs are loyal. I love [∅] music."}]}
+   ]}
+];
+
+/* --- C2 --- */
+RS.C2 = [
+  {title:"Pasiva y causa", tag:"Cuando lo importante no es quién hace la acción.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Quién hace la acción: cuándo deja de importar", cols:["ACTIVA","PASIVA / CAUSATIVA"], tones:["","l"], grad:"#FFB020,#8E6CFF", rows:[["A mechanic repaired my car.","I [had my car repaired]."],["Someone might steal it.","It [might get stolen]."]]},
+   tiles:[
+    {k:0, n:"Causativo: have / get something done", ic:"wrench", ty:"cards", min:200, rule:"Cuando otra persona hace la acción por ti.",
+     cards:[{cap:"LO HAGO YO", en:"I [repaired] my car.", es:"Yo mismo lo reparé."},{cap:"LO HACE OTRO", tone:"l", en:"I [had] my car [repaired].", es:"Hice reparar mi coche."}],
+     chips:[["have / get","l"],["+ objeto","n"],["+ participio","n"]],
+     note:"have = neutro · get = informal."},
+    {k:7, n:"Pasivas avanzadas", ic:"refresh", ty:"convert", plain:true, min:230, rule:"Más allá de is / was + participio.",
+     rows:[{from:"They fired him.",to:"He [got fired].",tag:"get + participio"},{from:"You must finish it.",to:"It [must be finished].",tag:"modal + be + part."},{from:"They have built it.",to:"It [has been built].",tag:"have been + part."},{from:"They are building it.",to:"It [is being built].",tag:"being + part."}]}
+   ]},
+  {title:"Condiciones y deseos formales", tag:"Hipótesis, preferencias y mandatos con estilo.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"El mismo mensaje, tres registros", cols:["INFORMAL","NEUTRO","FORMAL"], tones:["a","","l"], grad:"#2CC0D8,#F5F0FF,#FFB020", rows:[["If I'd known, I'd have called.","If I had known, I would have called.","[Had I known], I would have called."],["I'd rather you stayed.","I would rather you stayed.","It is [essential that] you stay."]]},
+   tiles:[
+    {k:1, n:"Condicionales mixtos", ic:"shuffle", w:2, ty:"matrix", rule:"Cruzan las épocas: la causa y el efecto no viven en el mismo tiempo.",
+     cols:["EFECTO EN EL PASADO","EFECTO EN EL PRESENTE"],
+     rows:[{h:"CAUSA EN EL PASADO",cells:[{cap:"TIPO 3",en:"If I [had studied], I [would have passed]."},{cap:"MIXTO ↗",mix:true,en:"If I [had studied], I [would be] a doctor now."}]},{h:"CAUSA EN EL PRESENTE",cells:[{cap:"MIXTO ↖",mix:true,en:"If I [were] braver, I [would have said] yes."},{cap:"TIPO 2",en:"If I [had] time, I [would help]."}]}],
+     note:"Los dos mixtos combinan el if de un tipo con el resultado del otro."},
+    {k:5, n:"Inversión condicional formal", ic:"swap", ty:"convert", min:230, rule:"Quita el «if» y el auxiliar pasa al frente. Suena formal.",
+     rows:[{from:"If I had known",to:"[Had] I known"},{from:"If you should need help",to:"[Should] you need help"},{from:"If I were in your place",to:"[Were] I in your place"}],
+     note:"Negativo: [Had I not] known… · Sin would antes: ✗ Had I would known."},
+    {k:6, n:"Would rather, had better, it's time", ic:"scale", ty:"duo", min:280, rule:"Preferir algo, avisar de lo que conviene y marcar que ya es hora.",
+     parts:[
+      {ty:"ladder", steps:[{lbl:"should",sub:"suave",h:40,f:1},{lbl:"had better",sub:"fuerte, con advertencia",h:60,f:1.7,on:true},{lbl:"must",sub:"obligación",h:80,f:1.1}], note:"You [had better] leave now."},
+      {ty:"cards", min:200, cards:[{cap:"PREFERENCIA", en:"I'd [rather] stay home.|I'd [rather] you [stayed]."},{cap:"YA ES HORA", tone:"l", en:"It's [time] you [left]."}], note:"Con otro sujeto, el verbo va en pasado. Sin «to»: ✗ had better to leave."}
+     ]},
+    {k:3, n:"Subjuntivo formal", ic:"shield", w:2, ty:"convert", plain:true, min:230, rule:"Tras verbos de exigir, recomendar o insistir, el verbo va en base, sin -s.",
+     rows:[{from:"He insists that she goes.",to:"He insists that she [go].",tag:"sin -s en he / she"},{from:"It's vital that he is on time.",to:"It's vital that he [be] on time.",tag:"be, no is"},{from:"We recommend that he doesn't go.",to:"We recommend that he [not go].",tag:"negativo: not + base"}]}
+   ]},
+  {title:"Registro y estilo", tag:"Elegir el tono y darle forma a la frase.",
+   hero:{kind:"scale", eyebrow:"EL MAPA", title:"Un mismo mensaje, tres tonos", grad:"#2CC0D8,#F5F0FF,#FFB020", items:[
+     {lbl:"Informal", tone:"a", en:"Sorry I'm late, got stuck."},
+     {lbl:"Neutro", tone:"n", en:"Sorry I'm late, I was delayed."},
+     {lbl:"Formal", tone:"l", en:"I apologise for my late arrival."}]},
+   tiles:[
+    {k:10, n:"Registro formal e informal", ic:"layers", w:2, ty:"table", cols:"minmax(80px,.6fr) repeat(2,minmax(0,1fr))", rule:"Las mismas ideas cambian de palabras y de estructura según el tono.",
+     head:["","INFORMAL","FORMAL"],
+     rows:[["verbos","get · find out · ask for","obtain · discover · request"],["petición","Can you help?","Would you be able to assist?"],["contracción","I don't know.","I do not know."],["frase","We need more info.","Further information is required."]]},
+    {k:4, n:"Nominalización", ic:"edit", ty:"convert", plain:true, min:230, rule:"Convertir verbos en sustantivos para sonar más formal.",
+     rows:[{from:"They decided quickly.",to:"Their [quick decision] surprised us.",tag:"verbo → sustantivo"},{from:"The economy grew.",to:"[Economic growth] slowed.",tag:"verbo → sustantivo"}]},
+    {k:8, n:"Fronting y orden marcado", ic:"zap", ty:"convert", plain:true, min:230, rule:"Mover una parte al inicio para darle más peso.",
+     rows:[{from:"A note was in the box.",to:"In the box [was a note].",tag:"lugar al frente"},{from:"I can't stand this noise.",to:"This noise [I can't stand].",tag:"objeto al frente"}]}
+   ]},
+  {title:"Hilar el discurso", tag:"Conectar, concluir y conceder con precisión.",
+   hero:{kind:"grid", eyebrow:"EL MAPA", title:"Aunque pase lo que pase", cols:["HOWEVER","WHATEVER","NO MATTER"], tones:["l","l","l"], grad:"#FFB020,#FF6B9A,#8E6CFF", rows:[["[However] hard I try, I fail.","[Whatever] you say, I'll go.","[No matter] who calls, don't answer."]]},
+   tiles:[
+    {k:11, n:"Cohesión y marcadores del discurso", ic:"link", w:2, ty:"table", cols:"minmax(80px,.6fr) minmax(0,1fr) minmax(0,1.3fr)", rule:"Marcadores que guían al lector a lo largo del texto.",
+     head:["","MARCADOR","EJEMPLO"],
+     rows:[["abrir","[To begin with] · [First of all]","To begin with, we need a plan."],["añadir","[Furthermore] · [What is more]","Furthermore, it is cheap."],["contrastar","[On the other hand] · [Conversely]","On the other hand, it is risky."],["concluir","[All in all] · [In conclusion]","All in all, it worked."]]},
+    {k:14, n:"However, whatever, no matter", ic:"target", ty:"convert", plain:true, min:230, rule:"Concesión enfática: «da igual cuánto, qué o quién».",
+     rows:[{from:"It doesn't matter how hard I try.",to:"[However] hard I try, …"},{from:"It doesn't matter what you say.",to:"[Whatever] you say, …"},{from:"It doesn't matter who calls.",to:"[No matter] who calls, …"}]},
+    {k:9, n:"Modales con matices", ic:"key", ty:"cards", min:170, rule:"Cuatro modales menos frecuentes, con usos precisos.",
+     cards:[{cap:"SHALL · OFRECER / SUGERIR", en:"[Shall] I open it?"},{cap:"OUGHT TO · DEBER SUAVE", en:"You [ought to] rest."},{cap:"DARE · ATREVERSE", en:"How [dare] you!"},{cap:"NEED · NECESIDAD", tone:"l", en:"[Need] I go? · You [needn't] worry."}]}
+   ]},
+  {title:"Vocabulario avanzado", tag:"Combinar palabras y armar otras nuevas.",
+   hero:{kind:"chips", eyebrow:"EL MAPA", title:"Las palabras se arman por piezas", rows:[
+     [["un-","prefijo","l"],["happy","base"],["-ness","sufijo","l"]],
+     [["re-","prefijo","l"],["consider","base"],["-ation","sufijo","l"]]]},
+   tiles:[
+    {k:2, n:"Colocaciones y phrasal verbs avanzados", ic:"link", ty:"cards", min:200, rule:"Las palabras que «se llevan bien» y los verbos con partícula.",
+     cards:[{cap:"COLOCACIONES", en:"[make] a decision|[do] homework|[take] a break"},{cap:"PHRASAL VERBS", tone:"l", en:"[carry out] a plan|[come up with] an idea"}]},
+    {k:12, n:"Expresiones idiomáticas", ic:"sparkle", ty:"convert", plain:true, min:230, rule:"El sentido no está en cada palabra, sino en el conjunto.",
+     rows:[{from:"It's raining a lot.",to:"It's [raining cats and dogs].",tag:"llover a cántaros"},{from:"That was easy.",to:"It was [a piece of cake].",tag:"pan comido"},{from:"Let's start talking.",to:"Let's [break the ice].",tag:"romper el hielo"}]},
+    {k:13, n:"Formación de palabras", ic:"scissors", w:2, ty:"table", cols:"minmax(80px,.6fr) minmax(0,1fr) minmax(0,1.3fr)", rule:"Prefijos y sufijos que cambian el sentido o la clase de palabra.",
+     head:["","PIEZA","EJEMPLO"],
+     rows:[["negar","[un-] · [in-] · [dis-]","unhappy · impossible · disagree"],["repetir","[re-]","rebuild"],["persona","[-er] · [-or]","teacher · actor"],["cualidad","[-ness] · [-ity]","kindness · reality"],["verbo","[-ize] · [-en]","realize · widen"],["adjetivo","[-ful] · [-less]","careful · homeless"]]}
+   ]}
+];
+
+/* RES-SUM-DATA:END */
+/* RES-SUM:END */
 /* ---- resultado ---- */
 function renderTopicComplete(s){
   const pct = s.answered ? Math.round(s.correct / s.answered * 100) : 0;
@@ -31980,6 +32871,7 @@ Object.keys(P6_EN).forEach(lv=> P6_EN[lv].forEach(x=> ROUTE_ORDER[lv].push([lv, 
   if(i >= 0){ const e = ROUTE_ORDER.C2.splice(i, 1)[0]; ROUTE_ORDER.B2.splice(ROUTE_ORDER.B2.length - (P1_EN.B2 || []).length - (P4_EN.B2 || []).length - (P5_EN.B2 || []).length - (P6_EN.B2 || []).length, 0, e); }
 })();
 Object.keys(P7_EN).forEach(lv=> P7_EN[lv].forEach(x=> ROUTE_ORDER[lv].push([lv, x.idx])));   // Fase 7: used to/be used to/get used to al final de la Ruta de B2 (después de la reubicación del causativo, para no alterar su aritmética de splice)
+Object.keys(P8_EN).forEach(lv=> P8_EN[lv].forEach(x=> ROUTE_ORDER[lv].push([lv, x.idx])));   // Fase 8: preposición al final al final de la Ruta de B2
 /* Orden de la Ruta: en inglés lo define ROUTE_ORDER; en portugués, cada nivel recorre sus propios temas en el orden de Teoría. */
 const _ptRouteOrder = {};
 function routeOrder(level){
