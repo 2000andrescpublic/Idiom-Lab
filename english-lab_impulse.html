@@ -26850,7 +26850,7 @@ function connSplit(it){
 function connRow(it, i, color){
   const sp = connSplit(it), fav = isWordSaved(connFavId(i));
   return `<div class="cn-row" style="--cc:${color}">
-    <div class="cn-c">${escHtml(it.c)}</div>
+    <div class="cn-c">${escHtml(it.c)} <button type="button" class="mm-speak" data-say="${escHtml(it.c)}" aria-label="Escuchar la pronunciación de ${escHtml(it.c)}" title="Escuchar">🔊</button></div>
     <div class="cn-m">${escHtml(it.es)}</div>
     <div class="cn-x"><div class="cn-en">${wz(sp.before)}${sp.hit ? `<b class="cn-hl">${wz(sp.hit)}</b>` : ""}${wz(sp.after)} <button type="button" class="mm-speak" data-say="${escHtml(it.ex)}" aria-label="Escuchar" title="Escuchar">🔊</button></div><div class="cn-es">${escHtml(it.exEs)}</div><div class="cn-note">${escHtml(it.note)}</div></div>
     <div class="cn-b"><span class="pv-lvl" style="background:${PV_LV[it.lv] || "#8E6CFF"}">${it.lv}</span><span class="cn-fm">${it.reg}</span></div>
