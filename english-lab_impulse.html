@@ -2048,6 +2048,43 @@ header{transition:transform .25s ease;}
 .gf-fullrow{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);font-size:.95rem;}
 .gf-full{color:var(--ok-ink);}
 /* GAPFILL-CSS:END */
+/* ROUTE-FX-CSS:BEGIN — Ruta pulida: color por nivel, nodos con icono, cofres de hito, camino iluminado */
+#panel-route{--rl:#8E6CFF;}
+#panel-route .route-hero{background:linear-gradient(135deg,color-mix(in srgb,var(--rl) 55%,#141033),#1A1D3E);border:1.5px solid color-mix(in srgb,var(--rl) 60%,transparent);}
+#panel-route .route-tab.active{border-color:var(--rl);background:color-mix(in srgb,var(--rl) 14%,var(--surface));color:var(--ink);}
+.route-world{display:flex;align-items:center;gap:10px;justify-content:center;margin:10px auto 2px;max-width:520px;}
+.route-world i{height:2px;flex:1;background:linear-gradient(90deg,transparent,var(--rl));}
+.route-world i:last-child{background:linear-gradient(270deg,transparent,var(--rl));}
+.route-world span{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 13px;font-size:.78rem;font-weight:800;letter-spacing:.02em;background:color-mix(in srgb,var(--rl) 16%,transparent);border:1.5px solid color-mix(in srgb,var(--rl) 55%,transparent);color:color-mix(in srgb,var(--rl) 55%,var(--ink));white-space:nowrap;}
+.route-spark{position:absolute;color:var(--rl);opacity:.4;pointer-events:none;}
+#panel-route .rnode{width:auto;gap:4px;}
+#panel-route .rnode .rcirc{flex:none;}
+#panel-route .rnode.done .rcirc{background:linear-gradient(145deg,color-mix(in srgb,var(--rl) 70%,#fff),color-mix(in srgb,var(--rl) 78%,#000));box-shadow:0 6px 0 color-mix(in srgb,var(--rl) 45%,#000),0 12px 22px color-mix(in srgb,var(--rl) 30%,transparent);color:#fff;}
+#panel-route .rnode.open .rcirc{background:linear-gradient(145deg,color-mix(in srgb,var(--rl) 35%,var(--surface)),color-mix(in srgb,var(--rl) 55%,var(--surface)));box-shadow:0 6px 0 color-mix(in srgb,var(--rl) 40%,#000);color:#fff;}
+#panel-route .rnode.cur .rcirc{background:linear-gradient(145deg,#FFD27A,#F5A623);box-shadow:0 8px 0 #B7710A,0 14px 28px rgba(245,166,35,.35);color:#3F2700;}
+#panel-route .rnode.locked .rcirc{box-shadow:0 6px 0 var(--line);}
+.rchk{position:absolute;right:-4px;top:-4px;width:24px;height:24px;border-radius:50%;background:#34D399;border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;color:#062B1E;z-index:3;}
+.rchk svg{width:14px;height:14px;}
+.rgo{position:absolute;left:50%;top:-40px;transform:translateX(-50%);background:#F5A623;color:#3F2700;font-weight:800;font-size:.72rem;letter-spacing:.06em;border-radius:999px;padding:4px 12px;box-shadow:0 4px 0 #B7710A;white-space:nowrap;animation:rgoBob 1.6s ease-in-out infinite;z-index:3;}
+@keyframes rgoBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px)}}
+#panel-route .rnode .rname{position:absolute;top:31px;transform:translateY(-50%);width:130px;max-width:130px;font-size:.86rem;font-weight:700;line-height:1.25;-webkit-line-clamp:3;}
+#panel-route .rnode.cur .rname{top:37px;font-size:.95rem;color:var(--ink);}
+#panel-route .rnode.side-l .rname{right:calc(100% + 14px);text-align:right;}
+#panel-route .rnode.side-r .rname{left:calc(100% + 14px);text-align:left;}
+#panel-route .rnode.side-l.cur .rname{right:calc(100% + 24px);}
+#panel-route .rnode.side-r.cur .rname{left:calc(100% + 24px);}
+#panel-route .rnode .rbest{margin-top:2px;}
+.rchest{position:absolute;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;}
+.rchest .rcbox{position:relative;width:64px;height:56px;}
+.rchest.open .rcbox{filter:drop-shadow(0 0 16px rgba(245,166,35,.55));}
+.rchest.lock .rcbox{filter:grayscale(.55) brightness(.85);opacity:.85;}
+.rchest .rclab{position:absolute;top:24px;transform:translateY(-50%);width:120px;font-size:.78rem;font-weight:700;color:var(--ink-soft);line-height:1.25;}
+.rchest.side-l .rclab{right:calc(100% + 14px);text-align:right;}
+.rchest.side-r .rclab{left:calc(100% + 14px);text-align:left;}
+.rchest .rclab b{display:block;color:var(--ink);font-size:.82rem;}
+@media (prefers-reduced-motion:reduce){.rgo{animation:none;}}
+@media (max-width:520px){#panel-route .rnode .rname{width:112px;max-width:112px;font-size:.8rem;}.rchest .rclab{width:104px;}}
+/* ROUTE-FX-CSS:END */
 </style>
 </head>
 <body>
@@ -33072,7 +33109,33 @@ function renderUnitComplete(s){
   window.scrollTo({top:0, behavior:"smooth"});
 }
 /* RUTA-MAPA: mapa en zigzag con estrellas, medalla del nivel, Continuar y Bolt. El cierre se hace al terminar «Entrenar». */
-const ROUTE_ROW_H = 104, ROUTE_ZIG = [50, 80, 50, 20];
+const ROUTE_ROW_H = 104, ROUTE_ZIG = [50, 80, 50, 20], ROUTE_CHEST_EVERY = 5;
+/* ROUTE-FX: color de cada nivel, «mundo» del nivel, icono por tema y cofre de hito */
+const ROUTE_LC = {A1:"#34D399", A2:"#2CC0D8", B1:"#4C9AFF", B2:"#8E6CFF", C1:"#FF6B9A", C2:"#FFB020"};
+const ROUTE_WORLD = {A1:"Primeros pasos", A2:"Ahora, ayer y mañana", B1:"Conecta ideas y tiempos", B2:"Ideas más complejas", C1:"Estilo y precisión", C2:"Dominio y matices"};
+const ROUTE_ICON_RULES = [
+  [/used to|hábito|habito|costumbr/, "history"], [/pasiva|passiva|voz |causativ/, "refresh"], [/condicion|conditional|hipót|hipot|se eu|wish|subjunt|deseo/, "branch"],
+  [/continuo|continu|gerundio/, "play"], [/perfect|perfeit/, "history"], [/pasado|passado|pretér|preter|was|were|ayer/, "rewind"],
+  [/futuro|going to|will|amanhã/, "arrow"], [/modal|poder|dever|have to|obliga|can|must|should|permiso|permission/, "shield"],
+  [/relativ|who|which|whose|whom/, "comma"], [/pregunta|pergunta|question|wh-|tags|indirect/, "question"],
+  [/comparativ|superlativ|comparaç|comparac/, "scale"], [/preposic|lugar|place|in, on|ubica/, "mapPin"],
+  [/artículo|artigo|contable|incontable|cuantific|plural|some|any|quantif/, "hash"], [/adjetiv|adverb|orden de|modificador|grado/, "edit"],
+  [/conector|connect|because|linker|contraste|however/, "link"], [/phrasal|colocac|idiom|vocabul|formaci|prefijo|palabra/, "layers"],
+  [/inversi|cleft|énfasis|enfasis|fronting|emphasis|imperativ/, "zap"], [/indirecto|reported|discurso|direta|dijo|said/, "chat"],
+  [/gerund|infinit|-ing/, "repeat"], [/registro|formal|hedging|nominal|estilo/, "layers"],
+  [/posesiv|pronombre|genitivo|reflexiv|demostr|this|that|objeto/, "key"], [/to be|verbo ser|hay\b|there/, "user"]
+];
+const ROUTE_ICON_DEFAULT = ["book", "star", "target", "sparkle", "list", "eye"];
+function routeIcon(title, k){
+  const t = String(title).toLowerCase();
+  for(const [re, ic] of ROUTE_ICON_RULES) if(re.test(t)) return ic;
+  return ROUTE_ICON_DEFAULT[k % ROUTE_ICON_DEFAULT.length];
+}
+function routeChestSvg(open){
+  return open
+    ? `<svg width="64" height="56" viewBox="0 0 92 80" aria-hidden="true"><path d="M20 34L12 6h68l-8 28z" fill="#FFE9A8" opacity=".55"/><rect x="6" y="36" width="80" height="40" rx="8" fill="#8A5A2B"/><rect x="6" y="46" width="80" height="6" fill="#F5C542"/><rect x="38" y="42" width="16" height="20" rx="4" fill="#F5C542"/><path d="M8 38L2 14c20-8 60-8 88 0l-6 24z" fill="#A16A32" transform="rotate(-12 46 36)"/></svg>`
+    : `<svg width="64" height="56" viewBox="0 0 92 80" aria-hidden="true"><rect x="6" y="30" width="80" height="46" rx="8" fill="#8A5A2B"/><path d="M6 38a8 8 0 0 1 8-8h64a8 8 0 0 1 8 8v6H6z" fill="#B47A3C"/><rect x="6" y="44" width="80" height="6" fill="#F5C542"/><rect x="38" y="36" width="16" height="24" rx="4" fill="#F5C542"/><circle cx="46" cy="47" r="3.4" fill="#8A5A2B"/><path d="M14 30c2-14 14-22 32-22s30 8 32 22z" fill="#A16A32"/><path d="M14 30c2-14 14-22 32-22s30 8 32 22" fill="none" stroke="#F5C542" stroke-width="4"/></svg>`;
+}
 let routeSheet = null;   // {level, k} de la unidad con panel abierto
 function routeStars(st){
   if(!st.passed) return 0;
@@ -33249,27 +33312,38 @@ function renderRoute(){
   }).join("");
   const bm = routeBoltMsg(level, passedCount, n, cur);
   const contLabel = cur === -1 ? "Repasar la ruta" : !passedCount && !Object.keys(routeProgress).length ? "Empezar" : `Continuar: ${escHtml(units[cur].title)}`;
-  const H = ROUTE_ROW_H, xOf = i=> ROUTE_ZIG[i % ROUTE_ZIG.length], yOf = i=> 46 + i * H;
+  const H = ROUTE_ROW_H, xOf = i=> ROUTE_ZIG[i % ROUTE_ZIG.length], yOf = i=> 76 + i * H;
+  const items = [], rowOf = [];
+  units.forEach((u, k)=>{ rowOf[k] = items.length; items.push({t:"u", k}); if((k + 1) % ROUTE_CHEST_EVERY === 0 && k < n - 1) items.push({t:"c", after:k}); });
+  const R = items.length, lc = ROUTE_LC[level] || "#8E6CFF";
   const seg = (i)=> ` C ${xOf(i)} ${yOf(i) + H * 0.55}, ${xOf(i + 1)} ${yOf(i + 1) - H * 0.55}, ${xOf(i + 1)} ${yOf(i + 1)}`;
-  let pathAll = n ? `M ${xOf(0)} ${yOf(0)}` : "", pathDone = pathAll;
-  const doneTo = cur === -1 ? n - 1 : cur;
-  for(let i = 0; i < n - 1; i++){ pathAll += seg(i); if(i < doneTo) pathDone += seg(i); }
-  const nodes = units.map((u, k)=>{
+  let pathAll = R ? `M ${xOf(0)} ${yOf(0)}` : "", pathDone = pathAll;
+  const doneTo = cur === -1 ? R - 1 : rowOf[cur];
+  for(let i = 0; i < R - 1; i++){ pathAll += seg(i); if(i < doneTo) pathDone += seg(i); }
+  const nodes = items.map((it, r)=>{
+    const side = xOf(r) >= 50 ? "side-l" : "side-r";
+    if(it.t === "c"){
+      const opened = routeState(level, it.after).passed;
+      return `<div class="rchest ${opened ? "open" : "lock"} ${side}" style="left:${xOf(r)}%;top:${yOf(r) - 28}px" role="img" aria-label="Cofre de hito tras la unidad ${it.after + 1}, ${opened ? "abierto" : "cerrado"}">
+        <span class="rcbox">${routeChestSvg(opened)}</span>
+        <span class="rclab"><b>Cofre de hito</b>${opened ? "¡Lo lograste!" : "Se abre al superar la unidad " + (it.after + 1)}</span></div>`;
+    }
+    const k = it.k, u = units[k];
     const st = routeState(level, k), open = routeIsOpen(level, k), isCur = k === cur;
     const cls = st.passed ? "done" : isCur ? "cur" : open ? "open" : "locked";
     const stars = routeStars(st);
     const stTxt = st.passed ? `superada, ${stars} de 3 estrellas` : st.attempts ? `por reforzar, mejor ${st.best}%` : isCur ? "siguiente" : open ? "disponible" : "bloqueada";
-    const glyph = st.passed ? svgIcon("tick", 30).replace('class="ico3"', 'class="ico3 rn-tick"') : !open ? svgIcon("lock", 26) : String(k + 1);
-    return `<button type="button" class="rnode ${cls}" id="route-unit-${level}-${k}" data-route-node="${k}" style="left:${xOf(k)}%;top:${yOf(k) - 32}px" aria-label="Unidad ${k + 1}: ${escHtml(u.title)}, ${stTxt}">
-      <span class="rcirc">${isCur ? '<i class="rpulse"></i>' : ""}<b>${glyph}</b></span>
+    const glyph = !open && !st.passed ? svgIcon("lock", 26) : rsIcon(routeIcon(u.title, k), isCur ? 34 : 28);
+    return `<button type="button" class="rnode ${cls} ${side}" id="route-unit-${level}-${k}" data-route-node="${k}" style="left:${xOf(r)}%;top:${yOf(r) - 32}px" aria-label="Unidad ${k + 1}: ${escHtml(u.title)}, ${stTxt}">
+      <span class="rcirc">${isCur ? '<i class="rpulse"></i>' : ""}<b>${glyph}</b>${st.passed ? `<span class="rchk">${svgIcon("tick", 14).replace('class="ico3"', 'class="ico3 rn-tick"')}</span>` : ""}${isCur ? '<span class="rgo">EMPEZAR</span>' : ""}</span>
       ${st.passed ? `<span class="rstars">${routeStarsSvg(stars)}</span>` : st.attempts ? `<span class="rbest">mejor ${st.best}%</span>` : ""}
       <span class="rname" title="${escHtml(u.title)}">${escHtml(routeNodeLabel(u.title))}</span>
     </button>`;
   }).join("");
-  const bolt = cur >= 0 ? `<span class="rbolt" style="left:${xOf(cur) < 50 ? "calc(" + xOf(cur) + "% + 72px)" : "calc(" + xOf(cur) + "% - 122px)"};top:${yOf(cur) - 44}px">${boltSVG("coach", 56)}</span>` : "";
+  const bolt = cur >= 0 ? `<span class="rbolt" style="left:${xOf(rowOf[cur]) >= 50 ? "calc(" + xOf(rowOf[cur]) + "% + 62px)" : "calc(" + xOf(rowOf[cur]) + "% - 112px)"};top:${yOf(rowOf[cur]) - 40}px">${boltSVG("coach", 56)}</span>` : "";
   const ring = `<svg class="rring" viewBox="0 0 100 110" width="104" height="114" role="img" aria-label="${pct}% de la Ruta ${level}">
       <circle cx="50" cy="60" r="44" fill="none" stroke="var(--line)" stroke-width="8"/>
-      <circle cx="50" cy="60" r="44" fill="none" stroke="#3DE08D" stroke-width="8" stroke-linecap="round" stroke-dasharray="${Math.round(pct * 2.765)} 277" transform="rotate(-90 50 60)"/>
+      <circle cx="50" cy="60" r="44" fill="none" stroke="${lc}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${Math.round(pct * 2.765)} 277" transform="rotate(-90 50 60)"/>
     </svg><span class="rmedal">${medalSvg(level, 62)}</span>`;
   const html = `
     <div class="section-head">
@@ -33287,16 +33361,20 @@ function renderRoute(){
       <div class="route-hero-bolt">${boltSVG(bm.st, 74)}</div>
     </div>
     <div class="route-tabs" role="group" aria-label="Nivel">${tabs}</div>
-    <div class="route-map" id="routeMap" style="height:${n * H + 230}px">
-      <svg class="route-path" viewBox="0 0 100 ${n * H + 230}" preserveAspectRatio="none" aria-hidden="true">
-        <path d="${pathAll}" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round" stroke-dasharray="1 15" vector-effect="non-scaling-stroke"/>
-        <path d="${pathDone}" fill="none" stroke="#3DE08D" stroke-width="10" stroke-linecap="round" stroke-dasharray="1 15" vector-effect="non-scaling-stroke"/>
+    <div class="route-world" aria-hidden="true"><i></i><span>${svgIcon("target", 14)} Mundo ${level} · ${ROUTE_WORLD[level] || ""}</span><i></i></div>
+    <div class="route-map" id="routeMap" style="height:${R * H + 230}px">
+      ${[[6, 4, 30], [88, 14, 24], [8, 34, 22], [90, 46, 28], [6, 66, 24], [88, 80, 22]].map(([fx, fy, sz])=> `<span class="route-spark" style="left:${fx}%;top:${fy}%">${rsIcon("sparkle", sz)}</span>`).join("")}
+      <svg class="route-path" viewBox="0 0 100 ${R * H + 230}" preserveAspectRatio="none" aria-hidden="true">
+        <path d="${pathAll}" fill="none" stroke="var(--line)" stroke-width="9" stroke-linecap="round" stroke-dasharray="1 15" vector-effect="non-scaling-stroke"/>
+        <path d="${pathDone}" fill="none" stroke="${lc}" stroke-opacity=".28" stroke-width="20" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <path d="${pathDone}" fill="none" stroke="${lc}" stroke-width="9" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
       </svg>
       ${nodes}${bolt}
       <div class="route-sheet" id="routeSheet" hidden></div>
     </div>`;
   const panel = document.getElementById("panel-route");
   panel.innerHTML = html;
+  panel.style.setProperty("--rl", lc);
   const info = document.getElementById("routeInfoBtn");
   if(info) info.onclick = ()=>{ const note = document.getElementById("routeInfoNote"); note.hidden = !note.hidden; info.setAttribute("aria-expanded", String(!note.hidden)); };
   panel.querySelectorAll("[data-route-level]").forEach(b=>{
@@ -33306,7 +33384,7 @@ function renderRoute(){
     const u = units[k], st = routeState(level, k), open = routeIsOpen(level, k), sheet = document.getElementById("routeSheet");
     if(routeSheet && routeSheet.k === k){ sheet.hidden = true; routeSheet = null; return; }
     routeSheet = {level, k};
-    sheet.style.top = (yOf(k) + 108) + "px";
+    sheet.style.top = (yOf(rowOf[k]) + 108) + "px";
     sheet.innerHTML = `<button type="button" class="route-sheet-x" id="routeSheetX" aria-label="Cerrar">×</button>
       <h4>${k + 1} · ${escHtml(u.title)}</h4>
       <p>${escHtml(u.summary)}</p>
