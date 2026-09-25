@@ -2085,6 +2085,50 @@ header{transition:transform .25s ease;}
 @media (prefers-reduced-motion:reduce){.rgo{animation:none;}}
 @media (max-width:520px){#panel-route .rnode .rname{width:112px;max-width:112px;font-size:.8rem;}.rchest .rclab{width:104px;}}
 /* ROUTE-FX-CSS:END */
+/* MISSION-CSS:BEGIN — barra de misión y «Descubre» */
+.mission-bar{position:relative;display:flex;margin:12px 0 4px;max-width:520px;}
+.mission-bar .mb-line{position:absolute;left:16.66%;right:16.66%;top:13px;height:3px;background:var(--line);border-radius:99px;}
+.mission-bar .mb-line i{display:block;height:100%;background:#34D399;border-radius:99px;transition:width .5s ease;}
+.mb-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;}
+.mb-dot{width:28px;height:28px;border-radius:50%;background:var(--surface-2);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;color:var(--ink-soft);}
+.mb-dot svg{width:14px;height:14px;}
+.mb-step.done .mb-dot{background:#34D399;border-color:#34D399;color:#062B1E;}
+.mb-step.cur .mb-dot{background:var(--rl);border-color:var(--rl);color:var(--rli,#fff);box-shadow:0 0 0 5px color-mix(in srgb,var(--rl) 25%,transparent);}
+.mb-lab{font-size:.75rem;font-weight:600;color:var(--ink-soft);}
+.mb-step.cur .mb-lab{color:var(--ink);font-weight:800;}
+.ds-wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+.ds-title{font-family:'Fraunces',serif;font-size:1.6rem;line-height:1.15;margin:6px 0 0;}
+.ds-sub{color:var(--ink-soft);font-size:.92rem;margin:4px 0 0;line-height:1.45;}
+.ds-cards{display:flex;flex-direction:column;gap:10px;}
+.ds-card{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;cursor:pointer;font-family:inherit;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:14px 16px;transition:border-color .18s ease,background .18s ease,transform .18s cubic-bezier(.34,1.56,.64,1);}
+.ds-card:active{transform:scale(.985);}
+.ds-card.seen{border-color:var(--rl);background:color-mix(in srgb,var(--rl) 9%,var(--surface));}
+.ds-row{display:flex;align-items:center;gap:10px;}
+.ds-en{flex:1;font-size:1.12rem;font-weight:600;line-height:1.4;}
+.ds-hl{color:color-mix(in srgb,var(--rl) 65%,var(--ink));font-weight:800;}
+.ds-card.seen .ds-hl{border-bottom:3px solid var(--rl);}
+.ds-spk{flex:none;width:36px;height:36px;border-radius:50%;background:color-mix(in srgb,var(--rl) 18%,transparent);color:color-mix(in srgb,var(--rl) 65%,var(--ink));display:flex;align-items:center;justify-content:center;}
+.ds-es{font-size:.92rem;color:var(--ink-soft);line-height:1.4;}
+.ds-es[hidden],.ds-hint[hidden],.ds-rule[hidden],.ds-check[hidden]{display:none;}
+.ds-hint{font-size:.8rem;font-weight:700;color:color-mix(in srgb,var(--rl) 65%,var(--ink-soft));}
+.ds-dots{display:flex;align-items:center;gap:10px;}
+.ds-dots #dsDots{display:flex;gap:6px;}
+.ds-dot{display:block;height:10px;width:10px;border-radius:99px;background:var(--line);transition:width .25s ease,background .25s ease;}
+.ds-dot.on{width:26px;background:#34D399;}
+.ds-count{font-size:.8rem;font-weight:700;color:var(--ink-soft);}
+.ds-rule{border:2px solid #34D399;border-radius:20px;padding:14px 16px;background:linear-gradient(135deg,rgba(52,211,153,.14),var(--surface));animation:dsIn .35s ease both;}
+.ds-cap{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:800;letter-spacing:.09em;color:var(--ok-ink);margin-bottom:4px;}
+.ds-check .ds-cap{color:var(--ink-soft);}
+.ds-rule-t{font-size:1.05rem;font-weight:700;line-height:1.4;}
+.ds-rule-t .rs-h{color:color-mix(in srgb,var(--rl) 65%,var(--ink));font-weight:800;}
+.ds-check{animation:dsIn .35s ease both;}
+.ds-q{font-size:1.05rem;font-weight:600;line-height:1.45;margin-bottom:10px;}
+.ds-foot{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:4px;}
+.ds-foot .btn{width:100%;max-width:360px;}
+.ds-skip{border:0;background:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;color:var(--ink-soft);text-decoration:underline;padding:4px 8px;}
+@keyframes dsIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.ds-rule,.ds-check{animation:none;}.ds-card,.ds-dot{transition:none;}}
+/* MISSION-CSS:END */
 </style>
 </head>
 <body>
@@ -31722,6 +31766,7 @@ function practiceTodayLabels(s){
 function renderPracticeHoy(){
   if(!practiceTodaySession) practiceTodaySession = buildPracticeTodaySession();
   const s = practiceTodaySession;
+  if(s.mission && !s.mission.discovered){ missionDrawDiscover(s); return; }
   if(s.index >= s.queue.length){ renderPracticeHoyComplete(); return; }
   const entry = s.queue[s.index];
   const labels = practiceTodayLabels(s);
@@ -31739,8 +31784,9 @@ function renderPracticeHoy(){
   if(progressBar && progressBar.parentElement === panel) panel.removeChild(progressBar);
   panel.innerHTML = `
     <div class="section-head">
-      <button class="theory-back" id="practiceHoyExitBtn">${labels.exit}</button>
+      <button class="theory-back" id="practiceHoyExitBtn">${s.mission ? "← Volver a la Ruta" : labels.exit}</button>
       <div class="eyebrow">${labels.eyebrow}</div>
+      ${s.mission ? missionBarHTML(s.mode === "unit" ? 2 : 1, s.mission.level) : ""}
     </div>
   `;
   if(!progressBar){
@@ -31768,6 +31814,7 @@ function renderPracticeHoy(){
   }
   panel.appendChild(exPanel);
   document.getElementById("practiceHoyExitBtn").onclick = ()=>{
+    if(s.mission){ practiceTodaySession = null; goTo("route"); return; }
     if(s.mode === "topic"){ practiceTodaySession = null; openTheoryTopic(s.tHome, s.tIdx); }
     else if(s.mode === "summary"){ practiceTodaySession = null; currentLevel = s.level; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.level)); activeTheoryTopic = null; goTo("theory"); rsView = {lv:s.level, i:s.gi}; renderTheory(); }
     else goTo(s.mode==="unit" ? "route" : "home");
@@ -32810,6 +32857,7 @@ function renderTopicComplete(s){
   const delta = m.pct - s.before;
   document.getElementById("panel-practicehoy").innerHTML = `
     <div class="section-head" style="text-align:center;">
+      ${s.mission ? `<div style="max-width:520px;margin:0 auto 12px;">${missionBarHTML(2, s.mission.level)}</div>` : ""}
       <div style="width:88px;margin:0 auto 12px;">${mascotSVG(pct >= 70 ? "cheer" : "", 88)}</div>
       <h2>${pct >= 70 ? "¡Buen trabajo! 🎉" : "Sigue con este tema 💪"}</h2>
       <p class="dash-card-sub">${escHtml(s.title)} · ${s.correct}/${s.answered} correctas (${pct}%)</p>
@@ -32830,11 +32878,11 @@ function renderTopicComplete(s){
       <button class="btn secondary" id="topicBackBtn">Volver a la lista</button>
     </div>`;
   if(pct >= 70) fireConfetti();
-  document.getElementById("topicAgainBtn").onclick = ()=>{ practiceTodaySession = buildTopicSession(s.level, s.unit); renderPracticeHoy(); };
+  document.getElementById("topicAgainBtn").onclick = ()=>{ practiceTodaySession = buildTopicSession(s.level, s.unit); if(s.mission) practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; renderPracticeHoy(); };
   const closeBtn = document.getElementById("topicCloseBtn");
-  if(closeBtn) closeBtn.onclick = ()=>{ practiceTodaySession = buildUnitSession(s.level, s.unit); renderPracticeHoy(); };
+  if(closeBtn) closeBtn.onclick = ()=>{ practiceTodaySession = buildUnitSession(s.level, s.unit); if(s.mission) practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; renderPracticeHoy(); };
   document.getElementById("topicTheoryBtn").onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(s.tHome, s.tIdx); };
-  document.getElementById("topicBackBtn").onclick = ()=>{ practiceTodaySession = null; activeTheoryTopic = null; theoryReturnTo = null; currentLevel = s.tHome; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.tHome)); goTo("theory"); };
+  document.getElementById("topicBackBtn").onclick = ()=>{ if(s.mission){ practiceTodaySession = null; goTo("route"); return; } practiceTodaySession = null; activeTheoryTopic = null; theoryReturnTo = null; currentLevel = s.tHome; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.tHome)); goTo("theory"); };
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -33391,14 +33439,14 @@ function renderRoute(){
       ${st.passed ? `<div class="route-sheet-stars">${routeStarsSvg(routeStars(st))}<span>Mejor resultado: ${st.best}%</span></div>` : st.attempts ? `<div class="route-sheet-stars"><span>Por reforzar · mejor ${st.best}%</span></div>` : ""}
       <div class="route-sheet-btns">
         <button class="btn secondary" data-sheet="theory">${svgIcon("book", 18)} Teoría</button>
-        ${open ? `<button class="btn" data-sheet="train">${svgIcon("target", 18)} ${st.passed ? "Entrenar y repetir el cierre" : "Entrenar y hacer el cierre"}</button>` : `<button class="btn secondary" data-sheet="skip">Saltar: ya lo sé</button>`}
+        ${open ? `<button class="btn" data-sheet="train">${svgIcon("target", 18)} ${st.passed ? "Repetir la misión" : "Empezar misión"}</button>` : `<button class="btn secondary" data-sheet="skip">Saltar: ya lo sé</button>`}
       </div>
-      ${open ? `<div class="route-sheet-note">Al terminar el entrenamiento harás el cierre de ${ROUTE_CLOSE_SIZE} preguntas (se aprueba con ${ROUTE_PASS_PCT}%) para superar la unidad.</div>` : `<div class="route-sheet-note">Se abre al superar la unidad anterior.</div>`}`;
+      ${open ? `<div class="route-sheet-note">Descubre la regla, entrena y haz el cierre de ${ROUTE_CLOSE_SIZE} preguntas (se aprueba con ${ROUTE_PASS_PCT}%) para superar la unidad.</div>` : `<div class="route-sheet-note">Se abre al superar la unidad anterior.</div>`}`;
     sheet.hidden = false;
     document.getElementById("routeSheetX").onclick = ()=>{ sheet.hidden = true; routeSheet = null; };
     sheet.querySelectorAll("[data-sheet]").forEach(b=> b.onclick = ()=>{
       if(b.dataset.sheet === "theory"){ routeTouch(level, k).theory = true; saveProgress(); openTheoryTopic(u.home, u.index, {id:"route", label:"Volver a la Ruta", level, unit:k}); }
-      else if(b.dataset.sheet === "train") startTopicPractice(u.home, u.index);
+      else if(b.dataset.sheet === "train") startMission(level, k);
       else{ routeTouch(level, k).skipped = true; saveProgress(); renderRoute(); }
     });
     setTimeout(()=>{ const r = sheet.getBoundingClientRect(); if(r.bottom > innerHeight - 10 || r.top < 80) sheet.scrollIntoView({block:"center", behavior:"smooth"}); }, 60);
@@ -33407,6 +33455,166 @@ function renderRoute(){
   const cont = document.getElementById("routeContBtn");
   if(cont) cont.onclick = ()=>{ const k = cur === -1 ? 0 : cur; const el = document.getElementById(`route-unit-${level}-${k}`); if(el){ el.scrollIntoView({block:"center", behavior:"smooth"}); setTimeout(()=> el.click(), 350); } };
 }
+/* MISSION:BEGIN — Misión de la Ruta: barra de pasos (Descubre → Entrenar → Cierre) y paso «Descubre» con ejemplos que se tocan */
+const MISSION_STEPS = ["Descubre", "Entrenar", "Cierre"];
+const ROUTE_INK = {A1:"#062B1E", A2:"#052E36", B1:"#072556", B2:"#FFFFFF", C1:"#560F2B", C2:"#3F2700"};
+function missionBarHTML(active, level){
+  const lc = ROUTE_LC[level] || "#8E6CFF", last = MISSION_STEPS.length - 1;
+  const steps = MISSION_STEPS.map((t, i)=>{
+    const done = i < active, cur = i === active;
+    return `<div class="mb-step ${done ? "done" : cur ? "cur" : ""}" role="listitem" ${cur ? 'aria-current="step"' : ""}><span class="mb-dot">${done ? svgIcon("tick", 14) : i + 1}</span><span class="mb-lab">${t}</span></div>`;
+  }).join("");
+  return `<div class="mission-bar" role="list" aria-label="Pasos de la misión" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}"><div class="mb-line"><i style="width:${Math.round(active / last * 100)}%"></i></div>${steps}</div>`;
+}
+function startMission(level, k){
+  if(!routeUnits(level)[k] && currentLang !== "pt") return;
+  const s = buildTopicSession(level, k);
+  s.mission = {level, unit:k, discovered:false};
+  practiceTodaySession = s;
+  goTo("practicehoy");
+}
+/* --- datos de «Descubre»: 3 ejemplos del tema (con traducción), lo clave resaltado y la regla en una línea --- */
+function rsTileFor(lv, idx){
+  const groups = (typeof RS !== "undefined" && RS[lv]) || [];
+  for(const g of groups) for(const t of g.tiles) if(t.k === idx) return t;
+  return null;
+}
+const DISC_STOP = new Set(["the", "a", "an", "of", "in", "on", "at", "and", "or", "i", "you", "he", "she", "it", "we", "they", "that", "this"]);
+function discTokens(tile){
+  const set = new Set();
+  (function walk(v){
+    if(typeof v === "string"){
+      (v.match(/\[([^\]]+)\]/g) || []).forEach(m=> m.slice(1, -1).toLowerCase().split(/[\s/]+/).forEach(w=>{ w = w.replace(/[^a-z']/g, ""); if(w && !DISC_STOP.has(w)) set.add(w); }));
+    }else if(Array.isArray(v)) v.forEach(walk);
+    else if(v && typeof v === "object") Object.values(v).forEach(walk);
+  })(tile);
+  return set;
+}
+/* Resalta el grupo más largo de palabras consecutivas que la tarjeta del tema marca como clave */
+function discHighlight(text, set){
+  if(!set || !set.size) return {html:escHtml(text), hit:false};
+  const toks = text.match(/[A-Za-z']+|[^A-Za-z']+/g) || [];
+  let best = null, cur = null;
+  toks.forEach((t, i)=>{
+    const isWord = /^[A-Za-z']+$/.test(t);
+    if(isWord && set.has(t.toLowerCase())){ if(!cur) cur = {from:i, to:i}; else cur.to = i; }
+    else if(isWord || !/^\s+$/.test(t)){ if(cur && (!best || (cur.to - cur.from) > (best.to - best.from))) best = cur; cur = null; }
+  });
+  if(cur && (!best || (cur.to - cur.from) > (best.to - best.from))) best = cur;
+  if(!best) return {html:escHtml(text), hit:false};
+  let out = "";
+  toks.forEach((t, i)=>{ if(i === best.from) out += '<b class="ds-hl">'; out += escHtml(t); if(i === best.to) out += "</b>"; });
+  return {hit:true, html:out};
+}
+/* frases donde el resaltado automático no alcanza: se indica a mano qué frase resaltar */
+const DISC_PH = {
+  "I have a cat and an umbrella.":["a cat","an umbrella"], "The book on the table is mine.":["The book"], "There are three children in the park.":["children"],
+  "She works every day.":["works"], "They don't like coffee.":["don't like"], "Does he speak English?":["Does he speak"],
+  "This is Tom's car.":["Tom's"], "Where is Maria's brother?":["Maria's"], "My parents' house is big.":["parents'"],
+  "I visited my grandma yesterday.":["visited"], "They didn't watch the movie.":["didn't watch"], "Did she call you?":["Did she call"],
+  "Look! It is raining.":["is raining"], "We are meeting them tomorrow.":["are meeting"], "They are building a new house next door.":["are building"],
+  "I have three apples.":["three apples"], "She doesn't have much money.":["much money"], "There are few chairs in the room.":["few chairs"],
+  "I wake up at seven.":["at seven"], "The keys are on the table.":["on the table"], "She was born in 1995.":["in 1995"],
+  "She loves chocolate.":["loves"], "I understand the lesson.":["understand"], "This bag belongs to me.":["belongs"],
+  "She has already finished.":["has already finished"], "I lived in Bogotá in 2015.":["lived in Bogotá in 2015"], "I have lived here for five years.":["have lived here for five years"],
+  "She has a beautiful old house.":["beautiful old"], "I bought a small red car.":["small red"], "He wore a big black coat.":["big black"],
+  "English is spoken in many countries.":["is spoken"], "The window was broken yesterday.":["was broken"], "These cars are made in Spain.":["are made"],
+  "I'll call you when I arrive.":["when I arrive"], "Wait here until I come back.":["until I come"], "She'll text you as soon as she lands.":["as soon as she lands"],
+  "Never have I seen such chaos.":["Never have I"], "Not only did she win, but she also broke the record.":["Not only did she"], "Rarely have I seen such dedication.":["Rarely have I"],
+  "What I need is a good night's sleep.":["What I need is"], "It was Sarah who solved the problem.":["It was Sarah who"], "What surprised me most was his honesty.":["What surprised me most was"],
+  "I DO like your new haircut!":["DO like"], "She DOES understand the problem.":["DOES understand"], "He DID call you — check your phone.":["DID call"],
+  "It is said that the house is haunted.":["It is said that"], "The politician is believed to be innocent.":["is believed to be"], "He is reported to have left the country.":["is reported to have left"],
+  "Life is beautiful.":["Life"], "The Amazon is the longest river in South America.":["The Amazon","the longest river"], "My son goes to school by bus.":["to school by bus"],
+  "Attached is a copy of my CV.":["Attached is"], "Here comes the bus!":["Here comes"], "That question I cannot answer.":["That question I cannot answer"],
+  "I would be grateful if you could confirm receipt.":["would be grateful if you could"], "Can you let me know when you get it?":["Can you let me know"], "We regret to inform you that the position has been filled.":["regret to inform"],
+  "His unhappiness was obvious.":["unhappiness"], "The development of the city is fast.":["development"], "It's impossible to read; the writing is illegible.":["impossible","illegible"]
+};
+function discPhrases(text, phrases){
+  const low = text.toLowerCase(), marks = [];
+  phrases.forEach(p=>{ const i = low.indexOf(p.toLowerCase()); if(i >= 0 && !marks.some(m=> i < m[1] && i + p.length > m[0])) marks.push([i, i + p.length]); });
+  if(!marks.length) return null;
+  marks.sort((a, b)=> a[0] - b[0]);
+  let out = "", pos = 0;
+  marks.forEach(([a, b])=>{ out += escHtml(text.slice(pos, a)) + '<b class="ds-hl">' + escHtml(text.slice(a, b)) + "</b>"; pos = b; });
+  return {hit:true, html:out + escHtml(text.slice(pos))};
+}
+function missionDiscoverData(level, k){
+  const u = currentLang === "pt" ? ptTopicUnit(level, k) : routeUnits(level)[k];
+  const topic = LANG_PACKS[currentLang].THEORY[u.home][u.index];
+  const tile = currentLang === "en" ? rsTileFor(u.home, u.index) : null;
+  const set = tile ? discTokens(tile) : null;
+  const all = (topic.examples || []).map(e=> ({en:e.en, es:e.es, hl:(currentLang === "en" && DISC_PH[e.en] && discPhrases(e.en, DISC_PH[e.en])) || discHighlight(e.en, set)}));
+  const withHit = all.filter(x=> x.hl.hit), rest = all.filter(x=> !x.hl.hit);
+  const sents = withHit.concat(rest).slice(0, 3);
+  const rule = tile ? rsX(tile.rule) : escHtml(String(topic.tip || "").replace(/^Truco:\s*/i, "").replace(/^./, c=> c.toUpperCase()));
+  const key = `${u.home}:${u.index}`, pool = theoryQBank()[key] || [];
+  const qn = pool.findIndex(q=> q.k === "mc"), n = qn >= 0 ? qn : (pool.length ? 0 : -1);
+  return {u, topic, sents, rule, q:n >= 0 ? pool[n] : null, qid:n >= 0 ? `theoryq:${currentLang}:${key}:${n}` : null};
+}
+function missionDrawDiscover(s){
+  const {level, unit} = s.mission, D = missionDiscoverData(level, unit);
+  if(!D.sents.length){ s.mission.discovered = true; renderPracticeHoy(); return; }
+  const panel = document.getElementById("panel-practicehoy");
+  const ex = document.getElementById("exPanel"); if(ex && ex.parentElement === panel) panel.removeChild(ex);
+  const pb = document.getElementById("practiceHoyProgress"); if(pb && pb.parentElement === panel) panel.removeChild(pb);
+  RS_ICON.speaker = RS_ICON.speaker || "M11 5L6 9H2v6h4l5 4V5z M15.5 8.5a5 5 0 0 1 0 7 M18.5 5.5a9 9 0 0 1 0 13";
+  const lc = ROUTE_LC[level] || "#8E6CFF", speakerIco = rsIcon("speaker", 18);
+  panel.innerHTML = `
+    <div class="section-head">
+      <button class="theory-back" id="dsExit">← Volver a la Ruta</button>
+      <div class="eyebrow">🧭 Misión ${level} · Unidad ${unit + 1}</div>
+      ${missionBarHTML(0, level)}
+    </div>
+    <div class="ds-wrap" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}">
+      <div><h2 class="ds-title">¿Notas algo en estas frases?</h2><p class="ds-sub">Toca cada una: escúchala y fíjate en la parte resaltada.</p></div>
+      <div class="ds-cards">${D.sents.map((x, i)=> `<button type="button" class="ds-card" data-i="${i}" aria-pressed="false">
+        <span class="ds-row"><span class="ds-en">${x.hl.html}</span><span class="ds-spk" aria-hidden="true">${speakerIco}</span></span>
+        <span class="ds-es" hidden>${escHtml(x.es || "")}</span><span class="ds-hint">Toca para escuchar y ver qué significa</span></button>`).join("")}</div>
+      <div class="ds-dots" aria-live="polite"><span id="dsDots">${D.sents.map(()=> '<i class="ds-dot"></i>').join("")}</span><span class="ds-count" id="dsCount">0 de ${D.sents.length} descubiertas</span></div>
+      <div class="ds-rule" id="dsRule" hidden><div class="ds-cap">${svgIcon("bulb", 16)} LO QUE DESCUBRISTE</div><div class="ds-rule-t">${D.rule}</div></div>
+      ${D.q ? `<div class="ds-check card" id="dsCheck" hidden><div class="ds-cap">COMPRUÉBALO</div><div class="ds-q">${escHtml(D.q.q)}</div>
+        <div class="options" id="dsOpts">${D.q.k === "tf" ? ["Verdadero", "Falso"].map((t, i)=> `<button class="opt-btn" data-i="${i}">${t}</button>`).join("") : D.q.o.map((t, i)=> `<button class="opt-btn" data-i="${i}">${escHtml(t)}</button>`).join("")}</div>
+        <div class="feedback" role="status" aria-live="polite" id="dsFb"></div></div>` : ""}
+      <div class="ds-foot"><button class="btn" id="dsGo" disabled>Empezar a entrenar →</button><button type="button" class="ds-skip" id="dsSkip">Saltar al entrenamiento</button></div>
+    </div>`;
+  const cards = [...panel.querySelectorAll(".ds-card")], seen = D.sents.map(()=> false);
+  let answered = !D.q;
+  const go = document.getElementById("dsGo");
+  const refresh = ()=>{
+    const n = seen.filter(Boolean).length;
+    panel.querySelectorAll(".ds-dot").forEach((d, i)=> d.classList.toggle("on", seen[i]));
+    document.getElementById("dsCount").textContent = `${n} de ${seen.length} descubiertas`;
+    if(n === seen.length){
+      document.getElementById("dsRule").hidden = false;
+      const chk = document.getElementById("dsCheck"); if(chk) chk.hidden = false;
+    }
+    go.disabled = !(n === seen.length && answered);
+  };
+  cards.forEach(c=> c.onclick = ()=>{
+    const i = +c.dataset.i; seen[i] = true;
+    c.classList.add("seen"); c.setAttribute("aria-pressed", "true");
+    c.querySelector(".ds-es").hidden = !D.sents[i].es; c.querySelector(".ds-hint").hidden = true;
+    speak(D.sents[i].en);
+    refresh();
+  });
+  const opts = [...panel.querySelectorAll("#dsOpts .opt-btn")];
+  opts.forEach(b=> b.onclick = ()=>{
+    const i = +b.dataset.i, ok = D.q.k === "tf" ? ((i === 0) === (D.q.a === true)) : i === D.q.a;
+    opts.forEach(x=> x.disabled = true);
+    b.classList.add(ok ? "correct" : "wrong");
+    if(!ok){ const ci = D.q.k === "tf" ? (D.q.a === true ? 0 : 1) : D.q.a; opts[ci].classList.add("correct"); }
+    srsUpdate(D.qid, ok); _practiceTodayOrigRegisterAnswer("theoryq", ok);
+    const fb = document.getElementById("dsFb"); fb.className = "feedback show " + (ok ? "ok" : "bad");
+    fb.innerHTML = `<strong>${ok ? "¡Correcto! 🎉" : "Casi 😉"}</strong>${escHtml(D.q.e || "")}`;
+    answered = true; refresh();
+  });
+  const finish = ()=>{ s.mission.discovered = true; renderPracticeHoy(); };
+  go.onclick = finish;
+  document.getElementById("dsSkip").onclick = finish;
+  document.getElementById("dsExit").onclick = ()=>{ practiceTodaySession = null; goTo("route"); };
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+/* MISSION:END */
 function routeHomeCardHtml(){
   const level = routeCurrentLevel();
   const units = routeUnits(level);
