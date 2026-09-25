@@ -1601,6 +1601,16 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .pvr-n small{font-size:clamp(.62rem,2.8vw,.78rem);color:var(--ink-soft);font-weight:600;}
 .pvr-n:hover{border-color:var(--purple);}
 .pvr-n.on{border-color:var(--teal);background:rgba(34,197,94,.14);box-shadow:0 0 0 3px rgba(34,197,94,.16);}
+.pvr-col{min-width:0;}
+.pvr-hint{max-width:560px;margin:0 auto 6px;text-align:right;font-size:.76rem;font-weight:700;color:var(--purple);}
+:root[data-theme="dark"] .pvr-hint{color:#B7A5FF;}
+.pvr-hint[hidden]{display:none;}
+button.pvr-c{border:0;font-family:inherit;cursor:pointer;}
+button.pvr-c:hover{filter:brightness(1.08);}
+button.pvr-c:active{transform:translate(-50%,-50%) scale(.97);}
+.pvr-box.flip{animation:pvrFlip .38s ease-out;}
+@keyframes pvrFlip{from{transform:perspective(900px) rotateY(-75deg);opacity:.25;}to{transform:none;opacity:1;}}
+@media (prefers-reduced-motion:reduce){.pvr-box.flip{animation:none;}}
 .pvr-card{position:static;}
 @media (min-width:900px){.pvr-card{position:sticky;top:90px;}}
 .pv-sec[hidden],.pv-list[hidden]{display:none;}
@@ -26083,7 +26093,7 @@ const PV_VERB_INFO = {
   GIVE:{k:"Dar, entregar o rendirse", t:"<em>Give</em> es dar: repartir (give out, give away), devolver (give back), ceder o rendirse (give in, give up) y emitir (give off)."},
   MAKE:{k:"Crear, inventar o compensar", t:"<em>Make</em> es hacer o crear: inventar (make up), distinguir o entender (make out), compensar (make up for) y convertir (make into)."}
 };
-let pvPage = "home", pvMode = "part", pvQ = "", pvSel = null, pvWasWide = null, pvSheetFrom = null, _pvItems = null, PHRASAL_FILTER = null;
+let pvPage = "home", pvMode = "part", pvRadPage = 0, pvQ = "", pvSel = null, pvWasWide = null, pvSheetFrom = null, _pvItems = null, PHRASAL_FILTER = null;
 function pvWide(){ return window.matchMedia("(min-width: 900px)").matches; }
 function pvHl(phrase){ return String(phrase).split(" ").map((w, i)=> i > 0 && PV_PARTS.has(w.toLowerCase()) ? `<span class="pv-p">${escHtml(w)}</span>` : escHtml(w)).join(" "); }
 function pvFavId(pv){ return `pvfav:${pv.phrase}`; }
@@ -26120,9 +26130,12 @@ function pvGroupItems(page){
   return all.filter(x=> x.key.split(" ").pop() === page).sort(pvAz);
 }
 const PV_LVL_ORD = {A1:1, A2:2, B1:3, B2:4, C1:5, C2:6};
-/* Hasta 8 phrasals para el radial: primero los del ranking, luego los «muy comunes», por nivel y A–Z. */
-function pvRadialItems(items){
-  return [...items].sort((a, b)=> (a.rank || 999) - (b.rank || 999) || (b.common - a.common) || (PV_LVL_ORD[a.level] - PV_LVL_ORD[b.level]) || pvAz(a, b)).slice(0, 8);
+/* Radial por «tarjetas»: máximo 8 partículas por tarjeta (repartidas parejo). Orden: ranking, «muy comunes», nivel y A–Z. */
+function pvRadialPages(items){
+  const s = [...items].sort((a, b)=> (a.rank || 999) - (b.rank || 999) || (b.common - a.common) || (PV_LVL_ORD[a.level] - PV_LVL_ORD[b.level]) || pvAz(a, b));
+  const n = Math.max(1, Math.ceil(s.length / 8)), size = Math.ceil(s.length / n), out = [];
+  for(let i = 0; i < s.length; i += size) out.push(s.slice(i, i + size));
+  return out;
 }
 const pvShortEs = es=> String(es).split(" / ")[0].replace(/\s*\(.*$/, "");
 function pvSearchItems(){
@@ -26192,7 +26205,7 @@ function pvOpenSheet(it, fromEl){
 }
 /* ---- Navegación (historial: el botón atrás vuelve al inicio) ---- */
 function pvGo(page){
-  pvPage = page; pvSel = null; pvQ = "";
+  pvPage = page; pvSel = null; pvQ = ""; pvRadPage = 0;
   try{ history.pushState({sec:"phrasal", pvV:page}, "", "#phrasal"); }catch(e){}
   drawPhrasalList(); window.scrollTo({top:0, behavior:"auto"});
 }
@@ -26258,26 +26271,35 @@ function pvCardHTML(it){
   return `<div class="pv-card-h"><div class="pv-card-t">${pvHl(it.pv.phrase)}</div><button type="button" class="vv-star big pv-cs${fav ? " on" : ""}" id="pvCardStar" data-k="${escHtml(it.key)}" aria-label="Guardar en favoritos">${fav ? "★" : "☆"}</button></div><div class="pv-card-es">${escHtml(it.pv.es)}</div><div class="pv-sheet-lv">${pvBadges(it)}</div>${PV_FRAMES.map(f=> `<div class="pv-fr" style="--fc:${f[3]}"><small>${f[0]}</small><div class="pv-en">${wz(it.pv[f[1]])}</div><div class="pv-es">${escHtml(it.pv[f[2]])}</div></div>`).join("")}`;
 }
 /* Radial: el verbo al centro y las partículas alrededor (posiciones en %, líneas en un SVG de viewBox fijo: escala sin medir el DOM). */
-function pvRadialHTML(verb, its){
+function pvRadialHTML(verb, its, paged){
   const n = its.length, P = 38;
   const pos = its.map((it, i)=>{ const a = -Math.PI / 2 + i * 2 * Math.PI / n; return {it, c:Math.cos(a), s:Math.sin(a)}; });
   const lines = pos.map(p=> `<line x1="${(50 + 15 * p.c).toFixed(1)}" y1="${(50 + 15 * p.s).toFixed(1)}" x2="${(50 + 24 * p.c).toFixed(1)}" y2="${(50 + 24 * p.s).toFixed(1)}"/>`).join("");
   const nodes = pos.map(p=> `<button type="button" class="pvr-n${p.it.key === pvSel ? " on" : ""}" data-k="${escHtml(p.it.key)}" style="left:${(50 + P * p.c).toFixed(1)}%;top:${(50 + P * p.s).toFixed(1)}%;--c:${PV_LV[p.it.level] || "#8E6CFF"}" aria-label="${escHtml(p.it.pv.phrase)}: ${escHtml(p.it.pv.es)}"><span class="pvr-p"><i></i>${escHtml(p.it.key.slice(verb.length + 1))}</span><small>${escHtml(pvShortEs(p.it.pv.es))}</small></button>`).join("");
-  return `<svg class="pvr-svg" viewBox="0 0 100 100" aria-hidden="true"><defs><marker id="pvrar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#8B7CFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><g stroke="#8E88A8" stroke-width=".5" fill="none" marker-end="url(#pvrar)">${lines}</g></svg><div class="pvr-c">${escHtml(verb)}</div>${nodes}`;
+  return `<svg class="pvr-svg" viewBox="0 0 100 100" aria-hidden="true"><defs><marker id="pvrar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#8B7CFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><g stroke="#8E88A8" stroke-width=".5" fill="none" marker-end="url(#pvrar)">${lines}</g></svg>${paged ? `<button type="button" class="pvr-c" id="pvrFlip" aria-label="Ver la siguiente tarjeta de ${escHtml(verb)}">${escHtml(verb)}</button>` : `<div class="pvr-c">${escHtml(verb)}</div>`}${nodes}`;
 }
-function pvVerbPaint(){
-  const verb = pvPage.slice(2), items = pvGroupItems(pvPage), rad = pvRadialItems(items), wide = pvWide();
-  if(!items.some(x=> x.key === pvSel)) pvSel = rad.length ? rad[0].key : null;
+function pvVerbPaint(flip){
+  const verb = pvPage.slice(2), items = pvGroupItems(pvPage), pages = pvRadialPages(items), wide = pvWide();
+  const at = pages.findIndex(p=> p.some(x=> x.key === pvSel));
+  if(at >= 0) pvRadPage = at;
+  else{ pvRadPage = Math.min(pvRadPage, pages.length - 1); pvSel = pages[pvRadPage] && pages[pvRadPage][0] ? pages[pvRadPage][0].key : null; }
+  const rad = pages[pvRadPage] || [], paged = pages.length > 1;
   const box = document.getElementById("pvRadial"); if(!box) return;
-  box.innerHTML = pvRadialHTML(verb, rad);
+  box.innerHTML = pvRadialHTML(verb, rad, paged);
+  const hint = document.getElementById("pvrHint");
+  hint.hidden = !paged;
+  if(paged) hint.textContent = `Tarjeta ${pvRadPage + 1}/${pages.length} · selecciona ${verb.toUpperCase()} para ver más información`;
+  if(flip){ box.classList.remove("flip"); void box.offsetWidth; box.classList.add("flip"); }
   box.querySelectorAll(".pvr-n").forEach(b=> b.onclick = ()=>{ pvSel = b.dataset.k; pvVerbPaint(); });
+  const fl = document.getElementById("pvrFlip");
+  if(fl) fl.onclick = ()=>{ pvRadPage = (pvRadPage + 1) % pages.length; pvSel = pages[pvRadPage][0].key; pvVerbPaint(true); };
   const card = document.getElementById("pvCard"), it = items.find(x=> x.key === pvSel);
   card.innerHTML = pvCardHTML(it);
   const cs = document.getElementById("pvCardStar");
   if(cs) cs.onclick = ()=>{ pvToggleFav(it); pvVerbPaint(); };
-  const radKeys = new Set(rad.map(x=> x.key)), rest = wide ? items : items.filter(x=> !radKeys.has(x.key));
+  const rest = wide ? items : [];
   const rows = document.getElementById("pvRows"), title = document.getElementById("pvRestT");
-  title.textContent = wide ? `Todos los phrasal verbs con ${verb.toUpperCase()} · A–Z` : `Más con ${verb.toUpperCase()}`;
+  title.textContent = `Todos los phrasal verbs con ${verb.toUpperCase()} · A–Z`;
   title.hidden = rows.hidden = !rest.length;
   rows.innerHTML = rest.map(x=> pvRow(x, x.key === pvSel, false)).join("");
   pvBindRows(rows);
@@ -26295,7 +26317,7 @@ function pvDrawGroup(){
     <div class="pv-legend" aria-hidden="true">${Object.entries(PV_LV).map(([l, c])=> `<span><i style="background:${c}"></i>${l}</span>`).join("")}</div>
     <div class="pv-info"><span>${count}</span><button type="button" class="pv-prac" id="pvPractice">Practicar estos ›</button></div>
     ${pvIsVerb(pvPage)
-      ? `<div class="pvr-wrap"><div class="pvr-box" id="pvRadial"></div><aside class="pv-card pvr-card" id="pvCard" aria-live="polite"></aside></div><div class="pv-sec" id="pvRestT"></div><div class="pv-list" id="pvRows"></div>`
+      ? `<div class="pvr-wrap"><div class="pvr-col"><div class="pvr-hint" id="pvrHint" hidden></div><div class="pvr-box" id="pvRadial"></div></div><aside class="pv-card pvr-card" id="pvCard" aria-live="polite"></aside></div><div class="pv-sec" id="pvRestT"></div><div class="pv-list" id="pvRows"></div>`
       : `<div class="${wide ? "pv-cols" : ""}"><div class="pv-list" id="pvRows"></div>${wide ? `<aside class="pv-card" id="pvCard" aria-live="polite"></aside>` : ""}</div>`}`;
   document.getElementById("pvBack").onclick = pvBack;
   document.getElementById("pvPractice").onclick = ()=>{
