@@ -1586,7 +1586,54 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .pv-sheet-lv{margin:8px 0 10px;font-size:.8rem;color:var(--ink-soft);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .pv-filter{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--purple-soft);border-radius:12px;padding:7px 12px;margin-bottom:10px;font-size:.85rem;}
 :root[data-theme="dark"] .pv-filter{background:rgba(124,92,255,.2);}
+/* Selector Por partícula / Por verbo y página de verbo con radial */
+.pv-mode{display:flex;background:var(--bg-soft);border:1px solid var(--line);border-radius:999px;padding:4px;margin:0 0 12px;}
+.pv-mb{flex:1;border:0;background:none;font-family:inherit;font-weight:700;font-size:.85rem;color:var(--ink-soft);border-radius:999px;padding:8px 0;cursor:pointer;}
+.pv-mb.on{background:var(--purple);color:#fff;}
+.pvr-wrap{display:grid;gap:16px;margin:8px 0 14px;}
+@media (min-width:900px){.pvr-wrap{grid-template-columns:minmax(0,540px) minmax(0,1fr);align-items:start;gap:26px;}}
+.pvr-box{position:relative;width:100%;max-width:560px;aspect-ratio:1/1;margin:0 auto;background:var(--bg-soft);border:1.5px solid var(--line);border-radius:22px;}
+.pvr-svg{position:absolute;left:0;top:0;width:100%;height:100%;}
+.pvr-c{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--grad-purple);color:#fff;font-weight:800;font-size:clamp(1.3rem,6.5vw,2.4rem);padding:.25em .8em;border-radius:18px;box-shadow:0 8px 20px rgba(var(--purple-rgb),.28);text-transform:capitalize;}
+.pvr-n{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:1px;background:var(--surface);border:1.5px solid var(--c,var(--line));border-radius:14px;padding:.3em .75em .35em;font-family:inherit;color:var(--ink);cursor:pointer;white-space:nowrap;}
+.pvr-p{display:flex;align-items:center;gap:.4em;font-weight:800;font-size:clamp(.78rem,3.6vw,1.05rem);}
+.pvr-p i{width:.5em;height:.5em;border-radius:50%;background:var(--c);display:block;}
+.pvr-n small{font-size:clamp(.62rem,2.8vw,.78rem);color:var(--ink-soft);font-weight:600;}
+.pvr-n:hover{border-color:var(--purple);}
+.pvr-n.on{border-color:var(--teal);background:rgba(34,197,94,.14);box-shadow:0 0 0 3px rgba(34,197,94,.16);}
+.pvr-card{position:static;}
+@media (min-width:900px){.pvr-card{position:sticky;top:90px;}}
+.pv-sec[hidden],.pv-list[hidden]{display:none;}
 /* PHRASAL-UI-CSS:END */
+/* CONECTORES-CSS:BEGIN */
+.cn-chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px;}
+.cn-chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);font-family:inherit;font-weight:700;font-size:.8rem;border-radius:999px;padding:7px 14px;cursor:pointer;}
+.cn-chip.on{background:var(--purple);border-color:var(--purple);color:#fff;}
+.cn-cat{background:var(--bg-soft);border:1.5px solid var(--line);border-radius:18px;overflow:hidden;margin:0 0 18px;}
+.cn-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 16px;border-bottom:1.5px solid var(--line);}
+.cn-h i{width:11px;height:11px;border-radius:4px;background:var(--cc);display:block;flex:none;}
+.cn-h b{font-size:.9rem;letter-spacing:.05em;text-transform:uppercase;color:var(--cc);}
+.cn-h span{color:var(--ink-soft);font-size:.82rem;}
+.cn-prac{margin-left:auto;border:0;background:none;color:var(--purple);font-family:inherit;font-weight:700;font-size:.8rem;cursor:pointer;padding:0;}
+.cn-head{display:none;}
+.cn-row{display:grid;grid-template-columns:1fr auto;grid-template-areas:"c star" "m m" "x x" "b b";gap:3px 10px;padding:12px 16px;border-top:1px solid var(--line);}
+.cn-c{grid-area:c;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;}
+.cn-m{grid-area:m;color:var(--ink-soft);font-size:.88rem;}
+.cn-x{grid-area:x;min-width:0;}
+.cn-b{grid-area:b;display:flex;align-items:center;gap:6px;margin-top:4px;}
+.cn-star{grid-area:star;position:static;align-self:start;}
+.cn-en{font-size:.95rem;line-height:1.45;}
+.cn-hl{color:var(--cc);font-weight:800;}
+.cn-es{color:var(--ink-soft);font-size:.83rem;margin-top:2px;}
+.cn-note{color:var(--purple);font-size:.76rem;margin-top:3px;}
+:root[data-theme="dark"] .cn-note{color:#B7A5FF;}
+.cn-fm{font-size:.68rem;border:1px solid var(--line);color:var(--ink-soft);border-radius:999px;padding:1px 9px;}
+@media (min-width:800px){
+  .cn-head{display:grid;grid-template-columns:170px 150px minmax(0,1fr) 130px 40px;gap:0 12px;padding:9px 16px;background:var(--surface);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:800;}
+  .cn-row{grid-template-columns:170px 150px minmax(0,1fr) 130px 40px;grid-template-areas:"c m x b star";gap:0 12px;align-items:start;}
+  .cn-b{margin-top:2px;}
+}
+/* CONECTORES-CSS:END */
 /* PERFIL-UI-CSS:BEGIN */
 .pf-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
 .pf-av{width:48px;height:48px;font-size:1.4rem;}
@@ -1955,6 +2002,7 @@ const NAV = [
     {id:"expressions", label:"Expresiones"},
     {id:"falsefriends", label:"Falsos Amigos"},
     {id:"howtosay", label:"Cómo se dice"},
+    {id:"connectors", label:"Conectores", only:"en"},
     {id:"vocabtopics", label:"Vocabulario por Temas"},
     {id:"es2pt", label:"Español → Portugués", only:"pt"},
   ]},
@@ -1979,6 +2027,7 @@ const EX_TABS = [
   {id:"vocabtype", icon:"keyboard", label:"Escribe la palabra"},
   {id:"vocabcloze", icon:"search", label:"Completa la frase"},
   {id:"collocations", icon:"link", label:"Colocaciones"},
+  {id:"connectors", icon:"link", label:"Conectores"},
   {id:"wordfamily", icon:"puzzle", label:"Familias de palabras"},
   {id:"dialogue", icon:"chat", label:"Diálogos"},
   {id:"translate", icon:"lightning", label:"Traducción"},
@@ -3393,6 +3442,66 @@ do away with|I|eliminar / acabar con|They did away with the old rules.|Eliminaro
 });
 ALL_PHRASAL.push(...PHRASAL_EXTRA.map(x=> ({...x, theme:"Más comunes"})));
 /* PHRASAL-EXTRA:END */
+/* PHRASAL-EXTRA2:BEGIN — 54 phrasal verbs para completar los 12 verbos núcleo (get, take, put, look, make, go, come, turn, give, bring, run, set) y poder estudiarlos «por verbo». Se añaden al final de ALL_PHRASAL para no mover los ids del SRS. */
+const PHRASAL_EXTRA2 = `get together|T|reunirse|We get together every Sunday for lunch.|Nos reunimos todos los domingos para almorzar.|They didn't get together after the meeting.|No se reunieron después de la reunión.|When can we get together?|¿Cuándo podemos reunirnos?|B1
+get around|T|moverse / desplazarse|It's easy to get around by bus here.|Aquí es fácil moverse en autobús.|We can't get around without a map.|No podemos movernos sin un mapa.|How do you get around in Bogotá?|¿Cómo te mueves por Bogotá?|B2
+get into|I|entrar en / meterse en|She got into the car and drove away.|Se subió al coche y se fue.|He didn't get into the university.|No entró a la universidad.|How did you get into acting?|¿Cómo empezaste en la actuación?|B1
+get ahead|T|salir adelante|If you want to get ahead, you have to work hard.|Si quieres salir adelante, tienes que trabajar duro.|He didn't get ahead in that company.|No progresó en esa empresa.|How can I get ahead in my career?|¿Cómo puedo progresar en mi carrera?|B2
+take in|S|asimilar / engañar|I couldn't take in all the information.|No pude asimilar toda la información.|She didn't take in what he said.|No asimiló lo que él dijo.|Did you take in the news?|¿Asimilaste la noticia?|C1
+take down|S|anotar / desmontar|The waiter took down our order.|El camarero anotó nuestro pedido.|He didn't take down the address.|No anotó la dirección.|Can you take down my number?|¿Puedes anotar mi número?|B2
+take back|S|devolver / retractarse|I'll take the shirt back to the store.|Devolveré la camisa a la tienda.|She didn't take back what she said.|No se retractó de lo que dijo.|Will you take it back?|¿Lo devolverás?|B1
+take apart|S|desarmar|He took the radio apart to fix it.|Desarmó la radio para arreglarla.|They didn't take the engine apart.|No desarmaron el motor.|Can you take this apart?|¿Puedes desarmar esto?|B2
+put back|S|devolver|Please put the book back on the shelf.|Por favor, devuelve el libro al estante.|She didn't put the keys back.|No devolvió las llaves a su sitio.|Did you put it back?|¿Lo devolviste a su sitio?|A2
+put together|S|armar / montar|We put together the desk in an hour.|Armamos el escritorio en una hora.|They didn't put the plan together.|No armaron el plan.|Can you put this together?|¿Puedes armar esto?|B1
+put in|S|instalar / dedicar (esfuerzo)|They put in a new kitchen last year.|Instalaron una cocina nueva el año pasado.|He didn't put in much effort.|No puso mucho esfuerzo.|How many hours did you put in?|¿Cuántas horas dedicaste?|B2
+put forward|S|proponer|She put forward a great idea.|Propuso una gran idea.|They didn't put forward any plan.|No propusieron ningún plan.|Who put forward this proposal?|¿Quién presentó esta propuesta?|C1
+look for|I|buscar|I'm looking for my keys.|Estoy buscando mis llaves.|She didn't look for a new job.|No buscó un trabajo nuevo.|What are you looking for?|¿Qué estás buscando?|A2
+look out|T|tener cuidado|Look out! There's a car coming.|¡Cuidado! Viene un coche.|He didn't look out, and he fell.|No tuvo cuidado y se cayó.|Why didn't you look out?|¿Por qué no tuviste cuidado?|A2
+look around|T|echar un vistazo|We looked around the old town all afternoon.|Recorrimos el casco antiguo toda la tarde.|She didn't look around the house.|No miró la casa.|Can I look around?|¿Puedo echar un vistazo?|A2
+look over|S|revisar|Please look over my essay before Friday.|Por favor, revisa mi ensayo antes del viernes.|He didn't look over the contract.|No revisó el contrato.|Can you look this over?|¿Puedes revisar esto?|B2
+look back|T|mirar atrás / recordar|I often look back on my school days.|A menudo recuerdo mis días de escuela.|Don't look back; keep moving.|No mires atrás; sigue avanzando.|Do you ever look back on that time?|¿Alguna vez recuerdas esa época?|B2
+look up to|I|admirar|I look up to my grandmother.|Admiro a mi abuela.|He doesn't look up to his boss.|No admira a su jefe.|Who do you look up to?|¿A quién admiras?|B2
+make out|S|distinguir / entender|I can't make out what he's saying.|No logro entender lo que dice.|She couldn't make out the number.|No pudo distinguir el número.|Can you make out that sign?|¿Puedes distinguir ese cartel?|B2
+make up for|I|compensar|I'll make up for the lost time.|Compensaré el tiempo perdido.|The food didn't make up for the bad service.|La comida no compensó el mal servicio.|How can I make up for it?|¿Cómo puedo compensarlo?|C1
+make for|I|dirigirse a|We made for the nearest shelter.|Nos dirigimos al refugio más cercano.|They didn't make for the exit.|No se dirigieron a la salida.|Which way are you making for?|¿Hacia dónde te diriges?|C1
+make into|S|convertir en|They made the barn into a house.|Convirtieron el granero en una casa.|We didn't make it into a big issue.|No lo convertimos en un gran problema.|Can you make this into a costume?|¿Puedes convertir esto en un disfraz?|C1
+make of|I|opinar de / entender|What do you make of the news?|¿Qué opinas de la noticia?|I couldn't make anything of it.|No pude entender nada de eso.|What did she make of your idea?|¿Qué le pareció tu idea?|C1
+go down|T|bajar / descender|Prices went down last month.|Los precios bajaron el mes pasado.|The temperature didn't go down at night.|La temperatura no bajó por la noche.|Did the price go down?|¿Bajó el precio?|A2
+go up|T|subir|Prices go up every year.|Los precios suben cada año.|The rent didn't go up this year.|El alquiler no subió este año.|Will the price go up?|¿Subirá el precio?|A2
+go away|T|irse / alejarse|Go away! I'm busy.|¡Vete! Estoy ocupado.|The pain didn't go away.|El dolor no se fue.|When will the rain go away?|¿Cuándo se irá la lluvia?|A2
+go for|I|elegir / ir por|I'll go for the chicken, please.|Elegiré el pollo, por favor.|He didn't go for the job.|No fue por el puesto.|Which one did you go for?|¿Cuál elegiste?|B1
+go along with|I|estar de acuerdo con / aceptar|I can't go along with that idea.|No puedo aceptar esa idea.|She didn't go along with the plan.|No aceptó el plan.|Do you go along with them?|¿Estás de acuerdo con ellos?|C1
+go without|I|pasar sin|We had to go without water for a day.|Tuvimos que pasar un día sin agua.|They didn't go without food.|No se quedaron sin comida.|Could you go without coffee?|¿Podrías pasar sin café?|B2
+come down|T|bajar / disminuir|Please come down; dinner is ready.|Baja, por favor; la cena está lista.|Prices didn't come down this year.|Los precios no bajaron este año.|When will the price come down?|¿Cuándo bajará el precio?|A2
+come over|T|venir (a casa)|Come over for dinner tonight.|Ven a cenar esta noche.|He didn't come over on Sunday.|No vino el domingo.|Can you come over later?|¿Puedes venir más tarde?|A2
+come along|T|acompañar / venir|Why don't you come along with us?|¿Por qué no vienes con nosotros?|She didn't come along to the party.|No vino a la fiesta.|Are you coming along?|¿Vienes con nosotros?|B1
+come apart|T|deshacerse / romperse|The old book came apart in my hands.|El libro viejo se deshizo en mis manos.|The toy didn't come apart.|El juguete no se rompió.|Did the chair come apart?|¿Se desarmó la silla?|B2
+come through|I|superar / cumplir|She came through the surgery well.|Superó bien la cirugía.|The money didn't come through in time.|El dinero no llegó a tiempo.|Did the loan come through?|¿Llegó el préstamo?|C1
+turn around|T|dar la vuelta|Turn around and look at me.|Date la vuelta y mírame.|He didn't turn around when I called.|No se dio la vuelta cuando lo llamé.|Can you turn around here?|¿Puedes dar la vuelta aquí?|A2
+turn away|S|rechazar / apartar|The club turned away many people.|El club rechazó a mucha gente.|She didn't turn her face away.|No apartó la cara.|Why did they turn you away?|¿Por qué te rechazaron?|B2
+turn in|S|entregar|Please turn in your homework today.|Por favor, entrega tu tarea hoy.|He didn't turn in the report.|No entregó el informe.|Did you turn in your essay?|¿Entregaste tu ensayo?|B1
+turn back|T|dar marcha atrás|We had to turn back because of the storm.|Tuvimos que volver por la tormenta.|They didn't turn back.|No dieron marcha atrás.|Should we turn back now?|¿Debemos volver ahora?|B2
+give back|S|devolver|Please give me my book back.|Por favor, devuélveme mi libro.|He didn't give the money back.|No devolvió el dinero.|Will you give it back?|¿Lo devolverás?|A2
+give up on|I|renunciar a / perder la fe en|Don't give up on your dreams.|No renuncies a tus sueños.|She didn't give up on him.|No perdió la fe en él.|Have you given up on the project?|¿Has renunciado al proyecto?|B2
+bring down|S|derribar / reducir|The new tax could bring down the government.|El nuevo impuesto podría derribar al gobierno.|The medicine didn't bring down his fever.|La medicina no le bajó la fiebre.|How can we bring down costs?|¿Cómo podemos reducir los costos?|C1
+bring in|S|traer / generar|The shop brings in a lot of money.|La tienda genera mucho dinero.|They didn't bring in any new ideas.|No aportaron ideas nuevas.|Who brought in the cake?|¿Quién trajo el pastel?|B2
+bring out|S|lanzar / resaltar|The company will bring out a new phone.|La empresa lanzará un teléfono nuevo.|The color didn't bring out her eyes.|El color no resaltó sus ojos.|When do they bring out the new model?|¿Cuándo sacan el modelo nuevo?|B2
+bring together|S|reunir|The festival brings people together.|El festival reúne a la gente.|The crisis didn't bring them together.|La crisis no los unió.|Can we bring everyone together?|¿Podemos reunir a todos?|B2
+bring forward|S|adelantar|They brought the meeting forward to Monday.|Adelantaron la reunión al lunes.|We didn't bring the date forward.|No adelantamos la fecha.|Can you bring it forward?|¿Puedes adelantarlo?|C1
+run away|T|escaparse|The dog ran away from home.|El perro se escapó de casa.|He didn't run away from the problem.|No huyó del problema.|Why did you run away?|¿Por qué huiste?|A2
+run down|S|atropellar / criticar|A car nearly ran him down.|Un coche casi lo atropella.|She didn't run down her coworkers.|No criticó a sus compañeros.|Did the battery run down?|¿Se agotó la batería?|C1
+run through|I|repasar|Let's run through the plan once more.|Repasemos el plan una vez más.|We didn't run through the whole script.|No repasamos todo el guion.|Can we run through it quickly?|¿Podemos repasarlo rápido?|C1
+run off|T|escaparse / huir|The thief ran off with my bag.|El ladrón huyó con mi bolso.|He didn't run off.|No huyó.|Which way did they run off?|¿Hacia dónde huyeron?|B2
+run up|S|acumular (deudas)|He ran up a huge bill at the hotel.|Acumuló una cuenta enorme en el hotel.|She didn't run up any debt.|No acumuló ninguna deuda.|How did they run up so much debt?|¿Cómo acumularon tanta deuda?|C1
+set out|T|salir / emprender un viaje|They set out at dawn.|Salieron al amanecer.|We didn't set out until noon.|No salimos hasta el mediodía.|When do we set out?|¿Cuándo salimos?|B2
+set aside|S|apartar / reservar|I set aside some money each month.|Aparto algo de dinero cada mes.|He didn't set aside any time for it.|No reservó tiempo para eso.|Can you set an hour aside?|¿Puedes reservar una hora?|C1
+set back|S|retrasar|The storm set back our plans by a week.|La tormenta retrasó nuestros planes una semana.|The delay didn't set us back.|El retraso no nos atrasó.|Did the rain set the project back?|¿La lluvia retrasó el proyecto?|C1
+set down|S|dejar / posar|She set the tray down carefully.|Dejó la bandeja con cuidado.|He didn't set the box down.|No dejó la caja.|Where should I set this down?|¿Dónde dejo esto?|B2`.split("\n").map(l=>{
+  const f = l.split("|");
+  return {phrase:f[0], type:{T:"Intransitivo", S:"Separable", I:"Inseparable"}[f[1]], es:f[2], example:f[3], esExample:f[4], neg:f[5], esNeg:f[6], q:f[7], esQ:f[8], level:f[9]};
+});
+ALL_PHRASAL.push(...PHRASAL_EXTRA2.map(x=> ({...x, theme:"Más comunes"})));
+/* PHRASAL-EXTRA2:END */
 
 /* ---------- FRASES ÚTILES POR SITUACIÓN ---------- */
 const SITUATION_THEMES = [
@@ -20255,7 +20364,7 @@ let _exerciseLevelOverride = null;
 let activeSection = "home";
 let activeExercise = "vocab";
 const stats = {};
-["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt","theoryq","vocabtype","vocabcloze","collocations","wordfamily","verbcards"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
+["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt","theoryq","vocabtype","vocabcloze","collocations","wordfamily","verbcards","connectors"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
 const current = {};
 const dailyStreak = {count:0, lastDate:null};   // racha diaria global, distinta de stats[id].streak
 const weeklyHistory = [];  // [{weekStart, exercisesDone, correct, correctRate}] — últimas 12 semanas
@@ -20321,7 +20430,7 @@ let currentLang = "en";
    Mientras un idioma no esté en LANG_PACKS_READY, estas secciones
    muestran un aviso de "en construcción" en vez de contenido en inglés
    bajo un idioma distinto. */
-const LANG_GATED_SECTIONS = ["route","theory","categories","phrasal","verbs","situations","expressions","falsefriends","howtosay","vocabtopics","placement","exams","exercises"];
+const LANG_GATED_SECTIONS = ["route","theory","categories","phrasal","verbs","situations","expressions","falsefriends","howtosay","connectors","vocabtopics","placement","exams","exercises"];
 /* Qué secciones ya tienen contenido real por idioma (más allá de "en",
    que siempre las tiene todas). Una sección ausente de un idioma en
    este mapa se trata como no lista. */
@@ -22399,6 +22508,63 @@ function drawColloc(){
   document.getElementById("colNext").onclick = newCollocQuestion;
 }
 
+/* ---- Conectores ---- */
+const connFilterOn = ()=> !!CONNECTOR_FILTER && activeSection === "exercises" && activeExercise === "connectors" && !(typeof practiceTodaySession !== "undefined" && practiceTodaySession);
+function connFilterHtml(){
+  if(!connFilterOn()) return "";
+  return `<div class="pv-filter"><span>Practicando: <b>${escHtml(CONNECTOR_FILTER.label)}</b> (${CONNECTOR_FILTER.idxs.length})</span><button type="button" class="uc-link" id="cnClear">Practicar todos</button></div>`;
+}
+function connPickFiltered(){
+  SRS_TICK++;
+  const idxs = CONNECTOR_FILTER.idxs, now = Date.now(), sd = i=> SRS_DATA[`connector:${i}`], last = LAST_PICKED_ID["connector"];
+  const due = idxs.filter(i=> sd(i) && sd(i).dueAt <= now).sort((a, b)=> (sd(a).box - sd(b).box) || (sd(a).dueAt - sd(b).dueAt));
+  let i, review = false;
+  if(due.length && Math.random() < 0.65 && `connector:${due[0]}` !== last){ i = due[0]; review = true; }
+  else{ const c = idxs.filter(k=> `connector:${k}` !== last), pool = c.length ? c : idxs; i = pool[Math.floor(Math.random() * pool.length)]; review = !!sd(i); }
+  const id = `connector:${i}`; SRS_ITEM_CACHE[id] = CONNECTORS[i]; LAST_PICKED_ID["connector"] = id;
+  return {item:CONNECTORS[i], id, review};
+}
+function newConnectorQuestion(){
+  const {item, id, review} = connFilterOn() ? connPickFiltered() : srsPick(CONNECTORS, "connector");
+  const twin = CONN_TWIN[item.cat], seen = new Set([item.c.toLowerCase()]), dist = [];
+  for(const x of shuffle(CONNECTORS.filter(x=> x.cat !== item.cat && x.cat !== twin))){
+    if(dist.length >= 3) break;
+    const k = x.c.toLowerCase(); if(seen.has(k)) continue;
+    seen.add(k); dist.push(x.c);
+  }
+  current.connectors = {item, id, review, opts:shuffle([item.c, ...dist])};
+  drawConnector();
+}
+function drawConnector(){
+  const {item, id, review, opts} = current.connectors, cat = connCat(item.cat), sp = connSplit(item);
+  const gap = `${sp.before}_____${sp.after}`;
+  document.getElementById("exPanel").innerHTML = `
+    <div class="card">
+      ${connFilterHtml()}
+      ${scoreRowHtml("connectors")}
+      <div class="q-top"><span class="badge-level">${item.lv}</span><div class="q-text">Elige el conector que completa la frase:<span class="ex-es" style="font-size:1.1rem;color:var(--ink);"><b>${escHtml(gap)}</b></span><span class="ex-es">${escHtml(item.exEs)}</span></div>${reviewBadge(review)}</div>
+      <div class="options" id="cnOpts">${opts.map(o=> `<button class="opt-btn" data-val="${escHtml(o)}">${escHtml(o)}</button>`).join("")}</div>
+      <div class="feedback" role="status" aria-live="polite" id="cnFb"></div>
+      <div class="btn-row"><button class="btn" id="cnNext" type="button" style="display:none;">Siguiente →</button></div>
+    </div>`;
+  const btns = document.querySelectorAll("#cnOpts .opt-btn");
+  btns.forEach(b=> b.onclick = ()=>{
+    btns.forEach(o=> o.disabled = true);
+    const ok = b.dataset.val === item.c, cb = [...btns].find(o=> o.dataset.val === item.c);
+    if(ok){ b.classList.add("correct"); popHighlight(cb, "#22C55E"); } else { b.classList.add("wrong", "shake"); cb.classList.add("correct"); }
+    srsUpdate(id, ok);
+    if(ok) clearErrorIfMastered(id); else recordError(id, "connectors", item.lv, gap, item.c, `${cat.title}: ${item.es}. ${item.note}`);
+    registerAnswer("connectors", ok);
+    announce(ok ? "Correcto" : "Incorrecto. Es " + item.c);
+    const fb = document.getElementById("cnFb");
+    fb.className = "feedback show " + (ok ? "ok" : "bad");
+    fb.innerHTML = `<strong>${ok ? "¡Correcto! 🎉" : "Casi 😉"}</strong>«<b>${escHtml(item.c)}</b>» (${escHtml(cat.title)}: ${escHtml(item.es)}). ${escHtml(item.note)}`;
+    if(ok) setTimeout(newConnectorQuestion, 1500); else document.getElementById("cnNext").style.display = "inline-block";
+  });
+  document.getElementById("cnNext").onclick = newConnectorQuestion;
+  const cc = document.getElementById("cnClear"); if(cc) cc.onclick = ()=>{ CONNECTOR_FILTER = null; newConnectorQuestion(); };
+}
+
 /* ---- Familias de palabras ---- */
 function wordFamPool(lv){
   const own = LEXICON_DATA.wordfam[currentLang][lv] || [], use = (typeof USE_LANG !== "undefined" && USE_LANG[currentLang].wordform[lv]) || [];
@@ -23585,7 +23751,7 @@ document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); }
 /* =========================================================
    HEADER: nav + level bar
    ========================================================= */
-const NAV_ICONS = {utils:"compass", home:"home", route:"route", placement:"target", theory:"book", categories:"tag", phrasal:"puzzle", situations:"compass", expressions:"chat", falsefriends:"burst", howtosay:"search", vocabtopics:"flashcards", es2pt:"shuffle", verbs:"books", exercises:"pencil", exams:"clock", profile:"user"};
+const NAV_ICONS = {utils:"compass", home:"home", route:"route", placement:"target", theory:"book", categories:"tag", phrasal:"puzzle", situations:"compass", expressions:"chat", falsefriends:"burst", howtosay:"search", connectors:"link", vocabtopics:"flashcards", es2pt:"shuffle", verbs:"books", exercises:"pencil", exams:"clock", profile:"user"};
 function resetSectionState(id){
   if(id==="theory"){ activeTheoryTopic = null; theoryReturnTo = null; }
   if(id==="phrasal"){ activePhrasalTheme = null; pvPage = "home"; pvQ = ""; }
@@ -23755,6 +23921,7 @@ function goTo(sectionId){
     if(sectionId==="expressions") renderExpressions();
     if(sectionId==="falsefriends") renderFalseFriends();
     if(sectionId==="howtosay") renderHowToSay();
+    if(sectionId==="connectors") renderConnectors();
     if(sectionId==="vocabtopics") renderVocabTopics();
     if(sectionId==="es2pt") renderEs2pt();
     if(sectionId==="verbs") renderVerbs();
@@ -23992,7 +24159,7 @@ function renderRadarSVG(skills){
    (más "order"->Gramática, "translate"->Vocabulario, "dialogue"->Listening,
    que el radar no cubre pero sí cuentan como ejercicios hechos). */
 const DAILY_ACTIVITY_CATS = [
-  {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","verbcards","wordclass","phrasal","order","theoryq"]},
+  {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","verbcards","wordclass","phrasal","order","theoryq","connectors"]},
   {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics","matchpairs","es2pt","vocabtype","vocabcloze","collocations","wordfamily"]},
   {label:"Listening", color:"var(--blue)", gradId:"gListening", from:"#2E9CDB", to:"#8DD0F5", ids:["listen","dialogue","minimalpairs"]},
   {label:"Reading", color:"var(--amber)", gradId:"gReading", from:"#F5A623", to:"#FBD38D", ids:["reading","readingcloze","readingletters"]},
@@ -25876,7 +26043,7 @@ function renderPhrasal(){
 }
 /* PHRASAL-UI:BEGIN — Phrasal Verbs: inicio con buscador + «Top 25» + tarjetas de partículas; página por partícula (explicación extensa, lista A–Z con insignias), Top 25 y Todos. Ficha en columnas (escritorio) o panel inferior (móvil), favoritos y práctica del grupo mostrado. */
 const PV_LV = {A1:"#34D399", A2:"#2CC0D8", B1:"#4C9AFF", B2:"#8E6CFF", C1:"#FF6B9A", C2:"#FFB020"};
-const PV_PARTS = new Set("up down on off out in over away back for with about around through by along apart across ahead forward into to from of at after against together behind aside".split(" "));
+const PV_PARTS = new Set("up down on off out in over away back for with about around through by along apart across ahead forward into to from of at after against together behind aside without".split(" "));
 const PV_FRAMES = [["Afirmación", "example", "esExample", "#1FB58A"], ["Negación", "neg", "esNeg", "#E2408A"], ["Pregunta", "q", "esQ", "#3D8BFF"]];
 /* Orden real de frecuencia de los 25 primeros: PHaVE List (Garnier y Schmitt, 2015). */
 const PV_RANK = Object.fromEntries("go on,pick up,come back,come up,go back,find out,come out,go out,point out,grow up,set up,turn out,get out,come in,take on,give up,make up,end up,get back,look up,figure out,sit down,get up,take out,come on".split(",").map((p, i)=> [p, i + 1]));
@@ -25901,7 +26068,22 @@ const PV_INFO = {
   THROUGH:{k:"Atravesar hasta el final", t:["La partícula <em>through</em> expresa atravesar algo de un extremo al otro: pasar por una experiencia difícil (go through), superarla o completarla (get through) y llevar algo hasta el final (follow through).", "Piensa en un túnel: entras, avanzas y sales por el otro lado. Por eso muchos verbos con <em>through</em> hablan de aguantar, avanzar y terminar.", "<em>get through</em>: I finally got through the exam.<span class=\"pv-s\">Por fin logré superar el examen.</span>"]},
   TO:{k:"Dirección u objetivo", t:["La partícula <em>to</em> aparece al final de phrasal verbs de tres partes que expresan actitud o resultado: anticipar con ganas (look forward to), admitir algo (own up to) o resumirse en (boil down to).", "Aquí <em>to</em> es una preposición, no el infinitivo: después va un sustantivo o un verbo en -ing (<em>look forward to seeing you</em>). Es un error frecuente decir «look forward to see».", "<em>look forward to</em>: I look forward to meeting you.<span class=\"pv-s\">Tengo ganas de conocerte.</span>"]}
 };
-let pvPage = "home", pvQ = "", pvSel = null, pvWasWide = null, pvSheetFrom = null, _pvItems = null, PHRASAL_FILTER = null;
+/* Explicación de cada verbo base (vista «Por verbo»): k = idea clave (tarjeta); t = qué aporta el verbo y cómo cambia con la partícula. */
+const PV_VERB_INFO = {
+  GET:{k:"Obtener, llegar o volverse", t:"<em>Get</em> es el verbo más versátil: obtener (get out of), llegar o moverse (get in, get around), volverse (get up, get on) y relacionarse (get along). La partícula aclara si el movimiento es hacia dentro, fuera, arriba o a través."},
+  COME:{k:"Venir o llegar hacia quien habla", t:"<em>Come</em> marca un movimiento hacia quien habla o hacia un lugar: venir (come over, come along), aparecer o surgir (come up, come out) y volver (come back). Con <em>down</em> o <em>apart</em> pasa a descender o deshacerse."},
+  GO:{k:"Alejarse, avanzar o continuar", t:"<em>Go</em> expresa movimiento que se aleja o avanza: irse (go away, go out), seguir adelante (go on, go ahead), subir o bajar (go up, go down) y explotar o sonar (go off). Con <em>through</em> o <em>over</em> habla de repasar o atravesar."},
+  TURN:{k:"Girar, cambiar o encender", t:"<em>Turn</em> es girar: dar la vuelta (turn around, turn back), cambiar de estado (turn into, turn out) y manejar aparatos (turn on, turn off, turn up, turn down)."},
+  PUT:{k:"Colocar algo en un lugar", t:"<em>Put</em> es poner o colocar algo, y la partícula decide dónde y cómo: encima (put on), fuera (put off, put out), abajo (put down), guardado (put away) o de vuelta (put back)."},
+  TAKE:{k:"Tomar, llevar o quitar", t:"<em>Take</em> es tomar o llevar: quitarse ropa (take off), asumir algo (take on, take over), empezar una actividad (take up) y desmontar (take apart, take down)."},
+  LOOK:{k:"Mirar, buscar o cuidar", t:"<em>Look</em> parte de mirar y se extiende a buscar (look for), investigar (look into, look up), cuidar (look after) y esperar con ganas (look forward to)."},
+  RUN:{k:"Correr, huir o funcionar", t:"<em>Run</em> parte de correr: escaparse (run away, run off), quedarse sin algo (run out of), encontrarse con alguien (run into) y atropellar o criticar (run down, run over)."},
+  BRING:{k:"Traer o provocar", t:"<em>Bring</em> es traer: llevar algo hacia quien habla (bring back, bring in), mencionar un tema (bring up), provocar algo (bring about) o reunir (bring together)."},
+  SET:{k:"Poner en marcha o preparar", t:"<em>Set</em> es fijar o poner en marcha: montar o crear (set up), partir (set off, set out), reservar (set aside) y retrasar (set back)."},
+  GIVE:{k:"Dar, entregar o rendirse", t:"<em>Give</em> es dar: repartir (give out, give away), devolver (give back), ceder o rendirse (give in, give up) y emitir (give off)."},
+  MAKE:{k:"Crear, inventar o compensar", t:"<em>Make</em> es hacer o crear: inventar (make up), distinguir o entender (make out), compensar (make up for) y convertir (make into)."}
+};
+let pvPage = "home", pvMode = "part", pvQ = "", pvSel = null, pvWasWide = null, pvSheetFrom = null, _pvItems = null, PHRASAL_FILTER = null;
 function pvWide(){ return window.matchMedia("(min-width: 900px)").matches; }
 function pvHl(phrase){ return String(phrase).split(" ").map((w, i)=> i > 0 && PV_PARTS.has(w.toLowerCase()) ? `<span class="pv-p">${escHtml(w)}</span>` : escHtml(w)).join(" "); }
 function pvFavId(pv){ return `pvfav:${pv.phrase}`; }
@@ -25924,17 +26106,31 @@ function pvParticles(){
   const c = {}; pvItems().forEach(it=>{ const w = it.key.split(" ").pop(); if(PV_PARTS.has(w)) c[w] = (c[w] || 0) + 1; });
   return Object.keys(c).filter(w=> PV_INFO[w.toUpperCase()] || c[w] >= 3).sort((a, b)=> c[b] - c[a] || a.localeCompare(b)).map(w=> ({w, n:c[w]}));
 }
+/* Verbos base con 3 o más phrasal verbs (primera palabra), del más completo al menos. */
+function pvVerbs(){
+  const c = {}; pvItems().forEach(it=>{ const w = it.key.split(" ")[0]; c[w] = (c[w] || 0) + 1; });
+  return Object.keys(c).filter(w=> c[w] >= 3).sort((a, b)=> c[b] - c[a] || a.localeCompare(b)).map(w=> ({w, n:c[w]}));
+}
+const pvIsVerb = page=> typeof page === "string" && page.startsWith("v:");
 function pvGroupItems(page){
   const all = pvItems();
   if(page === "top") return all.filter(x=> x.rank).sort((a, b)=> a.rank - b.rank);
   if(page === "all") return [...all].sort(pvAz);
+  if(pvIsVerb(page)){ const v = page.slice(2); return all.filter(x=> x.key.split(" ")[0] === v).sort(pvAz); }
   return all.filter(x=> x.key.split(" ").pop() === page).sort(pvAz);
 }
+const PV_LVL_ORD = {A1:1, A2:2, B1:3, B2:4, C1:5, C2:6};
+/* Hasta 8 phrasals para el radial: primero los del ranking, luego los «muy comunes», por nivel y A–Z. */
+function pvRadialItems(items){
+  return [...items].sort((a, b)=> (a.rank || 999) - (b.rank || 999) || (b.common - a.common) || (PV_LVL_ORD[a.level] - PV_LVL_ORD[b.level]) || pvAz(a, b)).slice(0, 8);
+}
+const pvShortEs = es=> String(es).split(" / ")[0].replace(/\s*\(.*$/, "");
 function pvSearchItems(){
   const q = tsNorm(pvQ).trim();
   return pvItems().filter(x=> tsNorm(x.pv.phrase).includes(q) || tsNorm(x.pv.es).includes(q)).sort(pvAz);
 }
-function pvLabel(){ return pvPage === "top" ? "Top 25" : pvPage === "all" ? "Todos" : pvPage.toUpperCase(); }
+function pvLabel(){ return pvPage === "top" ? "Top 25" : pvPage === "all" ? "Todos" : pvIsVerb(pvPage) ? pvPage.slice(2).toUpperCase() : pvPage.toUpperCase(); }
+function pvRepaint(){ if(pvIsVerb(pvPage)) pvVerbPaint(); else pvPaint(); }
 function pvRow(it, on, lead){
   const fav = isWordSaved(pvFavId(it.pv));
   return `<div class="pv-row${on ? " on" : ""}" role="button" tabindex="0" data-k="${escHtml(it.key)}" style="--lv:${PV_LV[it.level] || "#8E6CFF"}" aria-label="${escHtml(it.pv.phrase)}: ${escHtml(it.pv.es)}">
@@ -25949,7 +26145,13 @@ function pvBadges(it){
 function pvBindRows(root){
   const find = k=> pvItems().find(x=> x.key === k);
   root.querySelectorAll(".pv-row").forEach(r=>{
-    const open = ()=>{ const it = find(r.dataset.k); if(!it) return; if(pvWide() && document.getElementById("pvCard")){ pvSel = it.key; pvPaint(); } else pvOpenSheet(it, r); };
+    const open = ()=>{
+      const it = find(r.dataset.k); if(!it) return;
+      if((pvWide() || pvIsVerb(pvPage)) && document.getElementById("pvCard")){
+        pvSel = it.key; pvRepaint();
+        if(pvIsVerb(pvPage) && !pvWide()) document.getElementById("pvCard").scrollIntoView({block:"nearest", behavior:"smooth"});
+      } else pvOpenSheet(it, r);
+    };
     r.onclick = e=>{ if(e.target.closest(".pv-star")) return; open(); };
     r.onkeydown = e=>{ if((e.key === "Enter" || e.key === " ") && !e.target.closest(".pv-star")){ e.preventDefault(); open(); } };
   });
@@ -26005,26 +26207,32 @@ function pvDrawHome(){
     <div class="section-head">
       <div class="eyebrow">Vocabulario</div>
       <h2>Phrasal Verbs</h2>
-      <p>Empieza por los más usados o explora por partícula: cada una cambia el sentido del verbo de una forma reconocible. La partícula va en <span class="pv-p">morado</span> y la franja de cada fila indica el nivel.</p>
+      <p>Empieza por los más usados o explora por partícula o por verbo: la partícula cambia el sentido del verbo de una forma reconocible, y cada verbo base agrupa todos sus phrasal verbs. La partícula va en <span class="pv-p">morado</span> y la franja de cada fila indica el nivel.</p>
     </div>
     <div class="pv-bar">
       <input type="search" class="vv-search" id="pvSearch" placeholder="Buscar…" autocomplete="off" aria-label="Buscar phrasal verb o significado" value="${escHtml(pvQ)}">
       <button type="button" class="pv-topb" id="pvTop">Top 25 más usados ›</button>
     </div>
+    <div class="pv-mode" role="tablist" aria-label="Explorar por"><button type="button" class="pv-mb" role="tab" data-m="part">Por partícula</button><button type="button" class="pv-mb" role="tab" data-m="verb">Por verbo</button></div>
     <div id="pvHomeBody"></div>`;
   const body = document.getElementById("pvHomeBody");
   const paint = ()=>{
+    document.querySelectorAll(".pv-mb").forEach(b=>{ const on = b.dataset.m === pvMode; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
     if(pvQ.trim()){
       const hits = pvSearchItems();
       body.innerHTML = `<div class="pv-count" role="status" aria-live="polite">${hits.length} ${hits.length === 1 ? "resultado" : "resultados"} para «${escHtml(pvQ.trim())}»</div><div class="pv-list">${hits.length ? hits.map(it=> pvRow(it, false)).join("") : `<p class="pv-none">No encontré phrasal verbs con esa búsqueda.</p>`}</div>`;
       pvBindRows(body); return;
     }
-    body.innerHTML = `<div class="pv-sec">Explora por partícula</div>
-      <div class="pv-grid">${parts.map(p=> `<button type="button" class="pv-pc" data-v="${p.w}"><span class="pv-pc-p">${p.w.toUpperCase()}<i>${p.n}</i></span><span class="pv-pc-k">${escHtml((PV_INFO[p.w.toUpperCase()] || {}).k || `Phrasal verbs con «${p.w}»`)}</span></button>`).join("")}</div>
+    const byVerb = pvMode === "verb";
+    body.innerHTML = `<div class="pv-sec">${byVerb ? "Explora por verbo" : "Explora por partícula"}</div>
+      <div class="pv-grid">${byVerb
+        ? pvVerbs().map(p=> `<button type="button" class="pv-pc" data-v="v:${p.w}"><span class="pv-pc-p">${p.w.toUpperCase()}<i>${p.n}</i></span><span class="pv-pc-k">${escHtml((PV_VERB_INFO[p.w.toUpperCase()] || {}).k || `Phrasal verbs con «${p.w}»`)}</span></button>`).join("")
+        : parts.map(p=> `<button type="button" class="pv-pc" data-v="${p.w}"><span class="pv-pc-p">${p.w.toUpperCase()}<i>${p.n}</i></span><span class="pv-pc-k">${escHtml((PV_INFO[p.w.toUpperCase()] || {}).k || `Phrasal verbs con «${p.w}»`)}</span></button>`).join("")}</div>
       <button type="button" class="pv-all" id="pvAll">Ver todos los phrasal verbs (${total}) ›</button>`;
     body.querySelectorAll(".pv-pc").forEach(b=> b.onclick = ()=> pvGo(b.dataset.v));
     document.getElementById("pvAll").onclick = ()=> pvGo("all");
   };
+  document.querySelectorAll(".pv-mb").forEach(b=> b.onclick = ()=>{ pvMode = b.dataset.m; paint(); });
   document.getElementById("pvTop").onclick = ()=> pvGo("top");
   document.getElementById("pvSearch").addEventListener("input", e=>{ pvQ = e.target.value; paint(); });
   paint();
@@ -26036,11 +26244,42 @@ function pvPaint(){
   rows.innerHTML = items.map(it=> pvRow(it, wide && it.key === pvSel, pvPage === "top")).join("");
   const card = document.getElementById("pvCard");
   if(card){
-    const it = items.find(x=> x.key === pvSel), fav = it && isWordSaved(pvFavId(it.pv));
-    card.innerHTML = it ? `<div class="pv-card-h"><div class="pv-card-t">${pvHl(it.pv.phrase)}</div><button type="button" class="vv-star big pv-cs${fav ? " on" : ""}" id="pvCardStar" data-k="${escHtml(it.key)}" aria-label="Guardar en favoritos">${fav ? "★" : "☆"}</button></div><div class="pv-card-es">${escHtml(it.pv.es)}</div><div class="pv-sheet-lv">${pvBadges(it)}</div>${PV_FRAMES.map(f=> `<div class="pv-fr" style="--fc:${f[3]}"><small>${f[0]}</small><div class="pv-en">${wz(it.pv[f[1]])}</div><div class="pv-es">${escHtml(it.pv[f[2]])}</div></div>`).join("")}` : "";
+    const it = items.find(x=> x.key === pvSel);
+    card.innerHTML = pvCardHTML(it);
     const cs = document.getElementById("pvCardStar");
-    if(cs) cs.onclick = ()=>{ pvToggleFav(it); pvPaint(); };
+    if(cs) cs.onclick = ()=>{ pvToggleFav(it); pvRepaint(); };
   }
+  pvBindRows(rows);
+}
+/* Ficha del phrasal seleccionado (escritorio, y página de verbo en cualquier ancho). */
+function pvCardHTML(it){
+  if(!it) return "";
+  const fav = isWordSaved(pvFavId(it.pv));
+  return `<div class="pv-card-h"><div class="pv-card-t">${pvHl(it.pv.phrase)}</div><button type="button" class="vv-star big pv-cs${fav ? " on" : ""}" id="pvCardStar" data-k="${escHtml(it.key)}" aria-label="Guardar en favoritos">${fav ? "★" : "☆"}</button></div><div class="pv-card-es">${escHtml(it.pv.es)}</div><div class="pv-sheet-lv">${pvBadges(it)}</div>${PV_FRAMES.map(f=> `<div class="pv-fr" style="--fc:${f[3]}"><small>${f[0]}</small><div class="pv-en">${wz(it.pv[f[1]])}</div><div class="pv-es">${escHtml(it.pv[f[2]])}</div></div>`).join("")}`;
+}
+/* Radial: el verbo al centro y las partículas alrededor (posiciones en %, líneas en un SVG de viewBox fijo: escala sin medir el DOM). */
+function pvRadialHTML(verb, its){
+  const n = its.length, P = 38;
+  const pos = its.map((it, i)=>{ const a = -Math.PI / 2 + i * 2 * Math.PI / n; return {it, c:Math.cos(a), s:Math.sin(a)}; });
+  const lines = pos.map(p=> `<line x1="${(50 + 15 * p.c).toFixed(1)}" y1="${(50 + 15 * p.s).toFixed(1)}" x2="${(50 + 24 * p.c).toFixed(1)}" y2="${(50 + 24 * p.s).toFixed(1)}"/>`).join("");
+  const nodes = pos.map(p=> `<button type="button" class="pvr-n${p.it.key === pvSel ? " on" : ""}" data-k="${escHtml(p.it.key)}" style="left:${(50 + P * p.c).toFixed(1)}%;top:${(50 + P * p.s).toFixed(1)}%;--c:${PV_LV[p.it.level] || "#8E6CFF"}" aria-label="${escHtml(p.it.pv.phrase)}: ${escHtml(p.it.pv.es)}"><span class="pvr-p"><i></i>${escHtml(p.it.key.slice(verb.length + 1))}</span><small>${escHtml(pvShortEs(p.it.pv.es))}</small></button>`).join("");
+  return `<svg class="pvr-svg" viewBox="0 0 100 100" aria-hidden="true"><defs><marker id="pvrar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#8B7CFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><g stroke="#8E88A8" stroke-width=".5" fill="none" marker-end="url(#pvrar)">${lines}</g></svg><div class="pvr-c">${escHtml(verb)}</div>${nodes}`;
+}
+function pvVerbPaint(){
+  const verb = pvPage.slice(2), items = pvGroupItems(pvPage), rad = pvRadialItems(items), wide = pvWide();
+  if(!items.some(x=> x.key === pvSel)) pvSel = rad.length ? rad[0].key : null;
+  const box = document.getElementById("pvRadial"); if(!box) return;
+  box.innerHTML = pvRadialHTML(verb, rad);
+  box.querySelectorAll(".pvr-n").forEach(b=> b.onclick = ()=>{ pvSel = b.dataset.k; pvVerbPaint(); });
+  const card = document.getElementById("pvCard"), it = items.find(x=> x.key === pvSel);
+  card.innerHTML = pvCardHTML(it);
+  const cs = document.getElementById("pvCardStar");
+  if(cs) cs.onclick = ()=>{ pvToggleFav(it); pvVerbPaint(); };
+  const radKeys = new Set(rad.map(x=> x.key)), rest = wide ? items : items.filter(x=> !radKeys.has(x.key));
+  const rows = document.getElementById("pvRows"), title = document.getElementById("pvRestT");
+  title.textContent = wide ? `Todos los phrasal verbs con ${verb.toUpperCase()} · A–Z` : `Más con ${verb.toUpperCase()}`;
+  title.hidden = rows.hidden = !rest.length;
+  rows.innerHTML = rest.map(x=> pvRow(x, x.key === pvSel, false)).join("");
   pvBindRows(rows);
 }
 function pvDrawGroup(){
@@ -26048,19 +26287,22 @@ function pvDrawGroup(){
   let head;
   if(pvPage === "top") head = `<div class="eyebrow">Ranking de frecuencia</div><h2>Top 25 más usados</h2><p class="pv-lead">Ordenados por frecuencia real en inglés (PHaVE List, Garnier y Schmitt, 2015). El #1 es el más usado.</p>`;
   else if(pvPage === "all") head = `<div class="eyebrow">Phrasal Verbs</div><h2>Todos los phrasal verbs</h2>`;
+  else if(pvIsVerb(pvPage)){ const vi = PV_VERB_INFO[pvPage.slice(2).toUpperCase()]; head = `<div class="eyebrow">Verbo</div><div class="pv-big">${pvPage.slice(2).toUpperCase()}</div>${vi ? `<div class="pv-exp"><p>${vi.t}</p></div>` : `<p class="pv-lead">Phrasal verbs que empiezan con «${pvPage.slice(2)}».</p>`}`; }
   else head = `<div class="eyebrow">Partícula</div><div class="pv-big">${U}</div>${info ? `<div class="pv-exp">${info.t.map(t=> `<p>${t}</p>`).join("")}</div>` : `<p class="pv-lead">Phrasal verbs que terminan en «${pvPage}».</p>`}`;
-  const count = pvPage === "top" ? `${items.length} phrasal verbs · por frecuencia` : pvPage === "all" ? `${items.length} phrasal verbs · A–Z` : `${items.length} phrasal verbs con ${U} · A–Z`;
+  const count = pvPage === "top" ? `${items.length} phrasal verbs · por frecuencia` : pvPage === "all" ? `${items.length} phrasal verbs · A–Z` : pvIsVerb(pvPage) ? `${items.length} phrasal verbs con ${pvPage.slice(2).toUpperCase()} · toca una partícula` : `${items.length} phrasal verbs con ${U} · A–Z`;
   document.getElementById("panel-phrasal").innerHTML = `
     <div class="section-head"><button type="button" class="theory-back" id="pvBack">← Volver a Phrasal Verbs</button>${head}</div>
     <div class="pv-legend" aria-hidden="true">${Object.entries(PV_LV).map(([l, c])=> `<span><i style="background:${c}"></i>${l}</span>`).join("")}</div>
     <div class="pv-info"><span>${count}</span><button type="button" class="pv-prac" id="pvPractice">Practicar estos ›</button></div>
-    <div class="${wide ? "pv-cols" : ""}"><div class="pv-list" id="pvRows"></div>${wide ? `<aside class="pv-card" id="pvCard" aria-live="polite"></aside>` : ""}</div>`;
+    ${pvIsVerb(pvPage)
+      ? `<div class="pvr-wrap"><div class="pvr-box" id="pvRadial"></div><aside class="pv-card pvr-card" id="pvCard" aria-live="polite"></aside></div><div class="pv-sec" id="pvRestT"></div><div class="pv-list" id="pvRows"></div>`
+      : `<div class="${wide ? "pv-cols" : ""}"><div class="pv-list" id="pvRows"></div>${wide ? `<aside class="pv-card" id="pvCard" aria-live="polite"></aside>` : ""}</div>`}`;
   document.getElementById("pvBack").onclick = pvBack;
   document.getElementById("pvPractice").onclick = ()=>{
     PHRASAL_FILTER = {label:pvLabel(), idxs:pvGroupItems(pvPage).flatMap(x=> x.idxs)};
     delete current.phrasal; activeExercise = "phrasal"; goTo("exercises");
   };
-  pvPaint();
+  pvRepaint();
 }
 function drawPhrasalList(){
   if(window._pvPopV != null){ pvPage = window._pvPopV; window._pvPopV = null; pvQ = ""; }
@@ -26381,6 +26623,133 @@ function drawVocabTopicDetail(topicId){
   window.scrollTo({top:0, behavior:"auto"});
 }
 
+/* CONECTORES:BEGIN — Utilidades → Conectores (solo inglés): tabla de consulta por categoría + ejercicio «Conectores» (Ejercicios).
+   Los ids del SRS son la posición en CONNECTORS: solo se agregan al final. Formato: cat|conector|significado|ejemplo|traducción|nivel|registro|regla. */
+const CONNECTOR_CATS = [
+  {id:"add", title:"Adición", hint:"sumar una idea a la anterior", color:"#22C55E"},
+  {id:"con", title:"Contraste", hint:"oponer dos ideas", color:"#E0457A"},
+  {id:"cau", title:"Causa", hint:"explicar por qué ocurre algo", color:"#F5A623"},
+  {id:"efe", title:"Efecto / Resultado", hint:"presentar la consecuencia", color:"#2E9CDB"},
+  {id:"eje", title:"Ejemplo", hint:"ilustrar una idea", color:"#8E6CFF"},
+  {id:"cnc", title:"Concesión", hint:"admitir algo y aun así continuar", color:"#2CC0D8"},
+  {id:"sec", title:"Secuencia / Orden", hint:"ordenar los pasos o las ideas", color:"#9AA5B8"},
+  {id:"opi", title:"Opinión / Énfasis", hint:"dar tu punto de vista o reforzarlo", color:"#FF8A5B"}
+];
+const CONNECTORS = `add|Besides|además|I can't go out tonight. Besides, I have an exam tomorrow.|No puedo salir esta noche. Además, mañana tengo un examen.|B1|neutro|Al inicio de la frase, con coma detrás.
+add|In addition|además|The hotel is cheap. In addition, it is close to the beach.|El hotel es barato. Además, está cerca de la playa.|B2|neutro|Al inicio de la frase, con coma detrás.
+add|Additionally|además|The course is free. Additionally, you get a certificate.|El curso es gratis. Además, recibes un certificado.|B2|neutro|Al inicio de la frase, con coma detrás.
+add|What's more|es más|The film was long and, what's more, it was boring.|La película fue larga y, es más, aburrida.|B2|informal|Suele ir entre comas a mitad de frase.
+add|Furthermore|además|The plan is cheaper. Furthermore, it saves time.|El plan es más barato. Además, ahorra tiempo.|C1|formal|Al inicio de la frase, con coma detrás.
+add|Moreover|además|The results are reliable; moreover, they are easy to repeat.|Los resultados son fiables; además, son fáciles de repetir.|C1|formal|Tras punto y coma, o al inicio de la frase con coma detrás.
+add|As well as|además de|She speaks French as well as Spanish.|Ella habla francés además de español.|B1|neutro|Va seguido de un sustantivo o de un verbo con -ing.
+con|However|sin embargo|The trip was tiring. However, we enjoyed it.|El viaje fue agotador. Sin embargo, lo disfrutamos.|B1|neutro|Al inicio de la frase, con coma detrás; también tras punto y coma.
+con|On the other hand|por otro lado|Living downtown is exciting. On the other hand, it is noisy.|Vivir en el centro es emocionante. Por otro lado, es ruidoso.|B2|neutro|Suele responder a «on the one hand»; coma detrás.
+con|In contrast|en contraste|Sales rose in May. In contrast, they fell in June.|Las ventas subieron en mayo. En contraste, bajaron en junio.|B2|neutro|Al inicio de la frase, con coma detrás.
+con|Whereas|mientras que|She loves cities, whereas he prefers the countryside.|Ella ama las ciudades, mientras que él prefiere el campo.|B2|neutro|Une dos cláusulas en la misma oración, con coma delante.
+con|While|mientras que|While I like tea, my sister prefers coffee.|Aunque a mí me gusta el té, mi hermana prefiere el café.|B1|neutro|Puede abrir la oración (con coma) o ir en medio.
+con|Nevertheless|no obstante|The exam was hard; nevertheless, most students passed.|El examen fue difícil; no obstante, la mayoría aprobó.|C1|formal|Punto y coma antes, coma después.
+con|Conversely|por el contrario|Exercise raises energy. Conversely, lack of sleep lowers it.|El ejercicio da energía. Por el contrario, la falta de sueño la reduce.|C1|formal|Al inicio de la frase, con coma detrás.
+cau|Because|porque|We stayed home because it was raining.|Nos quedamos en casa porque llovía.|A2|neutro|Va seguido de una cláusula (sujeto + verbo).
+cau|Since|ya que|Since it was late, we took a taxi.|Como era tarde, tomamos un taxi.|B1|neutro|Al inicio suele llevar coma; la causa ya es conocida.
+cau|As|como|As it was raining, we stayed in.|Como llovía, nos quedamos dentro.|B1|neutro|Al inicio de la frase, con coma; va con una cláusula.
+cau|Because of|a causa de|The match was cancelled because of the storm.|El partido se canceló a causa de la tormenta.|B1|neutro|Va seguido de un sustantivo o pronombre, no de una cláusula.
+cau|Due to|debido a|The flight was delayed due to fog.|El vuelo se retrasó debido a la niebla.|B2|neutro|Va seguido de un sustantivo; a menudo tras «be» (was due to).
+cau|Owing to|debido a|Owing to the strike, all trains were cancelled.|Debido a la huelga, se cancelaron todos los trenes.|C1|formal|Va seguido de un sustantivo; suele abrir la frase con coma.
+cau|Thanks to|gracias a|We won thanks to your help.|Ganamos gracias a tu ayuda.|B2|neutro|Va seguido de un sustantivo; tono positivo.
+efe|So|así que|It was cold, so we lit a fire.|Hacía frío, así que encendimos una hoguera.|A2|neutro|Une dos cláusulas, con coma delante.
+efe|That's why|por eso|I lost my keys. That's why I'm late.|Perdí mis llaves. Por eso llego tarde.|B1|neutro|Va seguido de una cláusula completa.
+efe|Therefore|por lo tanto|Costs rose; therefore, prices went up.|Los costos subieron; por lo tanto, los precios aumentaron.|B2|formal|Tras punto y coma, o al inicio con coma detrás.
+efe|As a result|como resultado|The bridge closed. As a result, traffic doubled.|El puente cerró. Como resultado, el tráfico se duplicó.|B2|neutro|Al inicio de la frase, con coma detrás.
+efe|Consequently|en consecuencia|He missed the bus. Consequently, he was late.|Perdió el autobús. En consecuencia, llegó tarde.|C1|formal|Al inicio de la frase, con coma detrás.
+efe|For this reason|por esta razón|Sleep is vital. For this reason, we go to bed early.|Dormir es vital. Por esta razón, nos acostamos temprano.|B2|formal|Al inicio de la frase, con coma detrás.
+efe|Thus|así / de este modo|The data was clear; thus, the decision was easy.|Los datos eran claros; así, la decisión fue fácil.|C1|formal|Muy formal o escrito; suele ir tras punto y coma.
+eje|For example|por ejemplo|I like fruit. For example, I eat an apple every day.|Me gusta la fruta. Por ejemplo, como una manzana al día.|A2|neutro|Con coma detrás; también entre comas dentro de la frase.
+eje|For instance|por ejemplo|Some cities are very old. For instance, Rome is 2,700 years old.|Algunas ciudades son muy antiguas. Por ejemplo, Roma tiene 2.700 años.|B1|neutro|Igual que «for example»; con coma.
+eje|Such as|como (p. ej.)|I enjoy sports such as tennis and swimming.|Disfruto deportes como el tenis y la natación.|B1|neutro|Introduce ejemplos dentro de la frase; sin coma delante si es esencial.
+eje|Like|como|She loves animals like dogs and cats.|Ella ama a los animales como perros y gatos.|B1|informal|Más informal que «such as».
+eje|In particular|en particular|I love fruit, in particular mangoes.|Me encanta la fruta, en particular los mangos.|B2|neutro|Señala un caso concreto; coma delante.
+eje|Namely|a saber|Two colours are missing, namely red and blue.|Faltan dos colores, a saber, rojo y azul.|C1|formal|Introduce una lista exacta; suele llevar comas.
+eje|To illustrate|para ilustrar|To illustrate, consider what happened in 2020.|Para ilustrar, pensemos en lo que pasó en 2020.|C1|formal|Al inicio de la frase, con coma detrás.
+cnc|Although|aunque|Although it was raining, we went hiking.|Aunque llovía, fuimos de excursión.|B1|neutro|Va seguido de una cláusula; con coma si abre la frase.
+cnc|Even though|aunque (aun cuando)|Even though he was tired, he kept working.|Aunque estaba cansado, siguió trabajando.|B1|neutro|Más enfático que «although»; va con una cláusula.
+cnc|Though|aunque / sin embargo|I like the flat, though it's small.|Me gusta el piso, aunque es pequeño.|B1|informal|Al final de la frase puede significar «sin embargo».
+cnc|In spite of|a pesar de|We had fun in spite of the weather.|Nos divertimos a pesar del clima.|B2|neutro|Va seguido de un sustantivo o de un verbo con -ing.
+cnc|Despite|a pesar de|Despite the rain, the match went ahead.|A pesar de la lluvia, el partido se jugó.|B2|neutro|Igual que «in spite of», pero sin «of».
+cnc|Despite the fact that|a pesar de que|Despite the fact that he was ill, he came.|A pesar de que estaba enfermo, vino.|C1|formal|Permite usar una cláusula completa después.
+cnc|Whilst|aunque / mientras|Whilst I agree, I have some doubts.|Aunque estoy de acuerdo, tengo algunas dudas.|C1|formal|Variante formal (británica) de «while».
+sec|First of all|en primer lugar|First of all, you need to gather the information.|En primer lugar, necesitas reunir la información.|B1|neutro|Al inicio de la frase, con coma detrás.
+sec|To begin with|para empezar|To begin with, let's look at the budget.|Para empezar, veamos el presupuesto.|B2|neutro|Al inicio de la frase, con coma detrás.
+sec|Next|a continuación|Next, add the flour and mix well.|A continuación, añade la harina y mezcla bien.|A2|neutro|Al inicio de la frase, con coma detrás.
+sec|Then|luego|We had lunch, then we went for a walk.|Almorzamos y luego fuimos a caminar.|A2|neutro|Une acciones consecutivas; la coma no es obligatoria.
+sec|After that|después de eso|After that, we drove home.|Después de eso, volvimos en coche a casa.|B1|neutro|Al inicio de la frase, con coma detrás.
+sec|Finally|por último|Finally, check your answers.|Por último, revisa tus respuestas.|A2|neutro|Al inicio de la frase, con coma; marca el último paso.
+sec|In conclusion|en conclusión|In conclusion, the plan is worth the cost.|En conclusión, el plan vale su costo.|B2|formal|Al inicio de la frase, con coma; cierra el texto.
+opi|In my opinion|en mi opinión|In my opinion, education is the best investment.|En mi opinión, la educación es la mejor inversión.|B1|neutro|Al inicio de la frase, con coma detrás.
+opi|Personally|personalmente|Personally, I prefer to travel by train.|Personalmente, prefiero viajar en tren.|B1|neutro|Al inicio de la frase, con coma detrás.
+opi|As far as I'm concerned|por lo que a mí respecta|As far as I'm concerned, the price is fair.|Por lo que a mí respecta, el precio es justo.|B2|neutro|Al inicio de la frase, con coma detrás.
+opi|I strongly believe that|creo firmemente que|I strongly believe that reading changes lives.|Creo firmemente que la lectura cambia vidas.|B2|neutro|Va seguido de una cláusula completa.
+opi|It seems to me that|me parece que|It seems to me that the rules are unclear.|Me parece que las reglas no están claras.|B2|neutro|Va seguido de una cláusula completa.
+opi|In fact|de hecho|I thought it was easy; in fact, it was very hard.|Pensé que era fácil; de hecho, fue muy difícil.|B2|neutro|Refuerza o corrige lo dicho; con coma.
+opi|Above all|sobre todo|Above all, stay calm.|Sobre todo, mantén la calma.|B2|neutro|Da prioridad a lo más importante; con coma.`.split("\n").map(l=>{
+  const f = l.split("|");
+  return {cat:f[0], c:f[1], es:f[2], ex:f[3], exEs:f[4], lv:f[5], reg:f[6], note:f[7] || ""};
+});
+const connCat = id=> CONNECTOR_CATS.find(c=> c.id === id);
+/* Categorías cuyo significado se parece: en el ejercicio no se usan como distractores unas de otras. */
+const CONN_TWIN = {con:"cnc", cnc:"con", cau:"efe", efe:"cau"};
+let connFilter = "all", CONNECTOR_FILTER = null;
+const connFavId = i=> `connfav:${i}`;
+/* Parte la frase de ejemplo en antes / conector / después (ignora mayúsculas, respeta palabras enteras). */
+function connSplit(it){
+  const esc = it.c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const m = new RegExp("(^|[^A-Za-z'])(" + esc + ")(?![A-Za-z'])", "i").exec(it.ex);
+  if(!m) return {before:it.ex, hit:"", after:""};
+  const s = m.index + m[1].length;
+  return {before:it.ex.slice(0, s), hit:it.ex.slice(s, s + m[2].length), after:it.ex.slice(s + m[2].length)};
+}
+function connRow(it, i, color){
+  const sp = connSplit(it), fav = isWordSaved(connFavId(i));
+  return `<div class="cn-row" style="--cc:${color}">
+    <div class="cn-c">${escHtml(it.c)}</div>
+    <div class="cn-m">${escHtml(it.es)}</div>
+    <div class="cn-x"><div class="cn-en">${wz(sp.before)}${sp.hit ? `<b class="cn-hl">${wz(sp.hit)}</b>` : ""}${wz(sp.after)} <button type="button" class="mm-speak" data-say="${escHtml(it.ex)}" aria-label="Escuchar" title="Escuchar">🔊</button></div><div class="cn-es">${escHtml(it.exEs)}</div><div class="cn-note">${escHtml(it.note)}</div></div>
+    <div class="cn-b"><span class="pv-lvl" style="background:${PV_LV[it.lv] || "#8E6CFF"}">${it.lv}</span><span class="cn-fm">${it.reg}</span></div>
+    <button type="button" class="vv-star cn-star${fav ? " on" : ""}" data-i="${i}" aria-label="${fav ? "Quitar de favoritos" : "Guardar en favoritos"}">${fav ? "★" : "☆"}</button>
+  </div>`;
+}
+function connPractice(catId){
+  const idxs = CONNECTORS.map((it, i)=> i).filter(i=> !catId || CONNECTORS[i].cat === catId);
+  CONNECTOR_FILTER = catId ? {label:connCat(catId).title, idxs} : null;
+  delete current.connectors; activeExercise = "connectors"; goTo("exercises");
+}
+function renderConnectors(){
+  const cats = connFilter === "all" ? CONNECTOR_CATS : CONNECTOR_CATS.filter(c=> c.id === connFilter);
+  const chip = (id, label)=> `<button type="button" class="cn-chip${connFilter === id ? " on" : ""}" data-cat="${id}">${label}</button>`;
+  const panel = document.getElementById("panel-connectors");
+  panel.innerHTML = `
+    <div class="section-head">
+      <div class="eyebrow">Utilidades · Conectores</div>
+      <h2>Conectores y linkers</h2>
+      <p>Palabras que unen ideas para escribir y hablar con más cohesión. Cada una con su significado, un ejemplo, el nivel, el registro y cómo se puntúa. Toca la ★ para guardarla y repasarla después.</p>
+    </div>
+    <div class="cn-chips">${chip("all", "Todos")}${CONNECTOR_CATS.map(c=> chip(c.id, c.title)).join("")}</div>
+    <div class="pv-info"><span>${CONNECTOR_CATS.length} categorías · ${CONNECTORS.length} conectores</span><button type="button" class="pv-prac" id="cnPracAll">Practicar conectores ›</button></div>
+    ${cats.map(cat=> `<section class="cn-cat" style="--cc:${cat.color}">
+      <div class="cn-h"><i></i><b>${cat.title}</b><span>${cat.hint}</span><button type="button" class="cn-prac" data-cat="${cat.id}">Practicar esta categoría ›</button></div>
+      <div class="cn-head" aria-hidden="true"><span>Conector</span><span>Significado</span><span>Ejemplo</span><span>Nivel</span><span></span></div>
+      ${CONNECTORS.map((it, i)=> it.cat === cat.id ? connRow(it, i, cat.color) : "").join("")}
+    </section>`).join("")}`;
+  panel.querySelectorAll(".cn-chip").forEach(b=> b.onclick = ()=>{ connFilter = b.dataset.cat; renderConnectors(); });
+  document.getElementById("cnPracAll").onclick = ()=> connPractice(connFilter === "all" ? null : connFilter);
+  panel.querySelectorAll(".cn-prac").forEach(b=> b.onclick = ()=> connPractice(b.dataset.cat));
+  panel.querySelectorAll(".cn-star").forEach(b=> b.onclick = ()=>{
+    const i = +b.dataset.i, it = CONNECTORS[i];
+    toggleSavedWord(connFavId(i), "connectors", it.lv, `«${it.c}» (${it.es})`, it.es, it.ex);
+    const on = isWordSaved(connFavId(i)); b.textContent = on ? "★" : "☆"; b.classList.toggle("on", on);
+    b.setAttribute("aria-label", on ? "Quitar de favoritos" : "Guardar en favoritos");
+  });
+}
+/* CONECTORES:END */
 /* ---- Página de inicio de Utilidades ---- */
 function renderUtilsHub(){
   const L = LANG_PACKS[currentLang], vt = currentLang === "pt" ? VOCAB_TOPICS_PT : VOCAB_TOPICS;
@@ -26390,6 +26759,7 @@ function renderUtilsHub(){
     {id:"expressions", icon:"lightning", title:"Expresiones", text:"Mini idioms y frases conversacionales con un diálogo de ejemplo.", stat:`${L.EXPRESSION_THEMES.length} grupos · ${sum(L.EXPRESSION_THEMES, t=> t.items.length)} expresiones`, cls:"c-purple"},
     {id:"falsefriends", icon:"warn", title:"Falsos Amigos", text:"Palabras que se parecen al español pero significan otra cosa.", stat:`${L.FALSE_FRIENDS.length} palabras`, cls:"c-coral"},
     {id:"howtosay", icon:"search", title:"Cómo se dice", text:"Una palabra en español, varias traducciones según el contexto.", stat:`${L.HOW_TO_SAY.length} conceptos`, cls:"c-blue"},
+    ...(currentLang === "en" ? [{id:"connectors", icon:"link", title:"Conectores", text:"Palabras que unen ideas: adición, contraste, causa, efecto y más, con ejemplos y práctica.", stat:`${CONNECTOR_CATS.length} categorías · ${CONNECTORS.length} conectores`, cls:"c-orange"}] : []),
     {id:"vocabtopics", icon:"flashcards", title:"Vocabulario por Temas", text:"Palabras organizadas por tema y nivel, con audio y cuestionario.", stat:`${vt.length} temas · A1 a C2`, cls:"c-pink"}
   ];
   if(currentLang === "pt") cards.push({id:"es2pt", icon:"shuffle", title:"Español → Portugués", text:"Convierte y detecta patrones entre las dos lenguas.", stat:"Reglas y ejercicios", cls:"c-orange"});
@@ -27143,7 +27513,7 @@ const VERB_SECTION_META = {
 const EX_GROUPS = [
   {id:"vocab", label:"Vocabulario", icon:"flashcards", items:["vocab","matchpairs","wordclass","phrasal"]},
   {id:"lexicon", label:"Palabras en uso", icon:"puzzle", items:["vocabtype","vocabcloze","collocations","wordfamily"]},
-  {id:"grammar", label:"Gramática", icon:"pencil", items:["gapfill","order","verbforms","verbcards","translate"]},
+  {id:"grammar", label:"Gramática", icon:"pencil", items:["gapfill","order","verbforms","verbcards","translate","connectors"]},
   {id:"reading", label:"Lectura", icon:"book", items:["reading","readingcloze","readingletters"]},
   {id:"listen", label:"Escucha y habla", icon:"headphones", items:["listen","minimalpairs","dialogue"]},
   {id:"writing", label:"Escritura", icon:"journalpen", items:["writing"]},
@@ -27152,10 +27522,11 @@ const EX_GROUPS = [
 const exLastInGroup = {};
 const EX_GROUP_COLOR = {lexicon:"icon-teal", vocab:"icon-purple", grammar:"icon-teal", reading:"icon-blue", listen:"icon-pink", writing:"icon-amber", review:""};
 /* Dentro de su grupo, algunos tipos usan un nombre distinto para no repetir el del grupo. */
-const EX_SUB_LABEL = {vocabtype:"Escribe la palabra", vocabcloze:"Completa la frase", collocations:"Colocaciones", wordfamily:"Familias de palabras", vocab:"Tarjetas", gapfill:"Completar frases", reading:"Textos", listen:"Escucha", verbforms:"Conjugación", verbcards:"Tarjetas de verbos"};
+const EX_SUB_LABEL = {vocabtype:"Escribe la palabra", vocabcloze:"Completa la frase", collocations:"Colocaciones", wordfamily:"Familias de palabras", vocab:"Tarjetas", gapfill:"Completar frases", reading:"Textos", listen:"Escucha", verbforms:"Conjugación", verbcards:"Tarjetas de verbos", connectors:"Conectores"};
 const EX_SUB_DESC = {
   vocab:"Elige el significado correcto de cada palabra.", matchpairs:"Une cada palabra con su pareja.", wordclass:"Clasifica palabras por su categoría.", phrasal:"Aprende verbos con partícula.",
   gapfill:"Completa la oración con la opción correcta.", order:"Ordena las palabras para formar la frase.", verbforms:"Practica las formas de cada verbo.", verbcards:"Desliza cada verbo: ya lo sé o repasar. Toca para voltear.", translate:"Traduce frases entre tu idioma y el que aprendes.",
+  connectors:"Elige el conector que une las ideas de la frase.",
   reading:"Lee un texto y responde preguntas.", readingcloze:"Completa los huecos dentro del texto.", readingletters:"Escribe las letras que faltan.",
   vocabtype:"Escribe la palabra que corresponde al significado.", vocabcloze:"Completa la frase con la palabra correcta.", collocations:"Elige el verbo que suele acompañar a cada palabra.", wordfamily:"Forma la palabra derivada que pide la frase.",
   listen:"Escucha una frase y escríbela o elígela.", minimalpairs:"Distingue sonidos muy parecidos.", dialogue:"Practica conversaciones reales.",
@@ -27200,6 +27571,7 @@ function exSelectGroup(gid){
 function exSelect(id, scroll){
   activeExercise = id;
   if(id === "phrasal") PHRASAL_FILTER = null;
+  if(id === "connectors") CONNECTOR_FILTER = null;
   const gr = EX_GROUPS.find(g=> g.items.includes(id));
   if(gr){ exLastInGroup[gr.id] = id; exSkill = gr.id; }
   exRound = {res:[], done:false};
@@ -27280,7 +27652,7 @@ function renderExercise(id, forceNew){
     return;
   }
   const DRAW = {vocabtype:drawVocabType, vocabcloze:drawVocabCloze, collocations:drawColloc, wordfamily:drawWordFam, vocab:drawVocab, matchpairs:drawMatchPairs, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, verbcards:drawVerbCards, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank};
-  const NEWQ = {vocabtype:newVocabTypeQuestion, vocabcloze:newVocabClozeQuestion, collocations:newCollocQuestion, wordfamily:newWordFamQuestion, vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, verbcards:newVerbCardsQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
+  const NEWQ = {vocabtype:newVocabTypeQuestion, vocabcloze:newVocabClozeQuestion, collocations:newCollocQuestion, connectors:newConnectorQuestion, wordfamily:newWordFamQuestion, vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, verbcards:newVerbCardsQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
   if(forceNew || !current[id]) NEWQ[id]();
   else DRAW[id]();
 }
@@ -32367,7 +32739,7 @@ function es2ptMatchSummary(st){
    ========================================================= */
 function buildMain(){
   const main = document.getElementById("main");
-  ["home","route","placement","theory","categories","phrasal","utils","situations","expressions","falsefriends","howtosay","vocabtopics","es2pt","verbs","exercises","practicehoy","exams","profile"].forEach(id=>{
+  ["home","route","placement","theory","categories","phrasal","utils","situations","expressions","falsefriends","howtosay","connectors","vocabtopics","es2pt","verbs","exercises","practicehoy","exams","profile"].forEach(id=>{
     const div = document.createElement("div");
     div.className="section-panel" + (id===activeSection?" active":"");
     div.id = "panel-"+id;
