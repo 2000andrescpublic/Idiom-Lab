@@ -2129,6 +2129,37 @@ header{transition:transform .25s ease;}
 @keyframes dsIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.ds-rule,.ds-check{animation:none;}.ds-card,.ds-dot{transition:none;}}
 /* MISSION-CSS:END */
+/* MISSION-PATH-CSS:BEGIN */
+#panel-practicehoy.has-mission .practice-hoy-progress{display:none;}
+.mp{max-width:520px;margin:10px 0 2px;}
+.mp-track{position:relative;padding-top:40px;}
+.mp-line{position:absolute;left:5%;right:5%;top:47px;height:3px;background:var(--line);border-radius:99px;}
+.mp-line i{display:block;height:100%;background:#34D399;border-radius:99px;transition:width .4s ease;}
+.mp-row{position:relative;display:flex;align-items:center;height:16px;}
+.mp-cell{flex:1;display:flex;justify-content:center;align-items:center;position:relative;}
+.mp-dot{display:block;width:11px;height:11px;border-radius:50%;background:var(--surface-2);border:1.5px solid var(--line);transition:background .25s ease,transform .25s cubic-bezier(.34,1.56,.64,1);}
+.mp-dot.ok{background:#34D399;border-color:#34D399;}
+.mp-dot.bad{background:#EF4444;border-color:#EF4444;}
+.mp-dot.cur{width:16px;height:16px;background:var(--rl);border-color:var(--rl);box-shadow:0 0 0 5px color-mix(in srgb,var(--rl) 28%,transparent);}
+.mp-flag{position:absolute;top:-24px;color:#F5A623;line-height:0;}
+.mp-bolt{position:absolute;top:0;transform:translateX(-50%);line-height:0;transition:left .45s cubic-bezier(.34,1.3,.64,1);pointer-events:none;filter:drop-shadow(0 3px 3px rgba(0,0,0,.3));}
+.mp-bolt svg{display:block;}
+.mp-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;}
+.mp-combo{display:inline-flex;align-items:center;gap:5px;background:#F5A623;color:#3F2700;font-weight:800;font-size:.82rem;border-radius:999px;padding:5px 12px;animation:mpBump .45s cubic-bezier(.34,1.56,.64,1);}
+@keyframes mpBump{0%{transform:scale(.7)}100%{transform:scale(1)}}
+.mp-rule{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;font-weight:800;font-size:.82rem;border-radius:999px;padding:5px 12px;background:color-mix(in srgb,var(--rl) 14%,transparent);border:1.5px solid color-mix(in srgb,var(--rl) 55%,transparent);color:color-mix(in srgb,var(--rl) 60%,var(--ink));}
+.mp-rule[aria-expanded="true"]{background:color-mix(in srgb,var(--rl) 28%,transparent);}
+.mp-pop{margin-top:10px;border:2px solid color-mix(in srgb,var(--rl) 60%,transparent);border-radius:18px;padding:12px 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--rl) 10%,transparent),var(--surface));animation:dsIn .3s ease both;}
+.mp-pop[hidden]{display:none;}
+.mp-pop .ds-cap{color:color-mix(in srgb,var(--rl) 60%,var(--ink));}
+.mp-pop .ds-rule-t .rs-h{color:color-mix(in srgb,var(--rl) 65%,var(--ink));font-weight:800;}
+.mp-ex{margin-top:8px;font-size:.92rem;line-height:1.4;}
+.mp-ex .ds-hl{color:color-mix(in srgb,var(--rl) 65%,var(--ink));font-weight:800;border-bottom:2px solid var(--rl);}
+.mp-ex span{display:block;color:var(--ink-soft);font-size:.82rem;}
+.rule-hint{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding-top:9px;border-top:1px dashed currentColor;font-size:.88rem;line-height:1.4;}
+.rule-hint svg{flex:none;margin-top:1px;}
+@media (prefers-reduced-motion:reduce){.mp-bolt,.mp-line i,.mp-dot{transition:none;}.mp-combo,.mp-pop{animation:none;}}
+/* MISSION-PATH-CSS:END */
 </style>
 </head>
 <body>
@@ -31771,6 +31802,7 @@ function renderPracticeHoy(){
   const entry = s.queue[s.index];
   const labels = practiceTodayLabels(s);
   const panel = document.getElementById("panel-practicehoy");
+  panel.classList.toggle("has-mission", !!s.mission);
   /* Tanto #exPanel como la barra de progreso son nodos persistentes que se
      reutilizan paso a paso (en vez de recrearse en el innerHTML de abajo):
      para #exPanel porque es el mismo nodo real que usa la pestaña
@@ -31787,6 +31819,7 @@ function renderPracticeHoy(){
       <button class="theory-back" id="practiceHoyExitBtn">${s.mission ? "← Volver a la Ruta" : labels.exit}</button>
       <div class="eyebrow">${labels.eyebrow}</div>
       ${s.mission ? missionBarHTML(s.mode === "unit" ? 2 : 1, s.mission.level) : ""}
+      ${s.mission ? missionPathHTML(s) : ""}
     </div>
   `;
   if(!progressBar){
@@ -31819,6 +31852,9 @@ function renderPracticeHoy(){
     else if(s.mode === "summary"){ practiceTodaySession = null; currentLevel = s.level; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.level)); activeTheoryTopic = null; goTo("theory"); rsView = {lv:s.level, i:s.gi}; renderTheory(); }
     else goTo(s.mode==="unit" ? "route" : "home");
   };
+  const mpr = document.getElementById("mpRule");
+  if(s.mission) missionAnimateBolt(s);
+  if(mpr) mpr.onclick = ()=>{ const pop = document.getElementById("mpPop"); pop.hidden = !pop.hidden; mpr.setAttribute("aria-expanded", String(!pop.hidden)); };
   practiceTodayLoadStep(entry);
   window.scrollTo({top:0, behavior:"smooth"});
 }
@@ -31898,6 +31934,7 @@ registerAnswer = function(id, ok){
   _practiceTodayOrigRegisterAnswer(id, ok);
   const s = practiceTodaySession;
   if(s){
+    if(s.mission){ (s.res || (s.res = []))[s.index] = ok; missionMarkDot(ok); if(!ok) missionRuleHint(s); }
     s.answered++;
     if(ok) s.correct++;
     if(!s.byType[id]) s.byType[id] = {correct:0, total:0};
@@ -32878,9 +32915,9 @@ function renderTopicComplete(s){
       <button class="btn secondary" id="topicBackBtn">Volver a la lista</button>
     </div>`;
   if(pct >= 70) fireConfetti();
-  document.getElementById("topicAgainBtn").onclick = ()=>{ practiceTodaySession = buildTopicSession(s.level, s.unit); if(s.mission) practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; renderPracticeHoy(); };
+  document.getElementById("topicAgainBtn").onclick = ()=>{ practiceTodaySession = buildTopicSession(s.level, s.unit); if(s.mission){ practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; practiceTodaySession.queue = missionAlternate(practiceTodaySession.queue); } renderPracticeHoy(); };
   const closeBtn = document.getElementById("topicCloseBtn");
-  if(closeBtn) closeBtn.onclick = ()=>{ practiceTodaySession = buildUnitSession(s.level, s.unit); if(s.mission) practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; renderPracticeHoy(); };
+  if(closeBtn) closeBtn.onclick = ()=>{ practiceTodaySession = buildUnitSession(s.level, s.unit); if(s.mission){ practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; practiceTodaySession.queue = missionAlternate(practiceTodaySession.queue); } renderPracticeHoy(); };
   document.getElementById("topicTheoryBtn").onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(s.tHome, s.tIdx); };
   document.getElementById("topicBackBtn").onclick = ()=>{ if(s.mission){ practiceTodaySession = null; goTo("route"); return; } practiceTodaySession = null; activeTheoryTopic = null; theoryReturnTo = null; currentLevel = s.tHome; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.tHome)); goTo("theory"); };
   window.scrollTo({top:0, behavior:"smooth"});
@@ -33469,6 +33506,7 @@ function missionBarHTML(active, level){
 function startMission(level, k){
   if(!routeUnits(level)[k] && currentLang !== "pt") return;
   const s = buildTopicSession(level, k);
+  s.queue = missionAlternate(s.queue);
   s.mission = {level, unit:k, discovered:false};
   practiceTodaySession = s;
   goTo("practicehoy");
@@ -33615,6 +33653,67 @@ function missionDrawDiscover(s){
   window.scrollTo({top:0, behavior:"smooth"});
 }
 /* MISSION:END */
+/* MISSION-PATH:BEGIN — mini camino de la misión (10 puntos con la mascota), aciertos seguidos, 💡 Regla y pista al fallar, formatos alternados */
+RS_ICON.flag = RS_ICON.flag || "M4 22V3 M4 4h13l-2 4 2 4H4";
+RS_ICON.bulb = RS_ICON.bulb || "M9 18h6 M10 21h4 M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z";
+function missionAlternate(queue){
+  const left = queue.slice(), out = [];
+  while(left.length){
+    const last = out.length ? out[out.length - 1].type : null, counts = {};
+    left.forEach(x=> counts[x.type] = (counts[x.type] || 0) + 1);
+    let cands = left.filter(x=> x.type !== last); if(!cands.length) cands = left;
+    const max = Math.max(...cands.map(x=> counts[x.type])), pick = cands.find(x=> counts[x.type] === max);
+    out.push(pick); left.splice(left.indexOf(pick), 1);
+  }
+  return out;
+}
+function missionStreak(s){
+  const res = s.res || []; let k = 0;
+  for(let i = Math.min(s.index, res.length) - 1; i >= 0; i--){ if(res[i] === true) k++; else if(res[i] === false) break; }
+  return k;
+}
+function missionRuleData(s){
+  if(!s.mission._rule){ try{ const D = missionDiscoverData(s.mission.level, s.mission.unit); s.mission._rule = {rule:D.rule, sents:D.sents.slice(0, 2)}; }catch(e){ s.mission._rule = {rule:"", sents:[]}; } }
+  return s.mission._rule;
+}
+function missionPathHTML(s){
+  const n = s.queue.length, cur = s.index, res = s.res || [], lc = ROUTE_LC[s.mission.level] || "#8E6CFF", mid = Math.ceil(n / 2) - 1;
+  const cells = s.queue.map((_, i)=> {
+    const st = i < cur ? (res[i] === false ? "bad" : "ok") : i === cur ? "cur" : "";
+    return `<span class="mp-cell">${i === mid ? `<span class="mp-flag" aria-hidden="true">${rsIcon("flag", 15)}</span>` : ""}<i class="mp-dot ${st}"></i></span>`;
+  }).join("");
+  const streak = missionStreak(s), rd = missionRuleData(s);
+  return `<div class="mp" style="--rl:${lc}">
+    <div class="mp-track"><div class="mp-line"><i style="width:${n > 1 ? Math.round(cur / (n - 1) * 100) : 0}%"></i></div><div class="mp-row" role="img" aria-label="Pregunta ${Math.min(cur + 1, n)} de ${n}">${cells}</div>
+      <span class="mp-bolt" style="left:${((cur + .5) / n * 100).toFixed(2)}%" aria-hidden="true">${mascotSVG("", 34)}</span></div>
+    <div class="mp-tools">${streak >= 2 ? `<span class="mp-combo" id="mpCombo">${rsIcon("zap", 14)} ×${streak} seguidas</span>` : "<span></span>"}
+      <button type="button" class="mp-rule" id="mpRule" aria-expanded="false" aria-controls="mpPop">${rsIcon("bulb", 15)} Regla</button></div>
+    <div class="mp-pop" id="mpPop" hidden><div class="ds-cap">${svgIcon("bulb", 16)} LA REGLA</div><div class="ds-rule-t">${rd.rule || "Fíjate en los ejemplos del tema."}</div>
+      ${rd.sents.map(x=> `<div class="mp-ex">${x.hl.html}<span>${escHtml(x.es || "")}</span></div>`).join("")}</div></div>`;
+}
+/* pista al fallar: se añade la regla del tema al mensaje de error */
+function missionRuleHint(s){
+  setTimeout(()=>{
+    const fb = document.querySelector("#exPanel .feedback.show.bad, #exPanel .feedback.bad.show");
+    if(!fb || fb.querySelector(".rule-hint")) return;
+    const rd = missionRuleData(s); if(!rd.rule) return;
+    fb.insertAdjacentHTML("beforeend", `<div class="rule-hint">${svgIcon("bulb", 15)} <span><b>Recuerda:</b> ${rd.rule}</span></div>`);
+  }, 80);
+}
+/* la mascota desliza desde el punto anterior hasta el actual */
+function missionAnimateBolt(s){
+  const b = document.querySelector("#panel-practicehoy .mp-bolt"); if(!b) return;
+  const to = b.style.left, from = s.mission._mpLeft;
+  s.mission._mpLeft = to;
+  if(!from || from === to) return;
+  b.style.transition = "none"; b.style.left = from; b.getBoundingClientRect();
+  b.style.transition = ""; b.style.left = to;
+}
+function missionMarkDot(ok){
+  const d = document.querySelector("#panel-practicehoy .mp-dot.cur");
+  if(d){ d.classList.add(ok ? "ok" : "bad"); }
+}
+/* MISSION-PATH:END */
 function routeHomeCardHtml(){
   const level = routeCurrentLevel();
   const units = routeUnits(level);
