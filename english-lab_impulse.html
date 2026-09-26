@@ -25223,6 +25223,16 @@ function placementSetLock(on){
   const list = getProfiles(), p = list.find(x=> x.id === ACTIVE_PROFILE_ID);
   if(p && !!p.placementPending !== !!on){ p.placementPending = !!on; saveProfilesList(list); }
 }
+/* Salir de la Prueba de nivel sin hacerla (o sin terminarla): el usuario queda en A1, se libera el bloqueo y podrá hacerla cuando quiera. */
+function placementSkipToA1(){
+  if(!confirm("¿Salir de la prueba de nivel? Empezarás en A1 y podrás hacerla cuando quieras desde el Inicio.")) return;
+  placementState = null;
+  officialLevel = "A1"; currentLevel = "A1"; routeSelectedLevel = "A1";
+  document.querySelectorAll(".level-chip").forEach(c=> c.classList.toggle("active", c.textContent === currentLevel));
+  placementSetLock(false);
+  saveProgress();
+  goTo("home");
+}
 function renderPlacement(){
   placementState = null;
   drawPlacementIntro();
@@ -25234,7 +25244,7 @@ function drawPlacementIntro(){
     <div class="section-head">
       <div class="eyebrow">${locked ? "Para empezar" : "Evaluación"}</div>
       <h2>Prueba de nivel</h2>
-      <p>${locked ? "Antes de entrar a la app necesitamos saber por dónde empezar. Es una prueba corta y obligatoria la primera vez; después podrás repetirla cuando quieras." : "Una prueba para saber por dónde empezar. Al terminar, tu nivel se ajusta al resultado. Para medir tu progreso más adelante, destreza por destreza, usa los Exámenes."}</p>
+      <p>${locked ? "Antes de entrar a la app conviene saber por dónde empezar. Es una prueba corta; si prefieres, puedes salir y empezar en A1, y hacerla cuando quieras." : "Una prueba para saber por dónde empezar. Al terminar, tu nivel se ajusta al resultado. Para medir tu progreso más adelante, destreza por destreza, usa los Exámenes."}</p>
     </div>
     <div class="card">
       <h3 style="margin:0 0 10px;font-size:1.05rem;">¿Cómo funciona?</h3>
@@ -25243,10 +25253,12 @@ function drawPlacementIntro(){
       <p style="color:var(--ink-soft);font-size:0.9rem;margin:0;">Al terminar verás tu nivel estimado, un puntaje de 0 a 60 (10 puntos por nivel), qué tan segura es la estimación y los temas para repasar.</p>
       ${last}
       <div class="btn-row"><button class="btn" id="startPlacementBtn">Empezar prueba →</button></div>
-      ${locked ? `<p style="margin:14px 0 0;font-size:0.8rem;"><button class="practice-link" id="placementSwitchUser" type="button">Cambiar de usuario</button></p>` : ""}
+      ${locked ? `<p style="margin:14px 0 0;font-size:0.8rem;display:flex;gap:18px;flex-wrap:wrap;"><button class="practice-link" id="placementSkipBtn" type="button">Salir de la prueba (empezar en A1)</button><button class="practice-link" id="placementSwitchUser" type="button">Cambiar de usuario</button></p>` : ""}
     </div>`;
   document.getElementById("panel-placement").innerHTML = html;
   document.getElementById("startPlacementBtn").onclick = ()=> placementStart();
+  const skip = document.getElementById("placementSkipBtn");
+  if(skip) skip.onclick = placementSkipToA1;
   const sw = document.getElementById("placementSwitchUser");
   if(sw) sw.onclick = ()=>{ setActiveProfileId(null); location.reload(); };
 }
@@ -25353,7 +25365,7 @@ function drawPlacementQuestion(){
       <div class="feedback" role="status" aria-live="polite" id="placementFb"></div>
       <div class="btn-row"><button class="btn" id="placementNextBtn" style="display:none;">Siguiente →</button></div>
     </div>
-    ${placementLocked() ? "" : `<div style="margin-top:10px;"><button class="practice-link" id="placementExitBtn" type="button">Salir de la prueba</button></div>`}`;
+    <div style="margin-top:10px;"><button class="practice-link" id="placementExitBtn" type="button">${placementLocked() ? "Salir de la prueba (empezar en A1)" : "Salir de la prueba"}</button></div>`;
   document.getElementById("panel-placement").innerHTML = html;
   const playBtn = document.getElementById("placementPlayBtn");
   if(playBtn){
@@ -25361,7 +25373,10 @@ function drawPlacementQuestion(){
     playBtn.onclick = play; setTimeout(play, 300);
   }
   const ex = document.getElementById("placementExitBtn");
-  if(ex) ex.onclick = ()=>{ if(confirm("¿Salir de la prueba? Se perderán tus respuestas.")) goTo("home"); };
+  if(ex) ex.onclick = ()=>{
+    if(placementLocked()) placementSkipToA1();
+    else if(confirm("¿Salir de la prueba? Se perderán tus respuestas.")) goTo("home");
+  };
   const opts_el = document.querySelectorAll("#placementOpts .opt-btn");
   opts_el.forEach(b=>{
     b.onclick = ()=>{
