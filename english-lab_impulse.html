@@ -2194,6 +2194,51 @@ header{transition:transform .25s ease;}
 @keyframes scDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
 @media (prefers-reduced-motion:reduce){.sc-msg,.sc-turn{animation:none;}.sc-msg.typing .sc-b i{animation:none;}}
 /* MISSION-SCENE-CSS:END */
+/* MISSION-FX-CSS:BEGIN */
+.dg-able{cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;}
+.dg-able:active{cursor:grabbing;}
+.dg-src{opacity:.3;}
+.dg-ghost{cursor:grabbing;box-shadow:0 12px 26px rgba(0,0,0,.35);opacity:.96;transition:none !important;}
+.answer-line.dg-over,.gf-blank.dg-over{border-color:var(--purple);background:color-mix(in srgb,var(--purple) 16%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--purple) 30%,transparent);}
+.gf-blank.dg-over{min-width:132px;}
+#panel-practicehoy .word-chip{transition:transform .15s cubic-bezier(.34,1.56,.64,1),border-color .15s;}
+#panel-practicehoy .word-chip:active{transform:scale(.94);}
+#panel-practicehoy .answer-line .word-chip{animation:dgPop .25s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes dgPop{from{transform:scale(.8)}to{transform:none}}
+.section-head[hidden]{display:none;}
+/* dilo tú */
+.say{border:2px solid color-mix(in srgb,var(--rl) 55%,transparent);border-radius:20px;padding:12px 14px;background:color-mix(in srgb,var(--rl) 8%,var(--surface));margin-top:10px;}
+.say .ds-cap{color:color-mix(in srgb,var(--rl) 65%,var(--ink));}
+.say-t{font-size:1.05rem;font-weight:700;line-height:1.4;margin:2px 0 10px;}
+.say-row{display:flex;gap:8px;flex-wrap:wrap;}
+.say-row button{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit;font-weight:800;font-size:.85rem;border-radius:999px;padding:8px 14px;border:1.5px solid color-mix(in srgb,var(--rl) 55%,transparent);background:var(--surface);color:color-mix(in srgb,var(--rl) 65%,var(--ink));}
+.say-row .say-mic{background:var(--rl);border-color:var(--rl);color:var(--rli,#fff);}
+.say-mic.listening{animation:sayPulse 1s infinite;}
+@keyframes sayPulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rl) 55%,transparent)}50%{box-shadow:0 0 0 8px transparent}}
+.say-res{margin-top:10px;font-size:.88rem;line-height:1.45;color:var(--ink-soft);}
+.say-res:empty{display:none;}
+.say-words{font-size:1.02rem;font-weight:700;line-height:1.6;margin-bottom:4px;}
+.say-words .ok{color:var(--ok-ink);}
+.say-words .miss{color:var(--danger-ink);text-decoration:underline wavy;text-underline-offset:3px;}
+/* recompensa */
+.rw{max-width:520px;margin:0 auto 18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.rw-bar{width:100%;margin-bottom:6px;}
+.rw-mascot{animation:rwBounce .8s ease both;}
+.rw-title{font-family:'Fraunces',serif;font-size:1.7rem;margin:2px 0 0;}
+.rw-stars{display:flex;gap:6px;margin:2px 0;}
+.rw-star path{fill:var(--line);stroke:var(--ink-soft);stroke-width:.6;}
+.rw-star.on path{fill:#FFC83D;stroke:#B77900;stroke-width:1;}
+.rw-star.on{animation:rwStar .6s cubic-bezier(.34,1.56,.64,1) var(--d) both;filter:drop-shadow(0 3px 6px rgba(255,180,0,.45));}
+.rw-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:4px;}
+.rw-chip{display:inline-flex;align-items:center;gap:5px;font-size:.8rem;font-weight:800;border-radius:999px;padding:6px 12px;background:color-mix(in srgb,var(--rl) 16%,var(--surface));border:1.5px solid color-mix(in srgb,var(--rl) 45%,transparent);color:var(--ink);}
+.rw-chip.amber{background:#F5A623;border-color:#F5A623;color:#3F2700;}
+.rw-chest{display:flex;align-items:center;gap:12px;text-align:left;margin-top:8px;padding:12px 16px;border-radius:20px;border:2px solid #F5C542;background:linear-gradient(135deg,rgba(245,197,66,.18),var(--surface));animation:rwBounce .9s ease .8s both;}
+.rw-chest b{display:block;}
+.rw-chest span{font-size:.85rem;color:var(--ink-soft);}
+@keyframes rwStar{0%{transform:scale(0) rotate(-40deg);opacity:0}100%{transform:none;opacity:1}}
+@keyframes rwBounce{0%{transform:translateY(20px) scale(.9);opacity:0}60%{transform:translateY(-6px)}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.rw-mascot,.rw-star.on,.rw-chest,#panel-practicehoy .answer-line .word-chip,.say-mic.listening{animation:none;}}
+/* MISSION-FX-CSS:END */
 </style>
 </head>
 <body>
@@ -33179,6 +33224,7 @@ function renderUnitComplete(s){
   const units = routeUnits(level), u = units[s.unit];
   const pct = s.answered ? Math.round(s.correct/s.answered*100) : 0;
   const passed = pct >= ROUTE_PASS_PCT;
+  const prevSt = routeState(level, s.unit), rw = {wasPassed:!!prevSt.passed, prevStars:routeStars(prevSt), prevBest:prevSt.best || 0};
   const rp = routeTouch(level, s.unit);
   rp.attempts = (rp.attempts||0) + 1;
   rp.best = Math.max(rp.best||0, pct);
@@ -33193,7 +33239,8 @@ function renderUnitComplete(s){
       ${missed.map(m=>`<div class="route-missed"><span>${escHtml(m.prompt)}</span><b>${escHtml(m.answer)}</b></div>`).join("")}
     </div>` : "";
   const html = `
-    <div class="section-head" style="text-align:center;">
+    ${s.mission ? missionRewardHTML(s, Object.assign(rw, {passed, pct, level, hasNext, nextLevel, title:u.title, stars:passed ? routeStars(routeState(level, s.unit)) : 0, chest:passed && (s.unit + 1) % ROUTE_CHEST_EVERY === 0 && hasNext})) : ""}
+    <div class="section-head" style="text-align:center;"${s.mission ? " hidden" : ""}>
       <div style="width:88px;margin:0 auto 12px;">${mascotSVG(passed?"cheer":"",88)}</div>
       <h2>${passed ? `¡Unidad ${s.unit+1} superada! 🎉` : `Casi: unidad ${s.unit+1} por reforzar`}</h2>
       <p class="dash-card-sub">${escHtml(u.title)} · ${s.correct}/${s.answered} correctas (${pct}%)</p>
@@ -33204,7 +33251,7 @@ function renderUnitComplete(s){
     ${missedHtml}
     <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
       ${passed
-        ? `<button class="btn" id="routeBackBtn">Continuar con la Ruta →</button>`
+        ? `${s.mission && hasNext ? `<button class="btn" id="routeNextBtn">Siguiente unidad →</button>` : ""}<button class="btn ${s.mission && hasNext ? "secondary" : ""}" id="routeBackBtn">Continuar con la Ruta →</button>`
         : `<button class="btn" id="routeRetryBtn">Reintentar el cierre</button>
            <button class="btn secondary" id="routeTheoryBtn">📖 Ver la teoría</button>
            <button class="btn secondary" id="routeBackBtn">Volver a la Ruta</button>`}
@@ -33222,8 +33269,10 @@ function renderUnitComplete(s){
     goTo("route");
     routeScrollTo(routeSelectedLevel, target);
   };
+  const nextBtn = document.getElementById("routeNextBtn");
+  if(nextBtn) nextBtn.onclick = ()=>{ practiceTodaySession = null; startMission(level, s.unit + 1); };
   const retry = document.getElementById("routeRetryBtn");
-  if(retry) retry.onclick = ()=>{ practiceTodaySession = buildUnitSession(level, s.unit); renderPracticeHoy(); };
+  if(retry) retry.onclick = ()=>{ practiceTodaySession = buildUnitSession(level, s.unit); if(s.mission){ practiceTodaySession.mission = {level, unit:s.unit, discovered:true}; practiceTodaySession.queue = missionAlternate(practiceTodaySession.queue); } renderPracticeHoy(); };
   const th = document.getElementById("routeTheoryBtn");
   if(th) th.onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(u.home, u.index, {id:"route", label:"Volver a la Ruta", level, unit:s.unit}); };
   window.scrollTo({top:0, behavior:"smooth"});
@@ -33538,7 +33587,7 @@ function missionBarHTML(active, level, unit){
     const done = i < active, cur = i === active;
     return `<div class="mb-step ${done ? "done" : cur ? "cur" : ""}" role="listitem" ${cur ? 'aria-current="step"' : ""}><span class="mb-dot">${done ? svgIcon("tick", 14) : i + 1}</span><span class="mb-lab">${t}</span></div>`;
   }).join("");
-  return `<div class="mission-bar" role="list" aria-label="Pasos de la misión" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}"><div class="mb-line" style="left:${edge}%;right:${edge}%"><i style="width:${Math.round(active / last * 100)}%"></i></div>${steps}</div>`;
+  return `<div class="mission-bar" role="list" aria-label="Pasos de la misión" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}"><div class="mb-line" style="left:${edge}%;right:${edge}%"><i style="width:${Math.min(100, Math.round(active / last * 100))}%"></i></div>${steps}</div>`;
 }
 function startMission(level, k){
   if(!routeUnits(level)[k] && currentLang !== "pt") return;
@@ -33647,11 +33696,13 @@ function missionDrawDiscover(s){
         <span class="ds-es" hidden>${escHtml(x.es || "")}</span><span class="ds-hint">Toca para escuchar y ver qué significa</span></button>`).join("")}</div>
       <div class="ds-dots" aria-live="polite"><span id="dsDots">${D.sents.map(()=> '<i class="ds-dot"></i>').join("")}</span><span class="ds-count" id="dsCount">0 de ${D.sents.length} descubiertas</span></div>
       <div class="ds-rule" id="dsRule" hidden><div class="ds-cap">${svgIcon("bulb", 16)} LO QUE DESCUBRISTE</div><div class="ds-rule-t">${D.rule}</div></div>
+      <div id="dsSay" hidden>${missionSayHTML(D.sents[0].en)}</div>
       ${D.q ? `<div class="ds-check card" id="dsCheck" hidden><div class="ds-cap">COMPRUÉBALO</div><div class="ds-q">${escHtml(D.q.q)}</div>
         <div class="options" id="dsOpts">${D.q.k === "tf" ? ["Verdadero", "Falso"].map((t, i)=> `<button class="opt-btn" data-i="${i}">${t}</button>`).join("") : D.q.o.map((t, i)=> `<button class="opt-btn" data-i="${i}">${escHtml(t)}</button>`).join("")}</div>
         <div class="feedback" role="status" aria-live="polite" id="dsFb"></div></div>` : ""}
       <div class="ds-foot"><button class="btn" id="dsGo" disabled>Empezar a entrenar →</button><button type="button" class="ds-skip" id="dsSkip">Saltar al entrenamiento</button></div>
     </div>`;
+  missionSayBind(panel);
   const cards = [...panel.querySelectorAll(".ds-card")], seen = D.sents.map(()=> false);
   let answered = !D.q;
   const go = document.getElementById("dsGo");
@@ -33661,6 +33712,7 @@ function missionDrawDiscover(s){
     document.getElementById("dsCount").textContent = `${n} de ${seen.length} descubiertas`;
     if(n === seen.length){
       document.getElementById("dsRule").hidden = false;
+      document.getElementById("dsSay").hidden = false;
       const chk = document.getElementById("dsCheck"); if(chk) chk.hidden = false;
     }
     go.disabled = !(n === seen.length && answered);
@@ -33992,6 +34044,7 @@ function missionDrawScene(s){
       const m = bubble(me, S.o[0], S.oes, true); chat.appendChild(m);
       m.scrollIntoView({block:"nearest", behavior:"smooth"});
       dialogueSpeak(S.o[0], me === 0 ? "A" : "B", .9);
+      if(!turn.querySelector(".say")){ fb.insertAdjacentHTML("afterend", missionSayHTML(S.o[0])); missionSayBind(turn); }
       go.disabled = false;
     });
   };
@@ -34009,6 +34062,146 @@ function missionDrawScene(s){
   reveal();
 }
 /* MISSION-SCENE:END */
+/* MISSION-FX:BEGIN — arrastrar y soltar (Ordena / Completar), «Ahora dilo tú» por voz y pantalla de recompensa de la misión */
+const missionActive = ()=> !!(practiceTodaySession && practiceTodaySession.mission);
+/* arrastre con puntero: un toque sin mover sigue funcionando como clic; onHover(x,y) y onDrop(x,y) reciben coordenadas de pantalla */
+function missionDrag(el, onDrop, onHover){
+  el.style.touchAction = "none"; el.classList.add("dg-able");
+  el.addEventListener("pointerdown", e=> {
+    if(e.button > 0 || el.disabled) return;
+    const sx = e.clientX, sy = e.clientY, pid = e.pointerId;
+    let ghost = null;
+    const move = ev=> {
+      if(ev.pointerId !== pid) return;
+      if(!ghost){
+        if(Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) return;
+        const r = el.getBoundingClientRect();
+        ghost = el.cloneNode(true); ghost.classList.add("dg-ghost");
+        ghost.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;margin:0;z-index:9999;pointer-events:none;`;
+        document.body.appendChild(ghost); el.classList.add("dg-src");
+      }
+      ev.preventDefault();
+      ghost.style.transform = `translate(${ev.clientX - sx}px,${ev.clientY - sy}px) scale(1.06) rotate(-2deg)`;
+      if(onHover) onHover(ev.clientX, ev.clientY);
+    };
+    const up = ev=> {
+      if(ev.pointerId !== pid) return;
+      window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up);
+      if(!ghost) return;
+      ghost.remove(); el.classList.remove("dg-src");
+      if(onHover) onHover(-1, -1);
+      el._dragged = true; setTimeout(()=> el._dragged = false, 0);
+      if(ev.type === "pointerup") onDrop(ev.clientX, ev.clientY);
+    };
+    window.addEventListener("pointermove", move, {passive:false}); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+  });
+  el.addEventListener("click", e=> { if(el._dragged){ e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+}
+const dgInside = (r, x, y, pad)=> x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
+function dgInsertIndex(box, x, y, skip){
+  let n = 0;
+  [...box.children].forEach((c, j)=> {
+    if(j === skip) return;
+    const r = c.getBoundingClientRect();
+    if(y > r.bottom || (y >= r.top && x > r.left + r.width / 2)) n++;
+  });
+  return n;
+}
+function missionOrderDrag(){
+  const o = current.order, bankEl = document.getElementById("orderBank"), ansEl = document.getElementById("orderAnswer"), chk = document.getElementById("orderCheck");
+  if(!o || !bankEl || !ansEl || !chk) return;
+  const hint = document.querySelector("#exPanel .q-text"); if(hint) hint.textContent = "Forma la oración: toca o arrastra las palabras";
+  const hover = (x, y)=> ansEl.classList.toggle("dg-over", x >= 0 && dgInside(ansEl.getBoundingClientRect(), x, y, 10));
+  [...bankEl.children].forEach((chip, i)=> missionDrag(chip, (x, y)=> {
+    if(chk.disabled || !dgInside(ansEl.getBoundingClientRect(), x, y, 10)) return;
+    const w = o.bank.splice(i, 1)[0]; o.chosen.splice(dgInsertIndex(ansEl, x, y, -1), 0, w); renderOrderChips();
+  }, hover));
+  [...ansEl.children].forEach((chip, i)=> missionDrag(chip, (x, y)=> {
+    if(chk.disabled) return;
+    const w = o.chosen.splice(i, 1)[0];
+    if(dgInside(ansEl.getBoundingClientRect(), x, y, 10)) o.chosen.splice(dgInsertIndex(ansEl, x, y, i), 0, w); else o.bank.push(w);
+    renderOrderChips();
+  }, hover));
+}
+function missionGapDrag(){
+  const blank = document.getElementById("gfBlank"), inst = document.querySelector("#exPanel .gf-inst");
+  if(!blank) return;
+  if(inst) inst.textContent = "Toca o arrastra la opción al hueco";
+  const zone = ()=> blank.getBoundingClientRect();
+  document.querySelectorAll("#gfOpts .opt-btn").forEach(b=> missionDrag(b, (x, y)=> { if(dgInside(zone(), x, y, 24)){ b._dragged = false; b.click(); } },
+    (x, y)=> blank.classList.toggle("dg-over", x >= 0 && dgInside(zone(), x, y, 24))));
+}
+const _fxRenderOrderChips = renderOrderChips;
+renderOrderChips = function(){ _fxRenderOrderChips(); if(missionActive()) missionOrderDrag(); };
+const _fxDrawGapfill = drawGapfill;
+drawGapfill = function(){ _fxDrawGapfill(); if(missionActive()) missionGapDrag(); };
+
+/* ---- «Ahora dilo tú»: repetir una frase y ver qué palabras se reconocieron ---- */
+function missionSayHTML(text){
+  if(!SpeechRecognitionCtor) return "";
+  return `<div class="say" data-text="${escHtml(text)}"><div class="ds-cap">${rsIcon("mic", 15)} AHORA DILO TÚ</div>
+    <div class="say-t">${escHtml(text)}</div>
+    <div class="say-row"><button type="button" class="say-listen">${rsIcon("speaker", 16)} Escuchar</button><button type="button" class="say-mic">${rsIcon("mic", 16)} Repetir</button></div>
+    <div class="say-res" role="status" aria-live="polite"></div></div>`;
+}
+RS_ICON.mic = RS_ICON.mic || "M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z M19 11a7 7 0 0 1-14 0 M12 18v3 M9 21h6";
+function missionSayBind(root){
+  root.querySelectorAll(".say").forEach(box=> {
+    if(box._bound) return; box._bound = true;
+    const text = box.dataset.text, mic = box.querySelector(".say-mic"), res = box.querySelector(".say-res");
+    box.querySelector(".say-listen").onclick = ()=> speak(text);
+    mic.onclick = ()=> {
+      if(box._rec){ try{ box._rec.abort(); }catch(e){} }
+      const rec = new SpeechRecognitionCtor(); box._rec = rec;
+      rec.lang = voiceAccent || "en-US"; rec.interimResults = false; rec.maxAlternatives = 3;
+      mic.classList.add("listening"); res.className = "say-res"; res.textContent = "Escuchando…";
+      const orig = text.split(/\s+/), on = orig.map(w=> normalize(w)), need = on.filter(Boolean).length || 1;
+      rec.onresult = ev=> {
+        let best = null;
+        [...ev.results[0]].forEach(a=> {
+          const sn = normalize(a.transcript).split(" ").filter(Boolean), m = lcsWordMatch(on, sn).matched;
+          const hit = m.filter((v, i)=> v && on[i]).length;
+          if(!best || hit > best.hit) best = {hit, m, said:a.transcript};
+        });
+        const pct = Math.round(best.hit / need * 100);
+        const words = orig.map((w, i)=> `<span class="${!on[i] ? "" : best.m[i] ? "ok" : "miss"}">${escHtml(w)}</span>`).join(" ");
+        res.className = "say-res show " + (pct >= 70 ? "ok" : "bad");
+        res.innerHTML = `<div class="say-words">${words}</div><div class="say-msg"><b>${pct >= 90 ? "¡Excelente! 🎉" : pct >= 70 ? "¡Bien dicho! 👏" : "Casi, inténtalo otra vez 💪"}</b> ${pct}% de las palabras. Oí: «${escHtml(best.said)}»</div>`;
+        mic.innerHTML = `${rsIcon("mic", 16)} Otra vez`;
+      };
+      rec.onerror = e=> { res.className = "say-res show bad"; res.textContent = e.error === "not-allowed" ? "Permiso de micrófono denegado." : "No pude oírte bien. Prueba otra vez."; };
+      rec.onend = ()=> mic.classList.remove("listening");
+      try{ rec.start(); }catch(e){ res.className = "say-res show bad"; res.textContent = "No se pudo iniciar el micrófono."; }
+    };
+  });
+}
+
+/* ---- recompensa al superar (o no) el cierre de una unidad ---- */
+function missionRewardHTML(s, o){
+  const {level, unit} = s.mission, lc = ROUTE_LC[level] || "#8E6CFF", res = (s.res || []).filter(v=> v === true || v === false);
+  let streak = 0, run = 0; res.forEach(v=> { run = v ? run + 1 : 0; streak = Math.max(streak, run); });
+  const star = i=> `<svg class="rw-star${i < o.stars ? " on" : ""}" style="--d:${(0.25 + i * 0.4).toFixed(2)}s" width="58" height="58" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" stroke-linejoin="round"/></svg>`;
+  const title = !o.passed ? `Casi: unidad ${unit + 1} por reforzar` : o.stars === 3 ? "¡Perfecto!" : o.stars === 2 ? "¡Muy bien!" : "¡Unidad superada!";
+  const chips = [`<span class="rw-chip">${rsIcon("check", 14)} ${s.correct}/${s.answered} correctas · ${o.pct}%</span>`];
+  if(streak >= 3) chips.push(`<span class="rw-chip amber">${rsIcon("zap", 14)} Racha de ${streak}</span>`);
+  if(o.pct === 100) chips.push(`<span class="rw-chip amber">${rsIcon("star", 14)} Sin fallos</span>`);
+  if(o.passed && o.wasPassed && o.stars > o.prevStars) chips.push(`<span class="rw-chip amber">${rsIcon("arrow", 14)} ¡Subiste a ${o.stars} ${o.stars === 1 ? "estrella" : "estrellas"}!</span>`);
+  else if(o.wasPassed && o.pct > o.prevBest) chips.push(`<span class="rw-chip amber">${rsIcon("arrow", 14)} Nueva mejor marca</span>`);
+  const sub = o.passed
+    ? (o.hasNext ? `Se abrió la Unidad ${unit + 2}.` : `¡Terminaste todas las unidades de ${level}!${o.nextLevel ? ` Puedes seguir con ${o.nextLevel}.` : ""}`) + (o.stars < 3 ? " Con 90% o más consigues las 3 estrellas." : "")
+    : `Necesitas ${ROUTE_PASS_PCT}% para superarla. Repasa la teoría y reintenta cuando quieras.`;
+  return `<div class="rw" style="--rl:${lc}">
+    <div class="rw-bar">${missionBarHTML(o.passed ? 3 : 2, level, unit)}</div>
+    <div class="rw-mascot">${mascotSVG(o.passed ? "cheer" : "", 84)}</div>
+    <h2 class="rw-title">${title}</h2>
+    <div class="rw-stars" role="img" aria-label="${o.stars} de 3 estrellas">${[0, 1, 2].map(star).join("")}</div>
+    <p class="dash-card-sub">${escHtml(o.title)}</p>
+    <div class="rw-chips">${chips.join("")}</div>
+    <p class="dash-card-sub">${sub}</p>
+    ${o.chest ? `<div class="rw-chest">${routeChestSvg(true)}<div><b>¡Cofre de hito abierto!</b><span>Completaste ${unit + 1} unidades de ${level}. ¡Sigue así!</span></div></div>` : ""}
+  </div>`;
+}
+/* MISSION-FX:END */
 /* MISSION-PATH:BEGIN — mini camino de la misión (10 puntos con la mascota), aciertos seguidos, 💡 Regla y pista al fallar, formatos alternados */
 RS_ICON.flag = RS_ICON.flag || "M4 22V3 M4 4h13l-2 4 2 4H4";
 RS_ICON.bulb = RS_ICON.bulb || "M9 18h6 M10 21h4 M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z";
