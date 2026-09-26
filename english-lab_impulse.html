@@ -33957,11 +33957,12 @@ function missionDrawDiscover(s){
   window.scrollTo({top:0, behavior:"smooth"});
 }
 /* DISC-CARDS:BEGIN — «Descubre» con 4 tarjetas que giran: frente = frase en inglés, reverso = traducción y explicación amigable */
-const DISC_CARDS = {};
+const DISC_CARDS = {};     // por clave "home.index" de la teoría (A1)
+const DISC_CARDS_T = {};   // por título de la unidad (A2 a C2)
 function discCardsFor(level, unit){
   if(currentLang !== "en") return null;
   const u = routeUnits(level)[unit];
-  return (u && DISC_CARDS[`${u.home}.${u.index}`]) || null;
+  return u ? (DISC_CARDS[`${u.home}.${u.index}`] || DISC_CARDS_T[u.title] || null) : null;
 }
 const discPlain = t=> String(t).replace(/[\[\]]/g, "");
 const discHtml = t=> escHtml(t).replace(/\[(.+?)\]/g, '<b class="ds-hl">$1</b>');
@@ -34131,6 +34132,554 @@ Object.assign(DISC_CARDS, {
   ]
 });
 /* DISC-DATA-A1:END */
+/* DISC-DATA-A2:BEGIN — tarjetas de A2 (clave = título de la unidad): [frase con [resaltado], traducción, explicación amigable] */
+Object.assign(DISC_CARDS_T, {
+  "Was / were (pasado del verbo to be)": [
+    ["I [was] tired yesterday.", "Ayer estaba cansado.", "«Was» es el pasado de «am» y de «is». Va con «I», «he», «she» e «it» para contar cómo estabas o cómo era algo."],
+    ["They [were] at the cinema.", "Ellos estaban en el cine.", "«Were» es el pasado de «are» y va con «you», «we» y «they». En español elegimos entre «era» y «estaba», pero en inglés «was» y «were» sirven para los dos."],
+    ["[Was] the film good?", "¿Fue buena la película?", "Para preguntar, pon «was» o «were» al inicio de la frase, igual que con «am/is/are». No necesitas ningún auxiliar extra."],
+    ["She [wasn't] at home.", "Ella no estaba en casa.", "Para negar, agrega «not»: «was not» se acorta a «wasn't» y «were not» a «weren't»."]
+  ],
+  "Pasado simple": [
+    ["I [visited] my grandma yesterday.", "Ayer visité a mi abuela.", "Con los verbos regulares, el pasado se forma agregando «-ed»: «visit» pasa a «visited». Sirve para acciones terminadas en un momento concreto, como «yesterday»."],
+    ["She [went] to Paris last year.", "Ella fue a París el año pasado.", "Muchos verbos comunes son irregulares y cambian de forma: «go» pasa a «went», «have» a «had», «see» a «saw». Se aprenden con la práctica."],
+    ["We [watched] a movie and [ate] pizza.", "Vimos una película y comimos pizza.", "Cuando cuentas varias acciones seguidas, cada verbo va en pasado. No hace falta repetir el sujeto."],
+    ["He [studied] all night.", "Él estudió toda la noche.", "Si el verbo termina en consonante + «y», la «y» cambia a «-ied»: «study» pasa a «studied». Es un pequeño cambio de ortografía."]
+  ],
+  "Pasado simple: negativas y preguntas (did)": [
+    ["She [didn't watch] TV last night.", "Ella no vio la tele anoche.", "Para negar en pasado usa «didn't» y el verbo en forma base: «didn't watch», no «didn't watched». El pasado ya está en «didn't»."],
+    ["[Did] you finish your homework?", "¿Terminaste tu tarea?", "Para preguntar, empieza con «Did» y deja el verbo en forma base. Sirve para todas las personas, sin excepción."],
+    ["We [didn't go] to the party.", "No fuimos a la fiesta.", "Funciona igual con los verbos irregulares: «didn't go», no «didn't went». Un solo pasado por frase."],
+    ["What [did] you do yesterday?", "¿Qué hiciste ayer?", "Con las palabras Wh- (what, where, why…), el orden es: palabra + did + sujeto + verbo base. Así preguntas por cualquier detalle del pasado."]
+  ],
+  "Pasado continuo": [
+    ["I [was watching] TV at eight.", "Yo estaba viendo la tele a las ocho.", "El pasado continuo usa «was/were» + verbo con «-ing» para una acción que estaba en progreso en un momento concreto."],
+    ["They [were sleeping] when the earthquake happened.", "Dormían cuando ocurrió el terremoto.", "Sirve para contar qué pasaba de fondo cuando ocurrió otra cosa. La acción larga va en continuo y la corta, en pasado simple."],
+    ["What [were] you [doing] at 8 PM?", "¿Qué estabas haciendo a las 8 p. m.?", "Para preguntar, «was/were» va antes del sujeto: «What were you doing?». Es perfecta para preguntar por un momento exacto."],
+    ["I [wasn't listening].", "No estaba escuchando.", "Para negar, agrega «not» a «was/were»: «wasn't listening», «weren't working»."]
+  ],
+  "Presente continuo": [
+    ["Look! It [is raining].", "¡Mira! Está lloviendo.", "El presente continuo (am/is/are + «-ing») habla de lo que pasa ahora mismo, mientras hablas."],
+    ["We [are meeting] them tomorrow.", "Nos vamos a reunir con ellos mañana.", "También sirve para planes ya organizados del futuro cercano, sobre todo con una hora o un día: «tomorrow», «tonight»."],
+    ["They [are building] a new house.", "Están construyendo una casa nueva.", "Se usa también para cosas temporales que están en proceso, aunque no estén ocurriendo justo este segundo."],
+    ["I [am not working] today.", "Hoy no estoy trabajando.", "Para negar, pon «not» después de «am/is/are». Y para preguntar, invierte el orden: «Are you working?»."]
+  ],
+  "Presente simple vs presente continuo": [
+    ["I [drink] coffee every morning.", "Tomo café todas las mañanas.", "El presente simple es para hábitos y rutinas: lo que haces siempre o con frecuencia. Palabras como «every» y «usually» lo delatan."],
+    ["I'm [drinking] tea right now.", "Ahora mismo estoy tomando té.", "El presente continuo es para lo que pasa en este momento. Fíjate en «right now» o «at the moment»."],
+    ["He usually [walks], but today he [is driving].", "Normalmente camina, pero hoy conduce.", "Puedes contrastar los dos en la misma frase: la costumbre en presente simple y lo de hoy en continuo."],
+    ["I [know] the answer.", "Sé la respuesta.", "Ojo: verbos como «know», «like» y «want» describen estados y casi nunca van en continuo. Se dice «I know», no «I'm knowing»."]
+  ],
+  "Comparativos y superlativos": [
+    ["This book is [more interesting] than that one.", "Este libro es más interesante que ese.", "Con adjetivos largos se usa «more» antes del adjetivo y «than» para comparar con algo."],
+    ["My bag is [bigger] than yours.", "Mi bolso es más grande que el tuyo.", "Con adjetivos cortos se agrega «-er»: «big» pasa a «bigger». Si termina en vocal + consonante, la consonante se duplica."],
+    ["She is [the tallest] in her class.", "Ella es la más alta de su clase.", "El superlativo (lo más…) usa «the» y «-est» con adjetivos cortos: «the tallest», «the fastest»."],
+    ["This is [the most expensive] option.", "Esta es la opción más cara.", "Con adjetivos largos el superlativo es «the most»: «the most expensive». Y hay irregulares: «good» pasa a «better» y a «the best»."]
+  ],
+  "Adverbios de modo (quickly, well, hard)": [
+    ["He drives [slowly].", "Él conduce despacio.", "Casi siempre se forman agregando «-ly» al adjetivo: «slow» pasa a «slowly». Dicen cómo se hace una acción."],
+    ["She speaks English very [well].", "Ella habla muy bien inglés.", "«Well» es el adverbio de «good». Es irregular: no se dice «speaks good»."],
+    ["They worked [hard].", "Ellos trabajaron duro.", "«Hard» es igual como adjetivo y como adverbio. No le agregues «-ly»: «hardly» significa «casi nada», ¡es otra cosa!"],
+    ["She passed the test [easily].", "Ella aprobó el examen con facilidad.", "Si el adjetivo termina en «-y», la «y» cambia a «-ily»: «easy» pasa a «easily», «happy» a «happily». Suelen ir después del verbo."]
+  ],
+  "Sustantivos contables e incontables": [
+    ["I have [three apples].", "Tengo tres manzanas.", "Los contables se pueden numerar y tienen plural: «one apple», «three apples»."],
+    ["I need some [water].", "Necesito agua.", "Los incontables (agua, dinero, información) no se cuentan y no llevan «a/an»: se dice «some water», no «a water»."],
+    ["She doesn't have [much] money.", "Ella no tiene mucho dinero.", "Con incontables se usa «much» (mucho) y «a little» (un poco)."],
+    ["There are [few] chairs in the room.", "Hay pocas sillas en la sala.", "Con contables se usa «many» y «a few». «Few» significa «pocas» y suena casi negativo."]
+  ],
+  "Cuantificadores: some, any, much, many": [
+    ["I have [some] questions.", "Tengo algunas preguntas.", "«Some» se usa en frases afirmativas: significa «algunos» o «algo de»."],
+    ["There isn't [any] milk left.", "No queda leche.", "En negativas y preguntas se usa «any» en lugar de «some»: «there isn't any…», «Is there any…?»."],
+    ["How [many] books did you read?", "¿Cuántos libros leíste?", "«How many» va con contables (books, people). Pregunta por una cantidad que puedes contar."],
+    ["How [much] money do you have?", "¿Cuánto dinero tienes?", "«How much» va con incontables (money, water, time). Se pregunta por una cantidad que no cuentas."]
+  ],
+  "Too, enough y very": [
+    ["The coffee is [very] hot.", "El café está muy caliente.", "«Very» solo intensifica: algo es mucho, pero no hay ningún problema."],
+    ["It's [too] hot to drink.", "Está demasiado caliente para beber.", "«Too» significa «demasiado» y expresa un problema: no se puede o no conviene."],
+    ["She is old [enough] to drive.", "Ella tiene edad suficiente para conducir.", "«Enough» va después del adjetivo: «old enough», «tall enough»."],
+    ["There isn't [enough] time.", "No hay tiempo suficiente.", "Con sustantivos, «enough» va antes: «enough time», «enough chairs»."]
+  ],
+  "Would like, Can I y Shall we (pedir, ofrecer y sugerir)": [
+    ["I['d like] a glass of water, please.", "Quisiera un vaso de agua, por favor.", "«I'd like» (I would like) es la forma amable de decir «quiero». Ideal para pedir en un restaurante."],
+    ["[Would you like] some coffee?", "¿Quieres café?", "Con «Would you like…?» ofreces algo con cortesía. Suena más amable que «Do you want…?»."],
+    ["[Can I] have the bill, please?", "¿Me trae la cuenta, por favor?", "«Can I…?» sirve para pedir cosas o permiso. Con «Could I…?» suena todavía más educado."],
+    ["[Shall we] go to the park?", "¿Vamos al parque?", "«Shall we…?» y «Let's» sirven para proponer un plan que incluye a las dos personas."]
+  ],
+  "Futuro: be going to": [
+    ["I['m going to] visit my parents this weekend.", "Voy a visitar a mis padres este fin de semana.", "«Be going to» + verbo base habla de planes que ya decidiste. Es el «voy a…» del inglés."],
+    ["Look at those clouds — it['s going to] rain.", "Mira esas nubes: va a llover.", "También sirve para predecir algo que ves venir por lo que hay ahora mismo."],
+    ["They [aren't going to] come.", "Ellos no van a venir.", "Para negar, agrega «not» a «am/is/are»: «isn't going to», «aren't going to»."],
+    ["[Are you going to] study tonight?", "¿Vas a estudiar esta noche?", "Para preguntar, «am/is/are» va primero. Y el verbo que sigue a «going to» no cambia."]
+  ],
+  "Have to / don't have to (obligación)": [
+    ["I [have to] get up at six.", "Tengo que levantarme a las seis.", "«Have to» expresa que algo es obligatorio, por reglas o por necesidad."],
+    ["She [has to] work on Saturday.", "Ella tiene que trabajar el sábado.", "Con «he», «she» e «it» se usa «has to». Y el verbo que sigue queda en forma base."],
+    ["You [don't have to] pay.", "No tienes que pagar.", "«Don't have to» significa que no es necesario, ¡no que esté prohibido! Es un error muy común."],
+    ["[Do] we [have to] wear a uniform?", "¿Tenemos que usar uniforme?", "Para preguntar se usa «do/does»: «Do we have to…?». El «have to» se queda igual."]
+  ],
+  "Condicional cero": [
+    ["If you heat water to 100°C, it [boils].", "Si calientas el agua a 100 °C, hierve.", "El condicional cero habla de hechos que siempre se cumplen. Las dos partes van en presente simple."],
+    ["If you don't water plants, they [die].", "Si no riegas las plantas, mueren.", "Sirve para causas y consecuencias que siempre son ciertas, como reglas y verdades científicas."],
+    ["Ice melts [if] you heat it.", "El hielo se derrite si lo calientas.", "Puedes cambiar el orden de las partes. Si «if» va en medio de la frase, no lleva coma."],
+    ["If I [am] tired, I go to bed early.", "Si estoy cansado, me acuesto temprano.", "También sirve para hábitos personales. Aquí «if» puede reemplazarse por «when» sin cambiar el sentido."]
+  ],
+  "Should, must y mustn't (consejo, obligación y prohibición)": [
+    ["You [should] drink more water.", "Deberías beber más agua.", "«Should» da un consejo: es lo recomendable, pero no es obligatorio."],
+    ["I [must] finish this today.", "Debo terminar esto hoy.", "«Must» expresa una obligación fuerte, normalmente personal o muy importante."],
+    ["You [mustn't] use your phone here.", "No debes usar tu teléfono aquí.", "«Mustn't» es una prohibición: no está permitido. No lo confundas con «don't have to», que significa que no hace falta."],
+    ["[Should] I call her?", "¿Debería llamarla?", "Para preguntar, «should» va al inicio. Es una forma cortés de pedir un consejo."]
+  ],
+  "Presente perfecto: ever, never, just, already, yet (primer contacto)": [
+    ["Have you [ever] been to London?", "¿Alguna vez has estado en Londres?", "El presente perfecto (have/has + participio) sirve para hablar de experiencias sin decir cuándo pasaron. «Ever» significa «alguna vez»."],
+    ["I have [never] eaten octopus.", "Nunca he comido pulpo.", "«Never» es «nunca». Ya es negativo, así que no lleva «not»."],
+    ["She has [just] called me.", "Ella acaba de llamarme.", "«Just» va entre «have/has» y el participio y significa «acabar de»."],
+    ["Have you finished [yet]?", "¿Ya terminaste?", "«Yet» se usa en preguntas y negativas y va al final. En las afirmativas se usa «already» (ya)."]
+  ],
+  "Pronombres posesivos y reflexivos (mine, yours, myself)": [
+    ["This bag isn't yours; it's [mine].", "Esta bolsa no es tuya; es mía.", "«Mine», «yours», «hers»… reemplazan a «mi/tu + cosa», así no repites el sustantivo."],
+    ["Is this pen [yours]?", "¿Este bolígrafo es tuyo?", "«Yours» va solo, sin sustantivo y sin apóstrofo. No lo confundas con «your», que sí lleva sustantivo detrás."],
+    ["She looked at [herself] in the mirror.", "Ella se miró en el espejo.", "Los reflexivos (myself, herself…) se usan cuando quien hace la acción y quien la recibe son la misma persona."],
+    ["I made this cake [myself].", "Hice este pastel yo mismo.", "También sirven para enfatizar que lo hiciste tú, sin ayuda. Suelen ir al final."]
+  ],
+  "In, on y at: tiempo y lugar": [
+    ["I wake up [at] seven.", "Me despierto a las siete.", "Para horas exactas se usa «at»: «at seven», «at noon», «at night»."],
+    ["The meeting is [on] Monday.", "La reunión es el lunes.", "Con días y fechas se usa «on»: «on Monday», «on May 5th»."],
+    ["She was born [in] 1995.", "Ella nació en 1995.", "Con meses, años, estaciones y partes del día se usa «in»: «in July», «in summer», «in the morning»."],
+    ["The keys are [on] the table.", "Las llaves están sobre la mesa.", "Para lugares: «at» es un punto (at home), «in» es dentro de algo (in Madrid) y «on» es sobre una superficie (on the table)."]
+  ]
+});
+/* DISC-DATA-A2:END */
+/* DISC-DATA-B1:BEGIN — tarjetas de B1 (clave = título de la unidad) */
+Object.assign(DISC_CARDS_T, {
+  "Presente perfecto": [
+    ["I have [never been] to Japan.", "Nunca he ido a Japón.", "El presente perfecto (have/has + participio) habla de experiencias en tu vida. No dices cuándo pasó; lo importante es que pasó (o que no pasó)."],
+    ["She [has already finished] her homework.", "Ella ya terminó su tarea.", "Sirve para acciones recientes que tienen un resultado hoy. «Already» (ya) va entre «has» y el participio."],
+    ["[Have you ever traveled] to Europe?", "¿Alguna vez has viajado a Europa?", "Para preguntar, «have/has» va primero. «Ever» significa «alguna vez»."],
+    ["We['ve lived] here for ten years.", "Vivimos aquí desde hace diez años.", "También sirve para algo que empezó en el pasado y sigue hoy. Verás «for» (cuánto tiempo) y «since» (desde cuándo)."]
+  ],
+  "Presente perfecto vs pasado simple": [
+    ["I [lived] in Bogotá in 2015.", "Viví en Bogotá en 2015.", "Con una fecha o un momento concreto del pasado se usa el pasado simple: «in 2015», «yesterday», «last week»."],
+    ["I [have lived] here for five years.", "Vivo aquí desde hace cinco años.", "Si sigue siendo verdad hoy, o no dices cuándo pasó, se usa el presente perfecto."],
+    ["[Did] you [see] the film last night?", "¿Viste la película anoche?", "«Last night» marca un momento concreto, así que la pregunta va en pasado simple con «did»."],
+    ["[Have] you ever [seen] a whale?", "¿Alguna vez has visto una ballena?", "Cuando preguntas por experiencias de la vida, sin un momento concreto, usas el presente perfecto con «ever»."]
+  ],
+  "Verbos estativos (Stative verbs)": [
+    ["I [understand] the lesson.", "Entiendo la lección.", "«Understand» describe un estado mental, no una acción. Estos verbos casi nunca van en «-ing»."],
+    ["She [loves] chocolate.", "A ella le encanta el chocolate.", "Los verbos de gusto y sentimiento (love, like, hate, want) son estativos: «I like it», no «I'm liking it»."],
+    ["This bag [belongs] to me.", "Esta bolsa me pertenece.", "También lo son los de posesión (have, own, belong) y los de conocimiento (know, believe)."],
+    ["I'm [having] lunch.", "Estoy almorzando.", "Algunos verbos cambian de significado: «have» (tener) es estativo, pero «having lunch» es una acción y sí acepta «-ing»."]
+  ],
+  "Verbos modales: can / must / should": [
+    ["You [must] wear a seatbelt.", "Debes usar el cinturón de seguridad.", "«Must» expresa una obligación fuerte o una regla. El verbo que sigue va en forma base."],
+    ["You [should] drink more water.", "Deberías beber más agua.", "«Should» da un consejo. Es menos fuerte que «must»."],
+    ["I [can] swim very well.", "Sé nadar muy bien.", "«Can» expresa habilidad o posibilidad. Nunca lleva «-s» ni «to» después."],
+    ["[Could] you help me?", "¿Podrías ayudarme?", "«Could» es la forma más cortés de «can» para pedir algo. Los modales se colocan antes del sujeto para preguntar."]
+  ],
+  "Condicional tipo 1": [
+    ["If it [rains], I [will stay] home.", "Si llueve, me quedaré en casa.", "El condicional 1 habla de algo posible en el futuro. Después de «if» va presente simple y en la otra parte, «will» + verbo."],
+    ["If you [study], you [will pass] the exam.", "Si estudias, aprobarás el examen.", "Sirve para consecuencias probables, promesas y advertencias."],
+    ["If you [don't hurry], you['ll miss] the bus.", "Si no te apuras, perderás el bus.", "También funciona en negativo. Y ojo: después de «if» nunca va «will»."],
+    ["I['ll call] you [if] I have time.", "Te llamaré si tengo tiempo.", "El orden de las partes puede cambiar. Si «if» va en medio de la frase, no se pone coma."]
+  ],
+  "Will vs Going to": [
+    ["I['ll answer] the phone.", "Yo contesto el teléfono.", "«Will» se usa para decisiones que tomas en el momento, como ofrecerte a hacer algo o prometerlo."],
+    ["I['m going to study] medicine.", "Voy a estudiar medicina.", "«Going to» es para planes que ya tenías decididos antes de hablar."],
+    ["I think it [will rain] tomorrow.", "Creo que lloverá mañana.", "«Will» también sirve para opinar o predecir sin evidencia clara: «I think… will»."],
+    ["Look at the sky! It['s going to] rain.", "¡Mira el cielo! Va a llover.", "Cuando la predicción se basa en algo que ves ahora mismo, se usa «going to»."]
+  ],
+  "Gerundios e infinitivos después de verbos": [
+    ["I [enjoy reading] before bed.", "Disfruto leer antes de dormir.", "Después de «enjoy», «finish», «mind» o «avoid» va el verbo con «-ing»."],
+    ["She [decided to study] abroad.", "Ella decidió estudiar en el extranjero.", "Después de «decide», «want», «hope» o «plan» va «to + verbo»."],
+    ["We [finished cleaning] the house.", "Terminamos de limpiar la casa.", "«Finish» es de los que llevan «-ing». No se dice «finished to clean»."],
+    ["I'd like [to go] home.", "Me gustaría ir a casa.", "«Would like» va con «to». Cada verbo tiene su forma, así que conviene aprenderlos en pequeños grupos."]
+  ],
+  "Oraciones de relativo: who, which, that": [
+    ["The woman [who] called is my teacher.", "La mujer que llamó es mi profesora.", "«Who» reemplaza a una persona y evita repetirla. Une dos frases en una."],
+    ["This is the book [that] I told you about.", "Este es el libro del que te hablé.", "«That» sirve para personas y cosas, y en el inglés de todos los días es muy común."],
+    ["I have a car [which] is very old.", "Tengo un coche que es muy viejo.", "«Which» se usa solo para cosas y animales, nunca para personas."],
+    ["The book [I read] was great.", "El libro que leí estaba genial.", "Cuando el pronombre es el objeto de la relativa, se puede omitir: «The book I read» en lugar de «The book that I read»."]
+  ],
+  "Question tags": [
+    ["You're coming to the party, [aren't you]?", "Vienes a la fiesta, ¿verdad?", "Una «question tag» es una preguntita al final para confirmar algo. Si la frase es afirmativa, el tag es negativo."],
+    ["She doesn't like coffee, [does she]?", "A ella no le gusta el café, ¿verdad?", "Si la frase es negativa, el tag es positivo. Usa el mismo auxiliar que la frase."],
+    ["They have finished, [haven't they]?", "Ya terminaron, ¿no?", "El tag repite el auxiliar (have, is, can…) con el pronombre que corresponde."],
+    ["You like pizza, [don't you]?", "Te gusta la pizza, ¿verdad?", "Cuando la frase no tiene auxiliar (presente simple), el tag usa «do/does»: «don't you», «doesn't he»."]
+  ],
+  "Orden de los adjetivos": [
+    ["She has a [beautiful old] house.", "Ella tiene una hermosa casa antigua.", "Con varios adjetivos, primero va la opinión (beautiful) y después la edad (old)."],
+    ["I bought a [small red] car.", "Compré un coche rojo pequeño.", "El tamaño (small) va antes que el color (red). Recuerda el orden: opinión, tamaño, edad, forma, color, origen, material."],
+    ["He wore a [big black] coat.", "Él llevaba un abrigo negro grande.", "Igual: tamaño primero y color después. En español el orden suele ser el contrario."],
+    ["It's a [lovely little wooden] box.", "Es una cajita de madera preciosa.", "El material (wooden) va pegado al sustantivo. Rara vez se usan más de tres adjetivos juntos."]
+  ],
+  "Pasado perfecto (past perfect)": [
+    ["When I arrived, the bus [had left].", "Cuando llegué, el bus ya se había ido.", "El pasado perfecto (had + participio) es el pasado del pasado: la acción que ocurrió antes."],
+    ["She [had eaten] before we came.", "Ella ya había comido antes de que llegáramos.", "Sirve para ordenar dos acciones: la primera en «had + participio» y la segunda en pasado simple."],
+    ["I [hadn't seen] him before.", "No lo había visto antes.", "Para negar, «hadn't» + participio. Habla de algo que no habías vivido hasta ese momento."],
+    ["[Had] you [finished] when he called?", "¿Ya habías terminado cuando llamó?", "Para preguntar, «had» va primero. Es útil para preguntar qué había pasado antes de otro momento."]
+  ],
+  "Conectores: because, so, although, however, despite": [
+    ["I was late [because] the bus broke down.", "Llegué tarde porque el bus se descompuso.", "«Because» explica el motivo. Va seguido de una frase completa."],
+    ["It was raining, [so] we stayed inside.", "Llovía, así que nos quedamos adentro.", "«So» muestra el resultado o la consecuencia. Va después de una coma."],
+    ["[Although] he was tired, he kept working.", "Aunque estaba cansado, siguió trabajando.", "«Although» introduce un contraste dentro de la misma frase. No se usa junto con «but»."],
+    ["The food was cheap. [However], it was delicious.", "La comida era barata. Sin embargo, estaba deliciosa.", "«However» contrasta con lo anterior y suele ir al inicio de una frase nueva, seguido de coma."]
+  ],
+  "Phrasal verbs (separables e inseparables)": [
+    ["Please [turn off] the light.", "Por favor, apaga la luz.", "Un phrasal verb es un verbo + partícula con un significado propio: «turn off» significa apagar."],
+    ["Please [turn it off].", "Por favor, apágala.", "En los separables, si usas un pronombre (it, them), va en medio: «turn it off», nunca «turn off it»."],
+    ["She [looks after] her little brother.", "Ella cuida a su hermano pequeño.", "Algunos no se separan: «look after» va siempre junto, aunque haya un objeto."],
+    ["I [gave up] smoking.", "Dejé de fumar.", "Muchos phrasal verbs tienen un sentido que no se adivina por las palabras sueltas. Conviene aprenderlos completos."]
+  ],
+  "Comparaciones: as...as, less...than, the more...the more": [
+    ["She is [as tall as] her brother.", "Ella es tan alta como su hermano.", "«As + adjetivo + as» dice que dos cosas son iguales."],
+    ["This car is [not as fast as] that one.", "Este coche no es tan rápido como ese.", "Con «not as… as» dices que uno tiene menos de esa cualidad."],
+    ["It's [less expensive than] I thought.", "Es menos caro de lo que pensaba.", "«Less… than» compara hacia abajo: es lo contrario de «more… than»."],
+    ["[The more] you practice, [the better] you get.", "Cuanto más practicas, mejor te vuelves.", "«The + comparativo, the + comparativo» muestra que dos cosas cambian juntas."]
+  ],
+  "Preguntas indirectas": [
+    ["[Could you tell me] where the station is?", "¿Podría decirme dónde está la estación?", "Empezar con «Could you tell me…» suaviza la pregunta. Suena más cortés que preguntar directamente."],
+    ["Do you know what time [it starts]?", "¿Sabes a qué hora empieza?", "Después de la frase de apertura, el orden es el de una afirmación: «what time it starts», sin «does»."],
+    ["I wonder [if] she is coming.", "Me pregunto si ella viene.", "Con preguntas de sí o no se usa «if» o «whether»: «I wonder if…»."],
+    ["Can you tell me [how much it costs]?", "¿Puedes decirme cuánto cuesta?", "No uses «does» ni invertas el orden: «how much it costs», no «how much does it cost»."]
+  ],
+  "Voz pasiva: presente y pasado simple": [
+    ["English [is spoken] in many countries.", "En muchos países se habla inglés.", "La pasiva (be + participio) pone el foco en lo que se hace, no en quién lo hace."],
+    ["The window [was broken] yesterday.", "La ventana se rompió ayer.", "Para el pasado, usa «was/were» + participio. Sirve cuando no sabes o no importa quién lo hizo."],
+    ["These cars [are made] in Spain.", "Estos coches se fabrican en España.", "Con plural, «are» + participio. Es muy común para hablar de productos y lugares."],
+    ["The cake was eaten [by the children].", "El pastel fue comido por los niños.", "Si quieres decir quién hizo la acción, agrega «by» + el agente. Suele omitirse cuando no es importante."]
+  ],
+  "Used to / would (hábitos pasados)": [
+    ["I [used to live] in Mexico City.", "Antes vivía en la Ciudad de México.", "«Used to» + verbo describe algo que era cierto o habitual en el pasado y ya no lo es."],
+    ["She [didn't use to] like vegetables.", "A ella antes no le gustaban las verduras.", "Para negar y preguntar, «use» pierde la «-d»: «didn't use to», «Did you use to…?»."],
+    ["Every summer, we [would visit] our grandparents.", "Cada verano visitábamos a nuestros abuelos.", "«Would» también sirve para hábitos pasados, pero solo con acciones, no con estados."],
+    ["I [used to have] long hair.", "Antes tenía el pelo largo.", "Con estados (have, be, live, like) usa «used to»: «would» no funciona."]
+  ],
+  "Estilo indirecto: afirmaciones (said that…)": [
+    ["«I am tired.» → She [said she was] tired.", "«Estoy cansada» → Ella dijo que estaba cansada.", "Al reportar, el verbo suele retroceder un tiempo: «am» pasa a «was»."],
+    ["«I work here.» → He said he [worked] there.", "«Trabajo aquí» → Dijo que trabajaba allí.", "El presente simple pasa a pasado simple, y «here» suele cambiar a «there»."],
+    ["«I will call you.» → He said he [would] call me.", "«Te llamaré» → Dijo que me llamaría.", "«Will» pasa a «would». Los pronombres también cambian según quién habla."],
+    ["He [told me] he was busy.", "Me dijo que estaba ocupado.", "Con «tell» hay que decir a quién: «told me». Con «say» no: «said (that)». Es un error muy común."]
+  ],
+  "Condicional tipo 2: primeros pasos (If I had…, I would…)": [
+    ["If I [had] more time, I [would learn] Italian.", "Si tuviera más tiempo, aprendería italiano.", "El condicional 2 habla de situaciones imaginarias: «if» + pasado, y en la otra parte «would» + verbo."],
+    ["If she [lived] here, we [would see] her more.", "Si ella viviera aquí, la veríamos más.", "Aunque uses pasado, hablas del presente: es un pasado «de mentira» que señala lo irreal."],
+    ["If I [were] you, I [would call] him.", "Si yo fuera tú, lo llamaría.", "Para dar consejos se usa «If I were you…». Con «be» se suele usar «were» con todas las personas."],
+    ["What [would] you do if you won the lottery?", "¿Qué harías si ganaras la lotería?", "Para preguntar, «would» va con el sujeto y el verbo en forma base. Ideal para conversar sobre sueños."]
+  ],
+  "May, could y be allowed to (permiso y posibilidad)": [
+    ["[May I] use your phone, please?", "¿Puedo usar tu teléfono, por favor?", "«May I…?» es una forma muy educada de pedir permiso."],
+    ["You [are not allowed to] park here.", "No está permitido estacionar aquí.", "«Be allowed to» dice qué permiten las reglas. Cambia con la persona: «am/is/are allowed to»."],
+    ["Students [are allowed to] use dictionaries.", "A los estudiantes se les permite usar diccionarios.", "En afirmativo dice que sí se puede. Es común en reglamentos y avisos."],
+    ["It [could] rain later.", "Podría llover más tarde.", "«May» y «could» también expresan posibilidad. Lo dicen con poca seguridad, no con certeza."]
+  ],
+  "So / Neither + auxiliar (acuerdo)": [
+    ["I love pizza. [So do] I.", "Me encanta la pizza. A mí también.", "Para decir «yo también» con algo positivo: «So» + auxiliar + sujeto. El auxiliar repite el de la frase."],
+    ["I can't swim. [Neither can] I.", "No sé nadar. Yo tampoco.", "Con algo negativo, «Neither» + auxiliar + sujeto. Ya es negativo, así que no lleva «not»."],
+    ["She has finished. [So have] I.", "Ella ya terminó. Yo también.", "El auxiliar cambia según la frase original: «have», «can», «am», «did»… siempre coincide."],
+    ["I don't like coffee. [Neither do] I.", "No me gusta el café. A mí tampoco.", "Si la frase no tiene auxiliar (presente simple), se usa «do/does»: «So do I», «Neither does he»."]
+  ]
+});
+/* DISC-DATA-B1:END */
+/* DISC-DATA-B2:BEGIN — tarjetas de B2 (clave = título de la unidad) */
+Object.assign(DISC_CARDS_T, {
+  "Voz pasiva": [
+    ["English [is spoken] in many countries.", "En muchos países se habla inglés.", "La pasiva (be + participio) se usa cuando la acción importa más que quién la hace. En presente, «is/are» + participio."],
+    ["The bridge [was built] in 1930.", "El puente fue construido en 1930.", "En pasado simple, «was/were» + participio. Se usa cuando lo importante es el resultado, no quién lo hizo."],
+    ["The report [is being written] right now.", "El informe se está escribiendo ahora mismo.", "También existe en continuo: «is/are being» + participio. Habla de lo que está pasando en este momento."],
+    ["Cheese [can be made] from milk.", "El queso se puede hacer con leche.", "Con modales, la pasiva es modal + «be» + participio: «can be made», «must be done»."]
+  ],
+  "Condicional tipo 2": [
+    ["If I [were] you, I [would apologize].", "Yo en tu lugar pediría disculpas.", "El condicional 2 sirve para dar consejos: «If I were you…». Con «be» se usa «were» para todas las personas."],
+    ["If I [had] more time, I [would travel] more.", "Si tuviera más tiempo, viajaría más.", "«If» + pasado simple y «would» + verbo base. Hablas del presente o del futuro, pero de algo poco real."],
+    ["If I [won] the lottery, I [would buy] a house.", "Si ganara la lotería, compraría una casa.", "Perfecto para soñar. Aunque el verbo esté en pasado, no habla del pasado: solo marca que es imaginario."],
+    ["I [wouldn't do] that if I were you.", "Yo no haría eso si fuera tú.", "Las dos partes pueden ir en el orden que quieras y también en negativo."]
+  ],
+  "Presente perfecto continuo vs. simple": [
+    ["I [have been living] here for ten years.", "Llevo diez años viviendo aquí.", "El continuo (have been + «-ing») destaca la duración: cuánto tiempo llevas haciendo algo."],
+    ["I [have read] three books this month.", "He leído tres libros este mes.", "El simple destaca el resultado o la cantidad: cuánto has logrado."],
+    ["She [has been working] on this project for months.", "Ella lleva meses trabajando en este proyecto.", "Con «for» (cuánto tiempo) y «since» (desde cuándo), el continuo es lo más natural."],
+    ["Your hands are dirty. [Have you been] cleaning?", "Tienes las manos sucias. ¿Has estado limpiando?", "El continuo también explica un resultado que ves ahora, causado por una actividad reciente."]
+  ],
+  "Pasado perfecto continuo y tiempos narrativos": [
+    ["I was tired because I [had been working] all day.", "Estaba cansado porque llevaba todo el día trabajando.", "«Had been» + «-ing» muestra que una acción llevaba tiempo en progreso antes de otro momento del pasado."],
+    ["She [had been waiting] for an hour when he arrived.", "Ella llevaba una hora esperando cuando él llegó.", "Sirve para explicar cuánto tiempo duraba algo antes de que ocurriera otra cosa."],
+    ["It [had been raining], so the ground was wet.", "Había estado lloviendo, así que el suelo estaba mojado.", "También explica la causa de una situación que ves en el pasado."],
+    ["I [was walking] home when I [saw] an accident.", "Caminaba a casa cuando vi un accidente.", "Para contar historias: el pasado continuo es el fondo de la escena y el pasado simple, los hechos que ocurren."]
+  ],
+  "Modales de deducción: must / might / can't": [
+    ["She [must be] tired after that long flight.", "Ella debe de estar cansada después de ese vuelo tan largo.", "«Must» expresa que estás casi seguro de algo, porque tienes buenas pruebas."],
+    ["He [might be] at work right now.", "Él podría estar en el trabajo ahora.", "«Might» dice que es posible, pero no estás seguro."],
+    ["That [can't be] true!", "¡Eso no puede ser verdad!", "«Can't» expresa que estás casi seguro de que algo es imposible."],
+    ["They [could be] in the garden.", "Podrían estar en el jardín.", "«Could» y «may» también expresan posibilidad, como «might»."]
+  ],
+  "Modales de pasado: should have, could have, needn't have": [
+    ["You [should have studied] more.", "Deberías haber estudiado más.", "«Should have» + participio expresa un consejo o un reproche sobre algo del pasado que ya no se puede cambiar."],
+    ["I [could have passed] the exam.", "Podría haber aprobado el examen.", "«Could have» habla de una posibilidad del pasado que no ocurrió."],
+    ["She [shouldn't have said] that.", "Ella no debería haber dicho eso.", "En negativo, critica algo que se hizo y no era correcto."],
+    ["You [needn't have brought] anything.", "No hacía falta que trajeras nada.", "«Needn't have» + participio dice que hiciste algo que no era necesario."]
+  ],
+  "Estilo indirecto (reported speech)": [
+    ["She said she [was] tired.", "Ella dijo que estaba cansada.", "Al reportar, el verbo suele retroceder un tiempo: «am/is» pasa a «was»."],
+    ["He said he [had finished] the report.", "Dijo que había terminado el informe.", "El pasado simple retrocede a pasado perfecto: «finished» pasa a «had finished»."],
+    ["She told me she [would call] later.", "Me dijo que llamaría más tarde.", "«Will» pasa a «would». Con «tell» siempre hay que decir a quién."],
+    ["He asked me [if I was] hungry.", "Me preguntó si tenía hambre.", "Las preguntas de sí o no usan «if» o «whether» y el orden de una afirmación."]
+  ],
+  "Condicional tipo 3": [
+    ["If I [had studied] harder, I [would have passed] the exam.", "Si hubiera estudiado más, habría aprobado el examen.", "El condicional 3 imagina un pasado distinto: «if» + pasado perfecto y «would have» + participio."],
+    ["She [wouldn't have missed] the flight if she [had left] earlier.", "Ella no habría perdido el vuelo si hubiera salido antes.", "Las dos partes pueden ir en cualquier orden y también en negativo."],
+    ["If they [had known], they [would have helped].", "Si lo hubieran sabido, habrían ayudado.", "Sirve para hablar de arrepentimientos y de cosas que ya no se pueden cambiar."],
+    ["What [would] you [have done] in my place?", "¿Qué habrías hecho en mi lugar?", "Para preguntar por un pasado imaginario, «would» + sujeto + «have» + participio."]
+  ],
+  "Alternativas a 'if': unless, as long as, provided that, in case": [
+    ["[Unless] you hurry, you'll be late.", "A menos que te apures, llegarás tarde.", "«Unless» significa «si no». Ya es negativo, así que no lleva «not»."],
+    ["You can go [as long as] you finish your homework.", "Puedes ir siempre que termines la tarea.", "«As long as» pone una condición. Después va presente aunque hables del futuro."],
+    ["Take a coat [in case] it gets cold.", "Lleva un abrigo por si hace frío.", "«In case» es «por si acaso» y también va con presente: te preparas por si algo pasa."],
+    ["I'll lend you the car [provided that] you drive carefully.", "Te presto el coche siempre que conduzcas con cuidado.", "«Provided that» es una forma más formal de «as long as»."]
+  ],
+  "Futuro perfecto y futuro continuo": [
+    ["This time next week, I['ll be lying] on a beach.", "A esta hora la próxima semana estaré tumbado en una playa.", "«Will be» + «-ing» describe algo que estará en progreso en un momento del futuro."],
+    ["By 2030, she [will have graduated].", "Para 2030, ella ya se habrá graduado.", "«Will have» + participio dice que algo ya estará terminado para un momento del futuro."],
+    ["[Will] you [be using] the computer tonight?", "¿Estarás usando la computadora esta noche?", "El futuro continuo es una forma cortés de preguntar por los planes de otra persona."],
+    ["By the time you arrive, I['ll have cooked] dinner.", "Para cuando llegues, ya habré preparado la cena.", "«By the time» marca la fecha límite: para entonces la acción ya estará completa."]
+  ],
+  "Both, either, neither, all, whole": [
+    ["[Both] of my brothers live in Canada.", "Mis dos hermanos viven en Canadá.", "«Both» es «los dos». Ya incluye a ambos, así que va con el verbo en plural."],
+    ["You can sit at [either] table.", "Puedes sentarte en cualquiera de las dos mesas.", "«Either» es «uno u otro», cualquiera de dos. Va con singular."],
+    ["[Neither] of them was late.", "Ninguno de los dos llegó tarde.", "«Neither» es «ninguno de los dos». Ya es negativo, no agregues «not»."],
+    ["[All] the students passed; [the whole] class celebrated.", "Todos los estudiantes aprobaron; toda la clase celebró.", "«All» (todos) va con plural o incontable, y «whole» (entero) con singular: «the whole class»."]
+  ],
+  "Verbos + gerundio o infinitivo: cambio de significado": [
+    ["He [stopped smoking] last year.", "Dejó de fumar el año pasado.", "«Stop» + «-ing» significa dejar de hacer algo."],
+    ["He [stopped to buy] water.", "Se detuvo para comprar agua.", "«Stop» + «to» significa detenerte para hacer otra cosa."],
+    ["I [remember meeting] her in 2019.", "Recuerdo haberla conocido en 2019.", "«Remember» + «-ing» es recordar algo que ya pasó."],
+    ["Remember [to lock] the door!", "¡Acuérdate de cerrar la puerta!", "«Remember» + «to» es acordarte de hacer algo que todavía tienes que hacer."]
+  ],
+  "Contraste y propósito: in spite of, whereas, so that, in order to": [
+    ["He is tall, [whereas] his brother is short.", "Él es alto, mientras que su hermano es bajo.", "«Whereas» y «while» contrastan dos cosas distintas dentro de la misma frase."],
+    ["[In spite of] the traffic, we arrived on time.", "A pesar del tráfico, llegamos a tiempo.", "«In spite of» va seguido de un sustantivo o de un verbo con «-ing», no de una frase completa."],
+    ["I called [in order to] ask for information.", "Llamé para pedir información.", "«In order to» + verbo base expresa el propósito: para qué lo hiciste."],
+    ["I'm saving money [so that] I can travel.", "Estoy ahorrando dinero para poder viajar.", "«So that» + una frase con sujeto expresa el propósito: «para que…». Suele llevar «can» o «will»."]
+  ],
+  "Preposiciones dependientes: adjetivos y verbos": [
+    ["She is [afraid of] spiders.", "Ella le tiene miedo a las arañas.", "Muchos adjetivos exigen una preposición concreta: «afraid of», «good at», «interested in»."],
+    ["I'm [interested in] learning Italian.", "Me interesa aprender italiano.", "Después de una preposición, el verbo va con «-ing»: «interested in learning»."],
+    ["It [depends on] the weather.", "Depende del clima.", "Los verbos también piden su preposición: «depend on», «listen to», «wait for»."],
+    ["He apologized [for] being late.", "Se disculpó por llegar tarde.", "«Apologize for» + «-ing». Aprende cada palabra con su preposición como un bloque."]
+  ],
+  "Causativo: have/get something done": [
+    ["I [had my car repaired] yesterday.", "Ayer me arreglaron el coche.", "«Have» + objeto + participio se usa cuando otra persona hace algo por ti, normalmente un servicio."],
+    ["She [is getting her hair cut].", "A ella le están cortando el pelo.", "«Get» + objeto + participio significa lo mismo, pero suena más informal."],
+    ["We [had the kitchen renovated] last year.", "Hicimos renovar la cocina el año pasado.", "El objeto va entre «have» y el participio. Lo hicieron otros, no tú."],
+    ["I need to [get my passport renewed].", "Necesito renovar mi pasaporte.", "También sirve con «need to» y otros verbos: no dices quién lo hará porque no importa."]
+  ],
+  "Relativas con whose, where, when y whom": [
+    ["The man [whose] wallet was stolen is here.", "El hombre al que le robaron la billetera está aquí.", "«Whose» expresa posesión: reemplaza a «his/her/their» dentro de la frase."],
+    ["That is the house [where] I grew up.", "Esa es la casa donde crecí.", "«Where» reemplaza a un lugar y evita repetirlo."],
+    ["I remember the day [when] we met.", "Recuerdo el día en que nos conocimos.", "«When» reemplaza a un momento: un día, un año, una época."],
+    ["The doctor [whom] I saw was very kind.", "El doctor a quien vi fue muy amable.", "«Whom» es la forma formal de «who» cuando es el objeto. En conversación se suele usar «who» o se omite."]
+  ],
+  "Cláusulas de tiempo futuro: when, as soon as, until": [
+    ["I'll call you [when I arrive].", "Te llamaré cuando llegue.", "Después de «when» se usa presente simple, aunque hables del futuro: «when I arrive», no «when I will arrive»."],
+    ["Wait here [until I come] back.", "Espera aquí hasta que vuelva.", "«Until» (hasta que) funciona igual: después va presente simple, no «will»."],
+    ["She'll text you [as soon as she lands].", "Ella te escribirá en cuanto aterrice.", "«As soon as» significa «en cuanto». También va con presente simple."],
+    ["I'll go to bed [after I finish] this.", "Me acostaré después de terminar esto.", "«Before», «after» y «once» siguen la misma regla: presente para hablar del futuro."]
+  ],
+  "Used to vs. be used to vs. get used to": [
+    ["I [used to live] in Peru.", "Antes vivía en Perú.", "«Used to» + verbo base es un hábito o estado del pasado que ya no existe."],
+    ["I['m used to waking] up early.", "Estoy acostumbrado a despertarme temprano.", "«Be used to» + «-ing» o sustantivo describe algo que ya te resulta normal."],
+    ["She['s getting used to] her new job.", "Ella se está acostumbrando a su nuevo trabajo.", "«Get used to» es el proceso: pasar de raro a normal poco a poco."],
+    ["It took a while to [get used to] the noise.", "Tardé en acostumbrarme al ruido.", "También va en pasado o en infinitivo. Después siempre va un sustantivo o un verbo con «-ing»."]
+  ],
+  "Preguntas con preposición al final (preposition stranding)": [
+    ["[Who] are you talking [to]?", "¿Con quién estás hablando?", "En inglés la preposición suele quedarse al final de la pregunta. En español va antes del pronombre: «¿Con quién…?»."],
+    ["Where are you [from]?", "¿De dónde eres?", "Es lo más natural: «Where are you from?», no «From where are you?», que suena muy formal."],
+    ["What are you looking [at]?", "¿Qué estás mirando?", "El verbo y su preposición van separados: «look at» queda como «looking… at»."],
+    ["Who did you go [with]?", "¿Con quién fuiste?", "Con «did» funciona igual: la preposición se queda al final de la frase."]
+  ]
+});
+/* DISC-DATA-B2:END */
+/* DISC-DATA-C1:BEGIN — tarjetas de C1 (clave = título de la unidad) */
+Object.assign(DISC_CARDS_T, {
+  "Subjuntivo básico: wish / if only": [
+    ["I [wish I knew] the answer.", "Ojalá supiera la respuesta.", "«Wish» + pasado simple expresa un deseo sobre el presente que no es real: en realidad no la sabes."],
+    ["I [wish I had studied] harder.", "Ojalá hubiera estudiado más.", "«Wish» + pasado perfecto lamenta algo del pasado que ya no se puede cambiar."],
+    ["[If only] I lived closer to my family.", "Ojalá viviera más cerca de mi familia.", "«If only» es un «wish» más intenso, con la misma estructura de tiempos."],
+    ["I wish you [would stop] shouting.", "Ojalá dejaras de gritar.", "«Wish» + «would» se usa para quejarte de algo que otra persona hace y te molesta."]
+  ],
+  "Inversión enfática": [
+    ["[Never have I] seen such chaos.", "Nunca había visto un caos así.", "Si empiezas con una expresión negativa como «never», el auxiliar pasa delante del sujeto: «Never have I…». Da mucho énfasis."],
+    ["[Not only did she] win, but she also broke the record.", "No solo ganó, sino que además rompió el récord.", "«Not only» al inicio también provoca inversión: «did she win», no «she won»."],
+    ["[Rarely have I] seen such dedication.", "Rara vez he visto tanta dedicación.", "Otras expresiones que la provocan son «seldom», «little» y «under no circumstances»."],
+    ["[Hardly had] I arrived [when] the phone rang.", "Apenas había llegado cuando sonó el teléfono.", "«Hardly… when» y «No sooner… than» dicen que un hecho siguió a otro de inmediato, con inversión después de la primera parte."]
+  ],
+  "Cláusulas relativas no definitorias": [
+    ["My brother[, who lives in Spain,] is visiting next month.", "Mi hermano, que vive en España, nos visita el mes que viene.", "La información extra va entre comas: la frase se entiende sin ella. Ya sabemos de qué hermano hablas."],
+    ["The Eiffel Tower[, which was built in 1889,] attracts millions of visitors.", "La Torre Eiffel, que se construyó en 1889, atrae a millones de visitantes.", "Para cosas se usa «which». En estas cláusulas nunca se puede usar «that»."],
+    ["Our teacher[, who is very patient,] explained it again.", "Nuestra profesora, que es muy paciente, lo explicó otra vez.", "Las comas se pronuncian como pequeñas pausas. Sin ellas, cambiaría el significado."],
+    ["I met Ana[, whose] brother works with you.", "Conocí a Ana, cuyo hermano trabaja contigo.", "«Whose» también funciona aquí, y el pronombre relativo nunca se omite en estas cláusulas."]
+  ],
+  "Cleft sentences (oraciones enfáticas)": [
+    ["[What I need is] a good night's sleep.", "Lo que necesito es dormir bien una noche.", "«What…is» destaca lo que quieres decir: primero creas expectativa y luego revelas lo importante."],
+    ["[It was Sarah who] solved the problem.", "Fue Sarah quien resolvió el problema.", "«It was… who/that» destaca quién o qué hizo algo. Es como el «fue X quien…» del español."],
+    ["[What surprised me most was] his honesty.", "Lo que más me sorprendió fue su honestidad.", "Puedes usar cualquier verbo después de «what»: «what surprised me», «what I like»."],
+    ["[All I want is] some peace.", "Lo único que quiero es un poco de paz.", "«All I want is…» es otra forma de destacar lo único que se desea."]
+  ],
+  "Discurso reportado avanzado": [
+    ["He [suggested going] to the beach.", "Sugirió ir a la playa.", "Con «suggest» va un verbo con «-ing»: «suggested going». Dice más que un simple «said»."],
+    ["She [denied taking] the money.", "Ella negó haber tomado el dinero.", "«Deny» también lleva «-ing». Cada verbo introductorio tiene su propio patrón."],
+    ["He [admitted making] a mistake.", "Admitió haber cometido un error.", "«Admit» + «-ing» reporta una confesión. Es mucho más preciso que «he said that he…»."],
+    ["She [warned me not to] touch it.", "Me advirtió que no lo tocara.", "«Warn», «advise» y «remind» llevan objeto + «to»: «warned me not to»."]
+  ],
+  "Énfasis con do / does / did": [
+    ["I [DO like] your new haircut!", "¡Sí que me gusta tu nuevo corte de pelo!", "Agregar «do» antes del verbo en afirmativo da énfasis. Se pronuncia con más fuerza."],
+    ["She [DOES understand] the problem.", "Ella sí entiende el problema.", "Con «he/she/it» se usa «does», y el verbo vuelve a su forma base: «does understand»."],
+    ["He [DID call] you — check your phone.", "Sí te llamó: revisa tu teléfono.", "En pasado se usa «did». Sirve para contradecir algo que alguien dijo o pensó."],
+    ["But I [did] tell you!", "¡Pero sí te lo dije!", "Es muy común para insistir cuando alguien no te cree o no lo recuerda."]
+  ],
+  "Deducción en el pasado: must have, can't have, might have": [
+    ["The lights are off. They [must have gone] out.", "Las luces están apagadas. Se deben de haber ido.", "«Must have» + participio expresa que estás casi seguro de algo que pasó antes."],
+    ["He [can't have finished] already.", "No puede haber terminado ya.", "«Can't have» dice que estás casi seguro de que algo no pasó."],
+    ["She [might have forgotten] our meeting.", "Puede que se haya olvidado de nuestra reunión.", "«Might have», «may have» y «could have» expresan que es posible, sin certeza."],
+    ["You [must have been] exhausted.", "Debes de haber estado agotado.", "Con «be», la estructura es «must have been»: una suposición sobre cómo estaba alguien."]
+  ],
+  "Pasiva con verbos de opinión: it is said that, he is said to": [
+    ["[It is said that] the house is haunted.", "Se dice que la casa está embrujada.", "«It is said that…» presenta información sin decir quién la afirma. Muy típico de las noticias."],
+    ["The politician [is believed to be] innocent.", "Se cree que el político es inocente.", "La estructura personal («X is believed to…») pone a la persona como sujeto de la frase."],
+    ["He [is reported to have left] the country.", "Se informa de que salió del país.", "Con «to have» + participio hablas de algo anterior al momento en que se informa."],
+    ["[It is expected that] prices will rise.", "Se espera que los precios suban.", "También sirve con «expect», «think», «say» y «know». Ambas formas significan lo mismo."]
+  ],
+  "Cláusulas de participio (participle clauses)": [
+    ["[Walking] down the street, I saw an old friend.", "Caminando por la calle, vi a un viejo amigo.", "El «-ing» reemplaza a «while I was walking». El sujeto de las dos partes debe ser el mismo."],
+    ["[Having finished] the report, she went home.", "Habiendo terminado el informe, se fue a casa.", "«Having» + participio indica que una acción ocurrió antes que la otra."],
+    ["[Built] in 1920, the hotel is very old.", "Construido en 1920, el hotel es muy antiguo.", "El participio pasado tiene sentido pasivo: «which was built»."],
+    ["[Not knowing] what to say, he stayed silent.", "Sin saber qué decir, se quedó callado.", "Para negar, «not» va antes del «-ing»: «not knowing»."]
+  ],
+  "Conectores formales: nevertheless, moreover, consequently": [
+    ["The plan was costly; [nevertheless], it was approved.", "El plan era costoso; sin embargo, se aprobó.", "«Nevertheless» expresa un contraste formal. Suele ir tras punto y coma o punto, y con coma después."],
+    ["[Moreover], the results were reliable.", "Además, los resultados eran fiables.", "«Moreover» agrega un argumento más y refuerza el anterior."],
+    ["Sales fell; [consequently], the company closed.", "Las ventas cayeron; por consiguiente, la empresa cerró.", "«Consequently» presenta un resultado o consecuencia lógica."],
+    ["The design is elegant; [furthermore], it is affordable.", "El diseño es elegante; además, es asequible.", "«Furthermore» se usa igual que «moreover» y añade otro punto a favor."]
+  ],
+  "Elipsis y sustitución (so, do so, one, not)": [
+    ["Which dress? The blue [one].", "¿Qué vestido? El azul.", "«One» sustituye a un sustantivo que ya se mencionó, para no repetirlo."],
+    ["Will it rain? I hope [not].", "¿Va a llover? Espero que no.", "«Not» reemplaza a toda una frase negativa: «I hope it won't rain»."],
+    ["She wanted to leave, and [so did I].", "Ella quería irse, y yo también.", "«So did I» evita repetir el verbo. Es la elipsis más habitual en la conversación."],
+    ["Do you like it? I [think so].", "¿Te gusta? Creo que sí.", "«So» reemplaza a una frase entera después de verbos como «think», «hope» y «believe»."]
+  ],
+  "Lenguaje cauteloso (hedging)": [
+    ["The results [suggest that] the method is effective.", "Los resultados sugieren que el método es eficaz.", "«Suggest» suaviza la afirmación: no dices «es eficaz», dices que hay indicios."],
+    ["Students [tend to] learn faster with practice.", "Los estudiantes tienden a aprender más rápido con práctica.", "«Tend to» expresa una tendencia general, sin afirmar que es siempre así."],
+    ["[It appears that] sales will increase.", "Parece que las ventas aumentarán.", "«It appears that» y «it seems that» marcan que es una impresión, no un hecho."],
+    ["The drug [may] help some patients.", "El medicamento podría ayudar a algunos pacientes.", "Los modales «may» y «could», y palabras como «some», evitan afirmaciones absolutas."]
+  ],
+  "Infinitivo y gerundio perfectos (having done, to have done)": [
+    ["He denied [having taken] the money.", "Negó haber tomado el dinero.", "«Having» + participio indica que la acción ocurrió antes del verbo principal."],
+    ["She seems [to have forgotten].", "Parece que se ha olvidado.", "«To have» + participio, después de «seem» o «appear», habla de algo que ya pasó."],
+    ["I regret [not having studied] more.", "Me arrepiento de no haber estudiado más.", "Para negar, «not» va antes de «having»: «not having studied» es «no haber estudiado»."],
+    ["[Having been warned], they left early.", "Habiendo sido advertidos, se fueron temprano.", "La forma perfecta pasiva es «having been» + participio."]
+  ],
+  "Artículos: uso y omisión (the, a, sin artículo)": [
+    ["[Life] is beautiful.", "La vida es hermosa.", "Sin artículo cuando hablas de algo en general: plurales e incontables, como «life» o «music»."],
+    ["[The Amazon] is [the longest river] in South America.", "El Amazonas es el río más largo de Sudamérica.", "«The» va con nombres de ríos y mares, y con los superlativos. Son casos que conviene recordar."],
+    ["My son goes [to school] by bus.", "Mi hijo va a la escuela en autobús.", "Sin artículo cuando el lugar se usa para su función: ir a la escuela a estudiar."],
+    ["I went to [the school] to talk to the teacher.", "Fui a la escuela para hablar con la profesora.", "Con artículo cuando hablas del edificio concreto y no de su función."]
+  ],
+  "Modificadores de grado: fairly, absolutely, utterly": [
+    ["The film was [very] good.", "La película era muy buena.", "Los adjetivos graduables (good, cold, big) aceptan «very», «quite» y «fairly»."],
+    ["The film was [absolutely] fantastic.", "La película era absolutamente fantástica.", "Los adjetivos extremos (fantastic, freezing, terrible) aceptan «absolutely» y «utterly», pero no «very»."],
+    ["I'm [utterly] exhausted.", "Estoy completamente agotado.", "«Exhausted» ya es un extremo de «tired». Por eso pide un modificador fuerte: «utterly», «completely»."],
+    ["The soup is [fairly] hot.", "La sopa está bastante caliente.", "«Fairly» y «quite» suavizan: significan «bastante», sin llegar a «muy»."]
+  ]
+});
+/* DISC-DATA-C1:END */
+/* DISC-DATA-C2:BEGIN — tarjetas de C2 (clave = título de la unidad) */
+Object.assign(DISC_CARDS_T, {
+  "Condicionales mixtos": [
+    ["If she [had studied], she [would pass] the exam now.", "Si hubiera estudiado, aprobaría el examen ahora.", "Un condicional mixto combina tiempos: la condición es del pasado (pasado perfecto) y el resultado es del presente («would» + verbo)."],
+    ["If I [hadn't missed] the flight, I [would be] there now.", "Si no hubiera perdido el vuelo, estaría allí ahora.", "Un hecho del pasado explica cómo estás hoy. La primera parte mira atrás y la segunda, al presente."],
+    ["If I [had taken] that job, I [would be living] abroad now.", "Si hubiera aceptado ese trabajo, estaría viviendo en el extranjero ahora.", "El resultado también puede ir en continuo para mostrar una situación que estaría en curso."],
+    ["If I [were] taller, I [would have joined] the team.", "Si fuera más alto, me habría unido al equipo.", "También al revés: una condición del presente y un resultado en el pasado."]
+  ],
+  "Colocaciones y phrasal verbs avanzados": [
+    ["I can't [put up with] this noise anymore.", "Ya no aguanto este ruido.", "«Put up with» significa soportar. Es un phrasal verb de tres partes que no se separa nunca."],
+    ["She [came up with] a brilliant idea.", "A ella se le ocurrió una idea brillante.", "«Come up with» significa idear o proponer. Es muy común en el trabajo y en la vida diaria."],
+    ["We need to [touch base] before the meeting.", "Tenemos que ponernos al día antes de la reunión.", "«Touch base» es una expresión informal de oficina: contactar brevemente con alguien para comentar algo."],
+    ["We need to [make a decision] by Friday.", "Tenemos que tomar una decisión antes del viernes.", "En inglés se «hace» una decisión: «make a decision», no «take». Las colocaciones no se traducen palabra por palabra."]
+  ],
+  "Subjuntivo formal (mandative subjunctive)": [
+    ["I suggest that he [arrive] early.", "Sugiero que llegue temprano.", "Después de «suggest», «recommend», «insist» o «demand» el verbo va en forma base, sin importar el sujeto: «he arrive», no «he arrives»."],
+    ["It is essential that she [be] informed immediately.", "Es esencial que se le informe de inmediato.", "También con adjetivos como «essential», «vital» o «important». Con «be», la forma base es simplemente «be»."],
+    ["The committee recommended that the policy [be changed].", "El comité recomendó que se cambiara la política.", "Es muy común con la voz pasiva: «be» + participio. Aparece en documentos y reglamentos."],
+    ["They insisted that he [not] leave.", "Insistieron en que no se fuera.", "Para negar, «not» va antes del verbo base, sin auxiliar."]
+  ],
+  "Nominalización y registro formal": [
+    ["Our [analysis] of the data revealed a clear pattern.", "Nuestro análisis de los datos reveló un patrón claro.", "«Analyze» pasa a «analysis»: convertir el verbo en sustantivo da un tono más formal y académico."],
+    ["The company's [decision] surprised investors.", "La decisión de la empresa sorprendió a los inversores.", "En lugar de «the company decided», el sustantivo permite que el foco se vaya a la acción y no a quién."],
+    ["There is growing [awareness] of the issue.", "Hay una conciencia creciente del problema.", "«Aware» pasa a «awareness». Los sustantivos abstractos condensan ideas y son típicos del inglés escrito."],
+    ["The [introduction] of the new law caused debate.", "La introducción de la nueva ley generó debate.", "Verbos acabados en «-ate» o «-ute» suelen convertirse con «-tion»: «introduce» pasa a «introduction»."]
+  ],
+  "Inversión condicional formal": [
+    ["[Had I known] about the meeting, I would have attended.", "De haber sabido de la reunión, habría asistido.", "Se quita el «if» y «had» pasa delante del sujeto: «Had I known» equivale a «If I had known»."],
+    ["[Were she to apply], she would likely get the job.", "Si ella se presentara, probablemente obtendría el puesto.", "«Were … to» + verbo base sustituye a «if … »: es una forma formal de hablar de algo hipotético."],
+    ["[Should you have] any questions, please contact us.", "Si tiene alguna pregunta, contáctenos.", "«Should» + sujeto reemplaza a «if» en un tono muy formal. Es típica de cartas y correos."],
+    ["[Had they arrived] earlier, they would have caught the train.", "De haber llegado antes, habrían alcanzado el tren.", "Funciona igual en el pasado: la inversión sustituye a «if they had arrived»."]
+  ],
+  "Would rather, had better, it's time (+ pasado)": [
+    ["I['d rather] stay home tonight.", "Preferiría quedarme en casa esta noche.", "«Would rather» + verbo base expresa una preferencia personal."],
+    ["I['d rather you didn't] smoke here.", "Preferiría que no fumaras aquí.", "Cuando quien prefiere y quien actúa son personas distintas, se usa sujeto + pasado simple."],
+    ["You['d better hurry] up.", "Más te vale darte prisa.", "«Had better» es un consejo fuerte con advertencia: si no lo haces, habrá consecuencias."],
+    ["[It's time] we left.", "Ya es hora de que nos vayamos.", "«It's time» + sujeto + pasado dice que ya toca hacerlo. El pasado es «de mentira»: hablas del presente."]
+  ],
+  "Pasivas avanzadas: get-passive, pasiva con modales y perfecto": [
+    ["He [got promoted] last year.", "Lo ascendieron el año pasado.", "«Get» + participio es una pasiva informal que destaca el cambio o un suceso, a menudo inesperado."],
+    ["The work [must be finished] by Friday.", "El trabajo debe estar terminado para el viernes.", "Con modales, la pasiva es modal + «be» + participio."],
+    ["The house [is being renovated].", "La casa se está reformando.", "En continuo, «is/are being» + participio describe algo que está en proceso ahora."],
+    ["The problem [has been solved].", "El problema se ha resuelto.", "Con presente perfecto, «has/have been» + participio: el resultado importa hoy."]
+  ],
+  "Fronting y orden de palabras marcado": [
+    ["[Attached is] a copy of my CV.", "Adjunto una copia de mi currículum.", "Colocar al inicio lo que normalmente iría después da un tono formal y organiza la información."],
+    ["[Here comes] the bus!", "¡Ahí viene el autobús!", "Con «here» y «there» al inicio, el verbo pasa antes del sujeto cuando es un sustantivo."],
+    ["[That question] I cannot answer.", "Esa pregunta no puedo responderla.", "Poner el objeto al principio lo destaca, como en «esa pregunta, no puedo responderla»."],
+    ["[Only then] did I understand.", "Solo entonces comprendí.", "Después de «only then», «only when» u «only after» hay inversión: «did I understand»."]
+  ],
+  "Modales con matices: shall, ought to, dare, need": [
+    ["[Shall I] open the window?", "¿Abro la ventana?", "«Shall I…?» es una oferta cortés. También se usa en reglas formales: «The tenant shall pay…»."],
+    ["You [ought to] see a doctor.", "Deberías ver a un médico.", "«Ought to» expresa un deber moral o un buen consejo. Es parecido a «should», pero con «to»."],
+    ["I [daren't] tell him the truth.", "No me atrevo a decirle la verdad.", "«Dare» como modal significa atreverse y se usa sobre todo en negativas y preguntas."],
+    ["[Need] I say more?", "¿Hace falta que diga más?", "«Need» como modal se usa en preguntas y negativas: «Need I…?», «You needn't come»."]
+  ],
+  "Registro formal e informal": [
+    ["I [would be grateful if you could] confirm receipt.", "Le agradecería que confirmara la recepción.", "Un correo formal usa estructuras educadas y verbos completos: «would be grateful if you could»."],
+    ["[Can you let me know] when you get it?", "¿Me avisas cuando lo recibas?", "En informal se usa «can you» y frases cortas. El mismo mensaje, con otro tono."],
+    ["We [regret to inform] you that the position has been filled.", "Lamentamos informarle de que el puesto ya se ha cubierto.", "Las noticias negativas en formal se suavizan con verbos como «regret to inform» y pasiva."],
+    ["[Sorry], I can't make it.", "Perdona, no puedo ir.", "En informal se usan contracciones, frases cortas y palabras sencillas como «sorry». Elegir el tono depende de con quién hables."]
+  ],
+  "Cohesión y marcadores del discurso": [
+    ["[To begin with], the plan is too expensive.", "Para empezar, el plan es demasiado caro.", "«To begin with» y «firstly» abren una serie de argumentos. Le dicen al lector que vienen más puntos."],
+    ["Many people, [for instance], work from home.", "Mucha gente, por ejemplo, trabaja desde casa.", "«For instance» y «for example» introducen un ejemplo que apoya la idea. Van entre comas."],
+    ["It is late; [in other words], we must leave.", "Es tarde; en otras palabras, tenemos que irnos.", "«In other words» reformula lo anterior de forma más clara."],
+    ["[To sum up], the results are promising.", "En resumen, los resultados son prometedores.", "«To sum up» y «in conclusion» cierran un texto o una presentación."]
+  ],
+  "Expresiones idiomáticas (idioms)": [
+    ["The exam was [a piece of cake].", "El examen fue pan comido.", "Un idiom tiene un significado que no se deduce de sus palabras: «a piece of cake» significa algo muy fácil."],
+    ["A joke can [break the ice].", "Un chiste puede romper el hielo.", "«Break the ice» se parece mucho al español: hacer que la gente se relaje al conocerse."],
+    ["She [hit the nail on the head].", "Dio en el clavo.", "Significa acertar exactamente con lo que se quería decir. También existe en español."],
+    ["It's [raining cats and dogs].", "Está lloviendo a cántaros.", "Es una forma muy gráfica de decir que llueve muchísimo. Nunca se traduce palabra por palabra."]
+  ],
+  "Formación de palabras: prefijos y sufijos": [
+    ["His [unhappiness] was obvious.", "Su infelicidad era evidente.", "«Un-» (contrario) + «happy» + «-ness» (estado): dos piezas cambian la palabra y su significado."],
+    ["The [development] of the city is fast.", "El desarrollo de la ciudad es rápido.", "El sufijo «-ment» convierte verbos en sustantivos: «develop» pasa a «development»."],
+    ["It's impossible to read; the writing is [illegible].", "Es imposible de leer; la escritura es ilegible.", "«In-», «im-», «il-» e «ir-» indican negación. Cambian según la letra siguiente: «illegible», «impossible»."],
+    ["Please [rewrite] the report.", "Por favor, reescribe el informe.", "El prefijo «re-» significa hacer de nuevo. Así puedes deducir palabras que nunca has visto: «redo», «rebuild»."]
+  ],
+  "However, whatever, no matter: concesión enfática": [
+    ["[However hard] I try, I can't do it.", "Por más que lo intente, no puedo hacerlo.", "«However» + adjetivo o adverbio significa «por más… que». Expresa que un esfuerzo no cambia el resultado."],
+    ["[Whatever] you decide, I'll support you.", "Decidas lo que decidas, te apoyaré.", "«Whatever» significa «lo que sea que»: una opción sin importar cuál."],
+    ["[No matter where] you go, I'll find you.", "No importa adónde vayas, te encontraré.", "«No matter» + palabra Wh- (where, what, how) es una alternativa a «wherever», «whatever» y «however»."],
+    ["[Whoever] calls, tell them I'm busy.", "Quien llame, diles que estoy ocupado.", "«Whoever» significa «quienquiera que». Funciona como sujeto o como objeto."]
+  ]
+});
+/* DISC-DATA-C2:END */
 /* MISSION:END */
 /* Escenas por unidad. Clave = "home.index" de la teoría. t = [quién(0|1), inglés con [resaltado], español].
    El usuario responde como el personaje que NO habló al final: o = [correcta, mala, mala], oes = traducción de la correcta, e = explicación. */
