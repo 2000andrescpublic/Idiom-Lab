@@ -1803,6 +1803,9 @@ button.pvr-c:active{transform:translate(-50%,-50%) scale(.97);}
 .exn-h{font-size:1.15rem;font-weight:800;margin:2px 0 4px;}
 .exn-sub{margin:0 0 12px;color:var(--ink-soft);font-size:.88rem;}
 .exn-p1 .exn-h{margin-bottom:12px;}
+.ex-empty{text-align:center;padding:40px 22px;color:var(--ink-soft);}
+.ex-empty h3{margin:0 0 8px;color:var(--ink);font-size:1.1rem;}
+.ex-empty p{margin:0;font-size:.92rem;line-height:1.5;}
 .exn-skills{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .exn-skill{border:0;border-radius:20px;padding:14px 8px 12px;color:#fff;cursor:pointer;font-family:inherit;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;overflow:hidden;transition:transform .15s ease;}
 .exn-skill::after{content:"";position:absolute;right:-24px;top:-24px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.26),transparent 70%);}
@@ -24206,7 +24209,7 @@ function buildHeader(){
       document.querySelectorAll(".level-chip").forEach(c=>c.classList.remove("active"));
       b.classList.add("active");
       if(activeSection==="theory"){ activeTheoryTopic = null; theoryReturnTo = null; renderTheory(); }
-      if(activeSection==="exercises") renderExercise(activeExercise, true);
+      if(activeSection==="exercises" && !exNone) renderExercise(activeExercise, true);
       if(activeSection==="vocabtopics") renderVocabTopics();
     };
     chips.appendChild(b);
@@ -27902,6 +27905,7 @@ const EX_SUB_DESC = {
 };
 /* EJERCICIOS-NAV: destrezas -> ejercicios -> ejercicio (se desliza en móvil, columnas en escritorio) y ronda de 10. */
 const EX_SKILL_HUES = {vocab:["#8E6CFF","#4B2FC9"], lexicon:["#25C99B","#0E7A5A"], grammar:["#F5B03A","#B0670A"], reading:["#4C9AFF","#1F56C4"], listen:["#EC5A9C","#A01F5E"], writing:["#F2704E","#A62E12"], review:["#2CC0D8","#0F6F80"]};
+let exNone = false;   // true al entrar a Ejercicios desde el menú: no se muestra ningún ejercicio hasta elegir destreza y tipo
 let exStep = 0, exSkill = null, exOpenMenu = false, exRound = {res:[], done:false}, _exRO = null;
 function exMobile(){ return window.matchMedia("(max-width: 959px)").matches; }
 function exReadyGroups(){
@@ -27913,13 +27917,19 @@ function exRenderNav(){
   const gEl = document.getElementById("exGroups"), sEl = document.getElementById("exSubnav");
   if(!gEl || !sEl) return;
   const groups = exReadyGroups(), cur = exGroupOf(activeExercise);
-  if(!exSkill || !groups.find(g=> g.id === exSkill)) exSkill = cur ? cur.id : groups[0].id;
-  const sk = groups.find(g=> g.id === exSkill);
+  if(!exNone && (!exSkill || !groups.find(g=> g.id === exSkill))) exSkill = cur ? cur.id : groups[0].id;
+  if(exNone && exSkill && !groups.find(g=> g.id === exSkill)) exSkill = null;
+  const sk = exSkill ? groups.find(g=> g.id === exSkill) : null;
   gEl.innerHTML = `<div class="exn-h">¿Qué quieres practicar?</div><div class="exn-skills">${groups.map(g=>{
-    const h = EX_SKILL_HUES[g.id] || ["#7C5CFF", "#4F3DFF"], on = g.id === exSkill;
+    const h = EX_SKILL_HUES[g.id] || ["#7C5CFF", "#4F3DFF"], on = !!sk && g.id === sk.id;
     return `<button type="button" class="exn-skill${on ? " act" : ""}" data-g="${g.id}" style="background:linear-gradient(135deg,${h[0]},${h[1]})" aria-pressed="${on}">
       <span class="exn-ico">${svgIcon(g.icon, 26)}</span><span class="exn-tx"><b>${g.label}</b><small>${g.items.length === 1 ? "1 ejercicio" : g.items.length + " ejercicios"}</small></span><span class="exn-ar" aria-hidden="true">›</span></button>`;
   }).join("")}</div>`;
+  if(!sk){
+    sEl.innerHTML = `<div class="exn-h">Ejercicios</div><p class="exn-sub">Elige una destreza para ver sus ejercicios.</p>`;
+    gEl.querySelectorAll(".exn-skill").forEach(b=> b.onclick = ()=> exSelectGroup(b.dataset.g));
+    return;
+  }
   const h2 = EX_SKILL_HUES[sk.id] || ["#7C5CFF", "#4F3DFF"];
   sEl.innerHTML = `<div class="exn-h">${sk.label}</div><p class="exn-sub">${sk.items.length === 1 ? "Un ejercicio disponible." : "Elige un ejercicio."}</p><div class="exn-exs">${sk.items.map(id=>{
     const t = EX_TABS.find(x=> x.id === id), on = id === activeExercise;
@@ -27938,6 +27948,7 @@ function exSelectGroup(gid){
   exStep = 1; exRenderNav(); exApplyStep(true);
 }
 function exSelect(id, scroll){
+  exNone = false;
   activeExercise = id;
   if(id === "phrasal") PHRASAL_FILTER = null;
   if(id === "connectors") CONNECTOR_FILTER = null;
@@ -28010,6 +28021,15 @@ function renderExercisesShell(){
 window.addEventListener("resize", ()=>{ if(activeSection === "exercises" && document.getElementById("exnTrack")) exApplyStep(false); });
 function renderExercise(id, forceNew){
   if(!document.getElementById("exSubnav") || !document.getElementById("exPanel")) renderExercisesShell();
+  if(exOpenMenu && !forceNew && window._exPopStep == null){   // entrada desde el menú: solo el selector, sin ejercicio hasta que se elija
+    exOpenMenu = false; exNone = true; exSkill = null; exStep = 0;
+    exRenderNav();
+    document.getElementById("exRound").innerHTML = "";
+    document.getElementById("exPanel").innerHTML = `<div class="card ex-empty"><h3>Elige qué practicar</h3><p>Primero una destreza y después el tipo de ejercicio. Aquí aparecerá la práctica.</p></div>`;
+    exApplyStep(false);
+    return;
+  }
+  exNone = false;
   const g = exGroupOf(id); if(g) exSkill = g.id;
   let step = 2;
   if(exOpenMenu && exMobile()) step = 0;
