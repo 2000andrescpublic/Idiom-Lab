@@ -2154,6 +2154,20 @@ header{transition:transform .25s ease;}
 .fc:not(.flipped) .fc-back,.fc.flipped .fc-front{pointer-events:none;}
 @media (prefers-reduced-motion:reduce){.fc-inner{transition:none;}}
 /* DISC-CARDS-CSS:END */
+/* HITO-CSS:BEGIN */
+button.rchest{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;}
+button.rchest:focus-visible{outline:3px solid color-mix(in srgb,var(--rl) 60%,transparent);outline-offset:4px;border-radius:14px;}
+.rchest.ready .rcbox{filter:drop-shadow(0 0 14px rgba(245,166,35,.65));animation:hitoBob 1.6s ease-in-out infinite;}
+.rchest.ready .rclab b{color:#F5A623;}
+@keyframes hitoBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.hito-chest{display:flex;justify-content:center;margin:2px 0;}
+.hito-chest svg{width:96px;height:84px;filter:drop-shadow(0 0 18px rgba(245,166,35,.5));}
+.hito-row{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;padding:6px 0;border-bottom:1px solid var(--line);}
+.hito-row:last-of-type{border-bottom:0;}
+.hito-row b.ok{color:var(--ok-ink);}
+.hito-row b.bad{color:var(--danger-ink);}
+@media (prefers-reduced-motion:reduce){.rchest.ready .rcbox{animation:none;}}
+/* HITO-CSS:END */
 /* MISSION-CSS:END */
 /* MISSION-PATH-CSS:BEGIN */
 #panel-practicehoy.has-mission .practice-hoy-progress{display:none;}
@@ -23980,7 +23994,7 @@ function fxAutoAdvance(ok, id){
 
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
-function normalize(s){ return s.toLowerCase().replace(/[.,!?¿¡']/g,"").replace(/\s+/g," ").trim(); }
+function normalize(s){ return s.toLowerCase().replace(/[.,!?¿¡';:]/g,"").replace(/\s+/g," ").trim(); }
 /* Igual que normalize, pero antes expande las contracciones para que "didn't go" y
    "did not go" (o "it's" e "it is") cuenten como la misma respuesta. Se aplica a los
    dos lados de la comparación. 'd y 's posesivo/has se dejan como están (ambiguos). */
@@ -31964,6 +31978,7 @@ function reviewWhenText(ts){
 function practiceTodayLabels(s){
   if(s.mode==="topic") return {eyebrow:`📘 Practicando: ${s.title}`, exit:"← Salir de la práctica del tema", done:""};
   if(s.mode==="unit") return {eyebrow:`🧭 Ruta ${s.level} · Unidad ${s.unit+1}`, exit:"← Salir del repaso de cierre", done:""};
+  if(s.mode==="milestone") return {eyebrow:`🎁 Ruta ${s.level} · Repaso de hito (unidades ${routeHitoStart(s.unit)+1} a ${s.unit+1})`, exit:"← Salir del repaso de hito", done:""};
   if(s.mode==="summary") return {eyebrow:`🗺️ Practicando el resumen: ${s.title}`, exit:"← Volver al resumen", done:"¡Grupo practicado! 🎉"};
   return s.mode==="review"
     ? {eyebrow:"🔁 Repaso de hoy", exit:"← Salir del repaso", done:"¡Repaso completado! 🎉"}
@@ -32026,7 +32041,7 @@ function renderPracticeHoy(){
     if(s.mission){ practiceTodaySession = null; goTo("route"); return; }
     if(s.mode === "topic"){ practiceTodaySession = null; openTheoryTopic(s.tHome, s.tIdx); }
     else if(s.mode === "summary"){ practiceTodaySession = null; currentLevel = s.level; document.querySelectorAll(".level-chip").forEach(c=>c.classList.toggle("active", c.textContent === s.level)); activeTheoryTopic = null; goTo("theory"); rsView = {lv:s.level, i:s.gi}; renderTheory(); }
-    else goTo(s.mode==="unit" ? "route" : "home");
+    else goTo(s.mode==="unit" || s.mode==="milestone" ? "route" : "home");
   };
   const mpr = document.getElementById("mpRule");
   if(s.mission) missionAnimateBolt(s);
@@ -32072,6 +32087,7 @@ function renderPracticeHoyComplete(){
   practiceTodayCleanup();
   const s = practiceTodaySession;
   if(s.mode === "unit"){ renderUnitComplete(s); return; }
+  if(s.mode === "milestone"){ renderMilestoneComplete(s); return; }
   if(s.mode === "topic"){ renderTopicComplete(s); return; }
   const rows = Object.keys(s.byType).map(id=>{
     const label = (EX_TABS.find(t=>t.id===id)||{label:id}).label;
@@ -32119,8 +32135,9 @@ registerAnswer = function(id, ok){
     /* Un error vuelve a aparecer dos ejercicios más adelante (máx. una
        vez por ítem y 3 veces por sesión, para que no se haga interminable). */
     const failedId = !ok && current[id] && current[id].id;
-    if((s.mode === "unit" || s.mode === "topic") && !ok) s.missed.push(routeMissedLine(id, current[id]));
-    if(s.mode !== "unit" && failedId && (PRACTICE_TODAY_TYPES.includes(id) || id === "theoryq") && s.retries < 3 && !s.retried.has(failedId)){
+    if((s.mode === "unit" || s.mode === "topic" || s.mode === "milestone") && !ok) s.missed.push(routeMissedLine(id, current[id]));
+    if(s.mode === "milestone"){ const uk = (s.queue[s.index] || {}).unit; if(uk != null){ const bu = s.byUnit[uk] || (s.byUnit[uk] = {correct:0, total:0}); bu.total++; if(ok) bu.correct++; } }
+    if(s.mode !== "unit" && s.mode !== "milestone" && failedId && (PRACTICE_TODAY_TYPES.includes(id) || id === "theoryq") && s.retries < 3 && !s.retried.has(failedId)){
       s.retried.add(failedId);
       s.retries++;
       s.queue.splice(Math.min(s.index+3, s.queue.length), 0, {type:id, forcedId:failedId});
@@ -33262,6 +33279,2241 @@ function routeOrder(level){
 }
 function routeKey(level, k){ const e = routeOrder(level)[k]; return e ? e[0]+":"+e[1] : level+":"+k; }
 let routeSelectedLevel = null;
+/* BANK2:BEGIN — Ampliación de bancos por unidad (inglés). Todo se agrega AL FINAL de los bancos de cada nivel, así los ids del repaso espaciado no cambian.
+   BANK2_EN[título de la unidad] = {
+     g:[[frase con ___ (pista), respuesta, explicación, [4 opciones falsas]]],   completar
+     o:[[frase correcta, explicación, traducción]],                              ordenar (las palabras se sacan de la frase)
+     t:[[español, [variantes válidas en minúsculas y sin punto], explicación]],  traducir
+     q:[{k:"tf"|"mc", ...}],                                                     preguntas de teoría de la unidad
+     l:[[frase en inglés, traducción]]                                           frases de Escucha de la unidad
+   }
+   Las unidades se buscan por título (no por posición) y ROUTE_MORE["home:index"] guarda los índices nuevos de cada tipo. */
+const BANK2_EN = {};
+const ROUTE_MORE = {};
+function applyBank2(){
+  const P = LANG_PACKS.en, byTitle = {};
+  Object.keys(ROUTE_ORDER).forEach(lv=> ROUTE_ORDER[lv].forEach(([home, i])=> { const t = P.THEORY[home] && P.THEORY[home][i]; if(t) byTitle[t.title] = [home, i]; }));
+  Object.keys(BANK2_EN).forEach(title=> {
+    const at = byTitle[title]; if(!at){ console.warn("BANK2: unidad no encontrada", title); return; }
+    const [home, i] = at, key = `${home}:${i}`, b = BANK2_EN[title], more = ROUTE_MORE[key] = {gapfill:[], order:[], translate:[]};
+    (b.g || []).forEach(([sentence, answer, explain, opts])=> {
+      P.GRAMMAR[home].push({sentence, answer, explain}); const ix = P.GRAMMAR[home].length - 1; more.gapfill.push(ix);
+      (GAPFILL_OPTS.en[home] = GAPFILL_OPTS.en[home] || [])[ix] = [answer].concat(opts);
+    });
+    (b.o || []).forEach(([correct, explain, es])=> {
+      const words = correct.replace(/[.,!?;:]/g, "").split(/\s+/).filter(Boolean).map(w=> w === "I" ? "i" : w.toLowerCase());
+      P.ORDER[home].push({words, correct, explain, es}); more.order.push(P.ORDER[home].length - 1);
+    });
+    (b.t || []).forEach(([es, en, explain])=> { P.TRANSLATE[home].push({es, en, explain}); more.translate.push(P.TRANSLATE[home].length - 1); });
+    if((b.q || []).length) THEORY_Q[key] = (THEORY_Q[key] || []).concat(b.q);
+    (b.l || []).forEach(([sentence, es])=> {
+      const n = normalize(sentence); let ix = P.LISTEN[home].findIndex(s=> normalize(s) === n);
+      if(ix < 0){ P.LISTEN[home].push(sentence); ix = P.LISTEN[home].length - 1; }
+      if(es && !LISTEN_ES[n]) LISTEN_ES[n] = es;
+      const arr = LISTEN_TOPIC[key] = LISTEN_TOPIC[key] || [];
+      if(!arr.some(([lv, j])=> lv === home && j === ix)) arr.push([home, ix]);
+    });
+  });
+}
+/* BANK2-DATA:BEGIN */
+/* BANK2-A1:BEGIN */
+Object.assign(BANK2_EN, {
+  "Verbo To Be": {
+    g: [
+      ["We ___ (be) at school today.", "are", "Con «we» el verbo to be es «are».", ["is", "am", "be", "been"]],
+      ["___ they from Spain? (be)", "Are", "En preguntas con to be, el verbo va antes del sujeto; con «they» es «are».", ["Is", "Am", "Do", "Does"]]
+    ],
+    o: [
+      ["You are very kind.", "Con «you» el verbo to be es «are».", "Eres muy amable."],
+      ["Are they at home?", "En preguntas con to be, el verbo va antes del sujeto.", "¿Están ellos en casa?"]
+    ],
+    t: [
+      ["Ellos son de España.", ["they are from spain", "they're from spain"], "Con «they» el verbo to be es «are»."],
+      ["¿Estás cansado?", ["are you tired"], "Pregunta con to be: «are» + you."]
+    ],
+    q: [
+      {k: "tf", q: "«They is at home» es una oración correcta.", a: false, e: "Con «they» se usa «are»: They are at home."},
+      {k: "mc", q: "¿Cuál es la forma corta de «I am»?", o: ["I's", "I'm", "Im"], a: 1, e: "I am se contrae en I'm."}
+    ],
+    l: []
+  },
+  "Demostrativos: this, that, these, those": {
+    g: [
+      ["___ cookies in my hand are delicious. (These/Those)", "These", "Las galletas están cerca y son varias: «these».", ["Those", "This", "That", "Them"]],
+      ["Can you see ___ tree over there? (this/that)", "that", "El árbol está lejos y es uno solo: «that».", ["this", "these", "those", "it"]]
+    ],
+    o: [
+      ["These are my books.", "«These» señala varias cosas cercanas.", "Estos son mis libros."],
+      ["Is that your car?", "«That» señala algo que está lejos.", "¿Ese es tu coche?"]
+    ],
+    t: [
+      ["Este es mi teléfono.", ["this is my phone", "this is my mobile phone", "this is my cell phone"], "«Este» (cerca) se dice this."],
+      ["¿Son esas tus llaves?", ["are those your keys"], "Varias cosas lejos: those. En preguntas, «are» va primero."]
+    ],
+    q: [
+      {k: "tf", q: "«This» se usa para algo cercano y «that» para algo lejano.", a: true, e: "Correcto: this/these = cerca; that/those = lejos."},
+      {k: "mc", q: "Señalas varias cosas que están cerca de ti:", o: ["these", "those", "that"], a: 0, e: "Varias y cerca: these."}
+    ],
+    l: [
+      ["These apples are fresh.", "Estas manzanas están frescas."],
+      ["That car is very fast.", "Ese coche es muy rápido."]
+    ]
+  },
+  "Artículos y plurales": {
+    g: [
+      ["She eats ___ apple every day. (a/an)", "an", "«Apple» empieza con sonido de vocal, así que se usa «an».", ["a", "the", "some", "any"]],
+      ["Two ___ are on the table. (glass)", "glasses", "Los sustantivos terminados en -s, -x, -ch o -sh añaden -es: glasses.", ["glass", "glasss", "glasses'", "glassies"]]
+    ],
+    o: [
+      ["He has a new car.", "«A» va antes de un sustantivo singular contable.", "Él tiene un coche nuevo."],
+      ["We have two cats.", "Con dos o más, el sustantivo va en plural: cats.", "Tenemos dos gatos."]
+    ],
+    t: [
+      ["Ella tiene una manzana.", ["she has an apple", "she's got an apple", "she has got an apple"], "«Manzana» empieza con sonido de vocal: an apple."],
+      ["Veo dos autobuses.", ["i see two buses"], "El plural de bus es buses (se añade -es)."]
+    ],
+    q: [
+      {k: "tf", q: "«An» se usa delante de una palabra que empieza con sonido de vocal.", a: true, e: "Correcto: an apple, an umbrella."},
+      {k: "mc", q: "¿Cuál es el plural de «man»?", o: ["mans", "men", "manes"], a: 1, e: "Man es irregular: man → men."}
+    ],
+    l: [
+      ["She has an umbrella.", "Ella tiene un paraguas."]
+    ]
+  },
+  "Adjetivos posesivos": {
+    g: [
+      ["That is Tom. ___ (he) sister is a doctor.", "His", "El posesivo de «he» es «his».", ["Her", "Its", "Their", "He"]],
+      ["The dog wags ___ tail. (it)", "its", "El posesivo de «it» es «its», sin apóstrofo.", ["it's", "his", "her", "their"]]
+    ],
+    o: [
+      ["They love their dog.", "«Their» es el posesivo de «they».", "Ellos quieren a su perro."],
+      ["Her bag is on the chair.", "«Her» es el posesivo de «she».", "Su bolso (de ella) está en la silla."]
+    ],
+    t: [
+      ["Mi casa es grande.", ["my house is big", "my house is large"], "«Mi» se dice my y va antes del sustantivo."],
+      ["Su hermano (de ella) es alto.", ["her brother is tall"], "El «su» de ella es her."]
+    ],
+    q: [
+      {k: "tf", q: "«His» es el posesivo de «she».", a: false, e: "«His» es de «he»; para «she» se usa «her»."},
+      {k: "mc", q: "Completa: «We love ___ school» (nuestra escuela).", o: ["our", "us", "we"], a: 0, e: "El posesivo de «we» es «our»."}
+    ],
+    l: []
+  },
+  "Pronombres de objeto": {
+    g: [
+      ["This is Sara. Do you know ___? (she)", "her", "Después del verbo se usa el pronombre de objeto: she pasa a «her».", ["she", "hers", "he", "him"]],
+      ["The teacher helps ___ every day. (we)", "us", "El pronombre de objeto de «we» es «us».", ["we", "our", "them", "him"]]
+    ],
+    o: [
+      ["Tom calls her every day.", "«Her» es el pronombre de objeto de «she».", "Tom la llama todos los días."],
+      ["Can you help us?", "«Us» es el pronombre de objeto de «we».", "¿Puedes ayudarnos?"]
+    ],
+    t: [
+      ["Ella me ayuda.", ["she helps me"], "«Me» es el pronombre de objeto de «I»."],
+      ["Nosotros los vemos.", ["we see them"], "«Los» (a ellos) se dice them."]
+    ],
+    q: [
+      {k: "tf", q: "«Give the book to I» es correcto.", a: false, e: "Después de «to» se usa «me»: Give the book to me."},
+      {k: "mc", q: "Completa: «I know Anna. I like ___.»", o: ["her", "she", "hers"], a: 0, e: "Después del verbo va el pronombre de objeto: her."}
+    ],
+    l: [
+      ["She calls me every day.", "Ella me llama todos los días."],
+      ["I can see them.", "Puedo verlos."]
+    ]
+  },
+  "Hay: There is / There are": {
+    g: [
+      ["There ___ a lot of people in the park. (be)", "are", "«A lot of people» es plural, así que se usa «there are».", ["is", "be", "am", "been"]],
+      ["___ there any water in the bottle? (be)", "Is", "«Water» es incontable y se usa con «is»: Is there any water?", ["Are", "Do", "Does", "Have"]]
+    ],
+    o: [
+      ["There is a bank near here.", "«There is» se usa con un solo elemento.", "Hay un banco cerca de aquí."],
+      ["Is there a park near your house?", "Para preguntar, «is» va antes de «there».", "¿Hay un parque cerca de tu casa?"]
+    ],
+    t: [
+      ["Hay una mesa en la cocina.", ["there is a table in the kitchen", "there's a table in the kitchen"], "«Hay» con un solo elemento se dice there is."],
+      ["No hay leche en el refrigerador.", ["there isn't any milk in the fridge", "there is no milk in the fridge", "there isn't any milk in the refrigerator", "there's no milk in the fridge"], "Con incontables en negativo: there isn't any…"]
+    ],
+    q: [
+      {k: "tf", q: "«There are a book on the table» es correcto.", a: false, e: "Con un solo libro se usa «is»: There is a book on the table."},
+      {k: "mc", q: "¿Cómo se pregunta «¿Hay estudiantes en la clase?»?", o: ["Are there students in the class?", "Is there students in the class?", "There are students in the class?"], a: 0, e: "Con plural: Are there…?"}
+    ],
+    l: [
+      ["There are five chairs in the room.", "Hay cinco sillas en la sala."],
+      ["Is there a bank near here?", "¿Hay un banco cerca de aquí?"]
+    ]
+  },
+  "Preposiciones de lugar: in, on, under": {
+    g: [
+      ["The milk is ___ the fridge. (dentro de)", "in", "«Dentro de» se dice «in».", ["on", "under", "at", "between"]],
+      ["The ball is ___ the bed. (debajo de)", "under", "«Debajo de» se dice «under».", ["in", "on", "at", "over"]]
+    ],
+    o: [
+      ["The book is on the table.", "«On» significa sobre, tocando la superficie.", "El libro está sobre la mesa."],
+      ["The shoes are under the bed.", "«Under» significa debajo de.", "Los zapatos están debajo de la cama."]
+    ],
+    t: [
+      ["El gato está sobre el sofá.", ["the cat is on the sofa", "the cat is on the couch"], "«Sobre» se dice on."],
+      ["Las llaves están debajo del libro.", ["the keys are under the book"], "«Debajo de» se dice under."]
+    ],
+    q: [
+      {k: "tf", q: "«In» significa «encima de».", a: false, e: "«In» significa dentro de; «encima de» es «on»."},
+      {k: "mc", q: "El libro está SOBRE la mesa:", o: ["The book is in the table.", "The book is on the table.", "The book is under the table."], a: 1, e: "Sobre = on."}
+    ],
+    l: [
+      ["The book is on the table.", "El libro está sobre la mesa."],
+      ["My keys are in my bag.", "Mis llaves están en mi bolso."]
+    ]
+  },
+  "Have got y have (posesión)": {
+    g: [
+      ["My brother ___ got a bicycle. (have)", "has", "Con «he/she/it» se usa «has got».", ["have", "is", "does", "had"]],
+      ["___ she got a sister? (have)", "Has", "En preguntas con have got, «has» va antes del sujeto.", ["Have", "Does", "Do", "Is"]]
+    ],
+    o: [
+      ["I have a big house.", "«Have» expresa posesión con I/you/we/they.", "Tengo una casa grande."],
+      ["Has he got a car?", "En preguntas con have got, «has» va antes del sujeto.", "¿Tiene él un coche?"]
+    ],
+    t: [
+      ["Ella tiene dos hermanas.", ["she has two sisters", "she has got two sisters", "she's got two sisters"], "Con «she» se usa has o has got."],
+      ["No tenemos coche.", ["we don't have a car", "we haven't got a car", "we do not have a car", "we have not got a car"], "Negativo: don't have o haven't got."]
+    ],
+    q: [
+      {k: "tf", q: "«She have a dog» es correcto.", a: false, e: "Con «she» se usa «has»: She has a dog."},
+      {k: "mc", q: "Negativo de «I have got a car»:", o: ["I haven't got a car.", "I hasn't got a car.", "I don't has a car."], a: 0, e: "Con I: I haven't got / I don't have."}
+    ],
+    l: []
+  },
+  "Presente simple": {
+    g: [
+      ["My mother ___ dinner at six. (cook)", "cooks", "Con «she/he/it» el verbo lleva -s: cooks.", ["cook", "cooking", "cookes", "is cook"]],
+      ["They ___ tennis on Fridays. (play)", "play", "Con «they» el verbo no lleva -s.", ["plays", "playing", "playes", "are play"]]
+    ],
+    o: [
+      ["She drinks tea every morning.", "Con «she» el verbo lleva -s: drinks.", "Ella toma té todas las mañanas."],
+      ["We watch TV at night.", "Con «we» el verbo no lleva -s.", "Vemos la tele por la noche."]
+    ],
+    t: [
+      ["Mi madre cocina todos los días.", ["my mother cooks every day", "my mom cooks every day"], "Rutina en presente simple; con «mother» (she) el verbo lleva -s."],
+      ["Ella trabaja en un banco.", ["she works in a bank"], "Con «she» el verbo lleva -s: works."]
+    ],
+    q: [
+      {k: "tf", q: "«He go to school» es correcto.", a: false, e: "Con «he» el verbo lleva -s: He goes to school."},
+      {k: "mc", q: "Completa: «My brother ___ football.»", o: ["play", "plays", "playing"], a: 1, e: "Con «he/she/it» el verbo lleva -s: plays."}
+    ],
+    l: []
+  },
+  "Presente simple: negativo y preguntas (do/does)": {
+    g: [
+      ["My parents ___ live in Lima. (not)", "don't", "Con «my parents» (they) el negativo es «don't».", ["doesn't", "aren't", "not", "isn't"]],
+      ["___ your sister play the piano? (Do/Does)", "Does", "Con «your sister» (she) la pregunta empieza con «Does».", ["Do", "Is", "Are", "Did"]]
+    ],
+    o: [
+      ["I don't work on Sundays.", "Negativo con I: don't + verbo base.", "No trabajo los domingos."],
+      ["Do they live here?", "Con «they» la pregunta empieza con «Do».", "¿Ellos viven aquí?"]
+    ],
+    t: [
+      ["No fumo.", ["i don't smoke", "i do not smoke"], "Negativo del presente simple: don't + verbo base."],
+      ["¿Vives cerca de aquí?", ["do you live near here", "do you live nearby"], "Pregunta con «you»: Do + you + verbo base."]
+    ],
+    q: [
+      {k: "tf", q: "Con «she» la pregunta empieza con «Do».", a: false, e: "Con «he/she/it» se usa «Does»: Does she work here?"},
+      {k: "mc", q: "Respuesta corta afirmativa a «Does he work here?»:", o: ["Yes, he does.", "Yes, he do.", "Yes, he works."], a: 0, e: "La respuesta corta repite el auxiliar: Yes, he does."}
+    ],
+    l: []
+  },
+  "Adverbios de frecuencia": {
+    g: [
+      ["We ___ eat out on Fridays. It is a habit. (usually/never)", "usually", "«Usually» significa normalmente y encaja con un hábito.", ["never", "rarely", "seldom", "hardly"]],
+      ["She ___ drinks coffee at night. She wants to sleep well. (never/ever)", "never", "«Never» significa nunca: no toma café de noche.", ["ever", "don't", "does", "not"]]
+    ],
+    o: [
+      ["I often visit my parents.", "El adverbio va antes del verbo principal.", "A menudo visito a mis padres."],
+      ["He is never late.", "Con el verbo be, el adverbio va después: is never.", "Él nunca llega tarde."]
+    ],
+    t: [
+      ["Siempre bebo agua.", ["i always drink water"], "«Siempre» se dice always y va antes del verbo."],
+      ["Ella a veces llega tarde.", ["she sometimes arrives late", "she is sometimes late", "she sometimes comes late"], "«A veces» se dice sometimes."]
+    ],
+    q: [
+      {k: "tf", q: "«She always is happy» es correcto.", a: false, e: "Con be el adverbio va después: She is always happy."},
+      {k: "mc", q: "Elige la frase correcta:", o: ["I sometimes go to the cinema.", "I go sometimes to the cinema.", "Sometimes I to go cinema."], a: 0, e: "El adverbio va antes del verbo principal."}
+    ],
+    l: []
+  },
+  "Preguntas con Wh-: what, where, who, when, why, how": {
+    g: [
+      ["___ do you study English? — Because I want a new job. (Why/Who)", "Why", "«Why» pregunta por el motivo y se responde con «because».", ["Who", "Where", "When", "What"]],
+      ["___ is your birthday? — In May. (When/Where)", "When", "«When» pregunta por el momento.", ["Where", "Who", "Why", "How"]]
+    ],
+    o: [
+      ["Who is your teacher?", "«Who» pregunta por una persona.", "¿Quién es tu profesor?"],
+      ["How do you go to school?", "«How» pregunta por la manera.", "¿Cómo vas a la escuela?"]
+    ],
+    t: [
+      ["¿Cuándo es tu cumpleaños?", ["when is your birthday"], "«Cuándo» se dice when."],
+      ["¿Quién es ella?", ["who is she"], "«Quién» se dice who."]
+    ],
+    q: [
+      {k: "tf", q: "«Where» se usa para preguntar por una persona.", a: false, e: "«Where» pregunta por un lugar; para personas se usa «who»."},
+      {k: "mc", q: "¿Cómo se dice «¿Cómo estás?»?", o: ["How are you?", "What are you?", "Who are you?"], a: 0, e: "«How» pregunta por la forma o el estado."}
+    ],
+    l: []
+  },
+  "Can / can't (habilidad)": {
+    g: [
+      ["My little brother ___ read. He is only three. (can/can't)", "can't", "Con tres años todavía no sabe leer: can't.", ["can", "cans", "don't", "doesn't"]],
+      ["___ your brother swim? (Can/Does)", "Can", "Para preguntar por una habilidad se empieza con «Can».", ["Does", "Do", "Is", "Cans"]]
+    ],
+    o: [
+      ["I can't drive a car.", "«Can't» expresa que no puedes o no sabes.", "No sé conducir."],
+      ["Can you speak English?", "Para preguntar, «can» va antes del sujeto.", "¿Sabes hablar inglés?"]
+    ],
+    t: [
+      ["Yo sé nadar.", ["i can swim"], "«Saber hacer algo» se dice can + verbo base."],
+      ["Ellos no pueden venir.", ["they can't come", "they cannot come", "they can not come"], "Negativo de can: can't."]
+    ],
+    q: [
+      {k: "tf", q: "Después de «can» el verbo lleva «to».", a: false, e: "Después de «can» va el verbo base, sin «to»: I can swim."},
+      {k: "mc", q: "¿Cómo se pregunta «¿Puede ella cantar?»?", o: ["Can she sing?", "Does she can sing?", "She can sing?"], a: 0, e: "«Can» va antes del sujeto."}
+    ],
+    l: [
+      ["He can play the guitar.", "Él sabe tocar la guitarra."]
+    ]
+  },
+  "Like, love, hate + verbo con -ing (y want to)": {
+    g: [
+      ["My father loves ___ football. (watch)", "watching", "Después de «love» va el verbo con -ing.", ["watch", "watches", "to watching", "watched"]],
+      ["I want ___ a new phone. (buy)", "to buy", "Después de «want» va «to» + verbo.", ["buying", "buy", "bought", "to buying"]]
+    ],
+    o: [
+      ["I love reading books.", "Después de «love» va el verbo con -ing.", "Me encanta leer libros."],
+      ["They want to go home.", "Después de «want» va «to» + verbo.", "Ellos quieren ir a casa."]
+    ],
+    t: [
+      ["A ella le gusta bailar.", ["she likes dancing", "she likes to dance", "she loves dancing"], "Después de «like» puede ir el verbo con -ing."],
+      ["Quiero aprender inglés.", ["i want to learn english"], "«Querer» + verbo: want + to + verbo."]
+    ],
+    q: [
+      {k: "tf", q: "«I enjoy to swim» es correcto.", a: false, e: "Después de «enjoy» va -ing: I enjoy swimming."},
+      {k: "mc", q: "Elige la frase correcta:", o: ["She hates cooking.", "She hates cook.", "She hates cooks."], a: 0, e: "Después de «hate» va el verbo con -ing."}
+    ],
+    l: [
+      ["I like reading before bed.", "Me gusta leer antes de dormir."],
+      ["She loves playing tennis.", "A ella le encanta jugar al tenis."],
+      ["We want to visit Peru.", "Queremos visitar Perú."]
+    ]
+  },
+  "Imperativos": {
+    g: [
+      ["___ (not/run) in the hallway!", "Don't run", "Para prohibir se usa «don't» + verbo base.", ["Not run", "Doesn't run", "No run", "Don't running"]],
+      ["___ your hands before dinner. (wash/washes)", "Wash", "El imperativo usa el verbo en forma base.", ["Washes", "Washing", "To wash", "Washed"]]
+    ],
+    o: [
+      ["Close the door, please.", "El imperativo usa el verbo en forma base.", "Cierra la puerta, por favor."],
+      ["Don't forget your keys.", "Para negar una orden se usa «don't» + verbo base.", "No olvides tus llaves."]
+    ],
+    t: [
+      ["Cierra la puerta, por favor.", ["close the door please", "please close the door", "shut the door please"], "El imperativo es el verbo base, sin sujeto."],
+      ["No llegues tarde.", ["don't be late", "do not be late"], "Orden negativa: don't + verbo base."]
+    ],
+    q: [
+      {k: "tf", q: "El imperativo se forma con el verbo solo, sin sujeto.", a: true, e: "Correcto: Open the door."},
+      {k: "mc", q: "«No toques eso» en inglés:", o: ["Don't touch that.", "Not touch that.", "You don't touch."], a: 0, e: "Orden negativa: don't + verbo base."}
+    ],
+    l: []
+  },
+  "Genitivo sajón: 's (de quién es)": {
+    g: [
+      ["This is ___ phone. (my sister/my sister's)", "my sister's", "Para decir de quién es algo se agrega 's al poseedor.", ["my sisters", "my sisters'", "my sister", "sister's my"]],
+      ["The ___ names are on the list. (student/students')", "students'", "Si el poseedor es plural y termina en -s, solo se agrega el apóstrofo.", ["student's", "students", "student", "students's"]]
+    ],
+    o: [
+      ["This is my brother's room.", "Para decir de quién es algo se agrega 's al poseedor.", "Esta es la habitación de mi hermano."],
+      ["Where is Anna's phone?", "«Anna's» indica que el teléfono es de Anna.", "¿Dónde está el teléfono de Anna?"]
+    ],
+    t: [
+      ["Este es el coche de Tom.", ["this is tom's car"], "«De Tom» se dice Tom's, y va antes de la cosa."],
+      ["El libro de la profesora está aquí.", ["the teacher's book is here"], "«De la profesora» se dice the teacher's."]
+    ],
+    q: [
+      {k: "tf", q: "«Anna's bag» significa «el bolso de Anna».", a: true, e: "Correcto: primero el dueño con 's y después la cosa."},
+      {k: "mc", q: "«Los libros de los estudiantes» (varios estudiantes):", o: ["the students' books", "the student's books", "the students books"], a: 0, e: "Plural que termina en -s: solo el apóstrofo."}
+    ],
+    l: [
+      ["This is Tom's car.", "Este es el coche de Tom."],
+      ["Where is Maria's brother?", "¿Dónde está el hermano de María?"],
+      ["My parents' house is big.", "La casa de mis padres es grande."]
+    ]
+  }
+});
+/* BANK2-A1:END */
+/* BANK2-A2:BEGIN */
+Object.assign(BANK2_EN, {
+  "Was / were (pasado del verbo to be)": {
+    g: [
+      ["We ___ very tired after the trip. (be)", "were", "Con «we» el pasado de to be es «were».", ["was", "are", "is", "been"]],
+      ["___ the film good last night? (be)", "Was", "Con «the film» (it) el pasado de to be es «was».", ["Were", "Is", "Did", "Do"]]
+    ],
+    o: [
+      ["I was at the office yesterday.", "Con «I» el pasado de to be es «was».", "Ayer estuve en la oficina."],
+      ["Were you at home last night?", "Con «you» el pasado de to be es «were».", "¿Estabas en casa anoche?"]
+    ],
+    t: [
+      ["Yo estaba en casa.", ["i was at home"], "Pasado de to be con «I»: was."],
+      ["Ellos no estaban cansados.", ["they weren't tired", "they were not tired"], "Negativo con «they»: weren't."]
+    ],
+    q: [
+      {k: "tf", q: "«They was at the cinema» es correcto.", a: false, e: "Con «they» se usa «were»: They were at the cinema."},
+      {k: "mc", q: "Negativo de «She was ready»:", o: ["She wasn't ready.", "She weren't ready.", "She didn't was ready."], a: 0, e: "El negativo de was es wasn't."}
+    ],
+    l: [
+      ["We were at the cinema last night.", "Anoche estuvimos en el cine."]
+    ]
+  },
+  "Pasado simple": {
+    g: [
+      ["Last summer we ___ to Italy. (go)", "went", "«Go» es irregular: go → went.", ["go", "goed", "gone", "going"]],
+      ["She ___ her keys yesterday. (lose)", "lost", "«Lose» es irregular: lose → lost.", ["losed", "lose", "loses", "lost's"]]
+    ],
+    o: [
+      ["We visited our grandparents on Sunday.", "Los verbos regulares añaden -ed en pasado.", "Visitamos a nuestros abuelos el domingo."],
+      ["She bought a new jacket yesterday.", "«Buy» es irregular: bought.", "Ella compró una chaqueta nueva ayer."]
+    ],
+    t: [
+      ["Ayer compré pan.", ["i bought bread yesterday", "yesterday i bought bread"], "«Comprar» en pasado: bought."],
+      ["Ellos llegaron tarde.", ["they arrived late"], "Verbo regular: arrive + d."]
+    ],
+    q: [
+      {k: "tf", q: "El pasado de «go» es «goed».", a: false, e: "«Go» es irregular: el pasado es «went»."},
+      {k: "mc", q: "Pasado de «study»:", o: ["studyed", "studied", "studdied"], a: 1, e: "Consonante + y: la y cambia a -ied."}
+    ],
+    l: []
+  },
+  "Pasado simple: negativas y preguntas (did)": {
+    g: [
+      ["I ___ see him at the party. (not)", "didn't", "Negativo en pasado: didn't + verbo base.", ["don't", "doesn't", "wasn't", "haven't"]],
+      ["What time ___ you get up yesterday? (do/did)", "did", "Preguntas en pasado con Wh-: palabra Wh- + did + sujeto + verbo base.", ["do", "does", "were", "was"]]
+    ],
+    o: [
+      ["She didn't call me last night.", "Negativo en pasado: didn't + verbo base.", "Ella no me llamó anoche."],
+      ["Did they finish the exam?", "Preguntas en pasado: did + sujeto + verbo base.", "¿Terminaron ellos el examen?"]
+    ],
+    t: [
+      ["No vi la película.", ["i didn't see the film", "i didn't see the movie", "i did not see the movie", "i did not see the film"], "Negativo en pasado: didn't + verbo base (see)."],
+      ["¿Qué hiciste ayer?", ["what did you do yesterday"], "Pregunta en pasado: what + did + you + verbo base."]
+    ],
+    q: [
+      {k: "tf", q: "«Did you went to the party?» es correcto.", a: false, e: "Después de «did» el verbo va en base: Did you go to the party?"},
+      {k: "mc", q: "Negativo de «He worked»:", o: ["He didn't worked.", "He didn't work.", "He not worked."], a: 1, e: "didn't + verbo base."}
+    ],
+    l: []
+  },
+  "Pasado continuo": {
+    g: [
+      ["I ___ TV when the phone rang. (watch)", "was watching", "Acción en progreso: was + verbo con -ing.", ["watched", "am watching", "were watching", "watching"]],
+      ["They ___ football when it started to rain. (play)", "were playing", "Con «they» se usa «were» + -ing.", ["was playing", "played", "are playing", "play"]]
+    ],
+    o: [
+      ["She was cooking dinner at seven.", "Pasado continuo: was + verbo con -ing.", "Ella estaba cocinando la cena a las siete."],
+      ["What were you doing last night?", "Preguntas: what + were + sujeto + -ing.", "¿Qué estabas haciendo anoche?"]
+    ],
+    t: [
+      ["Yo estaba durmiendo.", ["i was sleeping"], "Acción en progreso en el pasado: was + -ing."],
+      ["Ellos estaban jugando en el parque.", ["they were playing in the park"], "Con «they»: were + -ing."]
+    ],
+    q: [
+      {k: "tf", q: "El pasado continuo se forma con «was/were» + verbo con -ing.", a: true, e: "Correcto: I was working."},
+      {k: "mc", q: "Completa: «We ___ dinner when he called.»", o: ["were having", "was having", "have"], a: 0, e: "Con «we» se usa were + -ing."}
+    ],
+    l: [
+      ["I was sleeping when you called.", "Estaba durmiendo cuando llamaste."],
+      ["They were playing football in the park.", "Estaban jugando al fútbol en el parque."]
+    ]
+  },
+  "Presente continuo": {
+    g: [
+      ["She ___ a book right now. (read)", "is reading", "Ahora mismo: am/is/are + verbo con -ing.", ["reads", "read", "are reading", "reading"]],
+      ["The children ___ in the garden. (play)", "are playing", "Con «the children» (they) se usa «are» + -ing.", ["is playing", "play", "plays", "playing"]]
+    ],
+    o: [
+      ["They are watching a film now.", "Presente continuo: are + verbo con -ing.", "Ellos están viendo una película ahora."],
+      ["I am not working today.", "Negativo: am + not + verbo con -ing.", "Hoy no estoy trabajando."]
+    ],
+    t: [
+      ["Estoy estudiando inglés.", ["i am studying english", "i'm studying english"], "Presente continuo: am + estudiar con -ing."],
+      ["¿Qué estás cocinando?", ["what are you cooking"], "Pregunta: what + are + you + -ing."]
+    ],
+    q: [
+      {k: "tf", q: "«She is work now» es correcto.", a: false, e: "Falta -ing: She is working now."},
+      {k: "mc", q: "Negativo de «He is sleeping»:", o: ["He isn't sleeping.", "He doesn't sleeping.", "He not is sleeping."], a: 0, e: "Se agrega not después de is."}
+    ],
+    l: []
+  },
+  "Presente simple vs presente continuo": {
+    g: [
+      ["I usually walk to work, but today I ___ the bus. (take)", "am taking", "«Today» marca algo temporal: presente continuo.", ["take", "takes", "took", "taking"]],
+      ["She ___ coffee every morning. (drink)", "drinks", "«Every morning» marca una rutina: presente simple.", ["is drinking", "drink", "drank", "are drinking"]]
+    ],
+    o: [
+      ["He usually walks, but today he is driving.", "Rutina en simple y lo de hoy en continuo.", "Normalmente camina, pero hoy conduce."],
+      ["I am reading a book right now.", "«Right now» pide presente continuo.", "Ahora mismo estoy leyendo un libro."]
+    ],
+    t: [
+      ["Normalmente cocino, pero hoy comemos fuera.", ["i usually cook but today we are eating out", "i usually cook but today we're eating out"], "Rutina en simple y hoy en continuo."],
+      ["Ella siempre llega temprano.", ["she always arrives early"], "Rutina: presente simple con «always»."]
+    ],
+    q: [
+      {k: "tf", q: "«Right now» suele acompañar al presente continuo.", a: true, e: "Correcto: I'm working right now."},
+      {k: "mc", q: "Rutina: «Every day I ___ the bus.»", o: ["take", "am taking", "taking"], a: 0, e: "Las rutinas van en presente simple."}
+    ],
+    l: [
+      ["I usually drink tea, but today I am drinking coffee.", "Normalmente tomo té, pero hoy estoy tomando café."],
+      ["She is studying English right now.", "Ella está estudiando inglés ahora mismo."]
+    ]
+  },
+  "Comparativos y superlativos": {
+    g: [
+      ["My brother is ___ than me. (tall)", "taller", "Adjetivo corto: se agrega -er.", ["more tall", "tallest", "the taller", "most tall"]],
+      ["This is the ___ book I have ever read. (interesting)", "most interesting", "Superlativo de un adjetivo largo: the most + adjetivo.", ["more interesting", "interestingest", "most interestinger", "interestinger"]]
+    ],
+    o: [
+      ["This car is faster than that one.", "Adjetivo corto: -er + than.", "Este coche es más rápido que ese."],
+      ["She is the best student in the class.", "Superlativo irregular: good → the best.", "Ella es la mejor estudiante de la clase."]
+    ],
+    t: [
+      ["Mi casa es más grande que la tuya.", ["my house is bigger than yours"], "Adjetivo corto: big → bigger (se duplica la g)."],
+      ["Este es el libro más caro.", ["this is the most expensive book"], "Adjetivo largo: the most + adjetivo."]
+    ],
+    q: [
+      {k: "tf", q: "El comparativo de «good» es «gooder».", a: false, e: "«Good» es irregular: better."},
+      {k: "mc", q: "Comparativo de «expensive»:", o: ["expensiver", "more expensive", "most expensive"], a: 1, e: "Adjetivo largo: more + adjetivo."}
+    ],
+    l: []
+  },
+  "Adverbios de modo (quickly, well, hard)": {
+    g: [
+      ["He drives very ___. (careful)", "carefully", "Adjetivo + -ly forma el adverbio: careful → carefully.", ["careful", "carefuly", "carefulled", "more careful"]],
+      ["She sings ___. (good)", "well", "El adverbio de «good» es «well».", ["good", "goodly", "better", "best"]]
+    ],
+    o: [
+      ["He speaks English very well.", "El adverbio de good es well.", "Él habla muy bien inglés."],
+      ["They worked hard all day.", "«Hard» es igual como adjetivo y adverbio.", "Ellos trabajaron duro todo el día."]
+    ],
+    t: [
+      ["Ella habla despacio.", ["she speaks slowly"], "Adjetivo + -ly: slow → slowly."],
+      ["Él corre rápido.", ["he runs fast", "he runs quickly"], "«Fast» es adjetivo y adverbio."]
+    ],
+    q: [
+      {k: "tf", q: "«She speaks good English» usa el adverbio correcto.", a: false, e: "«Good» es adjetivo. El adverbio es «well»: She speaks English well."},
+      {k: "mc", q: "Adverbio de «quick»:", o: ["quickly", "quick", "quickily"], a: 0, e: "Adjetivo + -ly: quickly."}
+    ],
+    l: []
+  },
+  "Sustantivos contables e incontables": {
+    g: [
+      ["I need some ___. (water/waters)", "water", "«Water» es incontable: no lleva plural.", ["waters", "a water", "two water", "many"]],
+      ["There are two ___ on the table. (apple)", "apples", "«Apple» es contable: en plural lleva -s.", ["apple", "an apple", "some apple", "much apples"]]
+    ],
+    o: [
+      ["I have three brothers and two sisters.", "Los contables se pueden contar.", "Tengo tres hermanos y dos hermanas."],
+      ["We need some information.", "«Information» es incontable.", "Necesitamos algo de información."]
+    ],
+    t: [
+      ["Necesito un poco de azúcar.", ["i need some sugar", "i need a little sugar"], "«Azúcar» es incontable: some sugar."],
+      ["Ella tiene tres gatos.", ["she has three cats", "she's got three cats", "she has got three cats"], "Los contables van en plural: cats."]
+    ],
+    q: [
+      {k: "tf", q: "«Information» es un sustantivo contable.", a: false, e: "Es incontable: no se dice «informations»."},
+      {k: "mc", q: "¿Cuál es incontable?", o: ["book", "milk", "chair"], a: 1, e: "«Milk» es incontable."}
+    ],
+    l: [
+      ["I need some water, please.", "Necesito agua, por favor."]
+    ]
+  },
+  "Cuantificadores: some, any, much, many": {
+    g: [
+      ["There isn't ___ milk left. (some/any)", "any", "En negativas se usa «any».", ["some", "many", "a", "much of"]],
+      ["There aren't ___ people here. (much/many)", "many", "«People» es contable: se usa «many».", ["much", "a lot", "some", "little"]]
+    ],
+    o: [
+      ["I don't have much time.", "«Time» es incontable: much.", "No tengo mucho tiempo."],
+      ["There are some apples in the bag.", "«Some» se usa en afirmativas.", "Hay algunas manzanas en la bolsa."]
+    ],
+    t: [
+      ["No hay leche.", ["there isn't any milk", "there is no milk", "there's no milk"], "En negativas se usa any."],
+      ["¿Cuántas personas hay?", ["how many people are there"], "Con contables: how many."]
+    ],
+    q: [
+      {k: "tf", q: "«How much» se usa con sustantivos contables.", a: false, e: "«How much» va con incontables; con contables se usa «how many»."},
+      {k: "mc", q: "Completa: «I have ___ friends.»", o: ["much", "many", "any"], a: 1, e: "«Friends» es contable: many."}
+    ],
+    l: []
+  },
+  "Too, enough y very": {
+    g: [
+      ["The soup is ___ hot. I can't eat it. (too/very)", "too", "«Too» expresa un problema: demasiado.", ["very", "enough", "so", "much"]],
+      ["He isn't tall ___ to play basketball. (enough/too)", "enough", "«Enough» va después del adjetivo: tall enough.", ["too", "very", "much", "so"]]
+    ],
+    o: [
+      ["The bag is too heavy for me.", "«Too» + adjetivo: demasiado.", "La bolsa es demasiado pesada para mí."],
+      ["She is old enough to drive.", "«Enough» va después del adjetivo.", "Ella tiene edad suficiente para conducir."]
+    ],
+    t: [
+      ["Es demasiado caro.", ["it is too expensive", "it's too expensive"], "«Demasiado» se dice too."],
+      ["No hay suficientes sillas.", ["there aren't enough chairs", "there are not enough chairs"], "Con sustantivos, enough va antes."]
+    ],
+    q: [
+      {k: "tf", q: "«Too» significa «muy» sin ningún problema.", a: false, e: "«Too» significa «demasiado» y expresa un problema; para «muy» se usa «very»."},
+      {k: "mc", q: "«No es lo bastante alto»:", o: ["He isn't enough tall.", "He isn't tall enough.", "He isn't too tall."], a: 1, e: "Enough va después del adjetivo."}
+    ],
+    l: [
+      ["It is too hot to go outside.", "Hace demasiado calor para salir."]
+    ]
+  },
+  "Would like, Can I y Shall we (pedir, ofrecer y sugerir)": {
+    g: [
+      ["I ___ like a cup of tea, please. (would/will)", "would", "«I would like» es la forma cortés de pedir.", ["will", "do", "can", "am"]],
+      ["___ we go to the cinema tonight? (Shall/Will)", "Shall", "«Shall we…?» sirve para proponer un plan.", ["Will", "Do", "Are", "Can"]]
+    ],
+    o: [
+      ["Would you like some coffee?", "Es una oferta cortés.", "¿Quieres café?"],
+      ["Can I have the menu, please?", "«Can I…?» sirve para pedir algo.", "¿Me trae la carta, por favor?"]
+    ],
+    t: [
+      ["Quisiera una mesa para dos.", ["i would like a table for two", "i'd like a table for two"], "«Quisiera» = I'd like."],
+      ["¿Vamos a la playa?", ["shall we go to the beach", "let's go to the beach"], "«Shall we…?» propone un plan."]
+    ],
+    q: [
+      {k: "tf", q: "«I'd like» significa «I would like».", a: true, e: "Correcto: I'd like a coffee, please."},
+      {k: "mc", q: "Para proponer un plan:", o: ["Shall we go?", "Do we go?", "We shall go?"], a: 0, e: "Shall we + verbo base."}
+    ],
+    l: []
+  },
+  "Futuro: be going to": {
+    g: [
+      ["I ___ study medicine next year. (be going to)", "am going to", "Plan decidido: am/is/are going to + verbo base.", ["going to", "will going to", "am go to", "is going to"]],
+      ["Look at the clouds! It ___ rain. (be going to)", "is going to", "Predicción por pruebas: is going to.", ["are going to", "will going to", "going", "am going to"]]
+    ],
+    o: [
+      ["We are going to visit Rome.", "Plan: are going to + verbo base.", "Vamos a visitar Roma."],
+      ["Are you going to study tonight?", "Preguntas: are + you + going to.", "¿Vas a estudiar esta noche?"]
+    ],
+    t: [
+      ["Voy a viajar en verano.", ["i am going to travel in summer", "i'm going to travel in summer", "i am going to travel in the summer", "i'm going to travel in the summer"], "Plan: am going to + verbo base."],
+      ["Ella no va a venir.", ["she isn't going to come", "she is not going to come", "she's not going to come"], "Negativo: is not going to."]
+    ],
+    q: [
+      {k: "tf", q: "Después de «going to» el verbo va en forma base.", a: true, e: "Correcto: I'm going to travel."},
+      {k: "mc", q: "Pregunta correcta:", o: ["Are you going to work?", "Do you going to work?", "You are going to work?"], a: 0, e: "Am/is/are va antes del sujeto."}
+    ],
+    l: []
+  },
+  "Have to / don't have to (obligación)": {
+    g: [
+      ["She ___ work on Saturdays. (have to)", "has to", "Con «she» se usa «has to».", ["have to", "must to", "having to", "is to"]],
+      ["You ___ pay. It's free. (not/have to)", "don't have to", "Falta de obligación: don't have to.", ["mustn't", "haven't to", "doesn't have to", "not have to"]]
+    ],
+    o: [
+      ["I have to get up early.", "«Have to» expresa obligación.", "Tengo que levantarme temprano."],
+      ["Do we have to wear a uniform?", "Preguntas: do + sujeto + have to.", "¿Tenemos que usar uniforme?"]
+    ],
+    t: [
+      ["Tengo que estudiar.", ["i have to study"], "Obligación: have to + verbo base."],
+      ["Ella no tiene que trabajar hoy.", ["she doesn't have to work today", "she does not have to work today"], "Con «she»: doesn't have to."]
+    ],
+    q: [
+      {k: "tf", q: "«Don't have to» significa que algo está prohibido.", a: false, e: "Significa que no es necesario; para prohibir se usa «mustn't»."},
+      {k: "mc", q: "Con «he» se dice:", o: ["He have to go.", "He has to go.", "He haves to go."], a: 1, e: "Con he/she/it: has to."}
+    ],
+    l: []
+  },
+  "Condicional cero": {
+    g: [
+      ["If you cool water to 0°C, it ___. (freeze)", "freezes", "Hecho general: presente simple en las dos partes.", ["freeze", "will freeze", "froze", "is freezing"]],
+      ["If I don't sleep well, I ___ tired. (feel)", "feel", "Condicional cero: presente simple en el resultado.", ["will feel", "felt", "am feeling", "feels"]]
+    ],
+    o: [
+      ["If you mix red and blue, you get purple.", "Condicional cero: hecho que siempre se cumple.", "Si mezclas rojo y azul, obtienes morado."],
+      ["Water boils if you heat it.", "Puedes cambiar el orden de las partes.", "El agua hierve si la calientas."]
+    ],
+    t: [
+      ["Si llueve, me quedo en casa.", ["if it rains i stay at home", "if it rains, i stay home", "if it rains i stay home"], "Hábito: presente simple en las dos partes."],
+      ["Si no comes, te da hambre.", ["if you don't eat you get hungry", "if you don't eat, you get hungry", "if you do not eat you get hungry", "if you do not eat, you get hungry"], "Hecho general: condicional cero."]
+    ],
+    q: [
+      {k: "tf", q: "En el condicional cero se usa «will» en el resultado.", a: false, e: "Se usa presente simple en las dos partes."},
+      {k: "mc", q: "Completa: «If you ___ water to 100°C, it boils.»", o: ["heat", "will heat", "heated"], a: 0, e: "If + presente simple."}
+    ],
+    l: [
+      ["If you heat ice, it melts.", "Si calientas el hielo, se derrite."],
+      ["If I am tired, I go to bed early.", "Si estoy cansado, me acuesto temprano."],
+      ["Plants die if you don't water them.", "Las plantas mueren si no las riegas."]
+    ]
+  },
+  "Should, must y mustn't (consejo, obligación y prohibición)": {
+    g: [
+      ["You ___ see a doctor. You look sick. (should/mustn't)", "should", "Consejo: should + verbo base.", ["mustn't", "can't", "don't", "would"]],
+      ["You ___ park here. It's forbidden. (mustn't/shouldn't)", "mustn't", "Prohibición: mustn't.", ["should", "needn't", "don't have to", "might"]]
+    ],
+    o: [
+      ["You should drink more water.", "«Should» da un consejo.", "Deberías beber más agua."],
+      ["You mustn't smoke here.", "«Mustn't» expresa prohibición.", "No debes fumar aquí."]
+    ],
+    t: [
+      ["Deberías descansar.", ["you should rest", "you should take a rest"], "Consejo: should + verbo base."],
+      ["No debes llegar tarde.", ["you mustn't be late", "you must not be late"], "Prohibición: mustn't."]
+    ],
+    q: [
+      {k: "tf", q: "«Should» expresa una obligación muy fuerte.", a: false, e: "«Should» da un consejo; la obligación fuerte es «must»."},
+      {k: "mc", q: "Prohibición:", o: ["You mustn't use your phone.", "You don't must use your phone.", "You haven't use your phone."], a: 0, e: "Mustn't expresa que no está permitido."}
+    ],
+    l: [
+      ["You should drink more water.", "Deberías beber más agua."],
+      ["You must wear a seatbelt.", "Debes usar el cinturón de seguridad."],
+      ["You mustn't use your phone here.", "No debes usar tu teléfono aquí."]
+    ]
+  },
+  "Presente perfecto: ever, never, just, already, yet (primer contacto)": {
+    g: [
+      ["I ___ never been to Japan. (have/has)", "have", "Con «I» se usa «have»: I have never been.", ["has", "had", "am", "did"]],
+      ["She has ___ finished her homework. (already/yet)", "already", "«Already» se usa en afirmativas y va entre has y el participio.", ["yet", "ever", "since", "for"]]
+    ],
+    o: [
+      ["Have you ever been to London?", "«Ever» significa alguna vez.", "¿Alguna vez has estado en Londres?"],
+      ["I have just finished my work.", "«Just» significa acabar de.", "Acabo de terminar mi trabajo."]
+    ],
+    t: [
+      ["Nunca he probado el sushi.", ["i have never tried sushi", "i've never tried sushi", "i have never eaten sushi", "i've never eaten sushi"], "Experiencia: have never + participio."],
+      ["Ella acaba de llegar.", ["she has just arrived", "she's just arrived"], "«Acabar de» = have/has just + participio."]
+    ],
+    q: [
+      {k: "tf", q: "El presente perfecto se forma con have/has + participio.", a: true, e: "Correcto: I have seen it."},
+      {k: "mc", q: "Pregunta sobre experiencias:", o: ["Have you ever eaten sushi?", "Did you ever eaten sushi?", "Are you ever eaten sushi?"], a: 0, e: "Have + sujeto + ever + participio."}
+    ],
+    l: [
+      ["Have you ever been to London?", "¿Alguna vez has estado en Londres?"],
+      ["I have never eaten octopus.", "Nunca he comido pulpo."],
+      ["She has just called me.", "Ella acaba de llamarme."]
+    ]
+  },
+  "Pronombres posesivos y reflexivos (mine, yours, myself)": {
+    g: [
+      ["This book isn't yours. It's ___. (I)", "mine", "El pronombre posesivo de «I» es «mine».", ["my", "me", "myself", "mines"]],
+      ["He cut ___ while cooking. (he)", "himself", "El reflexivo de «he» es «himself».", ["hisself", "him", "his", "herself"]]
+    ],
+    o: [
+      ["That bag is hers, not mine.", "«Hers» y «mine» son pronombres posesivos.", "Ese bolso es de ella, no mío."],
+      ["I taught myself to play the guitar.", "El reflexivo indica que sujeto y objeto son la misma persona.", "Aprendí a tocar la guitarra yo solo."]
+    ],
+    t: [
+      ["Esta casa es nuestra.", ["this house is ours"], "El pronombre posesivo de «we» es ours."],
+      ["Ella se miró en el espejo.", ["she looked at herself in the mirror"], "El reflexivo de «she» es herself."]
+    ],
+    q: [
+      {k: "tf", q: "«Mine» lleva sustantivo detrás: «mine book».", a: false, e: "«Mine» va solo: The book is mine. Con sustantivo se usa «my»."},
+      {k: "mc", q: "Reflexivo de «they»:", o: ["themself", "themselves", "theirselves"], a: 1, e: "Themselves."}
+    ],
+    l: [
+      ["This bag isn't yours; it's mine.", "Esta bolsa no es tuya; es mía."],
+      ["She looked at herself in the mirror.", "Ella se miró en el espejo."],
+      ["I made this cake myself.", "Hice este pastel yo mismo."]
+    ]
+  },
+  "In, on y at: tiempo y lugar": {
+    g: [
+      ["The meeting is ___ Friday. (in/on)", "on", "Con días se usa «on».", ["in", "at", "by", "for"]],
+      ["We arrive ___ 6 o'clock. (at/on)", "at", "Con horas exactas se usa «at».", ["on", "in", "by", "to"]]
+    ],
+    o: [
+      ["My birthday is in July.", "Con meses se usa «in».", "Mi cumpleaños es en julio."],
+      ["We meet at the station.", "«At» indica un punto o lugar concreto.", "Nos vemos en la estación."]
+    ],
+    t: [
+      ["Nací en 1990.", ["i was born in 1990"], "Con años se usa in."],
+      ["La clase es el lunes.", ["the class is on monday", "the lesson is on monday"], "Con días se usa on."]
+    ],
+    q: [
+      {k: "tf", q: "Con los días de la semana se usa «in».", a: false, e: "Con días se usa «on»: on Monday."},
+      {k: "mc", q: "«A las siete»:", o: ["in seven", "at seven", "on seven"], a: 1, e: "Con horas: at."}
+    ],
+    l: [
+      ["I wake up at seven.", "Me despierto a las siete."],
+      ["The keys are on the table.", "Las llaves están sobre la mesa."],
+      ["She was born in 1995.", "Ella nació en 1995."]
+    ]
+  }
+});
+/* BANK2-A2:END */
+/* BANK2-B1:BEGIN */
+Object.assign(BANK2_EN, {
+  "Presente perfecto": {
+    g: [
+      ["She ___ lived here for ten years. (have/has)", "has", "Con «she» se usa «has» + participio.", ["have", "had", "is", "was"]],
+      ["We ___ just arrived at the airport. (have/has)", "have", "Con «we» se usa «have» + participio.", ["has", "had", "are", "did"]]
+    ],
+    o: [
+      ["I have lost my keys.", "Presente perfecto: have + participio.", "He perdido mis llaves."],
+      ["Has she finished her homework?", "Preguntas: has + sujeto + participio.", "¿Ha terminado ella su tarea?"]
+    ],
+    t: [
+      ["He visto esa película tres veces.", ["i have seen that film three times", "i've seen that film three times", "i have seen that movie three times", "i've seen that movie three times"], "Experiencia: have + participio."],
+      ["Ellos han vivido aquí desde 2015.", ["they have lived here since 2015", "they've lived here since 2015"], "Desde un momento del pasado hasta hoy: have + participio + since."]
+    ],
+    q: [
+      {k: "tf", q: "El presente perfecto se forma con have/has + participio pasado.", a: true, e: "Correcto: I have seen it."},
+      {k: "mc", q: "Con «she» se dice:", o: ["She have finished.", "She has finished.", "She haves finished."], a: 1, e: "Con he/she/it: has + participio."}
+    ],
+    l: []
+  },
+  "Presente perfecto vs pasado simple": {
+    g: [
+      ["I ___ Paris last year. (visit)", "visited", "«Last year» marca un momento concreto: pasado simple.", ["have visited", "visit", "visiting", "have visit"]],
+      ["I ___ never eaten sushi. (have/has)", "have", "Sin momento concreto y con «never»: presente perfecto con have.", ["has", "had", "am", "did"]]
+    ],
+    o: [
+      ["I have known her for years.", "Presente perfecto para algo que sigue hoy.", "La conozco desde hace años."],
+      ["We met in 2018.", "Con una fecha concreta se usa el pasado simple.", "Nos conocimos en 2018."]
+    ],
+    t: [
+      ["Ella vivió en Madrid en 2010.", ["she lived in madrid in 2010"], "Con una fecha concreta: pasado simple."],
+      ["¿Has estado alguna vez en Roma?", ["have you ever been to rome"], "Experiencia sin fecha: presente perfecto."]
+    ],
+    q: [
+      {k: "tf", q: "«I have seen him yesterday» es correcto.", a: false, e: "Con «yesterday» se usa pasado simple: I saw him yesterday."},
+      {k: "mc", q: "¿Cuál es correcta?", o: ["I have lived here since 2020.", "I lived here since 2020.", "I live here since 2020."], a: 0, e: "Con «since» y algo que sigue hoy: presente perfecto."}
+    ],
+    l: []
+  },
+  "Verbos estativos (Stative verbs)": {
+    g: [
+      ["I ___ the answer. (know)", "know", "«Know» es estativo: no va en -ing.", ["am knowing", "knowing", "knew", "knows"]],
+      ["She ___ this song. She likes it a lot. (love)", "loves", "«Love» es estativo: presente simple.", ["is loving", "love", "loving", "loved"]]
+    ],
+    o: [
+      ["I don't understand this word.", "«Understand» es estativo.", "No entiendo esta palabra."],
+      ["He wants a new phone.", "«Want» es estativo.", "Él quiere un teléfono nuevo."]
+    ],
+    t: [
+      ["Yo creo que tienes razón.", ["i believe you are right", "i believe you're right", "i think you are right", "i think you're right"], "«Believe» es estativo: no va en -ing."],
+      ["Ella tiene dos coches.", ["she has two cars", "she owns two cars"], "«Have» de posesión es estativo."]
+    ],
+    q: [
+      {k: "tf", q: "«I am knowing the answer» es correcto.", a: false, e: "Verbos como know no se usan en continuo: I know the answer."},
+      {k: "mc", q: "¿Cuál es un verbo estativo?", o: ["run", "believe", "jump"], a: 1, e: "«Believe» describe un estado mental."}
+    ],
+    l: [
+      ["I don't understand this lesson.", "No entiendo esta lección."],
+      ["She loves chocolate ice cream.", "A ella le encanta el helado de chocolate."],
+      ["This bag belongs to my sister.", "Esta bolsa pertenece a mi hermana."]
+    ]
+  },
+  "Verbos modales: can / must / should": {
+    g: [
+      ["You ___ wear a helmet. It's the law. (must/should)", "must", "Obligación fuerte por una regla: must.", ["should", "can", "may", "might"]],
+      ["You ___ eat more vegetables. It's good for you. (should/must)", "should", "Consejo: should.", ["must", "can't", "mustn't", "will"]]
+    ],
+    o: [
+      ["You should get some rest.", "«Should» da un consejo.", "Deberías descansar un poco."],
+      ["I can swim very well.", "«Can» expresa habilidad.", "Sé nadar muy bien."]
+    ],
+    t: [
+      ["Deberías dormir más.", ["you should sleep more"], "Consejo: should + verbo base."],
+      ["No puedo venir hoy.", ["i can't come today", "i cannot come today"], "Negativo de can: can't."]
+    ],
+    q: [
+      {k: "tf", q: "Después de un modal el verbo lleva «to».", a: false, e: "Después de un modal va el verbo base sin «to»: You must go."},
+      {k: "mc", q: "Consejo:", o: ["You should rest.", "You should to rest.", "You shoulds rest."], a: 0, e: "Should + verbo base."}
+    ],
+    l: []
+  },
+  "Condicional tipo 1": {
+    g: [
+      ["If I ___ time, I will call you. (have)", "have", "Condicional 1: if + presente simple.", ["will have", "had", "would have", "having"]],
+      ["If it rains, we ___ at home. (stay)", "will stay", "Condicional 1: will + verbo base en el resultado.", ["stay", "stayed", "would stay", "are staying"]]
+    ],
+    o: [
+      ["If you study, you will pass.", "Condicional 1: if + presente, will + verbo base.", "Si estudias, aprobarás."],
+      ["She will be late if she misses the bus.", "Puedes cambiar el orden de las partes.", "Ella llegará tarde si pierde el bus."]
+    ],
+    t: [
+      ["Si mañana llueve, me quedaré en casa.", ["if it rains tomorrow i will stay at home", "if it rains tomorrow, i will stay at home", "if it rains tomorrow i'll stay at home", "if it rains tomorrow, i'll stay at home"], "Condicional 1: if + presente, will + verbo base."],
+      ["Si llegas tarde, no entrarás.", ["if you arrive late you won't get in", "if you arrive late, you won't get in", "if you are late you won't get in", "if you are late, you won't get in"], "Negativo del resultado: won't + verbo base."]
+    ],
+    q: [
+      {k: "tf", q: "Después de «if» en el condicional 1 se usa «will».", a: false, e: "Después de «if» va presente simple: If it rains, I will stay."},
+      {k: "mc", q: "Completa: «If she ___, she will pass.»", o: ["studies", "will study", "studied"], a: 0, e: "If + presente simple."}
+    ],
+    l: []
+  },
+  "Will vs Going to": {
+    g: [
+      ["The phone is ringing. I ___ answer it. (will/am going to)", "will", "Decisión en el momento: will.", ["am going to", "am going", "would", "going to"]],
+      ["I ___ visit my aunt next week. I've already bought the ticket. (am going to/will)", "am going to", "Plan ya decidido: going to.", ["will", "would", "am go to", "going"]]
+    ],
+    o: [
+      ["I will help you with that.", "«Will» sirve para ofrecerse en el momento.", "Yo te ayudo con eso."],
+      ["We are going to buy a house.", "«Going to» expresa un plan.", "Vamos a comprar una casa."]
+    ],
+    t: [
+      ["Creo que mañana lloverá.", ["i think it will rain tomorrow", "i think it'll rain tomorrow"], "Opinión sobre el futuro: will."],
+      ["Voy a estudiar medicina.", ["i am going to study medicine", "i'm going to study medicine"], "Plan decidido: going to."]
+    ],
+    q: [
+      {k: "tf", q: "«Going to» se usa para planes que ya decidiste.", a: true, e: "Correcto: I'm going to study."},
+      {k: "mc", q: "Decisión espontánea: «Tengo frío.» — «Cierro la ventana.»", o: ["I will close it.", "I am going to close it.", "I close it."], a: 0, e: "Decisión en el momento: will."}
+    ],
+    l: []
+  },
+  "Gerundios e infinitivos después de verbos": {
+    g: [
+      ["She enjoys ___ to music. (listen)", "listening", "Después de «enjoy» va el verbo con -ing.", ["to listen", "listen", "listens", "listened"]],
+      ["They decided ___ a new car. (buy)", "to buy", "Después de «decide» va «to» + verbo.", ["buying", "buy", "bought", "buys"]]
+    ],
+    o: [
+      ["I want to learn Italian.", "Después de «want» va «to» + verbo.", "Quiero aprender italiano."],
+      ["He avoids eating sweets.", "Después de «avoid» va -ing.", "Él evita comer dulces."]
+    ],
+    t: [
+      ["Ella terminó de escribir el informe.", ["she finished writing the report"], "«Finish» va con -ing."],
+      ["Esperamos verte pronto.", ["we hope to see you soon"], "«Hope» va con «to» + verbo."]
+    ],
+    q: [
+      {k: "tf", q: "«He enjoys to swim» es correcto.", a: false, e: "Después de «enjoy» va -ing: He enjoys swimming."},
+      {k: "mc", q: "Completa: «I hope ___ you soon.»", o: ["to see", "seeing", "see"], a: 0, e: "«Hope» va con to + verbo."}
+    ],
+    l: []
+  },
+  "Oraciones de relativo: who, which, that": {
+    g: [
+      ["The girl ___ sits next to me is Ana. (who/which)", "who", "Para personas se usa «who».", ["which", "whose", "what", "where"]],
+      ["This is the car ___ I want to buy. (that/who)", "that", "Para cosas se puede usar «that» (o «which»).", ["who", "whose", "whom", "where"]]
+    ],
+    o: [
+      ["The man who called is my uncle.", "«Who» reemplaza a una persona.", "El hombre que llamó es mi tío."],
+      ["I lost the book that you gave me.", "«That» sirve para cosas.", "Perdí el libro que me diste."]
+    ],
+    t: [
+      ["El hombre que trabaja aquí es mi tío.", ["the man who works here is my uncle"], "«Who» para personas."],
+      ["Este es el libro que compré ayer.", ["this is the book that i bought yesterday", "this is the book i bought yesterday"], "«That» para cosas; se puede omitir cuando es objeto."]
+    ],
+    q: [
+      {k: "tf", q: "«Which» se usa para personas.", a: false, e: "«Which» se usa para cosas; para personas se usa «who»."},
+      {k: "mc", q: "Completa: «The teacher ___ helped me is kind.»", o: ["who", "which", "what"], a: 0, e: "Persona: who."}
+    ],
+    l: []
+  },
+  "Question tags": {
+    g: [
+      ["You like coffee, ___? (don't you/do you)", "don't you", "Frase afirmativa: el tag es negativo.", ["do you", "aren't you", "isn't it", "didn't you"]],
+      ["She isn't here, ___? (is she/isn't she)", "is she", "Frase negativa: el tag es positivo.", ["isn't she", "does she", "was she", "are you"]]
+    ],
+    o: [
+      ["It is cold today, isn't it?", "Frase afirmativa + tag negativo.", "Hace frío hoy, ¿verdad?"],
+      ["You didn't call him, did you?", "Frase negativa + tag positivo.", "No lo llamaste, ¿verdad?"]
+    ],
+    t: [
+      ["Hace buen tiempo, ¿verdad?", ["the weather is nice isn't it", "the weather is nice, isn't it", "it is nice weather isn't it", "it's nice weather, isn't it"], "Afirmativa + tag negativo: isn't it."],
+      ["No sabes nadar, ¿verdad?", ["you can't swim can you", "you can't swim, can you"], "Negativa + tag positivo: can you."]
+    ],
+    q: [
+      {k: "tf", q: "Si la frase es afirmativa, el tag es negativo.", a: true, e: "Correcto: You like it, don't you?"},
+      {k: "mc", q: "«She can swim, ___?»", o: ["can't she", "does she", "isn't she"], a: 0, e: "El tag repite el auxiliar: can't she."}
+    ],
+    l: [
+      ["You are coming, aren't you?", "Vienes, ¿verdad?"],
+      ["She doesn't like coffee, does she?", "A ella no le gusta el café, ¿verdad?"],
+      ["They have finished, haven't they?", "Ya terminaron, ¿no?"]
+    ]
+  },
+  "Orden de los adjetivos": {
+    g: [
+      ["She bought a ___ dress. (red/beautiful/long)", "beautiful long red", "Orden: opinión, tamaño, color.", ["red long beautiful", "long beautiful red", "beautiful red long", "red beautiful long"]],
+      ["He has a ___ car. (old/small/blue)", "small old blue", "Orden: tamaño, edad, color.", ["blue old small", "old small blue", "small blue old", "old blue small"]]
+    ],
+    o: [
+      ["She has a lovely old house.", "Opinión antes que edad.", "Ella tiene una casa antigua preciosa."],
+      ["He wore a big black coat.", "Tamaño antes que color.", "Él llevaba un abrigo negro grande."]
+    ],
+    t: [
+      ["Tengo un coche pequeño rojo.", ["i have a small red car"], "Tamaño antes que color."],
+      ["Ella lleva un bonito vestido largo.", ["she is wearing a beautiful long dress", "she wears a beautiful long dress"], "Opinión antes que tamaño."]
+    ],
+    q: [
+      {k: "tf", q: "El color va antes que el tamaño.", a: false, e: "El tamaño va antes que el color: a big red bag."},
+      {k: "mc", q: "¿Cuál suena natural?", o: ["a big old wooden table", "a wooden old big table", "an old big wooden table"], a: 0, e: "Tamaño, edad, material."}
+    ],
+    l: [
+      ["She has a beautiful old house.", "Ella tiene una hermosa casa antigua."],
+      ["I bought a small red car.", "Compré un coche rojo pequeño."],
+      ["He wore a big black coat.", "Él llevaba un abrigo negro grande."]
+    ]
+  },
+  "Pasado perfecto (past perfect)": {
+    g: [
+      ["When we arrived, the film ___ started. (already/have)", "had already", "Acción anterior a otra en el pasado: had + participio.", ["has already", "have already", "already had", "was already"]],
+      ["I ___ never seen snow before I went to Canada. (have/had)", "had", "Antes de otro momento del pasado: had + participio.", ["have", "has", "was", "did"]]
+    ],
+    o: [
+      ["They had already eaten when I called.", "Past perfect: had + participio.", "Ya habían comido cuando llamé."],
+      ["Had they eaten when you called?", "Preguntas: had + sujeto + participio.", "¿Ya habían comido cuando llamaste?"]
+    ],
+    t: [
+      ["Cuando llegué, ella ya se había ido.", ["when i arrived she had already left", "when i arrived, she had already left"], "Primero se fue (had left); luego llegué (arrived)."],
+      ["No había visto nunca el mar.", ["i had never seen the sea", "i hadn't seen the sea before"], "Antes de ese momento: had never + participio."]
+    ],
+    q: [
+      {k: "tf", q: "El past perfect se forma con «had» + participio.", a: true, e: "Correcto: I had finished."},
+      {k: "mc", q: "¿Qué pasó primero? «When I got there, the bus had left.»", o: ["El bus se fue", "Yo llegué", "Ocurrieron a la vez"], a: 0, e: "Had left es la acción anterior."}
+    ],
+    l: []
+  },
+  "Conectores: because, so, although, however, despite": {
+    g: [
+      ["I stayed home ___ I was ill. (because/so)", "because", "«Because» explica el motivo.", ["so", "although", "however", "despite"]],
+      ["___ it was raining, we went for a walk. (Although/Because)", "Although", "«Although» expresa contraste.", ["Because", "So", "Despite of", "Therefore"]]
+    ],
+    o: [
+      ["It was late, so we went home.", "«So» expresa el resultado.", "Era tarde, así que nos fuimos a casa."],
+      ["Despite the rain, we had a good time.", "«Despite» va seguido de un sustantivo.", "A pesar de la lluvia, lo pasamos bien."]
+    ],
+    t: [
+      ["Llegué tarde porque perdí el bus.", ["i was late because i missed the bus", "i arrived late because i missed the bus"], "«Porque» = because."],
+      ["Aunque estaba cansado, siguió trabajando.", ["although he was tired he kept working", "although he was tired, he kept working"], "«Aunque» = although."]
+    ],
+    q: [
+      {k: "tf", q: "«So» expresa la causa.", a: false, e: "«So» expresa el resultado; la causa se expresa con «because»."},
+      {k: "mc", q: "«A pesar del frío»:", o: ["Despite the cold", "Despite of cold", "Although the cold"], a: 0, e: "Despite + sustantivo."}
+    ],
+    l: [
+      ["I stayed home because I was ill.", "Me quedé en casa porque estaba enfermo."]
+    ]
+  },
+  "Phrasal verbs (separables e inseparables)": {
+    g: [
+      ["Please turn ___ the light. (off/of)", "off", "«Turn off» significa apagar.", ["of", "up", "at", "to"]],
+      ["She looks ___ her grandmother. (after/at)", "after", "«Look after» significa cuidar.", ["at", "on", "off", "up"]]
+    ],
+    o: [
+      ["She took off her coat.", "«Take off» significa quitarse.", "Ella se quitó el abrigo."],
+      ["I get up at seven.", "«Get up» significa levantarse.", "Me levanto a las siete."]
+    ],
+    t: [
+      ["Por favor, apaga la televisión.", ["please turn off the tv", "please turn the tv off", "please turn off the television", "please turn the television off"], "«Turn off» es separable."],
+      ["Ella cuida a su hermano.", ["she looks after her brother"], "«Look after» no se separa."]
+    ],
+    q: [
+      {k: "tf", q: "«Turn off it» es correcto.", a: false, e: "Con pronombre va en medio: turn it off."},
+      {k: "mc", q: "«Give up» significa:", o: ["rendirse", "regalar", "levantarse"], a: 0, e: "Give up = rendirse o dejar algo."}
+    ],
+    l: [
+      ["Please turn off the light.", "Por favor, apaga la luz."],
+      ["She looks after her little brother.", "Ella cuida a su hermano pequeño."]
+    ]
+  },
+  "Comparaciones: as...as, less...than, the more...the more": {
+    g: [
+      ["My sister is ___ tall as my brother. (as/than)", "as", "Igualdad: as + adjetivo + as.", ["than", "so", "more", "like"]],
+      ["The ___ you practice, the better you get. (more/most)", "more", "The + comparativo, the + comparativo.", ["most", "much", "many", "best"]]
+    ],
+    o: [
+      ["This phone is not as expensive as that one.", "«Not as… as» indica menos.", "Este teléfono no es tan caro como ese."],
+      ["The earlier you leave, the better.", "Dos cosas cambian juntas.", "Cuanto antes salgas, mejor."]
+    ],
+    t: [
+      ["Ella es tan alta como su madre.", ["she is as tall as her mother", "she's as tall as her mother"], "Igualdad: as… as."],
+      ["Es menos caro que el otro.", ["it is less expensive than the other one", "it's less expensive than the other one", "it is less expensive than the other", "it's less expensive than the other"], "«Less… than» indica menos."]
+    ],
+    q: [
+      {k: "tf", q: "«As tall than» es correcto.", a: false, e: "Se dice «as tall as»."},
+      {k: "mc", q: "«Cuanto más comes, más engordas»:", o: ["The more you eat, the fatter you get.", "The more you eat, more fat you get.", "More you eat, fatter you get."], a: 0, e: "The + comparativo, the + comparativo."}
+    ],
+    l: []
+  },
+  "Preguntas indirectas": {
+    g: [
+      ["Could you tell me where ___? (the bank is/is the bank)", "the bank is", "En preguntas indirectas el orden es el de una afirmación.", ["is the bank", "does the bank", "the bank does", "the is bank"]],
+      ["Do you know what time ___? (it starts/does it start)", "it starts", "Después de «what time» va orden afirmativo, sin does.", ["does it start", "starts it", "it does start", "is it start"]]
+    ],
+    o: [
+      ["Do you know where she lives?", "Orden de afirmación, sin does.", "¿Sabes dónde vive ella?"],
+      ["I wonder if he is at home.", "Preguntas de sí o no: if.", "Me pregunto si él está en casa."]
+    ],
+    t: [
+      ["¿Puede decirme dónde está el baño?", ["could you tell me where the bathroom is", "can you tell me where the bathroom is", "could you tell me where the toilet is", "can you tell me where the toilet is"], "Pregunta indirecta: orden afirmativo."],
+      ["No sé cuánto cuesta.", ["i don't know how much it costs", "i do not know how much it costs"], "Sin does: how much it costs."]
+    ],
+    q: [
+      {k: "tf", q: "En una pregunta indirecta se usa «does».", a: false, e: "No: Do you know where he lives?"},
+      {k: "mc", q: "Pregunta indirecta correcta:", o: ["Can you tell me what time it is?", "Can you tell me what time is it?", "Can you tell me what time does it?"], a: 0, e: "Orden afirmativo: what time it is."}
+    ],
+    l: [
+      ["Could you tell me where the station is?", "¿Podría decirme dónde está la estación?"],
+      ["Do you know what time it starts?", "¿Sabes a qué hora empieza?"],
+      ["I wonder if she is coming to the party.", "Me pregunto si ella viene a la fiesta."]
+    ]
+  },
+  "Voz pasiva: presente y pasado simple": {
+    g: [
+      ["The room ___ every day. (clean)", "is cleaned", "Pasiva en presente: is/are + participio.", ["cleans", "was cleaned", "is cleaning", "cleaned"]],
+      ["The windows ___ yesterday. (break)", "were broken", "Pasiva en pasado: was/were + participio.", ["are broken", "broke", "was broken", "were breaking"]]
+    ],
+    o: [
+      ["This book was written in 1990.", "Pasiva en pasado: was + participio.", "Este libro fue escrito en 1990."],
+      ["Spanish is spoken in many countries.", "Pasiva en presente: is + participio.", "El español se habla en muchos países."]
+    ],
+    t: [
+      ["La casa fue construida en 1980.", ["the house was built in 1980"], "Pasiva en pasado: was built."],
+      ["Estos coches se fabrican en España.", ["these cars are made in spain"], "Pasiva en presente: are made."]
+    ],
+    q: [
+      {k: "tf", q: "La pasiva se forma con be + participio pasado.", a: true, e: "Correcto: It is made in Spain."},
+      {k: "mc", q: "«Se habla inglés aquí»:", o: ["English is spoken here.", "English speaks here.", "English is speaking here."], a: 0, e: "Is + participio."}
+    ],
+    l: [
+      ["English is spoken in many countries.", "En muchos países se habla inglés."],
+      ["The window was broken yesterday.", "La ventana se rompió ayer."],
+      ["These cars are made in Spain.", "Estos coches se fabrican en España."]
+    ]
+  },
+  "Used to / would (hábitos pasados)": {
+    g: [
+      ["When I was a child, I ___ play outside every day. (used to/use to)", "used to", "Hábito pasado: used to + verbo base.", ["use to", "am used to", "was used to", "uses to"]],
+      ["She ___ like spicy food, but now she loves it. (didn't use to/didn't used to)", "didn't use to", "En negativa se usa «didn't use to».", ["didn't used to", "not used to", "wasn't use to", "doesn't use to"]]
+    ],
+    o: [
+      ["We used to live near the sea.", "«Used to» expresa un hábito o estado pasado.", "Antes vivíamos cerca del mar."],
+      ["Did you use to play football?", "En preguntas se usa «use to».", "¿Solías jugar al fútbol?"]
+    ],
+    t: [
+      ["Antes fumaba mucho.", ["i used to smoke a lot"], "Hábito pasado: used to + verbo base."],
+      ["De niños, jugábamos en la calle.", ["when we were children we used to play in the street", "when we were kids we used to play in the street"], "Hábito pasado: used to."]
+    ],
+    q: [
+      {k: "tf", q: "«Used to» se usa para hábitos que todavía ocurren.", a: false, e: "Se usa para hábitos pasados que ya no ocurren."},
+      {k: "mc", q: "Pregunta correcta:", o: ["Did you use to smoke?", "Did you used to smoke?", "Do you used to smoke?"], a: 0, e: "En preguntas: did + use to."}
+    ],
+    l: []
+  },
+  "Estilo indirecto: afirmaciones (said that…)": {
+    g: [
+      ["«I am tired.» → She said she ___ tired. (be)", "was", "«Am» retrocede a «was» en el estilo indirecto.", ["is", "am", "be", "were"]],
+      ["«I will help you.» → He said he ___ help me. (will)", "would", "«Will» pasa a «would».", ["will", "shall", "can", "should"]]
+    ],
+    o: [
+      ["He said that he was busy.", "El verbo retrocede un tiempo.", "Dijo que estaba ocupado."],
+      ["She told me she was tired.", "Con tell se dice a quién.", "Me dijo que estaba cansada."]
+    ],
+    t: [
+      ["Él dijo que trabajaba allí.", ["he said he worked there", "he said that he worked there"], "«Work» pasa a «worked»."],
+      ["Ella dijo que llamaría más tarde.", ["she said she would call later", "she said that she would call later"], "«Will» pasa a «would»."]
+    ],
+    q: [
+      {k: "tf", q: "«She said me that she was tired» es correcto.", a: false, e: "Con «say» no se dice a quién; con «tell» sí: She told me…"},
+      {k: "mc", q: "«I work here» → He said he ___ there.", o: ["worked", "works", "work"], a: 0, e: "Presente simple → pasado simple."}
+    ],
+    l: [
+      ["She said that she was tired.", "Dijo que estaba cansada."],
+      ["He said he would call me later.", "Dijo que me llamaría más tarde."],
+      ["They told us they were busy.", "Nos dijeron que estaban ocupados."]
+    ]
+  },
+  "Condicional tipo 2: primeros pasos (If I had…, I would…)": {
+    g: [
+      ["If I ___ a lot of money, I would buy a boat. (have)", "had", "Condicional 2: if + pasado simple.", ["have", "would have", "will have", "having"]],
+      ["If they ___ closer, we would visit them more often. (live)", "lived", "Situación irreal: if + pasado simple.", ["lives", "would live", "will live", "living"]]
+    ],
+    o: [
+      ["If I were you, I would call him.", "Consejo: If I were you…", "Yo en tu lugar lo llamaría."],
+      ["What would you do if you won?", "Preguntas: would + sujeto + verbo base.", "¿Qué harías si ganaras?"]
+    ],
+    t: [
+      ["Si tuviera más dinero, viajaría más.", ["if i had more money i would travel more", "if i had more money, i would travel more", "if i had more money i'd travel more", "if i had more money, i'd travel more"], "Condicional 2: if + pasado, would + verbo base."],
+      ["Si yo fuera tú, no iría.", ["if i were you i wouldn't go", "if i were you, i wouldn't go", "if i were you i would not go", "if i were you, i would not go"], "Consejo: If I were you…"]
+    ],
+    q: [
+      {k: "tf", q: "En «If I were you…» se usa «were» aunque el sujeto sea «I».", a: true, e: "Correcto: If I were you, I'd go."},
+      {k: "mc", q: "Completa: «If I ___ rich, I would travel.»", o: ["were", "will be", "am"], a: 0, e: "Situación irreal: were."}
+    ],
+    l: [
+      ["If I had more time, I would learn Italian.", "Si tuviera más tiempo, aprendería italiano."],
+      ["If I were you, I would call him.", "Yo en tu lugar lo llamaría."],
+      ["What would you do if you won the lottery?", "¿Qué harías si ganaras la lotería?"]
+    ]
+  },
+  "May, could y be allowed to (permiso y posibilidad)": {
+    g: [
+      ["___ I open the window, please? (May/Must)", "May", "«May I…?» pide permiso con cortesía.", ["Must", "Should", "Will", "Do"]],
+      ["Students ___ to use their phones in class. (are not allowed/don't allow)", "are not allowed", "«Be allowed to» expresa lo que permiten las reglas.", ["don't allow", "not allowed", "aren't allow", "allowed not"]]
+    ],
+    o: [
+      ["Could I borrow your pen?", "«Could I…?» pide algo con cortesía.", "¿Podría pedirte prestado tu bolígrafo?"],
+      ["You are allowed to park here.", "«Be allowed to» expresa permiso.", "Se permite estacionar aquí."]
+    ],
+    t: [
+      ["¿Puedo entrar?", ["may i come in", "can i come in", "could i come in"], "Permiso cortés: May I…?"],
+      ["No se permite usar el teléfono aquí.", ["you are not allowed to use your phone here", "you aren't allowed to use your phone here", "phones are not allowed here", "phones aren't allowed here"], "Prohibición: not allowed to."]
+    ],
+    q: [
+      {k: "tf", q: "«May I…?» es una forma cortés de pedir permiso.", a: true, e: "Correcto: May I sit here?"},
+      {k: "mc", q: "«Podría llover mañana»:", o: ["It could rain tomorrow.", "It could to rain tomorrow.", "It coulds rain tomorrow."], a: 0, e: "Could + verbo base."}
+    ],
+    l: [
+      ["May I use your phone, please?", "¿Puedo usar tu teléfono, por favor?"],
+      ["You are not allowed to park here.", "No está permitido estacionar aquí."],
+      ["Students are allowed to use dictionaries.", "Los estudiantes pueden usar diccionarios."]
+    ]
+  },
+  "So / Neither + auxiliar (acuerdo)": {
+    g: [
+      ["I like tea. — ___ do I. (So/Neither)", "So", "Con algo afirmativo: So + auxiliar + sujeto.", ["Neither", "Too", "Nor", "Also"]],
+      ["I can't swim. — ___ can I. (So/Neither)", "Neither", "Con algo negativo: Neither + auxiliar + sujeto.", ["So", "Too", "Also", "Either"]]
+    ],
+    o: [
+      ["So am I.", "«So» + auxiliar + sujeto: «yo también».", "Yo también (lo soy)."],
+      ["Neither did he.", "«Neither» + auxiliar + sujeto: «él tampoco».", "Él tampoco."]
+    ],
+    t: [
+      ["A mí también me gusta el café.", ["so do i", "i like coffee too", "i like coffee as well"], "Acuerdo con algo afirmativo: So do I."],
+      ["Yo tampoco lo sé.", ["neither do i", "i don't know either", "i do not know either"], "Acuerdo con algo negativo: Neither do I."]
+    ],
+    q: [
+      {k: "tf", q: "«Neither do I» se usa para estar de acuerdo con algo negativo.", a: true, e: "Correcto: I don't like it. — Neither do I."},
+      {k: "mc", q: "«She is tired.» — «___ am I.»", o: ["So", "Neither", "Either"], a: 0, e: "Con is/am afirmativo: So am I."}
+    ],
+    l: [
+      ["I love pizza, and so do I.", "Me encanta la pizza y a mí también."],
+      ["He can't swim, and neither can I.", "Él no sabe nadar y yo tampoco."],
+      ["She has finished, and so have I.", "Ella terminó, y yo también."]
+    ]
+  }
+});
+/* BANK2-B1:END */
+/* BANK2-B2:BEGIN */
+Object.assign(BANK2_EN, {
+  "Voz pasiva": {
+    g: [
+      ["The report ___ by the manager yesterday. (write)", "was written", "Pasiva en pasado: was/were + participio.", ["wrote", "is written", "was writing", "has wrote"]],
+      ["English ___ in many countries. (speak)", "is spoken", "Pasiva en presente: is/are + participio.", ["speaks", "was spoken", "is speaking", "spoke"]]
+    ],
+    o: [
+      ["The letter was sent yesterday.", "Pasiva en pasado: was + participio.", "La carta fue enviada ayer."],
+      ["The room is being cleaned now.", "Pasiva en continuo: is being + participio.", "La habitación se está limpiando ahora."]
+    ],
+    t: [
+      ["El puente fue construido en 1930.", ["the bridge was built in 1930"], "Pasiva en pasado: was built."],
+      ["Los documentos han sido enviados.", ["the documents have been sent"], "Pasiva en presente perfecto: have been + participio."]
+    ],
+    q: [
+      {k: "tf", q: "En la pasiva el verbo principal va en participio pasado.", a: true, e: "Correcto: is made, was built."},
+      {k: "mc", q: "Pasiva de «They built this house in 1990»:", o: ["This house was built in 1990.", "This house built in 1990.", "This house was building in 1990."], a: 0, e: "Was + participio."}
+    ],
+    l: []
+  },
+  "Condicional tipo 2": {
+    g: [
+      ["If I ___ more free time, I would learn to paint. (have)", "had", "Condicional 2: if + pasado simple.", ["have", "would have", "will have", "having"]],
+      ["She would help you if she ___ the answer. (know)", "knew", "Situación irreal: if + pasado simple.", ["knows", "would know", "had known", "will know"]]
+    ],
+    o: [
+      ["If I had a boat, I would sail away.", "Situación irreal: if + pasado simple.", "Si tuviera un barco, me iría navegando."],
+      ["Would you accept if they offered you the job?", "Pregunta hipotética con would.", "¿Aceptarías si te ofrecieran el trabajo?"]
+    ],
+    t: [
+      ["Si viviera en la playa, nadaría todos los días.", ["if i lived on the beach i would swim every day", "if i lived on the beach, i would swim every day", "if i lived on the beach i'd swim every day", "if i lived on the beach, i'd swim every day"], "Condicional 2: if + pasado, would + verbo base."],
+      ["Yo no haría eso si fuera tú.", ["i wouldn't do that if i were you", "i would not do that if i were you"], "Consejo: if I were you."]
+    ],
+    q: [
+      {k: "tf", q: "El condicional 2 habla de situaciones reales y probables.", a: false, e: "Habla de situaciones hipotéticas o poco probables."},
+      {k: "mc", q: "Completa: «If I ___ you, I would apologize.»", o: ["were", "am", "will be"], a: 0, e: "Se usa «were» con todas las personas."}
+    ],
+    l: []
+  },
+  "Presente perfecto continuo vs. simple": {
+    g: [
+      ["I ___ waiting for you for an hour! (have been/have)", "have been", "Duración de una acción: have been + -ing.", ["have", "am", "was", "had"]],
+      ["She has ___ three books this month. (read/been reading)", "read", "Resultado o cantidad: presente perfecto simple.", ["been reading", "reading", "reads", "was read"]]
+    ],
+    o: [
+      ["I have been learning English for two years.", "Duración: have been + -ing.", "Llevo dos años aprendiendo inglés."],
+      ["She has finished four reports today.", "Resultado: presente perfecto simple.", "Hoy ha terminado cuatro informes."]
+    ],
+    t: [
+      ["Llevo toda la mañana trabajando.", ["i have been working all morning", "i've been working all morning"], "Duración: have been + -ing."],
+      ["He escrito tres cartas.", ["i have written three letters", "i've written three letters"], "Cantidad: presente perfecto simple."]
+    ],
+    q: [
+      {k: "tf", q: "El presente perfecto continuo destaca la duración de la acción.", a: true, e: "Correcto: I've been studying for hours."},
+      {k: "mc", q: "Cantidad: «She ___ ten emails.»", o: ["has written", "has been writing", "is written"], a: 0, e: "Para contar resultados se usa el simple."}
+    ],
+    l: []
+  },
+  "Pasado perfecto continuo y tiempos narrativos": {
+    g: [
+      ["He was tired because he ___ all day. (work)", "had been working", "Acción que llevaba tiempo antes de otro momento: had been + -ing.", ["was working", "has been working", "worked", "would work"]],
+      ["It ___ for hours, so the streets were flooded. (rain)", "had been raining", "Explica una situación del pasado: had been + -ing.", ["rained", "was raining", "has been raining", "would rain"]]
+    ],
+    o: [
+      ["We had been walking for hours.", "Past perfect continuo: had been + -ing.", "Llevábamos horas caminando."],
+      ["I was walking home when it started to rain.", "Fondo en continuo y hecho en simple.", "Caminaba a casa cuando empezó a llover."]
+    ],
+    t: [
+      ["Llevaba horas estudiando cuando él llegó.", ["i had been studying for hours when he arrived"], "Duración anterior a otro momento: had been + -ing."],
+      ["Estaba cansado porque había estado corriendo.", ["i was tired because i had been running", "he was tired because he had been running"], "Causa en past perfect continuo."]
+    ],
+    q: [
+      {k: "tf", q: "El past perfect continuo se forma con «had been» + -ing.", a: true, e: "Correcto: I had been working."},
+      {k: "mc", q: "Fondo de una historia:", o: ["It was raining when I left.", "It rained when I left.", "It has rained when I left."], a: 0, e: "El pasado continuo describe la escena."}
+    ],
+    l: [
+      ["She had been waiting for an hour.", "Ella llevaba una hora esperando."],
+      ["I was tired because I had been working all day.", "Estaba cansado porque llevaba todo el día trabajando."]
+    ]
+  },
+  "Modales de deducción: must / might / can't": {
+    g: [
+      ["He is always on time. He ___ be at home already. (must/can't)", "must", "Casi seguro: must.", ["can't", "might not", "shouldn't", "needn't"]],
+      ["That ___ be true. It's impossible! (can't/must)", "can't", "Casi seguro de que es imposible: can't.", ["must", "might", "should", "may"]]
+    ],
+    o: [
+      ["She must be very tired.", "«Must» expresa una deducción casi segura.", "Ella debe de estar muy cansada."],
+      ["He might be at work.", "«Might» expresa posibilidad.", "Él podría estar en el trabajo."],
+      ["That can't be the right answer.", "«Can't be» expresa que es imposible.", "Esa no puede ser la respuesta correcta."]
+    ],
+    t: [
+      ["Debe de estar en casa.", ["he must be at home", "she must be at home", "they must be at home"], "Deducción segura: must be."],
+      ["No puede ser verdad.", ["it can't be true", "that can't be true"], "Imposible: can't be."]
+    ],
+    q: [
+      {k: "tf", q: "«Might» expresa más seguridad que «must».", a: false, e: "«Must» expresa más seguridad; «might» expresa posibilidad."},
+      {k: "mc", q: "Estás casi seguro de que no es cierto:", o: ["It can't be true.", "It mustn't be true.", "It might true."], a: 0, e: "Can't = imposible."}
+    ],
+    l: []
+  },
+  "Modales de pasado: should have, could have, needn't have": {
+    g: [
+      ["You ___ studied more; you failed the exam. (should have/must have)", "should have", "Reproche sobre el pasado: should have + participio.", ["must have", "would has", "should had", "can have"]],
+      ["We ___ taken a taxi, but we walked. (could have/should)", "could have", "Posibilidad que no ocurrió: could have + participio.", ["should", "must have", "can have", "may"]]
+    ],
+    o: [
+      ["I should have called you.", "Lamento: should have + participio.", "Debería haberte llamado."],
+      ["You needn't have bought flowers.", "«Needn't have» = hacer algo innecesario.", "No hacía falta que compraras flores."]
+    ],
+    t: [
+      ["Deberías haberme avisado.", ["you should have told me", "you should have let me know", "you should have warned me"], "Reproche: should have + participio."],
+      ["Podría haber ganado.", ["i could have won", "he could have won", "she could have won"], "Posibilidad no cumplida: could have + participio."]
+    ],
+    q: [
+      {k: "tf", q: "«Should have» + participio expresa un consejo sobre el pasado.", a: true, e: "Correcto: You should have come."},
+      {k: "mc", q: "Algo que hiciste y no era necesario:", o: ["I needn't have gone.", "I mustn't have gone.", "I couldn't go have."], a: 0, e: "Needn't have + participio."}
+    ],
+    l: [
+      ["You should have told me the truth.", "Deberías haberme dicho la verdad."]
+    ]
+  },
+  "Estilo indirecto (reported speech)": {
+    g: [
+      ["«I am hungry.» → He said he ___ hungry. (be)", "was", "«Am» retrocede a «was».", ["is", "am", "were", "be"]],
+      ["«I have finished.» → She said she ___ finished. (have)", "had", "El presente perfecto pasa a past perfect.", ["has", "have", "was", "would"]]
+    ],
+    o: [
+      ["She said she was going to leave.", "Retrocede un tiempo.", "Dijo que se iba a marchar."],
+      ["He asked me where I lived.", "Pregunta indirecta con orden afirmativo.", "Me preguntó dónde vivía."]
+    ],
+    t: [
+      ["Ella dijo que estaba cansada.", ["she said she was tired", "she said that she was tired"], "Am/is → was."],
+      ["Él me preguntó si tenía hambre.", ["he asked me if i was hungry", "he asked me whether i was hungry"], "Pregunta de sí o no: if."]
+    ],
+    q: [
+      {k: "tf", q: "En el estilo indirecto el verbo suele retroceder un tiempo.", a: true, e: "Correcto: is → was."},
+      {k: "mc", q: "«I can help.» → He said he ___ help.", o: ["could", "can", "will"], a: 0, e: "Can pasa a could."}
+    ],
+    l: []
+  },
+  "Condicional tipo 3": {
+    g: [
+      ["If I ___ harder, I would have passed. (study)", "had studied", "Condicional 3: if + past perfect.", ["studied", "would study", "have studied", "was studying"]],
+      ["She would have come if she ___ about the party. (know)", "had known", "Situación pasada irreal: had + participio.", ["knew", "would know", "has known", "knows"]]
+    ],
+    o: [
+      ["If I had known, I would have helped.", "Condicional 3: had + participio, would have + participio.", "Si lo hubiera sabido, habría ayudado."],
+      ["What would you have done?", "Pregunta sobre un pasado imaginario.", "¿Qué habrías hecho?"]
+    ],
+    t: [
+      ["Si hubiera salido antes, habría llegado a tiempo.", ["if i had left earlier i would have arrived on time", "if i had left earlier, i would have arrived on time", "if i had left earlier i'd have arrived on time", "if i had left earlier, i'd have arrived on time"], "Condicional 3: had + participio, would have + participio."],
+      ["No habría ido si lo hubiera sabido.", ["i wouldn't have gone if i had known", "i would not have gone if i had known"], "Condicional 3 en negativo."]
+    ],
+    q: [
+      {k: "tf", q: "El condicional 3 habla de situaciones que aún pueden cambiar.", a: false, e: "Habla del pasado, que ya no se puede cambiar."},
+      {k: "mc", q: "Completa: «If she ___ earlier, she would have caught the train.»", o: ["had left", "left", "would leave"], a: 0, e: "If + past perfect."}
+    ],
+    l: []
+  },
+  "Alternativas a 'if': unless, as long as, provided that, in case": {
+    g: [
+      ["We'll be late ___ we hurry. (unless/if)", "unless", "«Unless» significa a menos que.", ["if", "as long as", "in case", "whether"]],
+      ["Bring some water ___ you get thirsty. (in case/unless)", "in case", "«In case» significa por si acaso.", ["unless", "as long as", "if only", "provided"]]
+    ],
+    o: [
+      ["You can borrow it as long as you return it.", "«As long as» expresa una condición.", "Puedes tomarlo prestado siempre que lo devuelvas."],
+      ["Unless you study, you will fail.", "«Unless» significa a menos que.", "A menos que estudies, suspenderás."]
+    ],
+    t: [
+      ["A menos que llegues temprano, no habrá asiento.", ["unless you arrive early there won't be a seat", "unless you arrive early, there won't be a seat", "unless you arrive early there will be no seat", "unless you arrive early, there will be no seat"], "«Unless» + presente."],
+      ["Lleva dinero por si acaso.", ["take some money in case", "take money in case", "bring some money in case"], "«In case» = por si acaso."]
+    ],
+    q: [
+      {k: "tf", q: "«Unless» significa «si no».", a: true, e: "Correcto: unless = if not."},
+      {k: "mc", q: "«Siempre que» (condición):", o: ["as long as", "in case", "although"], a: 0, e: "As long as = siempre que."}
+    ],
+    l: [
+      ["Unless you hurry, you will be late.", "A menos que te apures, llegarás tarde."],
+      ["You can go as long as you finish your homework.", "Puedes ir siempre que termines la tarea."]
+    ]
+  },
+  "Futuro perfecto y futuro continuo": {
+    g: [
+      ["By 2028, she ___ the project. (complete)", "will have completed", "Algo terminado para un momento futuro: will have + participio.", ["will complete", "will be completing", "has completed", "completed"]],
+      ["This time tomorrow, I ___ on a beach. (lie)", "will be lying", "Algo en progreso en el futuro: will be + -ing.", ["will lie", "will have lain", "am lying", "lay"]]
+    ],
+    o: [
+      ["Will you be using the car tonight?", "Futuro continuo: will + sujeto + be + -ing.", "¿Estarás usando el coche esta noche?"],
+      ["By June, she will have graduated.", "Futuro perfecto: will have + participio.", "Para junio, ella ya se habrá graduado."]
+    ],
+    t: [
+      ["A las nueve estaré trabajando.", ["i will be working at nine", "i'll be working at nine"], "Futuro continuo."],
+      ["Para el viernes habré terminado.", ["i will have finished by friday", "i'll have finished by friday"], "Futuro perfecto."]
+    ],
+    q: [
+      {k: "tf", q: "El futuro perfecto se forma con «will have» + participio.", a: true, e: "Correcto: I will have finished."},
+      {k: "mc", q: "En progreso en un momento futuro:", o: ["I will be sleeping.", "I will have sleeping.", "I will sleeping."], a: 0, e: "Will be + -ing."}
+    ],
+    l: [
+      ["By 2030, she will have graduated.", "Para 2030, ella ya se habrá graduado."]
+    ]
+  },
+  "Both, either, neither, all, whole": {
+    g: [
+      ["___ of my parents speak French. (Both/Either)", "Both", "«Both» significa los dos.", ["Either", "Neither", "Each", "Every"]],
+      ["___ of them was late. (Neither/Both)", "Neither", "«Neither» significa ninguno de los dos.", ["Both", "Either", "All", "None of"]]
+    ],
+    o: [
+      ["Both my brothers live in Canada.", "«Both» = los dos.", "Mis dos hermanos viven en Canadá."],
+      ["You can choose either option.", "«Either» = uno u otro.", "Puedes elegir cualquiera de las dos opciones."]
+    ],
+    t: [
+      ["Ninguno de los dos vino.", ["neither of them came"], "«Neither» ya es negativo."],
+      ["Toda la clase aprobó.", ["the whole class passed", "all the class passed"], "«Whole» va con singular."]
+    ],
+    q: [
+      {k: "tf", q: "«Neither» se usa con «not».", a: false, e: "«Neither» ya es negativo: Neither of them came."},
+      {k: "mc", q: "«Los dos»:", o: ["both", "either", "neither"], a: 0, e: "Both = los dos."}
+    ],
+    l: [
+      ["Both of my brothers live in Canada.", "Mis dos hermanos viven en Canadá."],
+      ["Neither of them was late.", "Ninguno de los dos llegó tarde."]
+    ]
+  },
+  "Verbos + gerundio o infinitivo: cambio de significado": {
+    g: [
+      ["He stopped ___ last year. He is healthier now. (smoke)", "smoking", "«Stop» + -ing = dejar de hacer algo.", ["to smoke", "smoke", "smoked", "smokes"]],
+      ["Don't forget ___ the lights before you go. (turn off)", "to turn off", "«Forget» + to = olvidar hacer algo que hay que hacer.", ["turning off", "turn off", "turned off", "turns off"]]
+    ],
+    o: [
+      ["I stopped to buy some water.", "«Stop» + to = detenerse para hacer algo.", "Me detuve para comprar agua."],
+      ["I remember meeting her in 2019.", "«Remember» + -ing = recordar algo pasado.", "Recuerdo haberla conocido en 2019."]
+    ],
+    t: [
+      ["Dejó de fumar.", ["he stopped smoking", "she stopped smoking"], "«Stop» + -ing."],
+      ["No olvides llamarme.", ["don't forget to call me", "do not forget to call me"], "«Forget» + to = olvidar hacer algo."]
+    ],
+    q: [
+      {k: "tf", q: "«I stopped to smoke» significa «dejé de fumar».", a: false, e: "Significa «me detuve para fumar»; «dejé de fumar» es «I stopped smoking»."},
+      {k: "mc", q: "Recuerdas algo que ya pasó:", o: ["I remember seeing him.", "I remember to see him.", "I remember see him."], a: 0, e: "Remember + -ing."}
+    ],
+    l: [
+      ["He stopped smoking last year.", "Dejó de fumar el año pasado."],
+      ["He stopped to buy water.", "Se detuvo para comprar agua."],
+      ["I remember meeting her in 2019.", "Recuerdo haberla conocido en 2019."]
+    ]
+  },
+  "Contraste y propósito: in spite of, whereas, so that, in order to": {
+    g: [
+      ["___ the rain, we went out. (In spite of/Although)", "In spite of", "«In spite of» va seguido de un sustantivo.", ["Although", "Because of", "However", "Despite of"]],
+      ["I saved money ___ I could travel. (so that/in spite of)", "so that", "«So that» expresa propósito con una frase.", ["in spite of", "whereas", "unless", "even if"]]
+    ],
+    o: [
+      ["He is tall, whereas his brother is short.", "«Whereas» contrasta dos cosas.", "Él es alto, mientras que su hermano es bajo."],
+      ["I came in order to see you.", "«In order to» expresa propósito.", "Vine para verte."]
+    ],
+    t: [
+      ["A pesar de la lluvia, salimos.", ["in spite of the rain we went out", "in spite of the rain, we went out", "despite the rain we went out", "despite the rain, we went out"], "«In spite of» + sustantivo."],
+      ["Estudia para aprobar.", ["he studies in order to pass", "she studies in order to pass", "he studies to pass", "she studies to pass"], "«In order to» + verbo base."]
+    ],
+    q: [
+      {k: "tf", q: "«In spite of» va seguido de una frase con sujeto y verbo.", a: false, e: "Va seguido de un sustantivo o de un verbo con -ing."},
+      {k: "mc", q: "Propósito con una frase:", o: ["so that I can travel", "in spite of I can travel", "whereas I can travel"], a: 0, e: "So that + frase."}
+    ],
+    l: [
+      ["In spite of the traffic, we arrived on time.", "A pesar del tráfico, llegamos a tiempo."],
+      ["He is generous, whereas his brother is selfish.", "Él es generoso, mientras que su hermano es egoísta."]
+    ]
+  },
+  "Preposiciones dependientes: adjetivos y verbos": {
+    g: [
+      ["She is afraid ___ spiders. (of/from)", "of", "«Afraid of»: miedo a.", ["from", "at", "for", "with"]],
+      ["She relies ___ her parents. (on/of)", "on", "«Depend on»: depender de.", ["of", "from", "at", "in"]]
+    ],
+    o: [
+      ["I am interested in music.", "«Interested in».", "Me interesa la música."],
+      ["He is good at maths.", "«Good at».", "Él es bueno en matemáticas."]
+    ],
+    t: [
+      ["Ella está orgullosa de su hijo.", ["she is proud of her son", "she's proud of her son"], "«Proud of»."],
+      ["Estoy esperando el autobús.", ["i am waiting for the bus", "i'm waiting for the bus"], "«Wait for»."]
+    ],
+    q: [
+      {k: "tf", q: "Se dice «interested on» algo.", a: false, e: "Se dice «interested in»."},
+      {k: "mc", q: "Preposición: «good ___ languages»", o: ["at", "in", "of"], a: 0, e: "Good at."}
+    ],
+    l: []
+  },
+  "Causativo: have/get something done": {
+    g: [
+      ["I ___ my hair cut yesterday. (have/had)", "had", "Causativo en pasado: had + objeto + participio.", ["have", "has", "was", "did"]],
+      ["We need to get the car ___. (repair)", "repaired", "«Get» + objeto + participio.", ["repair", "repairing", "to repair", "repairs"]]
+    ],
+    o: [
+      ["She had her nails done.", "Otra persona lo hizo por ella.", "Se hizo las uñas."],
+      ["I am having the kitchen painted.", "Causativo en continuo.", "Me están pintando la cocina."]
+    ],
+    t: [
+      ["Me cortaron el pelo ayer.", ["i had my hair cut yesterday", "i got my hair cut yesterday"], "Causativo: had + objeto + participio."],
+      ["Vamos a pintar la casa.", ["we are going to have the house painted", "we're going to have the house painted", "we are going to get the house painted", "we're going to get the house painted"], "Servicio contratado."]
+    ],
+    q: [
+      {k: "tf", q: "«I had my car repaired» significa que yo mismo lo reparé.", a: false, e: "Significa que otra persona lo reparó por ti."},
+      {k: "mc", q: "Estructura del causativo:", o: ["have + objeto + participio", "have + participio + objeto", "have + verbo base"], a: 0, e: "Have + objeto + participio pasado."}
+    ],
+    l: [
+      ["I had my car repaired yesterday.", "Ayer me arreglaron el coche."],
+      ["She is having her hair cut today.", "Hoy le están cortando el pelo."]
+    ]
+  },
+  "Relativas con whose, where, when y whom": {
+    g: [
+      ["The man ___ car was stolen called the police. (whose/who)", "whose", "«Whose» expresa posesión.", ["who", "which", "whom", "that"]],
+      ["That is the café ___ we first met. (where/when)", "where", "«Where» reemplaza a un lugar.", ["when", "which", "whose", "why"]]
+    ],
+    o: [
+      ["I remember the day when we met.", "«When» reemplaza a un momento.", "Recuerdo el día en que nos conocimos."],
+      ["That is the woman whose son is a doctor.", "«Whose» expresa posesión.", "Esa es la mujer cuyo hijo es médico."]
+    ],
+    t: [
+      ["Esa es la casa donde nací.", ["that is the house where i was born", "this is the house where i was born"], "«Where» reemplaza a un lugar."],
+      ["El chico cuyo teléfono se perdió está aquí.", ["the boy whose phone was lost is here", "the boy whose phone got lost is here"], "«Whose» = cuyo."]
+    ],
+    q: [
+      {k: "tf", q: "«Whose» expresa posesión.", a: true, e: "Correcto: the man whose car…"},
+      {k: "mc", q: "Un lugar:", o: ["the city where I live", "the city whose I live", "the city when I live"], a: 0, e: "Where para lugares."}
+    ],
+    l: [
+      ["The man whose wallet was stolen is here.", "El hombre al que le robaron la cartera está aquí."],
+      ["That is the house where I grew up.", "Esa es la casa donde crecí."],
+      ["I remember the day when we met.", "Recuerdo el día en que nos conocimos."]
+    ]
+  },
+  "Cláusulas de tiempo futuro: when, as soon as, until": {
+    g: [
+      ["I'll call you when I ___ home. (get)", "get", "Después de «when» se usa presente simple.", ["will get", "got", "am getting", "would get"]],
+      ["Wait here until I ___ back. (come)", "come", "Después de «until» se usa presente simple.", ["will come", "came", "coming", "would come"]]
+    ],
+    o: [
+      ["I'll text you as soon as I arrive.", "Después de «as soon as»: presente simple.", "Te escribiré en cuanto llegue."],
+      ["We will leave when she is ready.", "Después de «when»: presente simple.", "Nos iremos cuando ella esté lista."]
+    ],
+    t: [
+      ["Te llamaré cuando llegue.", ["i will call you when i arrive", "i'll call you when i arrive"], "«When» + presente simple."],
+      ["Espera hasta que termine.", ["wait until i finish", "wait until i have finished"], "«Until» + presente."]
+    ],
+    q: [
+      {k: "tf", q: "Después de «when» para hablar del futuro se usa «will».", a: false, e: "Se usa presente simple: when I arrive."},
+      {k: "mc", q: "Completa: «I'll call you as soon as she ___.»", o: ["arrives", "will arrive", "arrived"], a: 0, e: "As soon as + presente."}
+    ],
+    l: [
+      ["I'll call you when I arrive.", "Te llamaré cuando llegue."],
+      ["Wait here until I come back.", "Espera aquí hasta que vuelva."],
+      ["She'll text you as soon as she lands.", "Ella te escribirá en cuanto aterrice."]
+    ]
+  },
+  "Used to vs. be used to vs. get used to": {
+    g: [
+      ["I ___ waking up early now. It's normal for me. (am used to/used to)", "am used to", "Estado ya normal: be used to + -ing.", ["used to", "get used to", "am use to", "was used"]],
+      ["It took me a month to ___ the noise. (get used to/be used to)", "get used to", "Proceso de adaptación: get used to.", ["be used to", "used to", "getting use to", "got use to"]]
+    ],
+    o: [
+      ["I used to smoke, but I stopped.", "«Used to» = hábito pasado.", "Antes fumaba, pero lo dejé."],
+      ["She is used to living alone.", "«Be used to» + -ing = estar acostumbrado.", "Ella está acostumbrada a vivir sola."]
+    ],
+    t: [
+      ["Estoy acostumbrado al frío.", ["i am used to the cold", "i'm used to the cold"], "Estado: be used to + sustantivo."],
+      ["Me estoy acostumbrando a mi nuevo trabajo.", ["i am getting used to my new job", "i'm getting used to my new job"], "Proceso: get used to."]
+    ],
+    q: [
+      {k: "tf", q: "Después de «be used to» va un verbo en forma base.", a: false, e: "Va un sustantivo o un verbo con -ing."},
+      {k: "mc", q: "Hábito del pasado:", o: ["I used to play tennis.", "I am used to play tennis.", "I get used play tennis."], a: 0, e: "Used to + verbo base."}
+    ],
+    l: [
+      ["I used to live in Peru.", "Antes vivía en Perú."],
+      ["I am used to waking up early.", "Estoy acostumbrado a levantarme temprano."],
+      ["She is getting used to her new job.", "Ella se está acostumbrando a su nuevo trabajo."]
+    ]
+  },
+  "Preguntas con preposición al final (preposition stranding)": {
+    g: [
+      ["Who did you go to the party ___? (with/to)", "with", "La preposición se queda al final: Who … with?", ["to", "at", "in", "for"]],
+      ["What are you talking ___? (about/of)", "about", "Talk about: la preposición va al final.", ["of", "for", "on", "at"]]
+    ],
+    o: [
+      ["Who are you waiting for?", "La preposición se queda al final.", "¿A quién estás esperando?"],
+      ["What is she looking at?", "«Look at» queda separado.", "¿Qué está mirando ella?"]
+    ],
+    t: [
+      ["¿Con quién hablas?", ["who are you talking to", "who do you talk to"], "La preposición va al final."],
+      ["¿De dónde eres?", ["where are you from"], "«From» al final."]
+    ],
+    q: [
+      {k: "tf", q: "«Who are you talking to?» es una pregunta natural.", a: true, e: "Correcto: la preposición se queda al final."},
+      {k: "mc", q: "«¿Para quién trabajas?»", o: ["Who do you work for?", "For who do you work?", "Who you work for?"], a: 0, e: "La preposición va al final."}
+    ],
+    l: [
+      ["Who are you talking to?", "¿Con quién estás hablando?"],
+      ["Where are you from?", "¿De dónde eres?"],
+      ["What are you looking at?", "¿Qué estás mirando?"]
+    ]
+  }
+});
+/* BANK2-B2:END */
+/* BANK2-C1:BEGIN */
+Object.assign(BANK2_EN, {
+  "Subjuntivo básico: wish / if only": {
+    g: [
+      ["I wish I ___ more free time. (have)", "had", "Deseo sobre el presente irreal: wish + pasado simple.", ["have", "would have", "will have", "having"]],
+      ["If only I ___ her the truth yesterday. (tell)", "had told", "Lamento sobre el pasado: if only + past perfect.", ["told", "would tell", "have told", "tell"]]
+    ],
+    o: [
+      ["I wish I lived closer to the sea.", "«Wish» + pasado simple para deseos del presente.", "Ojalá viviera más cerca del mar."],
+      ["If only she had listened to me.", "«If only» + past perfect expresa un lamento.", "Ojalá me hubiera hecho caso."]
+    ],
+    t: [
+      ["Ojalá tuviera más tiempo.", ["i wish i had more time"], "Deseo del presente: wish + pasado simple."],
+      ["Ojalá hubiera estudiado más.", ["i wish i had studied more", "if only i had studied more"], "Lamento del pasado: past perfect."]
+    ],
+    q: [
+      {k: "tf", q: "Después de «I wish» sobre el presente se usa presente simple.", a: false, e: "Se usa pasado simple: I wish I knew."},
+      {k: "mc", q: "Queja sobre algo que otro hace:", o: ["I wish you would stop.", "I wish you stop.", "I wish you stopped would."], a: 0, e: "Wish + would para quejas."}
+    ],
+    l: []
+  },
+  "Inversión enfática": {
+    g: [
+      ["Never ___ I seen such a mess. (have/did)", "have", "Tras «never» + presente perfecto se invierte: Never have I seen.", ["did", "had", "am", "do"]],
+      ["Not only ___ she win, but she also broke the record. (did/has)", "did", "«Not only» + pasado: did + sujeto + verbo base.", ["has", "was", "does", "had"]]
+    ],
+    o: [
+      ["Rarely do I eat meat.", "Tras «rarely» hay inversión.", "Rara vez como carne."],
+      ["Only then did I understand.", "Tras «only then» hay inversión.", "Solo entonces lo entendí."]
+    ],
+    t: [
+      ["Nunca había visto algo así.", ["never have i seen anything like it", "never had i seen anything like it", "never have i seen anything like this"], "«Never» al inicio provoca inversión."],
+      ["Apenas había llegado cuando sonó el teléfono.", ["hardly had i arrived when the phone rang", "no sooner had i arrived than the phone rang"], "«Hardly… when» con inversión."]
+    ],
+    q: [
+      {k: "tf", q: "Tras «Never» al inicio, el orden es sujeto + auxiliar.", a: false, e: "El auxiliar va antes del sujeto: Never have I seen."},
+      {k: "mc", q: "Inversión correcta:", o: ["Seldom do we go out.", "Seldom we go out.", "Seldom we do go out."], a: 0, e: "Seldom + auxiliar + sujeto."}
+    ],
+    l: []
+  },
+  "Cláusulas relativas no definitorias": {
+    g: [
+      ["My sister, ___ lives in Paris, is a designer. (who/that)", "who", "En no definitorias no se puede usar «that».", ["that", "which", "whose", "whom"]],
+      ["The film, ___ I saw last week, was excellent. (which/that)", "which", "Para cosas en no definitorias: which.", ["that", "who", "whose", "what"]]
+    ],
+    o: [
+      ["The museum, which opened in 1990, is very popular.", "Información extra entre comas.", "El museo, que abrió en 1990, es muy popular."],
+      ["Tom, whose brother is a pilot, lives here.", "«Whose» también funciona aquí.", "Tom, cuyo hermano es piloto, vive aquí."]
+    ],
+    t: [
+      ["Mi jefe, que es muy amable, me ayudó.", ["my boss, who is very kind, helped me", "my boss who is very kind helped me"], "Información extra entre comas."],
+      ["Madrid, que es la capital, es enorme.", ["madrid, which is the capital, is huge", "madrid, which is the capital, is very big", "madrid, which is the capital, is enormous"], "Cosas: which entre comas."]
+    ],
+    q: [
+      {k: "tf", q: "En una cláusula no definitoria se puede usar «that».", a: false, e: "No: se usan who o which, entre comas."},
+      {k: "mc", q: "Información extra sobre una persona:", o: ["Ana, who is a doctor, called.", "Ana, that is a doctor, called.", "Ana who is a doctor, called."], a: 0, e: "Who entre comas."}
+    ],
+    l: []
+  },
+  "Cleft sentences (oraciones enfáticas)": {
+    g: [
+      ["___ I need is a good rest. (What/That)", "What", "«What I need is…» destaca lo que se necesita.", ["That", "Which", "Who", "It"]],
+      ["It was Maria ___ solved the problem. (who/what)", "who", "«It was… who» destaca quién hizo algo.", ["what", "which", "whom", "whose"]]
+    ],
+    o: [
+      ["What I want is a quiet place.", "Cleft con what.", "Lo que quiero es un lugar tranquilo."],
+      ["It was John who called me.", "Cleft con it was… who.", "Fue John quien me llamó."]
+    ],
+    t: [
+      ["Lo que necesito es descansar.", ["what i need is to rest", "what i need is some rest", "what i need is rest"], "Cleft: what I need is…"],
+      ["Fue ella quien lo hizo.", ["it was she who did it", "it was her who did it"], "Cleft: it was… who."]
+    ],
+    q: [
+      {k: "tf", q: "Las oraciones enfáticas sirven para destacar una parte de la información.", a: true, e: "Correcto: What I need is time."},
+      {k: "mc", q: "Destacar quién:", o: ["It was Ana who called.", "It was Ana what called.", "Was Ana who called."], a: 0, e: "It was… who."}
+    ],
+    l: []
+  },
+  "Discurso reportado avanzado": {
+    g: [
+      ["She ___ taking the money. (denied/said)", "denied", "«Deny» + -ing reporta una negación.", ["said", "told", "asked", "warned"]],
+      ["He advised me ___ the job. (to take/taking)", "to take", "«Advise» + objeto + to + verbo.", ["taking", "take", "took", "that take"]]
+    ],
+    o: [
+      ["He admitted making a mistake.", "«Admit» + -ing.", "Admitió haber cometido un error."],
+      ["She warned us not to touch it.", "«Warn» + objeto + not to.", "Nos advirtió que no lo tocáramos."]
+    ],
+    t: [
+      ["Ella sugirió ir al cine.", ["she suggested going to the cinema", "she suggested going to the movies"], "«Suggest» + -ing."],
+      ["Me recordó llamar a mi madre.", ["he reminded me to call my mother", "she reminded me to call my mother"], "«Remind» + objeto + to."]
+    ],
+    q: [
+      {k: "tf", q: "Después de «suggest» va «to» + verbo.", a: false, e: "Va -ing: He suggested going."},
+      {k: "mc", q: "Verbo para «negar»:", o: ["deny", "suggest", "warn"], a: 0, e: "Deny."}
+    ],
+    l: [
+      ["He suggested going to the beach.", "Sugirió ir a la playa."],
+      ["She denied taking the money.", "Ella negó haber tomado el dinero."],
+      ["He admitted making a mistake.", "Admitió haber cometido un error."]
+    ]
+  },
+  "Énfasis con do / does / did": {
+    g: [
+      ["I ___ like your idea. It's great! (do/did)", "do", "«Do» enfático: sí que me gusta.", ["did", "does", "am", "have"]],
+      ["She ___ call you yesterday. Check your phone. (did/does)", "did", "«Did» enfático para el pasado.", ["does", "do", "was", "has"]]
+    ],
+    o: [
+      ["I do understand the problem.", "Do enfático.", "Sí que entiendo el problema."],
+      ["He did tell me the truth.", "Did enfático.", "Sí me dijo la verdad."]
+    ],
+    t: [
+      ["Sí que me gusta tu casa.", ["i do like your house"], "Énfasis con do."],
+      ["Sí te lo dije.", ["i did tell you"], "Énfasis con did."]
+    ],
+    q: [
+      {k: "tf", q: "En el énfasis con «did», el verbo va en pasado.", a: false, e: "Va en forma base: I did tell you."},
+      {k: "mc", q: "Contradecir a alguien:", o: ["But I did call you!", "But I called did you!", "But I do called you!"], a: 0, e: "Did + verbo base."}
+    ],
+    l: [
+      ["I do like your new haircut.", "Sí que me gusta tu nuevo corte de pelo."],
+      ["She does understand the problem.", "Ella sí entiende el problema."],
+      ["He did call you.", "Sí te llamó."]
+    ]
+  },
+  "Deducción en el pasado: must have, can't have, might have": {
+    g: [
+      ["The ground is wet. It ___ rained. (must have/can't have)", "must have", "Casi seguro: must have + participio.", ["can't have", "needn't have", "shouldn't have", "won't have"]],
+      ["He ___ finished already. It's impossible. (can't have/must have)", "can't have", "Casi seguro de que no ocurrió: can't have + participio.", ["must have", "might", "should have", "would have"]]
+    ],
+    o: [
+      ["She must have forgotten.", "Deducción segura sobre el pasado.", "Debe de haberse olvidado."],
+      ["They might have missed the train.", "Posibilidad sobre el pasado.", "Puede que hayan perdido el tren."]
+    ],
+    t: [
+      ["Debes de haber estado muy cansado.", ["you must have been very tired", "you must have been so tired"], "Deducción: must have been."],
+      ["No puede haber llegado ya.", ["he can't have arrived yet", "she can't have arrived yet", "he can't have arrived already", "she can't have arrived already"], "Imposible: can't have + participio."]
+    ],
+    q: [
+      {k: "tf", q: "«Must have» + participio expresa una deducción casi segura sobre el pasado.", a: true, e: "Correcto: She must have left."},
+      {k: "mc", q: "Posibilidad sobre el pasado:", o: ["He might have forgotten.", "He might forgot.", "He might has forgotten."], a: 0, e: "Might have + participio."}
+    ],
+    l: [
+      ["The lights are off. They must have gone out.", "Las luces están apagadas. Se deben de haber ido."],
+      ["He can't have finished already.", "No puede haber terminado ya."]
+    ]
+  },
+  "Pasiva con verbos de opinión: it is said that, he is said to": {
+    g: [
+      ["It ___ that the house is haunted. (is said/says)", "is said", "Pasiva impersonal: It is said that…", ["says", "was saying", "said", "is saying"]],
+      ["He ___ to be a very talented painter. (is believed/believes)", "is believed", "Pasiva personal: He is believed to…", ["believes", "believed", "is believing", "was believe"]]
+    ],
+    o: [
+      ["It is believed that he is innocent.", "Pasiva impersonal.", "Se cree que es inocente."],
+      ["She is said to be very rich.", "Pasiva personal.", "Se dice que es muy rica."]
+    ],
+    t: [
+      ["Se dice que ganó mucho dinero.", ["it is said that he earned a lot of money", "it is said that she earned a lot of money", "he is said to have earned a lot of money", "she is said to have earned a lot of money"], "Pasiva de opinión."],
+      ["Se espera que los precios suban.", ["prices are expected to rise", "it is expected that prices will rise"], "«Expect» en pasiva."]
+    ],
+    q: [
+      {k: "tf", q: "«It is said that…» presenta información sin decir quién la afirma.", a: true, e: "Correcto."},
+      {k: "mc", q: "Estructura personal:", o: ["He is thought to be rich.", "He thinks to be rich.", "It is thought he to be rich."], a: 0, e: "X is thought to…"}
+    ],
+    l: []
+  },
+  "Cláusulas de participio (participle clauses)": {
+    g: [
+      ["___ the report, she went home. (Having finished/Finishing)", "Having finished", "Acción anterior: having + participio.", ["Finishing", "Finished", "To finish", "Having finishing"]],
+      ["___ down the street, I met an old friend. (Walking/Walked)", "Walking", "Acciones simultáneas: -ing.", ["Walked", "To walk", "Having walk", "Walks"]]
+    ],
+    o: [
+      ["Not knowing the answer, he stayed silent.", "Negativo: not + -ing.", "Sin saber la respuesta, se quedó callado."],
+      ["Built in 1920, the hotel is very old.", "Participio pasado con sentido pasivo.", "Construido en 1920, el hotel es muy antiguo."]
+    ],
+    t: [
+      ["Habiendo terminado el trabajo, se fue.", ["having finished the work he left", "having finished the work, he left", "having finished the work she left", "having finished the work, she left"], "Acción anterior: having + participio."],
+      ["Caminando a casa, vi un accidente.", ["walking home i saw an accident", "walking home, i saw an accident"], "Acciones simultáneas: -ing."]
+    ],
+    q: [
+      {k: "tf", q: "En una cláusula de participio los dos sujetos deben ser el mismo.", a: true, e: "Correcto: Walking home, I saw…"},
+      {k: "mc", q: "Acción anterior:", o: ["Having eaten, we left.", "Eating had, we left.", "Have eaten, we left."], a: 0, e: "Having + participio."}
+    ],
+    l: [
+      ["Walking down the street, I saw an old friend.", "Caminando por la calle, vi a un viejo amigo."]
+    ]
+  },
+  "Conectores formales: nevertheless, moreover, consequently": {
+    g: [
+      ["The plan was costly; ___, it was approved. (nevertheless/moreover)", "nevertheless", "Contraste formal: nevertheless.", ["moreover", "consequently", "furthermore", "therefore"]],
+      ["Sales fell; ___, the company closed. (consequently/however)", "consequently", "Resultado lógico: consequently.", ["however", "nevertheless", "moreover", "whereas"]]
+    ],
+    o: [
+      ["Consequently, the company closed.", "«Consequently» expresa un resultado.", "Por consiguiente, la empresa cerró."],
+      ["Furthermore, the design is affordable.", "«Furthermore» añade otro punto.", "Además, el diseño es asequible."]
+    ],
+    t: [
+      ["Sin embargo, el plan se aprobó.", ["nevertheless, the plan was approved", "nevertheless the plan was approved"], "Contraste formal."],
+      ["Por consiguiente, la empresa cerró.", ["consequently, the company closed", "consequently the company closed"], "Resultado formal."]
+    ],
+    q: [
+      {k: "tf", q: "«Moreover» expresa contraste.", a: false, e: "Añade información; el contraste es «nevertheless» o «however»."},
+      {k: "mc", q: "Resultado:", o: ["consequently", "nevertheless", "whereas"], a: 0, e: "Consequently = por consiguiente."}
+    ],
+    l: [
+      ["Nevertheless, the plan was approved.", "Sin embargo, el plan se aprobó."],
+      ["Moreover, the results were reliable.", "Además, los resultados eran fiables."]
+    ]
+  },
+  "Elipsis y sustitución (so, do so, one, not)": {
+    g: [
+      ["Which bag? The red ___. (one/ones)", "one", "«One» sustituye a un sustantivo singular.", ["ones", "it", "that", "them"]],
+      ["Will it rain? I hope ___. (not/no)", "not", "«I hope not» sustituye a toda la frase.", ["no", "so not", "neither", "none"]]
+    ],
+    o: [
+      ["I hope not.", "«Not» sustituye a la frase.", "Espero que no."],
+      ["She left, and so did I.", "Elipsis con so did I.", "Ella se fue, y yo también."]
+    ],
+    t: [
+      ["¿Cuál? El azul.", ["which one? the blue one", "which one the blue one", "which? the blue one"], "«One» sustituye al sustantivo."],
+      ["Espero que no.", ["i hope not"], "«Not» sustituye a la frase."]
+    ],
+    q: [
+      {k: "tf", q: "«I hope so» significa «espero que sí».", a: true, e: "Correcto."},
+      {k: "mc", q: "Sustituir un plural:", o: ["the red ones", "the red one's", "the red it"], a: 0, e: "Ones."}
+    ],
+    l: [
+      ["Which dress? The blue one.", "¿Qué vestido? El azul."],
+      ["Will it rain? I hope not.", "¿Va a llover? Espero que no."],
+      ["She wanted to leave, and so did I.", "Ella quería irse, y yo también."]
+    ]
+  },
+  "Lenguaje cauteloso (hedging)": {
+    g: [
+      ["The results ___ that the method is effective, but more research is needed. (suggest/prove)", "suggest", "«Suggest» suaviza la afirmación: hay indicios, no certeza.", ["prove", "show", "confirm", "guarantee"]],
+      ["It ___ that sales will increase, but we are not certain. (appears/is sure)", "appears", "«It appears that» marca una impresión, no un hecho.", ["is sure", "proves", "guarantees", "insists"]]
+    ],
+    o: [
+      ["Prices tend to rise in summer.", "«Tend to» expresa una tendencia.", "Los precios tienden a subir en verano."],
+      ["This may be due to the weather.", "«May» suaviza la afirmación.", "Esto puede deberse al clima."]
+    ],
+    t: [
+      ["Parece que va a llover.", ["it appears that it is going to rain", "it seems that it is going to rain", "it seems it is going to rain", "it seems that it will rain"], "Hedging: it seems that…"],
+      ["Los resultados sugieren que funciona.", ["the results suggest that it works", "the results suggest that it is effective"], "«Suggest» suaviza."]
+    ],
+    q: [
+      {k: "tf", q: "El hedging evita afirmaciones absolutas.", a: true, e: "Correcto: it seems, tends to, may."},
+      {k: "mc", q: "La forma más cautelosa:", o: ["This may be due to stress.", "This is due to stress.", "This proves stress."], a: 0, e: "May suaviza."}
+    ],
+    l: [
+      ["The results suggest that the method is effective.", "Los resultados sugieren que el método es eficaz."]
+    ]
+  },
+  "Infinitivo y gerundio perfectos (having done, to have done)": {
+    g: [
+      ["He denied ___ the money. (having taken/to have taken)", "having taken", "Después de «deny» va -ing perfecto.", ["to have taken", "taking has", "to take have", "have taken"]],
+      ["She seems ___ the message. (to have forgotten/having forgotten)", "to have forgotten", "«Seem» + to have + participio.", ["having forgotten", "to forget has", "forgotten to have", "forgetting"]]
+    ],
+    o: [
+      ["I regret not having studied more.", "Not + having + participio.", "Me arrepiento de no haber estudiado más."],
+      ["He seems to have left.", "Seem + to have + participio.", "Parece que se ha ido."]
+    ],
+    t: [
+      ["Negó haber mentido.", ["he denied having lied", "she denied having lied"], "Deny + having + participio."],
+      ["Parece haber olvidado el mensaje.", ["he seems to have forgotten the message", "she seems to have forgotten the message"], "Seem + to have + participio."]
+    ],
+    q: [
+      {k: "tf", q: "«Having» + participio indica una acción anterior.", a: true, e: "Correcto."},
+      {k: "mc", q: "Forma correcta:", o: ["She admitted having lied.", "She admitted to have lied.", "She admitted have lied."], a: 0, e: "Admit + having + participio."}
+    ],
+    l: [
+      ["He denied having taken the money.", "Negó haber tomado el dinero."],
+      ["She seems to have forgotten.", "Parece que se ha olvidado."]
+    ]
+  },
+  "Artículos: uso y omisión (the, a, sin artículo)": {
+    g: [
+      ["___ life is short. (No article/The)", "No article", "Sin artículo cuando hablas en general.", ["The", "A", "An", "Some"]],
+      ["___ Nile is the longest river in Africa. (The/A)", "The", "Con ríos se usa «the».", ["A", "An", "No article", "Some"]]
+    ],
+    o: [
+      ["I went to school by bus.", "Sin artículo para la función del lugar.", "Fui a la escuela en autobús."],
+      ["She plays the piano very well.", "Con instrumentos se usa «the».", "Ella toca muy bien el piano."]
+    ],
+    t: [
+      ["La vida es difícil.", ["life is hard", "life is difficult"], "Sin artículo en general."],
+      ["Ella toca la guitarra.", ["she plays the guitar"], "Con instrumentos: the."]
+    ],
+    q: [
+      {k: "tf", q: "Con ríos se usa «the».", a: true, e: "Correcto: the Amazon."},
+      {k: "mc", q: "En general:", o: ["Music is important.", "The music is important.", "A music is important."], a: 0, e: "Sin artículo."}
+    ],
+    l: [
+      ["Life is beautiful.", "La vida es hermosa."],
+      ["The Amazon is the longest river in South America.", "El Amazonas es el río más largo de Sudamérica."],
+      ["My son goes to school by bus.", "Mi hijo va a la escuela en autobús."]
+    ]
+  },
+  "Modificadores de grado: fairly, absolutely, utterly": {
+    g: [
+      ["The film was ___ fantastic. (absolutely/very)", "absolutely", "Adjetivos extremos aceptan «absolutely».", ["very", "fairly", "quite", "rather"]],
+      ["It's ___ cold today, but not freezing. (fairly/utterly)", "fairly", "«Fairly» = bastante, con adjetivos graduables.", ["utterly", "absolutely", "totally", "completely"]]
+    ],
+    o: [
+      ["I'm utterly exhausted.", "«Utterly» con un adjetivo extremo.", "Estoy completamente agotado."],
+      ["The soup is fairly hot.", "«Fairly» con un adjetivo graduable.", "La sopa está bastante caliente."]
+    ],
+    t: [
+      ["La película fue absolutamente increíble.", ["the film was absolutely amazing", "the movie was absolutely amazing", "the film was absolutely incredible", "the movie was absolutely incredible"], "Adjetivo extremo + absolutely."],
+      ["Estoy bastante cansado.", ["i am fairly tired", "i'm fairly tired", "i am quite tired", "i'm quite tired"], "Adjetivo graduable + fairly/quite."]
+    ],
+    q: [
+      {k: "tf", q: "«Very freezing» es correcto.", a: false, e: "«Freezing» es extremo: absolutely freezing."},
+      {k: "mc", q: "Con «good» (graduable):", o: ["very good", "absolutely good", "utterly good"], a: 0, e: "Very con graduables."}
+    ],
+    l: [
+      ["The film was absolutely fantastic.", "La película fue absolutamente fantástica."],
+      ["I am utterly exhausted.", "Estoy completamente agotado."],
+      ["The soup is fairly hot.", "La sopa está bastante caliente."]
+    ]
+  }
+});
+/* BANK2-C1:END */
+/* BANK2-C2:BEGIN */
+Object.assign(BANK2_EN, {
+  "Condicionales mixtos": {
+    g: [
+      ["If I ___ harder at school, I would have a better job now. (study)", "had studied", "Mixto: condición pasada (past perfect) y resultado presente.", ["studied", "would study", "have studied", "study"]],
+      ["If she were more organized, she ___ missed the deadline. (not/have)", "wouldn't have", "Mixto: condición presente y resultado pasado.", ["won't have", "wouldn't", "hadn't", "doesn't have"]]
+    ],
+    o: [
+      ["If I had slept, I would feel better.", "Mixto: had + participio, would + verbo base.", "Si hubiera dormido, me sentiría mejor."],
+      ["If he were braver, he would have said something.", "Condición presente y resultado pasado.", "Si fuera más valiente, habría dicho algo."]
+    ],
+    t: [
+      ["Si hubiera dormido, ahora no estaría cansado.", ["if i had slept i wouldn't be tired now", "if i had slept, i wouldn't be tired now", "if i had slept i would not be tired now", "if i had slept, i would not be tired now"], "Condicional mixto."],
+      ["Si no lo hubiera conocido, mi vida sería distinta.", ["if i hadn't met him my life would be different", "if i hadn't met him, my life would be different", "if i had not met him my life would be different", "if i had not met him, my life would be different"], "Condicional mixto."]
+    ],
+    q: [
+      {k: "tf", q: "Un condicional mixto combina un tiempo pasado y uno presente.", a: true, e: "Correcto: If I had studied, I would be a doctor now."},
+      {k: "mc", q: "Completa: «If I ___ that job, I would be living abroad now.»", o: ["had taken", "took", "would take"], a: 0, e: "Condición pasada: past perfect."}
+    ],
+    l: [
+      ["If I hadn't missed the flight, I would be there now.", "Si no hubiera perdido el vuelo, estaría allí ahora."]
+    ]
+  },
+  "Colocaciones y phrasal verbs avanzados": {
+    g: [
+      ["We need to ___ a decision by Friday. (make/do)", "make", "La colocación correcta es «make a decision».", ["do", "take", "have", "give"]],
+      ["I can't ___ up with this noise. (put/take)", "put", "«Put up with» significa soportar.", ["take", "get", "set", "go"]]
+    ],
+    o: [
+      ["She came up with a brilliant idea.", "«Come up with» = idear.", "A ella se le ocurrió una idea brillante."],
+      ["We need to touch base tomorrow.", "«Touch base» = ponerse en contacto brevemente.", "Tenemos que ponernos al día mañana."]
+    ],
+    t: [
+      ["Tomamos una decisión importante.", ["we made an important decision"], "«Make a decision»."],
+      ["No aguanto este ruido.", ["i can't put up with this noise", "i cannot put up with this noise"], "«Put up with» = soportar."]
+    ],
+    q: [
+      {k: "tf", q: "En inglés se dice «do a decision».", a: false, e: "Se dice «make a decision»."},
+      {k: "mc", q: "«Heavy rain» es una colocación:", o: ["natural", "incorrecta", "solo escrita"], a: 0, e: "Heavy rain es la combinación habitual."}
+    ],
+    l: []
+  },
+  "Subjuntivo formal (mandative subjunctive)": {
+    g: [
+      ["I suggest that he ___ early. (arrive/arrives)", "arrive", "Subjuntivo formal: verbo base tras «suggest that».", ["arrives", "arrived", "will arrive", "arriving"]],
+      ["It is essential that everyone ___ informed. (be/is)", "be", "Tras «essential that»: verbo base.", ["is", "are", "was", "been"]]
+    ],
+    o: [
+      ["We insist that he be present.", "Subjuntivo formal: verbo base.", "Insistimos en que esté presente."],
+      ["They demanded that she leave immediately.", "Tras demand that: verbo base.", "Exigieron que se fuera de inmediato."]
+    ],
+    t: [
+      ["Sugiero que ella llegue temprano.", ["i suggest that she arrive early"], "Subjuntivo formal: verbo base."],
+      ["Es esencial que se informe a todos.", ["it is essential that everyone be informed", "it is essential that all be informed"], "Subjuntivo con be."]
+    ],
+    q: [
+      {k: "tf", q: "En el subjuntivo formal el verbo lleva -s con «he».", a: false, e: "Va en forma base: I suggest that he arrive."},
+      {k: "mc", q: "Negativo:", o: ["They insisted that he not leave.", "They insisted that he doesn't leave.", "They insisted that he not to leave."], a: 0, e: "Not + verbo base."}
+    ],
+    l: []
+  },
+  "Nominalización y registro formal": {
+    g: [
+      ["Our ___ of the data revealed a pattern. (analyse/analysis)", "analysis", "El sustantivo de «analyse» es «analysis».", ["analyse", "analysing", "analytic", "analyst's"]],
+      ["There is growing ___ of the problem. (aware/awareness)", "awareness", "El sustantivo de «aware» es «awareness».", ["aware", "awarely", "awaring", "awarenessly"]]
+    ],
+    o: [
+      ["The introduction of the law caused debate.", "Nominalización: introduce → introduction.", "La introducción de la ley generó debate."],
+      ["Their decision surprised everyone.", "Nominalización: decide → decision.", "Su decisión sorprendió a todos."],
+      ["There is a growing awareness of the problem.", "Nominalización: aware → awareness.", "Hay una conciencia creciente del problema."]
+    ],
+    t: [
+      ["Hay una necesidad de cambio.", ["there is a need for change"], "Nominalización: need + for."],
+      ["El desarrollo de la ciudad es rápido.", ["the development of the city is rapid", "the development of the city is fast"], "Verbo → sustantivo: develop → development."]
+    ],
+    q: [
+      {k: "tf", q: "La nominalización convierte verbos en sustantivos.", a: true, e: "Correcto: decide → decision."},
+      {k: "mc", q: "Sustantivo de «develop»:", o: ["development", "developing", "developer's"], a: 0, e: "Develop → development."}
+    ],
+    l: []
+  },
+  "Inversión condicional formal": {
+    g: [
+      ["___ I known, I would have called. (Had/Have)", "Had", "Inversión formal: Had I known.", ["Have", "If", "Did", "Was"]],
+      ["___ you need help, please call me. (Should/Would)", "Should", "Inversión formal con should.", ["Would", "Had", "Could", "Did"]]
+    ],
+    o: [
+      ["Were she to apply, she would get the job.", "«Were… to» hipotético.", "Si ella se presentara, conseguiría el puesto."],
+      ["Had they arrived earlier, they would have seen him.", "Inversión formal en pasado.", "De haber llegado antes, lo habrían visto."]
+    ],
+    t: [
+      ["De haberlo sabido, habría venido.", ["had i known i would have come", "had i known, i would have come"], "Inversión: Had I known…"],
+      ["Si necesita ayuda, llámenos.", ["should you need help please call us", "should you need help, please call us", "should you need help please call me", "should you need help, please call me"], "Inversión con should."]
+    ],
+    q: [
+      {k: "tf", q: "«Had I known» equivale a «If I had known».", a: true, e: "Correcto: inversión formal."},
+      {k: "mc", q: "Forma formal de «If you have questions»:", o: ["Should you have questions", "If should you have questions", "Had you questions"], a: 0, e: "Should + sujeto + verbo."}
+    ],
+    l: []
+  },
+  "Would rather, had better, it's time (+ pasado)": {
+    g: [
+      ["She'd rather we ___ late. (not arrive/didn't arrive)", "didn't arrive", "Would rather + sujeto + pasado simple.", ["not arrive", "don't arrive", "won't arrive", "arriving"]],
+      ["It's high time he ___ a job. (get/got)", "got", "It's (high) time + sujeto + pasado simple.", ["get", "gets", "getting", "will get"]]
+    ],
+    o: [
+      ["You had better see a doctor.", "«Had better» = consejo fuerte.", "Más te vale ver a un médico."],
+      ["I would rather stay at home.", "«Would rather» + verbo base.", "Preferiría quedarme en casa."]
+    ],
+    t: [
+      ["Ya es hora de que te vayas a dormir.", ["it's time you went to bed", "it is time you went to bed"], "It's time + sujeto + pasado."],
+      ["Más vale que te des prisa.", ["you had better hurry", "you'd better hurry"], "«Had better» + verbo base."]
+    ],
+    q: [
+      {k: "tf", q: "«It's time» + sujeto va con pasado simple.", a: true, e: "Correcto: It's time we left."},
+      {k: "mc", q: "Preferencia:", o: ["I'd rather stay.", "I'd rather to stay.", "I'd rather staying."], a: 0, e: "Would rather + verbo base."}
+    ],
+    l: []
+  },
+  "Pasivas avanzadas: get-passive, pasiva con modales y perfecto": {
+    g: [
+      ["He ___ promoted last year. (get)", "got", "Pasiva con «get»: got + participio.", ["gets", "was got", "has got", "getting"]],
+      ["The work must ___ finished by Friday. (be/been)", "be", "Modal + be + participio.", ["been", "being", "is", "was"]]
+    ],
+    o: [
+      ["The problem has been solved.", "Presente perfecto pasivo.", "El problema se ha resuelto."],
+      ["The house is being renovated.", "Pasiva en continuo.", "La casa se está reformando."]
+    ],
+    t: [
+      ["Lo ascendieron el año pasado.", ["he got promoted last year", "he was promoted last year"], "«Get» + participio."],
+      ["El informe debe entregarse mañana.", ["the report must be delivered tomorrow", "the report must be submitted tomorrow", "the report must be handed in tomorrow"], "Modal + be + participio."]
+    ],
+    q: [
+      {k: "tf", q: "«Get» + participio es una pasiva más informal.", a: true, e: "Correcto: get promoted."},
+      {k: "mc", q: "Con modal:", o: ["It must be done.", "It must been done.", "It must is done."], a: 0, e: "Modal + be + participio."}
+    ],
+    l: [
+      ["He got promoted last year.", "Lo ascendieron el año pasado."],
+      ["The work must be finished by Friday.", "El trabajo debe estar terminado para el viernes."]
+    ]
+  },
+  "Fronting y orden de palabras marcado": {
+    g: [
+      ["Enclosed ___ the documents you requested. (are/is)", "are", "Fronting: Enclosed are + sujeto plural.", ["is", "be", "been", "were"]],
+      ["Only then ___ I understand. (did/do)", "did", "Tras «only then» hay inversión.", ["do", "have", "was", "does"]]
+    ],
+    o: [
+      ["There goes my chance.", "«There» al inicio invierte verbo y sujeto.", "Ahí se va mi oportunidad."],
+      ["Never have I seen such talent.", "Adverbio negativo al inicio: inversión.", "Nunca había visto tanto talento."]
+    ],
+    t: [
+      ["Adjunto una copia del contrato.", ["attached is a copy of the contract"], "Fronting: Attached is…"],
+      ["Solo entonces lo entendí.", ["only then did i understand"], "Inversión tras only then."]
+    ],
+    q: [
+      {k: "tf", q: "Colocar un elemento al inicio puede dar énfasis o formalidad.", a: true, e: "Correcto: Attached is the report."},
+      {k: "mc", q: "Forma formal:", o: ["Attached is the report.", "Is attached the report.", "Attached the report is."], a: 0, e: "Attached is + sujeto."}
+    ],
+    l: [
+      ["Attached is a copy of my CV.", "Adjunto una copia de mi currículum."]
+    ]
+  },
+  "Modales con matices: shall, ought to, dare, need": {
+    g: [
+      ["___ I open the window? (Shall/Will)", "Shall", "«Shall I…?» = oferta cortés.", ["Will", "Must", "Do", "Would"]],
+      ["You ___ to see a doctor. (ought/should ought)", "ought", "«Ought to» = deber moral o buen consejo.", ["should ought", "must ought", "have ought", "ought to to"]]
+    ],
+    o: [
+      ["I daren't tell him the truth.", "«Dare» modal en negativo.", "No me atrevo a decirle la verdad."],
+      ["You needn't come if you don't want to.", "«Needn't» = no hace falta.", "No hace falta que vengas si no quieres."]
+    ],
+    t: [
+      ["¿Abro la ventana?", ["shall i open the window"], "«Shall I…?» = oferta cortés."],
+      ["Deberías descansar.", ["you ought to rest", "you ought to take a rest"], "«Ought to» = deber."]
+    ],
+    q: [
+      {k: "tf", q: "«Shall I…?» se usa para ofrecer algo.", a: true, e: "Correcto: Shall I help you?"},
+      {k: "mc", q: "«No hace falta»:", o: ["You needn't come.", "You not need come.", "You needn't to come."], a: 0, e: "Needn't + verbo base."}
+    ],
+    l: [
+      ["Shall I open the window?", "¿Abro la ventana?"],
+      ["You ought to see a doctor.", "Deberías ver a un médico."],
+      ["I daren't tell him the truth.", "No me atrevo a decirle la verdad."]
+    ]
+  },
+  "Registro formal e informal": {
+    g: [
+      ["I would be ___ if you could confirm receipt. (grateful/thanks)", "grateful", "Registro formal: I would be grateful if…", ["thanks", "happy for", "glad of", "pleasing"]],
+      ["___ I can't make it. (Sorry/I regret to inform you that)", "Sorry", "Registro informal: frase corta.", ["I regret to inform you that", "Please be informed that", "We wish to advise that", "It is with regret that"]]
+    ],
+    o: [
+      ["We are pleased to inform you of the result.", "Registro formal.", "Nos complace informarle del resultado."],
+      ["Can you let me know when you get it?", "Registro informal.", "¿Me avisas cuando lo recibas?"]
+    ],
+    t: [
+      ["Le agradecería que confirmara la recepción.", ["i would be grateful if you could confirm receipt"], "Registro formal."],
+      ["Avísame cuando llegues.", ["let me know when you arrive", "let me know when you get here"], "Registro informal."]
+    ],
+    q: [
+      {k: "tf", q: "«We regret to inform you» es un registro informal.", a: false, e: "Es un registro formal."},
+      {k: "mc", q: "El más formal:", o: ["I would appreciate your help.", "Help me, please.", "Gimme a hand."], a: 0, e: "I would appreciate…"}
+    ],
+    l: []
+  },
+  "Cohesión y marcadores del discurso": {
+    g: [
+      ["___, the plan is too expensive. (To begin with/In conclusion)", "To begin with", "Abre una lista de argumentos.", ["In conclusion", "For instance", "In other words", "To sum up"]],
+      ["___, we need more time. (To sum up/To begin with)", "To sum up", "Cierra un texto: en resumen.", ["To begin with", "Firstly", "For example", "Besides"]]
+    ],
+    o: [
+      ["In other words, we must leave.", "«In other words» reformula.", "En otras palabras, tenemos que irnos."],
+      ["To begin with, the price is high.", "«To begin with» abre una lista de argumentos.", "Para empezar, el precio es alto."]
+    ],
+    t: [
+      ["Para empezar, el precio es muy alto.", ["to begin with, the price is very high", "to begin with the price is very high", "firstly, the price is very high", "firstly the price is very high"], "Marcador de inicio."],
+      ["En resumen, el proyecto es viable.", ["to sum up, the project is viable", "to sum up the project is viable", "in short, the project is viable", "in short the project is viable"], "Marcador de cierre."]
+    ],
+    q: [
+      {k: "tf", q: "«For instance» introduce un ejemplo.", a: true, e: "Correcto."},
+      {k: "mc", q: "Reformular:", o: ["in other words", "to begin with", "for instance"], a: 0, e: "In other words."}
+    ],
+    l: [
+      ["To begin with, the plan is too expensive.", "Para empezar, el plan es demasiado caro."],
+      ["It is late; in other words, we must leave.", "Es tarde; en otras palabras, tenemos que irnos."],
+      ["To sum up, the results are promising.", "En resumen, los resultados son prometedores."]
+    ]
+  },
+  "Expresiones idiomáticas (idioms)": {
+    g: [
+      ["The exam was a piece of ___. (cake/bread)", "cake", "«A piece of cake» = muy fácil.", ["bread", "pie", "cookie", "candy"]],
+      ["It's ___ cats and dogs. (raining/falling)", "raining", "«It's raining cats and dogs» = llueve a cántaros.", ["falling", "pouring", "snowing", "flying"]]
+    ],
+    o: [
+      ["A joke can break the ice.", "«Break the ice» = romper el hielo.", "Un chiste puede romper el hielo."],
+      ["It is a blessing in disguise.", "«A blessing in disguise» = una bendición disfrazada.", "Es una bendición disfrazada."]
+    ],
+    t: [
+      ["Fue pan comido.", ["it was a piece of cake"], "Idiom: a piece of cake."],
+      ["Rompamos el hielo.", ["let's break the ice"], "Idiom: break the ice."]
+    ],
+    q: [
+      {k: "tf", q: "Los idioms se entienden traduciendo palabra por palabra.", a: false, e: "Su significado no se deduce de las palabras sueltas."},
+      {k: "mc", q: "«A piece of cake» significa:", o: ["muy fácil", "un postre", "muy caro"], a: 0, e: "Muy fácil."}
+    ],
+    l: [
+      ["The exam was a piece of cake.", "El examen fue pan comido."]
+    ]
+  },
+  "Formación de palabras: prefijos y sufijos": {
+    g: [
+      ["His ___ was obvious. (happy/unhappiness)", "unhappiness", "Prefijo un- + sufijo -ness.", ["happy", "unhappy", "happiness", "happily"]],
+      ["The writing is ___. I can't read it. (legible/illegible)", "illegible", "Prefijo il- = negación.", ["legible", "unlegible", "inlegible", "dislegible"]]
+    ],
+    o: [
+      ["Please rewrite the report.", "Prefijo re- = de nuevo.", "Por favor, reescribe el informe."],
+      ["Her unhappiness was obvious.", "Prefijo un- + sufijo -ness.", "Su infelicidad era evidente."]
+    ],
+    t: [
+      ["Es imposible.", ["it is impossible", "it's impossible"], "Prefijo im- = negación."],
+      ["Necesito reescribirlo.", ["i need to rewrite it"], "Prefijo re- = de nuevo."]
+    ],
+    q: [
+      {k: "tf", q: "El prefijo «re-» significa hacer algo de nuevo.", a: true, e: "Correcto: rewrite."},
+      {k: "mc", q: "Negación de «possible»:", o: ["impossible", "unpossible", "dispossible"], a: 0, e: "Im- antes de p."}
+    ],
+    l: [
+      ["His unhappiness was obvious.", "Su infelicidad era evidente."],
+      ["The development of the city is fast.", "El desarrollo de la ciudad es rápido."],
+      ["The writing is illegible.", "La escritura es ilegible."]
+    ]
+  },
+  "However, whatever, no matter: concesión enfática": {
+    g: [
+      ["___ hard I try, I can't do it. (However/Whatever)", "However", "«However» + adjetivo/adverbio = por más que.", ["Whatever", "Whenever", "Whoever", "Wherever"]],
+      ["___ you decide, I'll support you. (Whatever/However)", "Whatever", "«Whatever» = lo que sea que.", ["However", "Whenever", "Wherever", "Whoever"]]
+    ],
+    o: [
+      ["No matter where you go, I'll find you.", "«No matter» + Wh-.", "No importa adónde vayas, te encontraré."],
+      ["Whoever calls, tell them I'm busy.", "«Whoever» = quienquiera que.", "Quien llame, diles que estoy ocupado."]
+    ],
+    t: [
+      ["Por más que lo intento, no puedo.", ["however hard i try i can't", "however hard i try, i can't", "no matter how hard i try i can't", "no matter how hard i try, i can't"], "«However hard» = por más que."],
+      ["Pase lo que pase, estaré aquí.", ["whatever happens i will be here", "whatever happens, i will be here", "whatever happens i'll be here", "whatever happens, i'll be here", "no matter what happens i will be here", "no matter what happens, i will be here"], "«Whatever» = lo que sea."]
+    ],
+    q: [
+      {k: "tf", q: "«No matter what» expresa que algo no cambia pase lo que pase.", a: true, e: "Correcto."},
+      {k: "mc", q: "«Por más rápido que corras»:", o: ["However fast you run", "Whatever fast you run", "Whoever fast you run"], a: 0, e: "However + adjetivo."}
+    ],
+    l: [
+      ["However hard I try, I can't do it.", "Por más que lo intente, no puedo hacerlo."],
+      ["Whatever you decide, I'll support you.", "Decidas lo que decidas, te apoyaré."]
+    ]
+  }
+});
+/* BANK2-C2:END */
+/* BANK2-DATA:END */
+applyBank2();
+/* BANK2:END */
 function routeUnits(level){
   if(currentLang === "pt") return routeOrder(level).map(([home, i], pos)=>{ const pu = ptTopicUnit(home, i); return pu ? Object.assign({}, pu, {level, pos}) : null; }).filter(Boolean);
   return (ROUTE_ORDER[level] || []).map(([home, i], pos)=>{
@@ -33273,7 +35525,8 @@ function routeUnits(level){
       const id = `${type}:en:${lv}:${ix}`;
       if(!seen.has(id)){ seen.add(id); items.push({type, id}); }
     });
-    ["gapfill","order","translate"].forEach(type=>{ add(type, home, u[type]); add(type, home, n[type]); });
+    const more = ROUTE_MORE[`${home}:${i}`] || {};
+    ["gapfill","order","translate"].forEach(type=>{ add(type, home, u[type]); add(type, home, n[type]); add(type, home, more[type]); });
     (u.extra || []).forEach(([lv,type,ix])=> add(type, lv, [ix]));
     const excl = new Set(ROUTE_EXCLUDE[`${home}:${i}`] || []);
     const kept = items.filter(x=> !excl.has(x.id));
@@ -33365,7 +35618,7 @@ function renderUnitComplete(s){
       ${missed.map(m=>`<div class="route-missed"><span>${escHtml(m.prompt)}</span><b>${escHtml(m.answer)}</b></div>`).join("")}
     </div>` : "";
   const html = `
-    ${s.mission ? missionRewardHTML(s, Object.assign(rw, {passed, pct, level, hasNext, nextLevel, title:u.title, stars:passed ? routeStars(routeState(level, s.unit)) : 0, chest:passed && (s.unit + 1) % ROUTE_CHEST_EVERY === 0 && hasNext})) : ""}
+    ${s.mission ? missionRewardHTML(s, Object.assign(rw, {passed, pct, level, hasNext, nextLevel, title:u.title, stars:passed ? routeStars(routeState(level, s.unit)) : 0, chest:passed && (s.unit + 1) % ROUTE_CHEST_EVERY === 0 && hasNext && routeHitoReady(level, s.unit)})) : ""}
     <div class="section-head" style="text-align:center;"${s.mission ? " hidden" : ""}>
       <div style="width:88px;margin:0 auto 12px;">${mascotSVG(passed?"cheer":"",88)}</div>
       <h2>${passed ? `¡Unidad ${s.unit+1} superada! 🎉` : `Casi: unidad ${s.unit+1} por reforzar`}</h2>
@@ -33397,6 +35650,8 @@ function renderUnitComplete(s){
   };
   const nextBtn = document.getElementById("routeNextBtn");
   if(nextBtn) nextBtn.onclick = ()=>{ practiceTodaySession = null; startMission(level, s.unit + 1); };
+  const hitoBtn = document.getElementById("rwHitoBtn");
+  if(hitoBtn) hitoBtn.onclick = ()=>{ startMilestone(level, s.unit); };
   const retry = document.getElementById("routeRetryBtn");
   if(retry) retry.onclick = ()=>{ practiceTodaySession = buildUnitSession(level, s.unit); if(s.mission){ practiceTodaySession.mission = {level, unit:s.unit, discovered:true}; practiceTodaySession.queue = missionAlternate(practiceTodaySession.queue); } renderPracticeHoy(); };
   const th = document.getElementById("routeTheoryBtn");
@@ -33731,10 +35986,10 @@ function renderRoute(){
   const nodes = items.map((it, r)=>{
     const side = xOf(r) >= 50 ? "side-l" : "side-r";
     if(it.t === "c"){
-      const opened = routeState(level, it.after).passed;
-      return `<div class="rchest ${opened ? "open" : "lock"} ${side}" style="left:${xOf(r)}%;top:${yOf(r) - 28}px" role="img" aria-label="Cofre de hito tras la unidad ${it.after + 1}, ${opened ? "abierto" : "cerrado"}">
+      const hs = routeHitoState(level, it.after), opened = !!hs.passed, ready = !opened && routeHitoReady(level, it.after), hst = routeHitoStart(it.after);
+      return `<button type="button" class="rchest ${opened ? "open" : ready ? "ready" : "lock"} ${side}" data-chest="${it.after}" data-row="${r}" style="left:${xOf(r)}%;top:${yOf(r) - 28}px" aria-label="Cofre de hito de las unidades ${hst + 1} a ${it.after + 1}: ${opened ? "abierto" : ready ? "repaso disponible" : "cerrado"}">
         <span class="rcbox">${routeChestSvg(opened)}</span>
-        <span class="rclab"><b>Cofre de hito</b>${opened ? "¡Lo lograste!" : "Se abre al superar la unidad " + (it.after + 1)}</span></div>`;
+        <span class="rclab"><b>Cofre de hito</b>${opened ? "¡Abierto! · " + hs.best + "%" : ready ? "Toca: repaso de hito" : "Unidades " + (hst + 1) + " a " + (it.after + 1)}</span></button>`;
     }
     const k = it.k, u = units[k];
     const st = routeState(level, k), open = routeIsOpen(level, k), isCur = k === cur;
@@ -33809,10 +36064,103 @@ function renderRoute(){
     });
     setTimeout(()=>{ const r = sheet.getBoundingClientRect(); if(r.bottom > innerHeight - 10 || r.top < 80) sheet.scrollIntoView({block:"center", behavior:"smooth"}); }, 60);
   };
+  const openChest = (after, r)=>{
+    const sheet = document.getElementById("routeSheet"), hs = routeHitoState(level, after), ready = routeHitoReady(level, after), hst = routeHitoStart(after);
+    if(routeSheet && routeSheet.chest === after){ sheet.hidden = true; routeSheet = null; return; }
+    routeSheet = {level, chest:after};
+    sheet.style.top = (yOf(r) + 108) + "px";
+    sheet.innerHTML = `<button type="button" class="route-sheet-x" id="routeSheetX" aria-label="Cerrar">×</button>
+      <h4>Cofre de hito · Unidades ${hst + 1} a ${after + 1}</h4>
+      <p>Un repaso de ${MILESTONE_SIZE} preguntas con lo que aprendiste en estas unidades. Con ${ROUTE_PASS_PCT} % o más abres el cofre. No bloquea tu avance.</p>
+      ${hs.attempts ? `<div class="route-sheet-stars"><span>${hs.passed ? "Cofre abierto" : "Por reforzar"} · mejor ${hs.best}%</span></div>` : ""}
+      ${ready ? `<div class="route-sheet-btns"><button class="btn" data-hito="go">${svgIcon("target", 18)} ${hs.passed ? "Repetir el repaso" : "Empezar el repaso de hito"}</button></div>` : `<div class="route-sheet-note">Se habilita al superar (o saltar) las unidades ${hst + 1} a ${after + 1}.</div>`}`;
+    sheet.hidden = false;
+    document.getElementById("routeSheetX").onclick = ()=>{ sheet.hidden = true; routeSheet = null; };
+    const go = sheet.querySelector("[data-hito]"); if(go) go.onclick = ()=> startMilestone(level, after);
+    setTimeout(()=>{ const rr = sheet.getBoundingClientRect(); if(rr.bottom > innerHeight - 10 || rr.top < 80) sheet.scrollIntoView({block:"center", behavior:"smooth"}); }, 60);
+  };
+  panel.querySelectorAll("[data-chest]").forEach(b=> b.onclick = ()=> openChest(parseInt(b.dataset.chest), parseInt(b.dataset.row)));
   panel.querySelectorAll("[data-route-node]").forEach(b=> b.onclick = ()=> openSheet(parseInt(b.dataset.routeNode)));
   const cont = document.getElementById("routeContBtn");
   if(cont) cont.onclick = ()=>{ const k = cur === -1 ? 0 : cur; const el = document.getElementById(`route-unit-${level}-${k}`); if(el){ el.scrollIntoView({block:"center", behavior:"smooth"}); setTimeout(()=> el.click(), 350); } };
 }
+/* HITO:BEGIN — «Repaso de hito»: el cofre de cada 5 unidades abre un repaso acumulado de 8 preguntas de esas unidades (70 % para abrirlo).
+   Es opcional: no bloquea el avance ni da estrellas. Se guarda en routeProgress["NIVEL:hito<última unidad del bloque>"] = {attempts, best, passed, ts}. */
+const MILESTONE_SIZE = 8;
+const routeHitoKey = (level, after)=> `${level}:hito${after}`;
+const routeHitoState = (level, after)=> routeProgress[routeHitoKey(level, after)] || {};
+const routeHitoStart = after=> after + 1 - ROUTE_CHEST_EVERY;
+function routeHitoReady(level, after){   // todas las unidades del bloque superadas o saltadas
+  for(let k = routeHitoStart(after); k <= after; k++){ const st = routeState(level, k); if(!st.passed && !st.skipped) return false; }
+  return true;
+}
+function buildMilestoneSession(level, after){
+  const start = routeHitoStart(after), units = routeUnits(level), now = Date.now(), rec = recentTranslate(level, "h" + after);
+  const prio = id=> { const d = SRS_DATA[id]; if(!d) return 1 + Math.random() * 0.5; if(d.dueAt <= now) return Math.random() * 0.6; return 2 + d.box * 0.1 + Math.random() * 0.05; };
+  const pools = [];
+  for(let k = start; k <= after; k++){
+    const u = units[k]; if(!u) continue;
+    const core = u.items.map(x=> ({type:x.type, forcedId:x.id, unit:k}));
+    const tq = (theoryQBank()[u.key] || []).map((_, n)=> ({type:"theoryq", forcedId:`theoryq:${currentLang}:${u.key}:${n}`, unit:k}));
+    const st = routeState(level, k);
+    pools.push({k, items:core.concat(tq), weak:st.best != null ? 1 - st.best / 100 : 0.5});
+  }
+  const picked = [], typeCount = {};
+  const canTake = x=> !(x.type === "translate" && (typeCount.translate || 0) >= TRANSLATE_CAP);
+  const pick = pool=> {
+    const c = pool.items.filter(x=> !picked.some(y=> y.forcedId === x.forcedId) && canTake(x))
+      .map(x=> ({x, p:prio(x.forcedId) + (typeCount[x.type] || 0) * 0.7 + (x.type === "translate" && rec.has(x.forcedId) ? 2.5 : 0)})).sort((a, b)=> a.p - b.p)[0];
+    if(!c) return false;
+    picked.push(c.x); typeCount[c.x.type] = (typeCount[c.x.type] || 0) + 1; return true;
+  };
+  pools.forEach(pick);                                                           // 1 pregunta por unidad
+  pools.slice().sort((a, b)=> b.weak - a.weak).forEach(p=> { if(picked.length < MILESTONE_SIZE) pick(p); });   // las de más sobra, para las unidades más flojas
+  pools.forEach(p=> { while(picked.length < MILESTONE_SIZE && pick(p)); });      // si faltan (unidades con pocos ejercicios)
+  const queue = missionAlternate(shuffle(picked));
+  rememberTranslate(level, "h" + after, queue);
+  return {mode:"milestone", level, unit:after, queue, index:0, answered:0, correct:0, byType:{}, byUnit:{}, missed:[], retries:0, retried:new Set()};
+}
+function startMilestone(level, after){
+  practiceTodaySession = buildMilestoneSession(level, after);
+  goTo("practicehoy");
+}
+function renderMilestoneComplete(s){
+  const {level, unit:after} = s, start = routeHitoStart(after), units = routeUnits(level);
+  const pct = s.answered ? Math.round(s.correct / s.answered * 100) : 0, passed = pct >= ROUTE_PASS_PCT;
+  const key = routeHitoKey(level, after), rp = routeProgress[key] || (routeProgress[key] = {}), was = !!rp.passed, prevBest = rp.best || 0;
+  rp.attempts = (rp.attempts || 0) + 1; rp.best = Math.max(prevBest, pct); if(passed) rp.passed = true; rp.ts = Date.now();
+  saveProgress();
+  const rows = [];
+  for(let k = start; k <= after; k++){ const b = s.byUnit[k]; if(b && units[k]) rows.push({k, correct:b.correct, total:b.total, title:units[k].title}); }
+  const weakest = rows.filter(r=> r.correct < r.total).sort((a, b)=> a.correct / a.total - b.correct / b.total)[0];
+  const hasNext = after + 1 < units.length, lc = ROUTE_LC[level] || "#8E6CFF";
+  const missed = s.missed.filter(Boolean);
+  const html = `
+    <div class="rw" style="--rl:${lc}">
+      <div class="rw-mascot">${mascotSVG(passed ? "cheer" : "", 84)}</div>
+      <h2 class="rw-title">${passed ? (was ? "¡Repaso superado otra vez!" : "¡Cofre de hito abierto!") : "Casi: repaso por reforzar"}</h2>
+      <div class="hito-chest">${routeChestSvg(passed)}</div>
+      <p class="dash-card-sub">Unidades ${start + 1} a ${after + 1} de ${level}</p>
+      <div class="rw-chips"><span class="rw-chip">${rsIcon("check", 14)} ${s.correct}/${s.answered} correctas · ${pct}%</span>${passed && was && pct > prevBest ? `<span class="rw-chip amber">${rsIcon("arrow", 14)} Nueva mejor marca</span>` : ""}</div>
+      <p class="dash-card-sub">${passed ? "Lo aprendido en estas unidades sigue firme. El cofre queda abierto en la Ruta." : `Necesitas ${ROUTE_PASS_PCT}% para abrir el cofre. Repasa y vuelve a intentarlo cuando quieras.`}</p>
+    </div>
+    ${rows.length ? `<div class="card" style="max-width:520px;margin:0 auto 18px;"><h3 style="margin:0 0 8px;font-size:1rem;">Cómo te fue por unidad</h3>${rows.map(r=> `<div class="hito-row"><span>${r.k + 1} · ${escHtml(routeShortTitle(r.title))}</span><b class="${r.correct === r.total ? "ok" : r.correct / r.total < 0.5 ? "bad" : ""}">${r.correct}/${r.total}</b></div>`).join("")}${weakest ? `<p class="dash-card-sub" style="margin:10px 0 0;">Te costó más: <b>Unidad ${weakest.k + 1}</b>.</p>` : ""}</div>` : ""}
+    ${missed.length ? `<div class="card" style="max-width:520px;margin:0 auto 18px;"><h3 style="margin:0 0 6px;font-size:1rem;">Para repasar</h3>${missed.map(m=> `<div class="route-missed"><span>${escHtml(m.prompt)}</span><b>${escHtml(m.answer)}</b></div>`).join("")}</div>` : ""}
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+      ${passed
+        ? `${hasNext ? `<button class="btn" id="hitoNext">Siguiente unidad →</button>` : ""}<button class="btn ${hasNext ? "secondary" : ""}" id="hitoBack">Volver a la Ruta →</button>`
+        : `<button class="btn" id="hitoRetry">Repetir el repaso</button>${weakest ? `<button class="btn secondary" id="hitoWeak">Repasar la unidad ${weakest.k + 1}</button>` : ""}<button class="btn secondary" id="hitoBack">Volver a la Ruta</button>`}
+    </div>`;
+  document.getElementById("panel-practicehoy").innerHTML = html;
+  if(passed) fireConfetti();
+  const back = ()=> { practiceTodaySession = null; routeSelectedLevel = level; goTo("route"); routeScrollTo(level, after); };
+  document.getElementById("hitoBack").onclick = back;
+  const nx = document.getElementById("hitoNext"); if(nx) nx.onclick = ()=> { practiceTodaySession = null; startMission(level, after + 1); };
+  const rt = document.getElementById("hitoRetry"); if(rt) rt.onclick = ()=> startMilestone(level, after);
+  const wk = document.getElementById("hitoWeak"); if(wk) wk.onclick = ()=> { practiceTodaySession = null; startMission(level, weakest.k); };
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+/* HITO:END */
 /* MISSION:BEGIN — Misión de la Ruta: barra de pasos (Descubre → Entrenar → Cierre) y paso «Descubre» con ejemplos que se tocan */
 const MISSION_STEPS = ["Descubre", "Entrenar", "Cierre"];
 const ROUTE_INK = {A1:"#062B1E", A2:"#052E36", B1:"#072556", B2:"#FFFFFF", C1:"#560F2B", C2:"#3F2700"};
@@ -35594,7 +37942,7 @@ function missionRewardHTML(s, o){
     <p class="dash-card-sub">${escHtml(o.title)}</p>
     <div class="rw-chips">${chips.join("")}</div>
     <p class="dash-card-sub">${sub}</p>
-    ${o.chest ? `<div class="rw-chest">${routeChestSvg(true)}<div><b>¡Cofre de hito abierto!</b><span>Completaste ${unit + 1} unidades de ${level}. ¡Sigue así!</span></div></div>` : ""}
+    ${o.chest ? `<div class="rw-chest">${routeChestSvg(false)}<div><b>¡Cofre de hito a la vista!</b><span>Completaste ${unit + 1} unidades de ${level}. Haz el repaso de hito para abrirlo.</span></div></div><button class="btn" id="rwHitoBtn" type="button">Hacer el repaso de hito →</button>` : ""}
   </div>`;
 }
 /* MISSION-FX:END */
