@@ -2128,6 +2128,29 @@ header{transition:transform .25s ease;}
 .ds-skip{border:0;background:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;color:var(--ink-soft);text-decoration:underline;padding:4px 8px;}
 @keyframes dsIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.ds-rule,.ds-check{animation:none;}.ds-card,.ds-dot{transition:none;}}
+/* DISC-CARDS-CSS:BEGIN */
+.fc-list{display:flex;flex-direction:column;gap:12px;}
+.fc{perspective:1100px;}
+.fc-inner{display:grid;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.2,.2,1),height .4s ease;}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-face{grid-area:1/1;align-self:start;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid var(--line);border-radius:18px;background:var(--surface);padding:14px 16px;text-align:left;font-family:inherit;color:var(--ink);box-sizing:border-box;width:100%;}
+.fc-front{cursor:pointer;display:flex;flex-direction:column;gap:8px;transition:border-color .18s ease,background .18s ease;}
+.fc-front:focus-visible{outline:3px solid color-mix(in srgb,var(--rl) 55%,transparent);outline-offset:2px;}
+.fc.seen .fc-front{border-color:color-mix(in srgb,var(--rl) 55%,var(--line));}
+.fc-top{display:flex;align-items:center;gap:10px;}
+.fc-num{flex:none;width:24px;height:24px;border-radius:50%;background:color-mix(in srgb,var(--rl) 22%,transparent);color:color-mix(in srgb,var(--rl) 65%,var(--ink));font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.fc-back{transform:rotateY(180deg);cursor:pointer;display:flex;flex-direction:column;gap:8px;border-color:var(--rl);background:linear-gradient(160deg,color-mix(in srgb,var(--rl) 14%,var(--surface)),var(--surface));}
+.fc-sent{display:flex;align-items:flex-start;gap:8px;font-weight:700;font-size:.98rem;line-height:1.4;}
+.fc-sent .ds-hl{border-bottom:3px solid var(--rl);}
+.fc-es{font-size:.9rem;color:var(--ink-soft);font-style:italic;line-height:1.4;}
+.fc-why{font-size:.98rem;line-height:1.55;}
+.fc-sent-t{flex:1;}
+.fc-spk{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-left:8px;width:30px;height:30px;padding:0;border:0;border-radius:50%;cursor:pointer;background:color-mix(in srgb,var(--rl) 20%,transparent);color:color-mix(in srgb,var(--rl) 65%,var(--ink));}
+.fc-spk:hover{background:color-mix(in srgb,var(--rl) 32%,transparent);}
+.fc-spk:focus-visible{outline:3px solid color-mix(in srgb,var(--rl) 55%,transparent);outline-offset:2px;}
+.fc:not(.flipped) .fc-back,.fc.flipped .fc-front{pointer-events:none;}
+@media (prefers-reduced-motion:reduce){.fc-inner{transition:none;}}
+/* DISC-CARDS-CSS:END */
 /* MISSION-CSS:END */
 /* MISSION-PATH-CSS:BEGIN */
 #panel-practicehoy.has-mission .practice-hoy-progress{display:none;}
@@ -2199,7 +2222,7 @@ header{transition:transform .25s ease;}
 .dg-able:active{cursor:grabbing;}
 .dg-src{opacity:.3;}
 .dg-ghost{cursor:grabbing;box-shadow:0 12px 26px rgba(0,0,0,.35);opacity:.96;transition:none !important;}
-.answer-line.dg-over,.gf-blank.dg-over{border-color:var(--purple);background:color-mix(in srgb,var(--purple) 16%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--purple) 30%,transparent);}
+.answer-line.dg-over,.bank-answer.dg-over,.gf-blank.dg-over{border-color:var(--purple);background:color-mix(in srgb,var(--purple) 16%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--purple) 30%,transparent);}
 .gf-blank.dg-over{min-width:132px;}
 #panel-practicehoy .word-chip{transition:transform .15s cubic-bezier(.34,1.56,.64,1),border-color .15s;}
 #panel-practicehoy .word-chip:active{transform:scale(.94);}
@@ -29718,70 +29741,107 @@ function listenWireBox(getText){
   });
 }
 /* ---- Dictado y Habla real ---- */
+/* LISTEN-CHIPS:BEGIN — el dictado se responde armando la frase con fichas (las palabras de la frase + 2-3 distractores), como «Ordena la frase» */
+const LISTEN_CONFUSABLE = {a:"the", the:"a", an:"a", is:"are", are:"is", was:"were", were:"was", do:"does", does:"do", did:"do", has:"have", have:"has", he:"she", she:"he", in:"on", on:"in", at:"in", to:"too", my:"your", your:"my", his:"her", her:"his", our:"their", their:"our", this:"that", that:"this", these:"those", those:"these", i:"we", we:"they", they:"we", can:"can't", "can't":"can", "don't":"doesn't", "doesn't":"don't", some:"any", any:"some", many:"much", much:"many", will:"would", would:"will", and:"but", but:"and"};
+function listenTokens(sentence){
+  return sentence.trim().split(/\s+/).map(w=> w.replace(/^[¿¡"“‘(]+|[.,;:!?…"”)]+$/g, "")).filter(Boolean)
+    .map((w, i)=> i === 0 && !/^I(\b|['’])/.test(w) ? w.charAt(0).toLowerCase() + w.slice(1) : w);   // sin la mayúscula inicial, que delataría la primera palabra
+}
+function listenDistractors(tokens, lv){
+  const have = new Set(tokens.map(t=> normalize(t))), out = [];
+  const add = w=> { const n = normalize(w); if(w && !have.has(n) && !out.some(o=> normalize(o) === n)) out.push(w); };
+  shuffle(tokens.slice()).forEach(t=> { const alt = LISTEN_CONFUSABLE[t.toLowerCase()]; if(alt && out.length < 3) add(alt); });
+  if(out.length < 2){   // si la frase no tiene palabras «confundibles», se completa con palabras cortas de otras frases del mismo nivel
+    const pool = ((LANG_PACKS[currentLang].LISTEN || {})[lv] || []).join(" ").split(/\s+/).map(w=> w.replace(/[^\p{L}'’]/gu, "").toLowerCase()).filter(w=> w.length >= 2 && w.length <= 6);
+    shuffle([...new Set(pool)]).forEach(w=> { if(out.length < 3) add(w); });
+  }
+  return out.slice(0, 3);
+}
 function drawListenDictation(){
   const cur = current.listen, {lv, id, review} = cur;
   const isReal = cur.mode === "real";
   const sentence = cur.sentence;                       // lo que se escucha
   const target = isReal ? cur.item.written : sentence; // forma estándar aceptada además de la oída
   const es = isReal ? cur.item.es : listenTranslation(sentence);
+  const tokens = listenTokens(sentence);
+  const all = tokens.concat(listenDistractors(tokens, lv)).map((w, k)=> ({w, k}));
+  const st = {bank: shuffle(all.slice()), chosen: [], done: false};
   const html = `
     <div class="card">
       ${scoreRowHtml("listen")}
       ${listenHeaderHTML()}
-      <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">${isReal ? "Escucha cómo suena en la vida real y escribe lo que oyes (vale la forma hablada o la escrita):" : "Presiona el botón y escribe lo que escuchas:"}</div>${reviewBadge(review)}</div>
+      <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">${isReal ? "Escucha cómo suena en la vida real y forma lo que oyes:" : "Presiona el botón y forma la frase que escuchas:"}</div>${reviewBadge(review)}</div>
       ${listenBoxHTML()}
-      <input class="text-input" id="listenInput" placeholder="Escribe la frase en ${LANG_META[currentLang].label.toLowerCase()}..." autocomplete="off">
+      <div class="answer-line" id="listenAnswer"></div>
+      <div class="word-bank" id="listenBank"></div>
       <div class="wr-tip" id="listenHint" style="margin:8px 0 0;"></div>
       <div class="feedback" role="status" aria-live="polite" id="listenFeedback"></div>
       <div class="btn-row">
         <button class="btn" id="listenCheck">Comprobar</button>
         <button class="btn secondary" id="listenHintBtn" type="button">💡 Pista</button>
+        <button class="btn secondary" id="listenReset" type="button">Reiniciar</button>
         <button class="btn secondary" id="listenNext" style="display:none;">Siguiente →</button>
       </div>
     </div>`;
   document.getElementById("exPanel").innerHTML = html;
   listenWireHeader(document.getElementById("exPanel"));
   listenWireBox(()=>sentence);
-  const input = document.getElementById("listenInput");
+  const bankEl = document.getElementById("listenBank"), ansEl = document.getElementById("listenAnswer");
   const check = document.getElementById("listenCheck");
   const next = document.getElementById("listenNext");
   const hintBtn = document.getElementById("listenHintBtn");
   const hintBox = document.getElementById("listenHint");
+  const resetBtn = document.getElementById("listenReset");
   let hints = 0;
-  hintBtn.onclick = ()=>{
-    if(hints >= 2) return;
+  const render = ()=> {
+    bankEl.innerHTML = ""; ansEl.innerHTML = "";
+    const chip = (o, onTap)=> { const c = document.createElement("span"); c.className = "word-chip"; c.textContent = o.w; c.onclick = ()=> { if(!st.done) onTap(); }; return c; };
+    st.bank.forEach(o=> bankEl.appendChild(chip(o, ()=> { st.bank.splice(st.bank.indexOf(o), 1); st.chosen.push(o); render(); })));
+    st.chosen.forEach(o=> ansEl.appendChild(chip(o, ()=> { st.chosen.splice(st.chosen.indexOf(o), 1); st.bank.push(o); render(); })));
+    if(missionActive()) missionOrderDrag(st, bankEl, ansEl, check, render, false);
+  };
+  render();
+  resetBtn.onclick = ()=> { if(st.done) return; st.bank = shuffle(all.slice()); st.chosen = []; render(); };
+  hintBtn.onclick = ()=> {
+    if(st.done || hints >= 2) return;
+    let p = 0;   // hasta dónde va bien lo que llevas armado
+    while(p < st.chosen.length && p < tokens.length && normalize(st.chosen[p].w) === normalize(tokens[p])) p++;
+    if(p >= tokens.length) return;
     hints++;
-    hintBox.innerHTML = "💡 " + listenHintText(target, hints);
+    st.bank.push(...st.chosen.splice(p));   // lo mal puesto vuelve al banco
+    const i = st.bank.findIndex(o=> normalize(o.w) === normalize(tokens[p]));
+    if(i >= 0) st.chosen.push(st.bank.splice(i, 1)[0]);
+    hintBox.innerHTML = `💡 Te coloqué la palabra ${p + 1} de ${tokens.length}. Escucha otra vez y sigue tú.`;
     hintBtn.textContent = hints >= 2 ? "💡 Sin más pistas" : "💡 Otra pista";
     if(hints >= 2) hintBtn.disabled = true;
-    input.focus();
+    render();
   };
   function doCheck(){
-    if(!input.value.trim()){ needAnswer(input); return; }
-    const an = listenAnalyze(sentence, input.value, isReal ? target : "");
+    if(!st.chosen.length){ ansEl.classList.remove("shake"); void ansEl.offsetWidth; ansEl.classList.add("shake"); setTimeout(()=> ansEl.classList.remove("shake"), 1500); return; }
+    const typed = st.chosen.map(o=> o.w).join(" ");
+    const an = listenAnalyze(sentence, typed, isReal ? target : "");
     const ok = an.exact || an.nearly;
-    // Con la pista 2 (primeras letras) la frase no se da por dominada: vuelve pronto al repaso.
-    srsUpdate(id, ok && hints < 2);
+    // Con pistas (que colocan palabras por ti) la frase no se da por dominada: vuelve pronto al repaso.
+    srsUpdate(id, ok && hints === 0);
     if(ok) clearErrorIfMastered(id);
-    else if(!isReal) recordError(id, "listen", lv, "Dictado (escucha y escribe)", sentence, `La frase correcta era: "${sentence}".`);
+    else if(!isReal) recordError(id, "listen", lv, "Dictado (escucha y forma la frase)", sentence, `La frase correcta era: "${sentence}".`);
     registerAnswer("listen", ok);
-    input.disabled = true; check.disabled = true; hintBtn.disabled = true;
+    st.done = true; check.disabled = true; hintBtn.disabled = true; resetBtn.disabled = true;
     const fb = document.getElementById("listenFeedback");
     fb.className = "feedback show " + (ok?"ok":"bad");
-    const hintNote = ok && hints >= 2 ? `<div class="wr-body" style="margin-top:6px;">Usaste la pista de las primeras letras, así que esta frase volverá pronto a tu repaso.</div>` : "";
+    const hintNote = ok && hints >= 1 ? `<div class="wr-body" style="margin-top:6px;">Usaste ${hints === 1 ? "una pista" : "pistas"}, así que esta frase volverá pronto a tu repaso.</div>` : "";
     if(an.exact){
-      fb.innerHTML = `<strong>¡Perfecto! 🎉</strong>Escuchaste correctamente: "${escHtml(isReal && normalizeEq(input.value)===normalizeEq(target) ? target : sentence)}"${hintNote}`;
+      fb.innerHTML = `<strong>¡Perfecto! 🎉</strong>Escuchaste correctamente: "${escHtml(isReal && normalizeEq(typed)===normalizeEq(target) ? target : sentence)}"${hintNote}`;
     }else if(an.nearly){
       fb.innerHTML = `<strong>¡Casi perfecto! 👏</strong>Entendiste toda la frase; solo revisa la ortografía: ${an.typos.map(t=>`<span style="color:#99123F;text-decoration:line-through;">${escHtml(t.typed)}</span> → <b>${escHtml(t.correct)}</b>`).join(", ")}.<div class="wr-body" style="margin-top:6px;">${listenDiffHTML(sentence, an)}</div>${hintNote}`;
     }else{
       const pct = an.total ? Math.round(an.heard / an.total * 100) : 0;
       const wrongWords = an.cw.filter((_,i)=> !an.cmatch[i]);
-      const why = !an.uw.length ? "No escribiste nada. "
-        : `Acertaste <b>${an.heard} de ${an.total}</b> palabras (${pct}%). ${wrongWords.length ? `Te costaron: <b>${wrongWords.map(escHtml).join(", ")}</b>. ` : ""}${an.typos.length ? "Algunas estaban casi bien (ortografía). " : ""}`;
+      const why = `Acertaste <b>${an.heard} de ${an.total}</b> palabras (${pct}%). ${wrongWords.length ? `Te costaron: <b>${wrongWords.map(escHtml).join(", ")}</b>. ` : ""}${an.typos.length ? "Algunas estaban casi bien (ortografía). " : ""}`;
       fb.innerHTML = `<strong>${pct >= 60 ? "Casi 😉" : "Sigue practicando"}</strong>
         <div class="wr-progress-bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
         Comparación palabra por palabra: ${listenDiffHTML(sentence, an)}${whyFailedHTML({
-          yours: input.value, correct: an.sv, why,
+          yours: typed, correct: an.sv, why,
           tip: "Prueba con el botón 🐢 Lento y fíjate en las palabras cortas (a, the, to), que se pronuncian muy suaves.",
           speak: an.sv
         })}`;
@@ -29791,10 +29851,10 @@ function drawListenDictation(){
     next.style.display="inline-block";
   }
   check.onclick = doCheck;
-  input.addEventListener("keydown", e=>{ if(e.key==="Enter" && !check.disabled) doCheck(); });
   next.onclick = newListenQuestion;
   listenAutoplay(sentence);
 }
+/* LISTEN-CHIPS:END */
 /* ---- Elige lo que oíste ---- */
 function drawListenChoose(){
   const cur = current.listen, {lv, id, review, sentence, opts} = cur;
@@ -30070,7 +30130,7 @@ let translatePrefs = {timedBest:0};
 try{ Object.assign(translatePrefs, JSON.parse(localStorage.getItem(TRANSLATE_PREF_KEY) || "{}")); }catch(e){}
 function saveTranslatePrefs(){ try{ localStorage.setItem(TRANSLATE_PREF_KEY, JSON.stringify(translatePrefs)); }catch(e){} }
 let translateTimer = null;
-function translateModeActive(){ return activeSection === "exercises" ? translateMode : "write"; }
+function translateModeActive(){ return activeSection === "exercises" ? translateMode : "bank"; }   // en las sesiones guiadas siempre con fichas; en Ejercicios se elige el modo
 /* Unidades de la Ruta del nivel que tienen frases de traducción (para el filtro por tema). */
 function translateUnits(lv){
   if(currentLang !== "en" || !ROUTE_LEVELS.includes(lv)) return [];
@@ -30255,12 +30315,13 @@ function drawTranslateBank(){
   const check = document.getElementById("translateCheck"), next = document.getElementById("translateNext"), hintBtn = document.getElementById("translateHintBtn");
   let locked = false, hints = 0;
   function paint(){
-    ans.innerHTML = chosen.length ? chosen.map(t=>`<button type="button" class="bank-tile" data-rm="${t.id}">${escHtml(t.t)}</button>`).join("") : `<span class="bank-ph">Toca las palabras para armar la frase</span>`;
+    ans.innerHTML = chosen.length ? chosen.map(t=>`<button type="button" class="bank-tile" data-rm="${t.id}">${escHtml(t.t)}</button>`).join("") : `<span class="bank-ph">${missionActive() ? "Toca o arrastra las palabras para armar la frase" : "Toca las palabras para armar la frase"}</span>`;
     pool.innerHTML = tiles.map(t=>`<button type="button" class="bank-tile${chosen.includes(t) ? " used" : ""}" data-add="${t.id}" ${chosen.includes(t) || locked ? "disabled" : ""}>${escHtml(t.t)}</button>`).join("");
     check.disabled = locked || !chosen.length;
     if(!locked){
       ans.querySelectorAll("[data-rm]").forEach(b=>{ b.onclick = ()=>{ chosen.splice(chosen.findIndex(t=> t.id === +b.dataset.rm), 1); paint(); }; });
       pool.querySelectorAll("[data-add]").forEach(b=>{ b.onclick = ()=>{ chosen.push(tiles.find(t=> t.id === +b.dataset.add)); paint(); }; });
+      if(missionActive()) missionTileDrag(chosen, tiles, ans, pool, paint);
     }
   }
   paint();
@@ -32161,13 +32222,35 @@ function drawTheoryq(){
 PRACTICE_TODAY_FN_NAMES.theoryq = "newTheoryqQuestion";
 PRACTICE_TODAY_ORIGINALS.theoryq = newTheoryqQuestion;
 /* ---- armar la sesión ---- */
+/* «Traducir» con rotación: como cada unidad tiene pocas frases (58 unidades solo una), casi todas entraban en cada ronda.
+   Ahora una sesión lleva como máximo TRANSLATE_CAP y las que salieron en las dos últimas sesiones de esa unidad
+   (Entrenar o Cierre) pasan al final de la cola: solo vuelven si no hay otras. La memoria vive mientras la app está abierta. */
+const TRANSLATE_CAP = 2;
+const RECENT_TRANSLATE = {};   // "nivel:unidad" -> [ids de la última sesión, ids de la anterior]
+const recentTranslate = (level, k)=> new Set([].concat(...(RECENT_TRANSLATE[`${level}:${k}`] || [])));
+function rememberTranslate(level, k, queue){
+  const key = `${level}:${k}`;
+  RECENT_TRANSLATE[key] = [queue.filter(x=> x.type === "translate").map(x=> x.forcedId)].concat((RECENT_TRANSLATE[key] || []).slice(0, 1));
+}
+function pickWithTranslateCap(list, n, rec){
+  const seenRecently = x=> x.type === "translate" && rec.has(x.forcedId) ? 1 : 0;
+  const ranked = shuffle(list.slice()).sort((a, b)=> seenRecently(a) - seenRecently(b));
+  const out = [], rest = [];
+  ranked.forEach(x=> {
+    if(out.length >= n) return;
+    if(x.type === "translate" && out.filter(y=> y.type === "translate").length >= TRANSLATE_CAP) rest.push(x); else out.push(x);
+  });
+  rest.forEach(x=> { if(out.length < n) out.push(x); });   // solo si no hay otras preguntas para completar
+  return out;
+}
 function buildTopicSession(level, k){
   const u = currentLang === "pt" ? ptTopicUnit(level, k) : routeUnits(level)[k], key = topicKey(u.home, u.index);
   const before = topicMastery(u.home, u.index);
   const now = Date.now();
   // prioridad: primero lo que toca repasar, luego lo que nunca viste, al final lo consolidado
   const prio = id=>{ const d = SRS_DATA[id]; if(!d) return 1 + Math.random() * 0.5; if(d.dueAt <= now) return Math.random() * 0.6; return 2 + d.box * 0.1 + Math.random() * 0.05; };
-  const take = (arr, n)=> arr.map(x=>({x, p:prio(x.forcedId)})).sort((a, b)=> a.p - b.p).slice(0, n).map(o=> o.x);
+  const rec = recentTranslate(level, k);
+  const take = (arr, n)=> arr.map(x=>({x, p:prio(x.forcedId) + (x.type === "translate" && rec.has(x.forcedId) ? 2.5 : 0)})).sort((a, b)=> a.p - b.p).slice(0, n).map(o=> o.x);
   const core = u.items.map(x=>({type:x.type, forcedId:x.id}));
   const tq = (theoryQBank()[key] || []).map((_, n)=>({type:"theoryq", forcedId:`theoryq:${currentLang}:${key}:${n}`}));
   const ls = (currentLang === "en" ? (LISTEN_TOPIC[key] || []) : []).map(([lv, i])=>({type:"listen", forcedId:`listen:en:${lv}:${i}`}));
@@ -32179,6 +32262,13 @@ function buildTopicSession(level, k){
     const used = have();
     picked.push(...take(tq.concat(ls).filter(x=> !used.has(x.forcedId)), TOPIC_SESSION_SIZE - picked.length));
   }
+  const trPicked = picked.filter(x=> x.type === "translate");
+  if(trPicked.length > TRANSLATE_CAP){   // tope: las de sobra se cambian por otros ejercicios del tema (si no hay otros, se conservan)
+    const drop = trPicked.slice(TRANSLATE_CAP), keep = picked.filter(x=> !drop.includes(x)), used = new Set(keep.map(x=> x.forcedId));
+    const repl = take(core.filter(x=> x.type !== "translate" && !used.has(x.forcedId)), drop.length);
+    picked.length = 0; picked.push(...keep, ...repl, ...drop.slice(0, drop.length - repl.length));
+  }
+  rememberTranslate(level, k, picked);
   return {mode:"topic", level, unit:k, tHome:u.home, tIdx:u.index, title:u.title, queue:shuffle(picked), index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set(), before: before ? before.pct : 0};
 }
 function startTopicPractice(home, idx){
@@ -33206,9 +33296,10 @@ function buildUnitSession(level, k){
   let queue;
   if(currentLang === "pt"){   // el cierre PT mezcla 2 preguntas de teoría con ejercicios del tema
     const tq = shuffle((theoryQBank()[u.key] || []).map((_, n)=>({type:"theoryq", forcedId:`theoryq:pt:${u.key}:${n}`}))).slice(0, 2);
-    const core = shuffle(u.items.map(x=>({type:x.type, forcedId:x.id}))).slice(0, ROUTE_CLOSE_SIZE - tq.length);
+    const core = pickWithTranslateCap(u.items.map(x=>({type:x.type, forcedId:x.id})), ROUTE_CLOSE_SIZE - tq.length, recentTranslate(level, k));
     queue = shuffle(core.concat(tq));
-  }else queue = shuffle(u.items.map(x=>({type:x.type, forcedId:x.id}))).slice(0, ROUTE_CLOSE_SIZE);
+  }else queue = shuffle(pickWithTranslateCap(u.items.map(x=>({type:x.type, forcedId:x.id})), ROUTE_CLOSE_SIZE, recentTranslate(level, k)));
+  rememberTranslate(level, k, queue);
   return {mode:"unit", level, unit:k, queue, index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set()};
 }
 function routeMissedLine(type, cur){
@@ -33481,6 +33572,119 @@ const ROUTE_CANDO = {
   "So / Neither + auxiliar (acuerdo)": "Decir 'yo también' o 'yo tampoco'",
   "Cláusulas de tiempo futuro: when, as soon as, until": "Hablar del futuro con cuando/hasta que",
 };
+/* ROUTE-BLURB:BEGIN — descripción amigable de cada unidad en el panel de la Ruta (inglés); sin ella se usa el resumen de la teoría */
+const ROUTE_BLURB = {
+  "Verbo To Be": "Empezamos por lo más básico: decir quién eres, cómo estás y dónde estás. Con «I am», «you are» o «she is» ya puedes presentarte y hablar de otras personas. Es el verbo que más vas a usar, así que vale la pena dominarlo desde el primer día.",
+  "Demostrativos: this, that, these, those": "Aprende a señalar cosas con palabras: «this» para lo que tienes cerca y «that» para lo que está lejos. Si son varias, cambian a «these» y «those». Te sirve para pedir algo en una tienda o preguntar «¿qué es eso?».",
+  "Artículos y plurales": "Habla de una cosa o de varias: «a book», «two books». Verás cuándo usar «a», «an» y «the», y cómo formar los plurales, incluidos los que no siguen la regla. Es lo que hace que tus frases suenen completas.",
+  "Adjetivos posesivos": "Di de quién es algo: «my phone», «her bag», «our house». Sirven para hablar de tus cosas, de tu familia y de tus amigos sin confundir «su» de él con «su» de ella, que en inglés son dos palabras distintas.",
+  "Pronombres de objeto": "Cambia los nombres por «me», «him», «her», «us» o «them» para no repetirlos: «Call me», «I love them». Con esto tus frases suenan más naturales y ya puedes hablar de las personas sin repetir sus nombres todo el rato.",
+  "Hay: There is / There are": "Describe lo que hay en un lugar: «There is a park near my house», «There are two chairs». Verás cuándo usar «is» y cuándo «are». Perfecto para describir tu casa, tu ciudad o tu habitación.",
+  "Preposiciones de lugar: in, on, under": "Di dónde está algo con «in», «on» y «under»: «The keys are on the table», «The cat is under the bed». Con estas palabras ya puedes dar referencias simples y entender indicaciones básicas.",
+  "Have got y have (posesión)": "Cuenta lo que tienes: tu familia, tus cosas, tus mascotas. «I have a sister», «She has got a dog». Verás las dos formas, la de siempre y la más informal con «got», y cómo cambian con «he», «she» e «it».",
+  "Presente simple": "Cuenta cómo es tu día: a qué hora te levantas, qué comes, dónde trabajas. También sirve para decir cosas que siempre son ciertas. Es la base para hablar de tu rutina, y solo hay un detalle que cuidar: la -s con «he», «she» e «it».",
+  "Presente simple: negativo y preguntas (do/does)": "Aprende a decir que no haces algo y a preguntar por las rutinas de otros: «I don't like coffee», «Do you work here?». Verás cómo «do» y «does» hacen el trabajo pesado, para que el verbo principal quede siempre igual.",
+  "Adverbios de frecuencia": "Di cada cuánto haces algo con «always», «usually», «sometimes» o «never». Verás dónde ponerlos en la frase, que no es donde uno esperaría. Así tus rutinas dejan de sonar planas y cuentan de verdad cómo eres.",
+  "Preguntas con Wh-: what, where, who, when, why, how": "Empieza a preguntar de verdad: qué, dónde, quién, cuándo, por qué y cómo. Con estas palabras puedes abrir cualquier conversación y pedir la información que necesitas. Es una de las unidades más útiles para hablar con gente real.",
+  "Can / can't (habilidad)": "Cuenta lo que sabes hacer y lo que no: «I can swim», «I can't drive». También sirve para pedir cosas con «Can you help me?». Lo mejor es que es sencillo: el verbo que sigue nunca cambia y no lleva «to».",
+  "Like, love, hate + verbo con -ing (y want to)": "Habla de tus gustos y de lo que quieres hacer: «I love cooking», «I hate waiting», «I want to travel». Verás cuándo el verbo lleva «-ing» y cuándo lleva «to», para que puedas conversar sobre tus hobbies sin dudar.",
+  "Imperativos": "Da indicaciones de forma directa: «Open the door», «Don't worry», «Please sit down». Sirve para instrucciones, recetas, señales y consejos rápidos. Además, aprenderás a suavizarlos con «please» para no sonar mandón.",
+  "Genitivo sajón: 's (de quién es)": "Di que algo es de alguien con una 's: «Anna's bag», «my brother's car». Ojo: en inglés se dice al revés que en español, primero el dueño y luego la cosa. Una vez que lo ves claro, lo usarás todo el tiempo.",
+
+  "Was / were (pasado del verbo to be)": "Cuenta cómo eras o dónde estabas antes: «I was tired», «They were at home». Es tu puerta de entrada al pasado y te sirve para describir cómo estuvo tu día, tus vacaciones o cómo eras de niño.",
+  "Pasado simple": "Cuenta lo que hiciste ayer, el fin de semana o en tus vacaciones. Verás los verbos regulares, que solo agregan «-ed», y los irregulares más comunes, que cambian de forma y conviene ir aprendiendo poco a poco.",
+  "Pasado simple: negativas y preguntas (did)": "Pregunta y niega en pasado: «Did you sleep well?», «I didn't go out». Con «did» todo se vuelve más fácil, porque el verbo principal vuelve a su forma base. Así puedes preguntar qué hizo alguien y responder con seguridad.",
+  "Pasado continuo": "Cuenta lo que estabas haciendo en un momento concreto: «I was cooking when you called». Sirve para dar contexto a una historia, describir el ambiente y explicar qué pasaba cuando ocurrió otra cosa.",
+  "Presente continuo": "Di lo que estás haciendo ahora mismo: «I'm studying», «She is talking on the phone». También sirve para planes cercanos y para cosas temporales. Verás cómo formarlo con «am», «is» o «are» y el verbo con «-ing».",
+  "Presente simple vs presente continuo": "¿Hablas de lo que haces siempre o de lo que pasa ahora? Aprende a elegir bien entre las dos opciones con palabras de ayuda como «usually» o «right now». Es un error muy común, y aquí lo dejas atrás.",
+  "Comparativos y superlativos": "Compara cosas y personas: «bigger», «more expensive», «the best». Verás cuándo agregar «-er» o «-est» y cuándo usar «more» y «most». Sirve para decir quién es más alto, qué es más barato o cuál es el mejor.",
+  "Adverbios de modo (quickly, well, hard)": "Di cómo haces las cosas: «slowly», «carefully», «well». Verás cómo se forman con «-ly» y cuáles son los rebeldes, como «good» que pasa a «well». Con ellos tus frases suenan más completas y más naturales.",
+  "Sustantivos contables e incontables": "Descubre qué cosas se pueden contar («two apples») y cuáles no («water», «money»). Parece un detalle, pero cambia cómo hablas de comida, compras y cantidades. Es la base para las próximas unidades de cantidad.",
+  "Cuantificadores: some, any, much, many": "Di cuánto hay de algo con «some», «any», «much» y «many». Verás cuál usar en frases afirmativas, negativas y preguntas, y con qué tipo de sustantivo. Ideal para ir de compras o pedir en un restaurante.",
+  "Too, enough y very": "Expresa «muy», «demasiado» y «suficiente»: «It's very hot», «It's too hot to walk», «I'm not tall enough». Son tres ideas parecidas pero con matices distintos, y saber elegir te ayuda a quejarte, opinar y describir mejor.",
+  "Would like, Can I y Shall we (pedir, ofrecer y sugerir)": "Pide, ofrece y propón con amabilidad: «I'd like a coffee», «Can I sit here?», «Shall we go?». Son las frases que hacen que suenes educado en un café, un hotel o cuando haces planes con amigos.",
+  "Futuro: be going to": "Cuenta tus planes: «I'm going to travel next month». También sirve para decir lo que ya se ve venir, como «It's going to rain». Verás cómo armarlo con «am», «is» o «are» y así hablar de tus proyectos con naturalidad.",
+  "Have to / don't have to (obligación)": "Di lo que tienes que hacer y lo que no hace falta: «I have to work», «You don't have to come». Ojo con el negativo: «don't have to» significa que no es necesario, no que esté prohibido. Aprenderás a no confundirlos.",
+  "Condicional cero": "Explica cosas que siempre pasan: «If you heat ice, it melts». Sirve para hechos, reglas y rutinas que se cumplen siempre. Es el condicional más sencillo, con el mismo tiempo verbal en las dos partes de la frase.",
+  "Should, must y mustn't (consejo, obligación y prohibición)": "Da consejos y marca límites: «You should rest», «You must wear a seatbelt», «You mustn't smoke». Verás la diferencia entre sugerir, exigir y prohibir, y cómo elegir la palabra correcta según lo fuerte que quieras sonar.",
+  "Presente perfecto: ever, never, just, already, yet (primer contacto)": "Habla de tus experiencias sin decir cuándo pasaron: «I've been to Rome», «I've never eaten sushi». Es un primer paso para conectar el pasado con el presente y para preguntar «¿alguna vez has…?» a otras personas.",
+  "Pronombres posesivos y reflexivos (mine, yours, myself)": "Di «es mío» con «mine» y «yo mismo» con «myself». Los primeros evitan repetir el sustantivo, los segundos indican que quien actúa y quien recibe la acción es la misma persona. Con ellos suenas mucho más natural.",
+  "In, on y at: tiempo y lugar": "Las tres palabritas más confusas, aclaradas: verás cuál usar para decir cuándo («on Monday», «at 5 pm», «in July») y dónde («at home», «in Madrid»). Con un par de trucos fáciles de recordar, dejarás de dudar cada vez.",
+
+  "Presente perfecto": "Conecta lo que pasó con el presente: «I've lost my keys», «She has lived here for years». Es un tiempo muy usado y clave para hablar de experiencias, resultados y cosas que empezaron antes y siguen hasta hoy.",
+  "Presente perfecto vs pasado simple": "¿Digo «I saw» o «I have seen»? Aprende a decidir según hables de un momento concreto del pasado o de una experiencia sin fecha. Es una de las dudas más comunes de este nivel y aquí la resolvemos con ejemplos claros.",
+  "Verbos estativos (Stative verbs)": "Algunos verbos no se usan con «-ing», aunque en español sí: «I know», no «I'm knowing». Aprende a reconocerlos, porque hablan de estados, gustos y pensamientos y no de acciones. Un error típico que puedes evitar con facilidad.",
+  "Verbos modales: can / must / should": "Repasa los modales más usados para hablar de habilidad, obligación y consejo, y úsalos con más seguridad. Verás cómo se comportan en negativo y en preguntas, y cómo elegir el que mejor encaja con lo que quieres decir.",
+  "Condicional tipo 1": "Habla de lo que pasará si algo sucede: «If it rains, we'll stay home». Perfecto para planes, promesas, advertencias y decisiones. Verás qué tiempo va en cada parte de la frase para no equivocarte.",
+  "Will vs Going to": "Decide cuál usar para hablar del futuro: «will» para decisiones del momento y predicciones, «going to» para planes ya hechos y cosas que se ven venir. Con unos ejemplos claros, la elección se vuelve automática.",
+  "Gerundios e infinitivos después de verbos": "Después de algunos verbos va «-ing» y después de otros va «to»: «enjoy swimming», «want to swim». Verás los más comunes y algunos trucos para recordarlos, así no tendrás que dudar en cada frase.",
+  "Oraciones de relativo: who, which, that": "Da más información sobre una persona o cosa con «who», «which» y «that»: «The man who lives next door is a doctor». Te permite unir dos ideas en una sola frase y hablar con más fluidez.",
+  "Question tags": "Confirma algo con una preguntita al final, como el «¿verdad?» del español: «It's cold, isn't it?». Verás cómo se forman y cómo cambia la entonación según pidas confirmación o realmente preguntes.",
+  "Orden de los adjetivos": "Cuando usas varios adjetivos juntos, hay un orden que suena natural: «a beautiful old wooden table». Nadie te lo enseña de forma explícita, pero los nativos lo siguen sin pensar. Aquí lo aprendes con una regla fácil de recordar.",
+  "Pasado perfecto (past perfect)": "Cuenta qué había pasado antes de otra cosa: «When I arrived, they had already left». Sirve para ordenar dos hechos del pasado y dejar claro cuál ocurrió primero. Es muy útil para contar historias y explicar causas.",
+  "Conectores: because, so, although, however, despite": "Une tus ideas con «because», «so», «although» o «however» y habla con más fluidez, sin frases sueltas. Verás cuáles expresan causa, resultado y contraste, y cómo usarlos tanto al hablar como al escribir.",
+  "Phrasal verbs (separables e inseparables)": "Aprende los verbos con partícula que usan los nativos, como «turn off» o «look after». Verás por qué algunos se pueden separar («turn the light off») y otros no («look after a child»), y cómo empezar a usarlos.",
+  "Comparaciones: as...as, less...than, the more...the more": "Compara de más formas: «as tall as», «less expensive than», «the more you practice, the better». Con estas estructuras puedes decir que algo es igual, menor o que dos cosas cambian juntas.",
+  "Preguntas indirectas": "Pregunta con más educación: «Could you tell me where the station is?». Suena mucho más amable que la pregunta directa. Verás cómo cambia el orden de las palabras y por qué ahí no se usa «do» ni «does».",
+  "Voz pasiva: presente y pasado simple": "Habla de lo que se hace sin decir quién lo hace: «The room is cleaned every day», «The bridge was built in 1990». Sirve cuando no importa quién lo hizo o cuando quieres destacar el resultado. Muy común en noticias y avisos.",
+  "Used to / would (hábitos pasados)": "Cuenta cómo eras o qué hacías antes y ya no: «I used to play football every weekend». Es perfecto para hablar de tu infancia, de cómo cambiaron las cosas o de costumbres que dejaste atrás.",
+  "Estilo indirecto: afirmaciones (said that…)": "Cuenta lo que alguien dijo: «She said she was tired». Verás cómo cambia el verbo al contarlo, con un paso atrás en el tiempo. Así puedes reportar mensajes, chismes y conversaciones sin citar las palabras exactas.",
+  "Condicional tipo 2: primeros pasos (If I had…, I would…)": "Imagina situaciones que no son reales: «If I had a car, I would drive to work». Sirve para soñar, dar consejos («If I were you…») y hablar de cosas poco probables. Aquí solo damos los primeros pasos.",
+  "May, could y be allowed to (permiso y posibilidad)": "Pide y da permiso con educación, y di qué está permitido y qué no: «May I come in?», «You are allowed to park here». También sirven para hablar de posibilidades. Verás cuándo elegir cada uno según el tono.",
+  "So / Neither + auxiliar (acuerdo)": "Di «yo también» y «yo tampoco» como un nativo: «So do I», «Neither do I». Verás cómo elegir el auxiliar correcto según la frase de la otra persona. Es una forma corta y natural de mostrar que estás de acuerdo.",
+
+  "Voz pasiva": "Pon el foco en la acción y no en quién la hace: «The report was finished yesterday». Verás la pasiva en distintos tiempos y cuándo conviene usarla. Es muy común en noticias, textos formales y en el trabajo.",
+  "Condicional tipo 2": "Imagina cómo sería si las cosas fueran distintas: «If I were you, I would talk to her». Sirve para dar consejos, hablar de deseos y de situaciones poco probables. Verás también por qué se dice «if I were» y no «if I was».",
+  "Presente perfecto continuo vs. simple": "Di hace cuánto haces algo y qué resultado tienes: «I've been studying for two hours» frente a «I've read three chapters». Uno destaca el tiempo que dura la acción y el otro lo que se logró. Aquí ves cuándo usar cada uno.",
+  "Pasado perfecto continuo y tiempos narrativos": "Cuenta historias con detalle, combinando lo que pasó, lo que estaba pasando y lo que llevaba tiempo pasando. Con varios tiempos verbales bien elegidos, tus relatos ganan orden y suenan más ricos y naturales.",
+  "Modales de deducción: must / might / can't": "Haz suposiciones lógicas según lo que ves: «He must be tired», «It can't be true», «She might be at home». Verás cómo elegir el modal según lo seguro que estés y cómo sonar más preciso al opinar.",
+  "Modales de pasado: should have, could have, needn't have": "Habla de lo que debiste o pudiste hacer y no hiciste: «I should have called you». También sirve para lamentar, criticar con suavidad o decir que algo fue innecesario. Muy útil para contar experiencias y arrepentimientos.",
+  "Estilo indirecto (reported speech)": "Cuenta lo que otros dijeron sin citar sus palabras exactas, ajustando verbos, pronombres y expresiones de tiempo. Verás cómo reportar afirmaciones, preguntas y órdenes, algo que usas a diario al contar una conversación.",
+  "Condicional tipo 3": "Imagina cómo habría sido el pasado si algo hubiera cambiado: «If I had studied, I would have passed». Sirve para hablar de arrepentimientos y de oportunidades perdidas. Es el condicional de lo que ya no se puede cambiar.",
+  "Alternativas a 'if': unless, as long as, provided that, in case": "Pon condiciones con «unless», «as long as», «provided that» e «in case». Le dan más variedad y precisión a tus frases que solo usar «if». Verás qué significa cada una y cómo evitar los errores más comunes.",
+  "Futuro perfecto y futuro continuo": "Habla del futuro con precisión: lo que estarás haciendo («I'll be working») y lo que ya habrás terminado («I'll have finished»). Son útiles para hacer planes, dar plazos y describir cómo será un momento concreto.",
+  "Both, either, neither, all, whole": "Habla de dos opciones o de todo: «both», «either», «neither», «all», «whole». Verás cómo se combinan con otras palabras, y una regla clave: «neither» ya es negativo, así que no se usa con «not». Un error que se evita fácil.",
+  "Verbos + gerundio o infinitivo: cambio de significado": "Con algunos verbos el sentido cambia según lo que sigue: «stop smoking» no es lo mismo que «stop to smoke». Descubre las diferencias con «remember», «forget», «try» y otros, y evita malentendidos.",
+  "Contraste y propósito: in spite of, whereas, so that, in order to": "Contrasta ideas y explica para qué haces algo con «whereas», «in spite of», «so that» e «in order to». Son conectores muy útiles para dar opiniones, comparar y justificar lo que haces, tanto al hablar como al escribir.",
+  "Preposiciones dependientes: adjetivos y verbos": "Algunas palabras piden su propia preposición: «good at», «interested in», «depend on», «afraid of». No hay una regla general, se aprenden en bloque. Aquí las verás agrupadas para que se te queden más fácil.",
+  "Causativo: have/get something done": "Di que alguien lo hizo por ti: «I had my hair cut», «She got the car repaired». Sirve para hablar de servicios y cosas que contratas en vez de hacerlas tú. Verás la estructura y la diferencia entre «have» y «get».",
+  "Relativas con whose, where, when y whom": "Da más detalles con «whose», «where», «when» y «whom»: «The woman whose car was stolen». Te permiten hablar de posesión, lugar y tiempo dentro de la misma frase y unir ideas con más elegancia.",
+  "Cláusulas de tiempo futuro: when, as soon as, until": "Habla del futuro con «when», «as soon as» y «until». Recuerda la regla de oro: después de estas palabras va el presente, no «will»: «I'll call you when I arrive». Un fallo muy común que aquí evitas.",
+  "Used to vs. be used to vs. get used to": "Distingue tres cosas parecidas: lo que hacías antes («I used to smoke»), estar acostumbrado («I'm used to the noise») y acostumbrarte poco a poco («I'm getting used to it»). Parecen iguales, pero cada una tiene su forma.",
+  "Preguntas con preposición al final (preposition stranding)": "En inglés la preposición suele quedarse al final de la pregunta: «Who are you talking to?». En español es al revés y se dice «¿Con quién hablas?». Verás cómo sonar natural y por qué esta forma es la más común al hablar.",
+
+  "Subjuntivo básico: wish / if only": "Expresa deseos y lamentos: «I wish I had more time», «If only I had told her». Verás cómo se usa el pasado para hablar de cosas que no son reales hoy y el pasado perfecto para lo que ya no se puede cambiar.",
+  "Inversión enfática": "Dale más fuerza a lo que dices cambiando el orden de la frase: «Never have I seen such a mess», «Rarely does he complain». Es un recurso propio del inglés más elegante, muy usado al escribir y en discursos.",
+  "Cláusulas relativas no definitorias": "Añade datos extra sobre algo, entre comas: «My brother, who lives in Madrid, is a chef». Se diferencia de la relativa normal porque la información no es esencial. Verás cuándo llevan comas, cuándo no y qué palabra se puede usar.",
+  "Cleft sentences (oraciones enfáticas)": "Resalta lo más importante de la frase con estructuras como «It was Ana who called» o «What I need is a rest». Sirven para dirigir la atención de quien escucha a la parte clave del mensaje. Muy útil para sonar más claro y convincente.",
+  "Discurso reportado avanzado": "Reporta con más precisión usando verbos como «suggest», «deny», «admit» o «warn» en vez de repetir siempre «say». Cada uno cambia la estructura de la frase, y dominar esos patrones te hace sonar mucho más natural y variado.",
+  "Énfasis con do / does / did": "Contradice o enfatiza con un «sí que»: «I DO like it!», «She did call you». Sirve para aclarar un malentendido, insistir o dar énfasis a lo que dices. Un recurso simple que suena muy natural al hablar.",
+  "Deducción en el pasado: must have, can't have, might have": "Supón qué pasó antes según las pistas que tienes: «He must have forgotten», «She can't have left yet». Verás cómo graduar tu seguridad, desde «casi seguro» hasta «imposible», para hablar de lo que pudo ocurrir.",
+  "Pasiva con verbos de opinión: it is said that, he is said to": "Presenta información sin decir quién la afirma: «It is said that…», «He is believed to be…». Es muy típica de las noticias y de los textos formales. Verás las dos estructuras, la impersonal y la personal.",
+  "Cláusulas de participio (participle clauses)": "Acorta tus frases para que fluyan mejor: «Walking home, I met Ana». Con el «-ing» o el participio pasado sustituyes una oración entera. Verás cuándo se puede y la regla clave: el sujeto debe ser el mismo en las dos partes.",
+  "Conectores formales: nevertheless, moreover, consequently": "Organiza un argumento por escrito con «moreover», «nevertheless» y «consequently». Estos conectores dan orden y elegancia a un texto formal, y aquí verás cuál usar para añadir, contrastar o concluir una idea.",
+  "Elipsis y sustitución (so, do so, one, not)": "Evita repetir palabras y suena más natural: «I think so», «She did too», «the red one». Los nativos casi nunca repiten lo que ya se entiende. Aprenderás qué se puede omitir o sustituir sin perder claridad.",
+  "Lenguaje cauteloso (hedging)": "Suaviza lo que afirmas con «seems», «tends to» o «it is likely that». Es clave en textos académicos y profesionales, donde nadie afirma las cosas de manera absoluta. Verás cómo sonar preciso y prudente a la vez.",
+  "Infinitivo y gerundio perfectos (having done, to have done)": "Habla de acciones ya terminadas con «having done» y «to have done», en registros más formales: «He admitted having lied». Verás con qué verbos se usan y cómo dejan claro que algo ocurrió antes de otra acción.",
+  "Artículos: uso y omisión (the, a, sin artículo)": "Aprende cuándo usar «the», «a» o nada: «Life is hard», «I went to school». Parece básico, pero es uno de los puntos más finos del inglés. Verás las reglas y las excepciones que más se repiten en la vida real.",
+  "Modificadores de grado: fairly, absolutely, utterly": "Matiza con «fairly», «absolutely» o «utterly». No todos los adjetivos aceptan los mismos intensificadores: se dice «very good» pero «absolutely amazing». Verás qué combinaciones suenan bien y cuáles no.",
+
+  "Condicionales mixtos": "Mezcla pasado y presente en una misma frase: «If I had studied medicine, I would be a doctor now». Sirven para hablar de cómo una decisión del pasado cambia el presente, o al revés. Un recurso elegante para expresar matices.",
+  "Colocaciones y phrasal verbs avanzados": "Aprende combinaciones de palabras que los nativos usan sin pensar: «make a decision», «heavy rain», «catch up on». No se traducen literalmente, así que se aprenden en bloque. Es lo que más ayuda a sonar natural.",
+  "Subjuntivo formal (mandative subjunctive)": "Úsalo en peticiones y sugerencias formales: «I suggest that he be present». Aquí el verbo va en forma base sin importar el sujeto. Es típico de documentos, reglamentos y del inglés más formal.",
+  "Nominalización y registro formal": "Convierte verbos en sustantivos para que un texto suene formal y académico: «decide» pasa a «decision». Verás cómo transformar frases sencillas en otras más densas y profesionales, como las que se ven en informes y artículos.",
+  "Inversión condicional formal": "Omite el «if» para un tono muy formal o literario: «Had I known, I would have come», «Should you need help, call me». Es una forma elegante de hablar de condiciones, muy usada en contratos, cartas y textos escritos.",
+  "Would rather, had better, it's time (+ pasado)": "Expresa preferencias y consejos con fuerza: «I'd rather stay», «You'd better hurry», «It's time we left». Estas estructuras usan formas verbales especiales que sorprenden al principio, pero son muy comunes en la conversación.",
+  "Pasivas avanzadas: get-passive, pasiva con modales y perfecto": "Domina pasivas más complejas: con «get» («He got fired»), con modales («It must be done») y con tiempos perfectos («It has been solved»). Cada una tiene su tono y su uso, y te ayudan a variar tu forma de expresar acciones.",
+  "Fronting y orden de palabras marcado": "Coloca al inicio lo que quieres destacar: «Rarely have I seen such talent», «Attached is the report». Cambiar el orden normal de la frase da estilo y énfasis. Verás cuándo funciona y cómo evitar que suene forzado.",
+  "Modales con matices: shall, ought to, dare, need": "Usa modales poco frecuentes con su matiz exacto: «shall» para ofertas y reglas formales, «ought to» para el deber moral, «dare» para atreverse y «need» para la necesidad. Poco comunes, pero muy expresivos.",
+  "Registro formal e informal": "Adapta tu inglés a la situación: cómo escribirías a tu jefe y cómo hablarías con un amigo. Cambian las palabras, la estructura y hasta los verbos. Aprenderás a elegir el tono correcto para no sonar ni demasiado frío ni demasiado casual.",
+  "Cohesión y marcadores del discurso": "Hilvana un texto largo con marcadores: «firstly», «in addition», «in other words», «to sum up». Son las palabras que guían al lector de una idea a otra. Con ellas tu escritura y tus presentaciones ganan orden y claridad.",
+  "Expresiones idiomáticas (idioms)": "Usa modismos que no se traducen literalmente: «a piece of cake», «break the ice», «hit the nail on the head». Le dan color a tu inglés y te ayudan a entender conversaciones, series y películas donde los nativos los usan todo el tiempo.",
+  "Formación de palabras: prefijos y sufijos": "Deduce el significado de palabras nuevas con prefijos y sufijos, y crea familias de palabras: «happy», «unhappy», «happiness». Es un método muy eficaz para ampliar tu vocabulario sin memorizar cada palabra por separado.",
+  "However, whatever, no matter: concesión enfática": "Expresa «sin importar»: «However hard you try», «Whatever you say», «no matter what happens». Sirve para dar énfasis y mostrar que algo no cambia pase lo que pase. Suena seguro y se usa mucho al hablar y al argumentar."
+};
+/* ROUTE-BLURB:END */
 function routeNodeLabel(title){ return ROUTE_CANDO[title] || routeShortTitle(title); }
 function renderRoute(){
   const level = routeSelectedLevel || routeCurrentLevel();
@@ -33571,18 +33775,16 @@ function renderRoute(){
     sheet.style.top = (yOf(rowOf[k]) + 108) + "px";
     sheet.innerHTML = `<button type="button" class="route-sheet-x" id="routeSheetX" aria-label="Cerrar">×</button>
       <h4>${k + 1} · ${escHtml(u.title)}</h4>
-      <p>${escHtml(u.summary)}</p>
+      <p>${escHtml(ROUTE_BLURB[u.title] || u.summary)}</p>
       ${st.passed ? `<div class="route-sheet-stars">${routeStarsSvg(routeStars(st))}<span>Mejor resultado: ${st.best}%</span></div>` : st.attempts ? `<div class="route-sheet-stars"><span>Por reforzar · mejor ${st.best}%</span></div>` : ""}
       <div class="route-sheet-btns">
-        <button class="btn secondary" data-sheet="theory">${svgIcon("book", 18)} Teoría</button>
         ${open ? `<button class="btn" data-sheet="train">${svgIcon("target", 18)} ${st.passed ? "Repetir la misión" : "Empezar misión"}</button>` : `<button class="btn secondary" data-sheet="skip">Saltar: ya lo sé</button>`}
       </div>
-      ${open ? `<div class="route-sheet-note">Descubre la regla, entrena y haz el cierre de ${ROUTE_CLOSE_SIZE} preguntas (se aprueba con ${ROUTE_PASS_PCT}%) para superar la unidad.</div>` : `<div class="route-sheet-note">Se abre al superar la unidad anterior.</div>`}`;
+      ${open ? "" : `<div class="route-sheet-note">Se abre al superar la unidad anterior.</div>`}`;
     sheet.hidden = false;
     document.getElementById("routeSheetX").onclick = ()=>{ sheet.hidden = true; routeSheet = null; };
     sheet.querySelectorAll("[data-sheet]").forEach(b=> b.onclick = ()=>{
-      if(b.dataset.sheet === "theory"){ routeTouch(level, k).theory = true; saveProgress(); openTheoryTopic(u.home, u.index, {id:"route", label:"Volver a la Ruta", level, unit:k}); }
-      else if(b.dataset.sheet === "train") startMission(level, k);
+      if(b.dataset.sheet === "train") startMission(level, k);
       else{ routeTouch(level, k).skipped = true; saveProgress(); renderRoute(); }
     });
     setTimeout(()=>{ const r = sheet.getBoundingClientRect(); if(r.bottom > innerHeight - 10 || r.top < 80) sheet.scrollIntoView({block:"center", behavior:"smooth"}); }, 60);
@@ -33692,6 +33894,7 @@ function missionDiscoverData(level, k){
 }
 function missionDrawDiscover(s){
   const {level, unit} = s.mission, D = missionDiscoverData(level, unit);
+  const FC = discCardsFor(level, unit); if(FC) return missionDrawFlipCards(s, FC);
   if(!D.sents.length){ s.mission.discovered = true; renderPracticeHoy(); return; }
   const panel = document.getElementById("panel-practicehoy");
   const ex = document.getElementById("exPanel"); if(ex && ex.parentElement === panel) panel.removeChild(ex);
@@ -33711,13 +33914,11 @@ function missionDrawDiscover(s){
         <span class="ds-es" hidden>${escHtml(x.es || "")}</span><span class="ds-hint">Toca para escuchar y ver qué significa</span></button>`).join("")}</div>
       <div class="ds-dots" aria-live="polite"><span id="dsDots">${D.sents.map(()=> '<i class="ds-dot"></i>').join("")}</span><span class="ds-count" id="dsCount">0 de ${D.sents.length} descubiertas</span></div>
       <div class="ds-rule" id="dsRule" hidden><div class="ds-cap">${svgIcon("bulb", 16)} LO QUE DESCUBRISTE</div><div class="ds-rule-t">${D.rule}</div></div>
-      <div id="dsSay" hidden>${missionSayHTML(D.sents[0].en)}</div>
       ${D.q ? `<div class="ds-check card" id="dsCheck" hidden><div class="ds-cap">COMPRUÉBALO</div><div class="ds-q">${escHtml(D.q.q)}</div>
         <div class="options" id="dsOpts">${D.q.k === "tf" ? ["Verdadero", "Falso"].map((t, i)=> `<button class="opt-btn" data-i="${i}">${t}</button>`).join("") : D.q.o.map((t, i)=> `<button class="opt-btn" data-i="${i}">${escHtml(t)}</button>`).join("")}</div>
         <div class="feedback" role="status" aria-live="polite" id="dsFb"></div></div>` : ""}
       <div class="ds-foot"><button class="btn" id="dsGo" disabled>Empezar a entrenar →</button><button type="button" class="ds-skip" id="dsSkip">Saltar al entrenamiento</button></div>
     </div>`;
-  missionSayBind(panel);
   const cards = [...panel.querySelectorAll(".ds-card")], seen = D.sents.map(()=> false);
   let answered = !D.q;
   const go = document.getElementById("dsGo");
@@ -33727,7 +33928,6 @@ function missionDrawDiscover(s){
     document.getElementById("dsCount").textContent = `${n} de ${seen.length} descubiertas`;
     if(n === seen.length){
       document.getElementById("dsRule").hidden = false;
-      document.getElementById("dsSay").hidden = false;
       const chk = document.getElementById("dsCheck"); if(chk) chk.hidden = false;
     }
     go.disabled = !(n === seen.length && answered);
@@ -33756,6 +33956,181 @@ function missionDrawDiscover(s){
   document.getElementById("dsExit").onclick = ()=>{ practiceTodaySession = null; goTo("route"); };
   window.scrollTo({top:0, behavior:"smooth"});
 }
+/* DISC-CARDS:BEGIN — «Descubre» con 4 tarjetas que giran: frente = frase en inglés, reverso = traducción y explicación amigable */
+const DISC_CARDS = {};
+function discCardsFor(level, unit){
+  if(currentLang !== "en") return null;
+  const u = routeUnits(level)[unit];
+  return (u && DISC_CARDS[`${u.home}.${u.index}`]) || null;
+}
+const discPlain = t=> String(t).replace(/[\[\]]/g, "");
+const discHtml = t=> escHtml(t).replace(/\[(.+?)\]/g, '<b class="ds-hl">$1</b>');
+function missionDrawFlipCards(s, C){
+  const {level, unit} = s.mission, panel = document.getElementById("panel-practicehoy");
+  const ex = document.getElementById("exPanel"); if(ex && ex.parentElement === panel) panel.removeChild(ex);
+  const pb = document.getElementById("practiceHoyProgress"); if(pb && pb.parentElement === panel) panel.removeChild(pb);
+  RS_ICON.speaker = RS_ICON.speaker || "M11 5L6 9H2v6h4l5 4V5z M15.5 8.5a5 5 0 0 1 0 7 M18.5 5.5a9 9 0 0 1 0 13";
+  const lc = ROUTE_LC[level] || "#8E6CFF", spk = rsIcon("speaker", 16);
+  panel.innerHTML = `
+    <div class="section-head">
+      <button class="theory-back" id="dsExit">← Volver a la Ruta</button>
+      <div class="eyebrow">🧭 Misión ${level} · Unidad ${unit + 1}</div>
+      ${missionBarHTML(0, level, unit)}
+    </div>
+    <div class="ds-wrap" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}">
+      <div><h2 class="ds-title">Gira las tarjetas</h2><p class="ds-sub">Toca cada tarjeta: escucha la frase y descubre por qué se dice así.</p></div>
+      <div class="fc-list">${C.map(([en, es, why], i)=> `
+        <div class="fc" data-i="${i}">
+          <div class="fc-inner">
+            <div class="fc-face fc-front" role="button" tabindex="0" aria-label="Tarjeta ${i + 1} de ${C.length}: ${escHtml(discPlain(en))}. Toca para girarla">
+              <span class="fc-top"><span class="fc-num">${i + 1}</span><span class="ds-en">${discHtml(en)}</span></span>
+            </div>
+            <div class="fc-face fc-back" aria-hidden="true">
+              <div class="fc-sent"><span class="fc-num">${i + 1}</span><span class="fc-sent-t">${discHtml(en)}<button type="button" class="fc-spk" aria-label="Escuchar la frase">${spk}</button></span></div>
+              <div class="fc-es">${escHtml(es)}</div>
+              <div class="fc-why">${escHtml(why)}</div>
+            </div>
+          </div>
+        </div>`).join("")}</div>
+      <div class="ds-dots" aria-live="polite"><span id="dsDots">${C.map(()=> '<i class="ds-dot"></i>').join("")}</span><span class="ds-count" id="dsCount">0 de ${C.length} descubiertas</span></div>
+      <div class="ds-foot"><button class="btn" id="dsGo" disabled>Empezar a entrenar →</button><button type="button" class="ds-skip" id="dsSkip">Saltar al entrenamiento</button></div>
+    </div>`;
+  const cards = [...panel.querySelectorAll(".fc")], seen = C.map(()=> false), go = document.getElementById("dsGo");
+  const fit = c=> {   // la tarjeta mide lo que mide la cara visible
+    const inner = c.querySelector(".fc-inner"), face = c.querySelector(c.classList.contains("flipped") ? ".fc-back" : ".fc-front");
+    inner.style.height = face.offsetHeight + "px";
+  };
+  const setFlip = (c, on)=> {
+    c.classList.toggle("flipped", on);
+    c.querySelector(".fc-front").inert = on; c.querySelector(".fc-back").inert = !on;
+    c.querySelector(".fc-back").setAttribute("aria-hidden", String(!on)); c.querySelector(".fc-front").setAttribute("aria-hidden", String(on));
+    fit(c);
+  };
+  const refresh = ()=> {
+    const n = seen.filter(Boolean).length;
+    panel.querySelectorAll(".ds-dot").forEach((d, i)=> d.classList.toggle("on", seen[i]));
+    document.getElementById("dsCount").textContent = n === seen.length ? `¡Las ${n} descubiertas!` : `${n} de ${seen.length} descubiertas`;
+    go.disabled = n < seen.length;
+  };
+  cards.forEach((c, i)=> {
+    const front = c.querySelector(".fc-front"), back = c.querySelector(".fc-back");
+    const open = ()=> { seen[i] = true; c.classList.add("seen"); setFlip(c, true); refresh(); };
+    front.onclick = open;
+    front.onkeydown = e=> { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); open(); } };
+    back.querySelector(".fc-spk").onclick = e=> { e.stopPropagation(); speak(discPlain(C[i][0])); };
+    back.onclick = ()=> setFlip(c, false);
+    setFlip(c, false);
+  });
+  const refit = ()=> cards.forEach(fit);
+  window.addEventListener("resize", refit);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(refit);
+  const finish = ()=> { window.removeEventListener("resize", refit); s.mission.discovered = true; if(missionSceneFor(s.mission.level, s.mission.unit)) s.mission.stage = "scene"; renderPracticeHoy(); };
+  go.onclick = finish;
+  document.getElementById("dsSkip").onclick = finish;
+  document.getElementById("dsExit").onclick = ()=> { window.removeEventListener("resize", refit); practiceTodaySession = null; goTo("route"); };
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+/* DISC-CARDS:END */
+/* DISC-DATA-A1:BEGIN — 4 tarjetas por unidad de A1: [frase en inglés con [resaltado], traducción, explicación amigable]. Clave = "home.index" de la teoría. */
+Object.assign(DISC_CARDS, {
+  "A1.0": [ /* Verbo To Be */
+    ["I [am] a student.", "Soy estudiante.", "«Am» es tu «soy» o «estoy». Solo se usa con «I»: piensa en «I am» como una pareja inseparable. Así de simple es decir quién eres."],
+    ["She [is] happy today.", "Ella está feliz hoy.", "Con «he», «she» e «it» usamos «is». Fíjate en algo curioso: el mismo verbo sirve para «ser» y para «estar». «She is a doctor» (es) y «She is happy» (está)."],
+    ["We [are] from Colombia.", "Somos de Colombia.", "«Are» va con «we», «you» y «they». Es la forma de los plurales y también de «you», incluso cuando le hablas a una sola persona."],
+    ["They [aren't] at home.", "No están en casa.", "Para decir que no, agrega «not» después del verbo: «are not» se acorta a «aren't». No necesitas ningún auxiliar extra: es de las frases más fáciles de negar."]
+  ],
+  "A1.4": [ /* Adjetivos posesivos */
+    ["This is [my] phone.", "Este es mi teléfono.", "«My» es «mi»: dice que algo me pertenece. Siempre va antes de la cosa: «my phone», nunca «phone my»."],
+    ["Is that [your] bag?", "¿Es esa tu bolsa?", "«Your» es «tu» o «su» (de usted). Sirve para una persona o para varias, porque en inglés no cambia."],
+    ["[Her] brother and [his] sister are here.", "Su hermano (de ella) y su hermana (de él) están aquí.", "Aquí está la gran diferencia con el español: «su» puede ser de cualquiera, pero en inglés dice de quién es. «His» es de él y «her» es de ella."],
+    ["[Their] house is very big.", "Su casa es muy grande.", "«Their» es el «su» de ellos o ellas. Ojo con «its», que es para cosas o animales y no lleva apóstrofo; «it's» significa «it is»."]
+  ],
+  "A1.7": [ /* Demostrativos */
+    ["[This] is my phone.", "Este es mi teléfono.", "«This» señala algo que tienes cerca, casi como si lo tocaras. Piensa en «este» o «esto» de aquí."],
+    ["[That] car is very fast.", "Ese coche es muy rápido.", "«That» señala algo que está lejos de ti: «ese» o «aquel» de allá. La distancia es lo único que lo diferencia de «this»."],
+    ["[These] apples are fresh.", "Estas manzanas están frescas.", "«These» es el plural de «this»: varias cosas cerca de ti. Fíjate que el verbo también cambia a «are»."],
+    ["Are [those] your keys?", "¿Son esas tus llaves?", "«Those» es el plural de «that»: varias cosas lejos. Y como ves, funcionan igual en preguntas: solo cambia el orden de «are»."]
+  ],
+  "A1.2": [ /* Artículos y plurales */
+    ["I have [a] cat.", "Tengo un gato.", "Usa «a» antes de una cosa que se puede contar y que empieza con sonido de consonante: «a cat», «a book», «a house»."],
+    ["She has [an] umbrella.", "Ella tiene un paraguas.", "Si la palabra empieza con sonido de vocal, usa «an» en vez de «a»: «an umbrella», «an apple». Solo sirve para que sea más fácil pronunciarlo."],
+    ["[The] book on the table is mine.", "El libro que está sobre la mesa es mío.", "Usa «the» cuando ya sabes de cuál cosa hablas, porque es específica o ya se mencionó. Es tu «el», «la», «los» o «las»."],
+    ["There are three [children] in the park.", "Hay tres niños en el parque.", "El plural casi siempre agrega «-s» (books), pero algunos son especiales: «child» pasa a «children». Y con plural no se usa «a»: no existe «a children»."]
+  ],
+  "A1.6": [ /* Pronombres de objeto */
+    ["She loves [him].", "Ella lo ama.", "«Him» es el pronombre para quien recibe la acción. Después del verbo no se dice «he», se dice «him»."],
+    ["Can you help [me]?", "¿Puedes ayudarme?", "«Me» es la forma de «I» cuando recibe la acción. En español lo pegamos al verbo («ayudarme»), pero en inglés va como una palabra aparte, después del verbo."],
+    ["I saw [them] at the party.", "Los vi en la fiesta.", "«Them» reemplaza a varias personas o cosas, así no repites sus nombres. Sirve tanto para gente como para objetos."],
+    ["This gift is for [you].", "Este regalo es para ti.", "Después de una preposición como «for», «with» o «to» también se usa el pronombre de objeto. Y «you» e «it» son fáciles porque no cambian."]
+  ],
+  "A1.3": [ /* There is / There are */
+    ["[There is] a park near my house.", "Hay un parque cerca de mi casa.", "«There is» sirve para decir que algo existe o está en un lugar, y va con una sola cosa. Es tu «hay» en singular."],
+    ["[There are] five people in my family.", "Hay cinco personas en mi familia.", "Con varias cosas cambia a «there are». El verbo concuerda con lo que viene después, no con «there»."],
+    ["[Is there] a bathroom here?", "¿Hay un baño aquí?", "Para preguntar solo invierte el orden: «Is there…?» o «Are there…?». No necesitas «do» ni «does»."],
+    ["There [aren't] any eggs in the fridge.", "No hay huevos en el refrigerador.", "Para negar agrega «not»: «isn't» o «aren't». Con negativo y plural se usa «any»: «any eggs» es como «ningún huevo»."]
+  ],
+  "A1.5": [ /* Preposiciones de lugar */
+    ["The keys are [in] my bag.", "Las llaves están en mi bolso.", "«In» es «dentro de»: algo que está rodeado o metido en algo, como en un bolso, una caja o una ciudad."],
+    ["The book is [on] the table.", "El libro está sobre la mesa.", "«On» es «sobre» algo, tocando su superficie. Sirve para mesas, pisos, estantes… y también para paredes."],
+    ["The cat is [under] the chair.", "El gato está debajo de la silla.", "«Under» es «debajo de». Es fácil de imaginar: si algo está más abajo y cubierto por otra cosa, usa «under»."],
+    ["There is a picture [on] the wall.", "Hay un cuadro en la pared.", "Ojo: en español decimos «en la pared», pero en inglés se dice «on the wall», porque el cuadro está pegado a la superficie. Es una de las diferencias que más confunden."]
+  ],
+  "A1.8": [ /* Have got y have */
+    ["I [have] two brothers.", "Tengo dos hermanos.", "«Have» es el verbo básico para decir lo que tienes: tu familia, tus cosas, tus mascotas. Con «I», «you», «we» y «they» no cambia."],
+    ["She [has] a new laptop.", "Ella tiene una laptop nueva.", "Con «he», «she» e «it», «have» se convierte en «has». Es el único cambio de este verbo, y es fácil de olvidar."],
+    ["I['ve got] a big family.", "Tengo una familia grande.", "«Have got» significa lo mismo que «have» y se usa mucho, sobre todo en inglés británico. Se contrae en «I've got» o «she's got»."],
+    ["[Does] he [have] a sister?", "¿Él tiene una hermana?", "Con «have» normal, la pregunta usa «do» o «does» y «have» vuelve a su forma base. Con «have got», en cambio, se invierte: «Has he got a sister?»."]
+  ],
+  "A1.1": [ /* Presente simple */
+    ["She [works] every day.", "Ella trabaja todos los días.", "El presente simple cuenta rutinas y cosas que siempre pasan. Con «he», «she» e «it», el verbo lleva una «-s»: «works»."],
+    ["I [wake up] at seven.", "Me despierto a las siete.", "Con «I», «you», «we» y «they» el verbo queda tal cual, sin «-s». Es la forma más simple del verbo."],
+    ["The sun [rises] in the east.", "El sol sale por el este.", "Este tiempo también sirve para hechos que siempre son ciertos. Y como «the sun» equivale a «it», el verbo lleva «-s»."],
+    ["He [studies] English at night.", "Él estudia inglés por la noche.", "Si el verbo termina en consonante + «y», la «y» cambia a «-ies»: «study» pasa a «studies». Y con verbos como «go», «watch» o «wash» se agrega «-es»."]
+  ],
+  "A1.11": [ /* Presente simple: negativo y preguntas */
+    ["I [don't] like coffee.", "No me gusta el café.", "Para negar en presente simple, pon «don't» (do not) antes del verbo. El verbo principal no cambia."],
+    ["She [doesn't] work on Sundays.", "Ella no trabaja los domingos.", "Con «he», «she» e «it» se usa «doesn't». Fíjate que el verbo vuelve a su forma base: «work», no «works». La «-s» ya pasó al auxiliar."],
+    ["[Do] you live here?", "¿Vives aquí?", "Para preguntar, pon «Do» al inicio de la frase. El verbo se queda en forma base, sin cambios."],
+    ["[Does] he speak Spanish?", "¿Él habla español?", "Con «he», «she» e «it» la pregunta empieza con «Does» y, otra vez, el verbo va sin «-s»: «speak». Regla de oro: una sola «-s» por frase."]
+  ],
+  "A1.12": [ /* Adverbios de frecuencia */
+    ["I [always] drink coffee in the morning.", "Siempre tomo café en la mañana.", "«Always» dice que algo pasa el 100 % de las veces. Va antes del verbo principal: «I always drink»."],
+    ["She [usually] walks to school.", "Ella normalmente camina a la escuela.", "«Usually» (normalmente) y «often» (a menudo) también van antes del verbo. Piensa en una escala: always, usually, often, sometimes, rarely, never."],
+    ["He is [never] late.", "Él nunca llega tarde.", "Con el verbo «to be», el adverbio cambia de lugar: va después de «is», «am» o «are». Es la excepción que más se olvida."],
+    ["Do you [often] exercise?", "¿Haces ejercicio a menudo?", "En preguntas, el adverbio va entre el sujeto y el verbo. Sirve para preguntar cada cuánto alguien hace algo."]
+  ],
+  "A1.10": [ /* Preguntas con Wh- */
+    ["[What] is your name?", "¿Cuál es tu nombre?", "«What» pregunta por cosas o información: qué o cuál. Con el verbo «to be», la palabra Wh- va primero y luego «is» y el sujeto."],
+    ["[Where] do you live?", "¿Dónde vives?", "«Where» pregunta por un lugar. Con otros verbos, el orden es: palabra Wh- + «do» + sujeto + verbo."],
+    ["[Why] does he study English?", "¿Por qué estudia inglés?", "«Why» pregunta por el motivo, y se responde con «because». Fíjate que con «he» el auxiliar es «does» y el verbo queda en forma base."],
+    ["[How] are you?", "¿Cómo estás?", "«How» pregunta por la forma o el estado de algo. Igual que con «what», si el verbo es «to be», no necesitas «do»."]
+  ],
+  "A1.9": [ /* Can / can't */
+    ["I [can] speak English.", "Puedo hablar inglés.", "«Can» expresa lo que sabes o puedes hacer. Después de «can» el verbo va en forma base y sin «to»: «can speak», no «can to speak»."],
+    ["She [can't] drive.", "Ella no sabe manejar.", "«Can't» es «cannot»: no puedes o no sabes hacerlo. Es la forma de negar, y se reconoce fácil."],
+    ["[Can] you help me?", "¿Puedes ayudarme?", "Para preguntar, «Can» va al inicio de la frase. También sirve para pedir favores de forma amable."],
+    ["He [can] play the guitar.", "Él sabe tocar la guitarra.", "Con «he», «she» e «it», «can» no cambia: nunca lleva «-s». Es de los verbos más cómodos de usar."]
+  ],
+  "A1.13": [ /* Like, love, hate + -ing */
+    ["I [love listening] to music.", "Me encanta escuchar música.", "Después de «love», «like», «enjoy» y «hate» se usa el verbo con «-ing» para hablar de gustos: «love listening»."],
+    ["She [hates waking] up early.", "Ella odia despertarse temprano.", "«Hate» expresa lo contrario. Fíjate: con «she», el primer verbo lleva «-s» (hates), pero el segundo se queda en «-ing»."],
+    ["We [want to] visit Peru.", "Queremos visitar Perú.", "Con «want» no se usa «-ing»: se usa «to + verbo». Dos ideas, dos formas: gusto pide «-ing» y deseo pide «to»."],
+    ["Do you [enjoy swimming]?", "¿Disfrutas nadar?", "«Enjoy» también va con «-ing». Y para preguntar por gustos, usa «Do you like / enjoy + -ing?»."]
+  ],
+  "A2.8": [ /* Imperativos */
+    ["[Open] the window, please.", "Abre la ventana, por favor.", "El imperativo es el verbo solo, sin sujeto: «Open». Sirve para dar instrucciones. Agregar «please» lo hace más amable."],
+    ["[Don't] be late.", "No llegues tarde.", "Para decir que no hagan algo, pon «Don't» antes del verbo. Sirve para advertencias y consejos: «Don't worry»."],
+    ["[Turn left] at the corner.", "Gira a la izquierda en la esquina.", "Los imperativos son la base de las indicaciones: «Turn left», «Go straight», «Stop here». Se dicen sin «you»."],
+    ["Please, [take a seat].", "Por favor, toma asiento.", "Con «please» las órdenes se convierten en peticiones amables. Puede ir al inicio o al final: «Please sit» o «Sit, please»."]
+  ],
+  "A1.14": [ /* Genitivo sajón */
+    ["This is [Tom's] car.", "Este es el coche de Tom.", "Para decir de quién es algo, agrega «'s» al dueño: «Tom's car». En inglés primero va el dueño y después la cosa, al revés que en español."],
+    ["Where is [Maria's] brother?", "¿Dónde está el hermano de María?", "También sirve con personas y relaciones: «Maria's brother» es «el hermano de María». No usamos «de» como en español."],
+    ["My [parents'] house is big.", "La casa de mis padres es grande.", "Si el dueño es plural y ya termina en «-s», solo se agrega el apóstrofo: «parents'». Nada de «-s» extra."],
+    ["The [children's] room is upstairs.", "El cuarto de los niños está arriba.", "Ojo: «children» es plural pero no termina en «-s», así que sí lleva «'s»: «children's». Una excepción que conviene recordar."]
+  ]
+});
+/* DISC-DATA-A1:END */
 /* MISSION:END */
 /* Escenas por unidad. Clave = "home.index" de la teoría. t = [quién(0|1), inglés con [resaltado], español].
    El usuario responde como el personaje que NO habló al final: o = [correcta, mala, mala], oes = traducción de la correcta, e = explicación. */
@@ -34010,7 +34385,7 @@ function missionDrawScene(s){
         <div class="options" id="scOpts"></div>
         <div class="feedback" role="status" aria-live="polite" id="scFb"></div>
       </div>
-      <div class="ds-foot"><button class="btn" id="scGo" disabled>Empezar a entrenar →</button><button type="button" class="ds-skip" id="scSkip">Saltar al entrenamiento</button></div>
+      <div class="ds-foot"><button class="btn" id="scGo" disabled>Continuar</button><button type="button" class="ds-skip" id="scSkip">Saltar al entrenamiento</button></div>
     </div>`;
   const chat = document.getElementById("scChat"), next = document.getElementById("scNext"), trBtn = document.getElementById("scTr");
   const spk = rsIcon("speaker", 16);
@@ -34059,7 +34434,6 @@ function missionDrawScene(s){
       const m = bubble(me, S.o[0], S.oes, true); chat.appendChild(m);
       m.scrollIntoView({block:"nearest", behavior:"smooth"});
       dialogueSpeak(S.o[0], me === 0 ? "A" : "B", .9);
-      if(!turn.querySelector(".say")){ fb.insertAdjacentHTML("afterend", missionSayHTML(S.o[0])); missionSayBind(turn); }
       go.disabled = false;
     });
   };
@@ -34548,20 +34922,32 @@ function dgInsertIndex(box, x, y, skip){
   });
   return n;
 }
-function missionOrderDrag(){
-  const o = current.order, bankEl = document.getElementById("orderBank"), ansEl = document.getElementById("orderAnswer"), chk = document.getElementById("orderCheck");
+function missionOrderDrag(o = current.order, bankEl = document.getElementById("orderBank"), ansEl = document.getElementById("orderAnswer"), chk = document.getElementById("orderCheck"), rerender = renderOrderChips, retext = true){
   if(!o || !bankEl || !ansEl || !chk) return;
-  const hint = document.querySelector("#exPanel .q-text"); if(hint) hint.textContent = "Forma la oración: toca o arrastra las palabras";
+  const hint = retext && document.querySelector("#exPanel .q-text"); if(hint) hint.textContent = "Forma la oración: toca o arrastra las palabras";
   const hover = (x, y)=> ansEl.classList.toggle("dg-over", x >= 0 && dgInside(ansEl.getBoundingClientRect(), x, y, 10));
   [...bankEl.children].forEach((chip, i)=> missionDrag(chip, (x, y)=> {
     if(chk.disabled || !dgInside(ansEl.getBoundingClientRect(), x, y, 10)) return;
-    const w = o.bank.splice(i, 1)[0]; o.chosen.splice(dgInsertIndex(ansEl, x, y, -1), 0, w); renderOrderChips();
+    const w = o.bank.splice(i, 1)[0]; o.chosen.splice(dgInsertIndex(ansEl, x, y, -1), 0, w); rerender();
   }, hover));
   [...ansEl.children].forEach((chip, i)=> missionDrag(chip, (x, y)=> {
     if(chk.disabled) return;
     const w = o.chosen.splice(i, 1)[0];
     if(dgInside(ansEl.getBoundingClientRect(), x, y, 10)) o.chosen.splice(dgInsertIndex(ansEl, x, y, i), 0, w); else o.bank.push(w);
-    renderOrderChips();
+    rerender();
+  }, hover));
+}
+function missionTileDrag(chosen, tiles, ans, pool, repaint){   // «Traducir» con fichas: arrastrar al área de respuesta, reordenar o sacar
+  const hover = (x, y)=> ans.classList.toggle("dg-over", x >= 0 && dgInside(ans.getBoundingClientRect(), x, y, 10));
+  pool.querySelectorAll("[data-add]").forEach(b=> { if(b.disabled) return; missionDrag(b, (x, y)=> {
+    if(!dgInside(ans.getBoundingClientRect(), x, y, 10)) return;
+    const t = tiles.find(t=> t.id === +b.dataset.add); if(!t || chosen.includes(t)) return;
+    chosen.splice(Math.min(dgInsertIndex(ans, x, y, -1), chosen.length), 0, t); repaint();
+  }, hover); });
+  [...ans.querySelectorAll("[data-rm]")].forEach((b, i)=> missionDrag(b, (x, y)=> {
+    const t = chosen.splice(i, 1)[0];
+    if(dgInside(ans.getBoundingClientRect(), x, y, 10)) chosen.splice(Math.min(dgInsertIndex(ans, x, y, i), chosen.length), 0, t);
+    repaint();
   }, hover));
 }
 function missionGapDrag(){
