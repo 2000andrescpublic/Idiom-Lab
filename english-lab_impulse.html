@@ -34062,6 +34062,432 @@ function missionDrawScene(s){
   reveal();
 }
 /* MISSION-SCENE:END */
+/* SCENES-BC:BEGIN */
+/* Escenas B1-B2 (misma estructura que MISSION_SCENES) */
+Object.assign(MISSION_SCENES, {
+  /* ---------- B1 ---------- */
+  "B1.0": {s:["✈️","Antes del viaje"], p:["Alba","Mark"], t:[
+    [0,"Have you [ever] been to Japan, Mark?","¿Has estado alguna vez en Japón, Mark?"],
+    [1,"No, I [have] never been there. But I [have] already bought the tickets!","No, nunca he estado allí. ¡Pero ya compré los pasajes!"],
+    [0,"Lucky you! Have you booked the hotel yet?","¡Qué suerte! ¿Ya reservaste el hotel?"]],
+    o:["No, I haven't booked it yet.","No, I didn't booked it yet.","No, I haven't book it yet."], oes:"No, todavía no lo he reservado.",
+    e:"Presente perfecto: have/has + participio pasado (booked). En negativas «yet» va al final."},
+  "B1.7": {s:["🏠","Una nueva ciudad"], p:["Tina","Ravi"], t:[
+    [0,"How long have you lived in this city, Ravi?","¿Cuánto tiempo llevas viviendo en esta ciudad, Ravi?"],
+    [1,"I [have lived] here for five years. Before that, I [lived] in Bogotá.","Llevo cinco años viviendo aquí. Antes vivía en Bogotá."],
+    [0,"Really? And when did you move here?","¿En serio? ¿Y cuándo te mudaste aquí?"]],
+    o:["I moved here in 2019.","I have moved here in 2019.","I move here in 2019."], oes:"Me mudé aquí en 2019.",
+    e:"Con un momento concreto del pasado (in 2019) usamos pasado simple, no presente perfecto."},
+  "A2.9": {s:["🍫","En la cafetería"], p:["Nora","Chris"], t:[
+    [0,"I [love] this chocolate cake! Do you like it?","¡Me encanta este pastel de chocolate! ¿Te gusta?"],
+    [1,"Yes, I [understand] why you like it. It [tastes] amazing.","Sí, entiendo por qué te gusta. Sabe increíble."],
+    [0,"Great! By the way, do you know our new teacher?","¡Genial! Por cierto, ¿conoces a nuestro nuevo profesor?"]],
+    o:["No, I don't know him yet.","No, I'm not knowing him yet.","No, I don't knowing him yet."], oes:"No, todavía no lo conozco.",
+    e:"«Know» es un verbo estativo: no se usa en presente continuo, aunque hablemos del momento actual."},
+  "B1.2": {s:["🚗","Clase de manejo"], p:["Dana","Sam"], t:[
+    [0,"You [must] wear a seatbelt and you [should] check the mirrors.","Debes usar el cinturón y deberías revisar los espejos."],
+    [1,"OK! [Can] I drive on the highway now?","¡Está bien! ¿Puedo manejar en la autopista ya?"],
+    [0,"Not yet. Do you think you should practice more first?","Todavía no. ¿Crees que deberías practicar más primero?"]],
+    o:["Yes, I should practice more.","Yes, I should to practice more.","Yes, I must to practice more."], oes:"Sí, debería practicar más.",
+    e:"Después de un modal (should, must, can) el verbo va en forma base, sin «to»."},
+  "B1.1": {s:["🌧️","Planes del sábado"], p:["Leah","Omar"], t:[
+    [0,"What are we doing on Saturday?","¿Qué hacemos el sábado?"],
+    [1,"If it [rains], we [will] stay home. If it's sunny, we'll go to the beach.","Si llueve, nos quedaremos en casa. Si hay sol, iremos a la playa."],
+    [0,"Good idea! And what will you do if the beach is closed?","¡Buena idea! ¿Y qué harás si la playa está cerrada?"]],
+    o:["If it is closed, I will call you.","If it will be closed, I will call you.","If it is closed, I would call you."], oes:"Si está cerrada, te llamaré.",
+    e:"Condicional tipo 1: If + presente (is closed), will + verbo. Después de «if» no va «will»."},
+  "B1.3": {s:["📞","Un timbre y un plan"], p:["Ivy","Ben"], t:[
+    [0,"What are your plans for next year, Ben?","¿Cuáles son tus planes para el próximo año, Ben?"],
+    [1,"I'm [going to] study medicine. I already decided.","Voy a estudiar medicina. Ya lo decidí."],
+    [0,"Wow! Oh, someone is at the door. Can you open it?","¡Guau! Oh, alguien está en la puerta. ¿Puedes abrir?"]],
+    o:["Sure, I'll open it.","Sure, I'm going to open it.","Sure, I will opening it."], oes:"Claro, yo abro.",
+    e:"Una decisión espontánea, tomada al hablar, usa «will» (I'll). «Going to» es para planes ya decididos, como el de estudiar medicina."},
+  "B1.5": {s:["📖","Pasatiempos"], p:["Pia","Dan"], t:[
+    [0,"What do you enjoy doing in your free time?","¿Qué disfrutas hacer en tu tiempo libre?"],
+    [1,"I [enjoy] [reading] before bed. And I [decided] [to study] Italian this year.","Disfruto leer antes de dormir. Y este año decidí estudiar italiano."],
+    [0,"Nice! What do you hope to do this summer?","¡Qué bien! ¿Qué esperas hacer este verano?"]],
+    o:["I hope to travel to Italy.","I hope traveling to Italy.","I hope travel to Italy."], oes:"Espero viajar a Italia.",
+    e:"«Hope» va seguido de infinitivo con «to». Verbos como enjoy o avoid, en cambio, usan gerundio (-ing)."},
+  "B1.4": {s:["👩‍🏫","En la escuela"], p:["Ted","Rosa"], t:[
+    [0,"Who is that woman over there?","¿Quién es esa mujer de allá?"],
+    [1,"The woman [who] called yesterday is my new teacher. And this is the book [that] she recommended.","La mujer que llamó ayer es mi nueva profesora. Y este es el libro que ella recomendó."],
+    [0,"Cool! And which one is your brother?","¡Genial! ¿Y cuál es tu hermano?"]],
+    o:["He is the boy who is wearing a red cap.","He is the boy which is wearing a red cap.","He is the boy who he is wearing a red cap."], oes:"Es el chico que lleva una gorra roja.",
+    e:"Para personas usamos «who»; «which» es para cosas. Y el pronombre relativo ya hace de sujeto: no se repite con «he»."},
+  "B1.6": {s:["🎬","Salida al cine"], p:["Liam","Zara"], t:[
+    [0,"You're coming to the party, [aren't] you?","Vienes a la fiesta, ¿verdad?"],
+    [1,"Of course! It's on Friday, [isn't] it?","¡Claro! Es el viernes, ¿no?"],
+    [0,"Yes! And I forgot the time. Can you check it with me?","¡Sí! Y olvidé la hora. ¿Puedes confirmarla conmigo?"]],
+    o:["The party starts at eight, doesn't it?","The party starts at eight, isn't it?","The party starts at eight, doesn't they?"], oes:"La fiesta empieza a las ocho, ¿no?",
+    e:"El «tag» repite el auxiliar de la frase: «starts» está en presente simple → «doesn't it?». Y concuerda con «the party» (it)."},
+  "A2.10": {s:["🚗","Un coche nuevo"], p:["Kate","Joe"], t:[
+    [0,"I bought a [small red] car yesterday!","¡Ayer compré un auto pequeño y rojo!"],
+    [1,"Nice! Is it new?","¡Qué bien! ¿Es nuevo?"],
+    [0,"No, it's an old one. What does your house look like?","No, es usado. ¿Cómo es tu casa?"]],
+    o:["It's a beautiful old house.","It's an old beautiful house.","It's a house old beautiful."], oes:"Es una casa antigua y hermosa.",
+    e:"En inglés los adjetivos siguen un orden: opinión (beautiful) antes que edad (old): a beautiful old house."},
+  "B1.8": {s:["🚌","Llegué tarde"], p:["Ed","Mia"], t:[
+    [0,"Why were you so late for the meeting, Mia?","¿Por qué llegaste tan tarde a la reunión, Mia?"],
+    [1,"When I arrived at the station, the bus [had] already [left].","Cuando llegué a la estación, el bus ya se había ido."],
+    [0,"Oh no! And what had already happened in the meeting when you got there?","¡Oh no! ¿Y qué había pasado ya en la reunión cuando llegaste?"]],
+    o:["The team had already finished the presentation.","The team has already finished the presentation.","The team already had finish the presentation."], oes:"El equipo ya había terminado la presentación.",
+    e:"Pasado perfecto: had + participio, para lo que ocurrió ANTES de otro momento del pasado (cuando llegaste)."},
+  "B1.9": {s:["⏰","Excusas"], p:["Nick","Lola"], t:[
+    [0,"Why were you late today?","¿Por qué llegaste tarde hoy?"],
+    [1,"I was late [because] the bus broke down. [However], I called you.","Llegué tarde porque el bus se averió. Sin embargo, te llamé."],
+    [0,"Fine. Did you finish the report, even after such a long day?","Bien. ¿Terminaste el informe, incluso después de un día tan largo?"]],
+    o:["Yes, although I was very tired.","Yes, despite I was very tired.","Yes, although of being very tired."], oes:"Sí, aunque estaba muy cansada.",
+    e:"«Although» va seguido de una oración completa (sujeto + verbo). «Despite» necesita un sustantivo o -ing: despite being tired."},
+  "B1.10": {s:["💡","Ordenando la casa"], p:["Ruth","Gus"], t:[
+    [0,"Please turn [off] the light, Gus.","Por favor apaga la luz, Gus."],
+    [1,"Sure. I'll turn [it] [off] right now.","Claro. La apago ahora mismo."],
+    [0,"Thanks! And did you throw away the old newspapers?","¡Gracias! ¿Y botaste los periódicos viejos?"]],
+    o:["Yes, I threw them away.","Yes, I threw away them.","Yes, I threw away they."], oes:"Sí, los boté.",
+    e:"En un phrasal verb separable, el pronombre va en medio: threw them away (no «threw away them»)."},
+  "B1.11": {s:["💻","Comparando cosas"], p:["Vic","Ana"], t:[
+    [0,"My brother is [as tall as] me, but he isn't [as fast as] me.","Mi hermano es tan alto como yo, pero no es tan rápido como yo."],
+    [1,"Ha ha! My new laptop is [more expensive] than the old one.","¡Ja, ja! Mi laptop nueva es más cara que la anterior."],
+    [0,"Really? Is it cheaper than the old one? I think it's not.","¿En serio? ¿Es más barata que la anterior? Creo que no."]],
+    o:["No, it isn't as cheap as the old one.","No, it isn't so cheaper as the old one.","No, it isn't as cheaper than the old one."], oes:"No, no es tan barata como la anterior.",
+    e:"Estructura «as + adjetivo + as»: not as cheap as. No se mezcla con -er ni con «than»."},
+  "B1.12": {s:["🚉","En la estación"], p:["Paula","Lee"], t:[
+    [0,"Hello! How can I help you?","¡Hola! ¿En qué puedo ayudarle?"],
+    [1,"Excuse me. Could you tell me where the station [is]?","Disculpe. ¿Podría decirme dónde está la estación?"],
+    [0,"Two blocks away. Anything else?","A dos cuadras. ¿Algo más?"]],
+    o:["Yes, do you know what time the museum opens?","Yes, do you know what time does the museum open?","Yes, do you know what time the museum does open?"], oes:"Sí, ¿sabe a qué hora abre el museo?",
+    e:"En una pregunta indirecta el orden es el de una afirmación (the museum opens), sin «do/does»."},
+  "B1.13": {s:["🏭","Visita a la fábrica"], p:["Ella","Tom"], t:[
+    [0,"Welcome! Our chocolate [is] [made] here in Belgium.","¡Bienvenidos! Nuestro chocolate se hace aquí en Bélgica."],
+    [1,"Interesting! And when [was] this factory [built]?","¡Interesante! ¿Y cuándo se construyó esta fábrica?"],
+    [0,"In 1920. Now guess: where is our chocolate exported?","En 1920. Ahora adivina: ¿adónde se exporta nuestro chocolate?"]],
+    o:["It is exported to many countries.","It is export to many countries.","It are exported to many countries."], oes:"Se exporta a muchos países.",
+    e:"Pasiva: be + participio pasado. Con «it» usamos «is»: it is exported."},
+  "B2.4": {s:["🌆","Recuerdos"], p:["Iris","Paul"], t:[
+    [0,"I [used to] live in Mexico City. Now I live in Madrid.","Antes vivía en Ciudad de México. Ahora vivo en Madrid."],
+    [1,"Really? I [didn't use to] like big cities when I was young.","¿En serio? Antes no me gustaban las ciudades grandes cuando era joven."],
+    [0,"Same here! What did you use to do on weekends as a kid?","¡Igual yo! ¿Qué solías hacer los fines de semana de niño?"]],
+    o:["I used to play football with my cousins.","I use to play football with my cousins.","I used to playing football with my cousins."], oes:"Solía jugar fútbol con mis primos.",
+    e:"«Used to» + verbo en forma base, para hábitos del pasado que ya no ocurren."},
+  "B1.14": {s:["🗣️","Contando lo que dijeron"], p:["Rita","Sol"], t:[
+    [0,"What did Tom say?","¿Qué dijo Tom?"],
+    [1,"He said he [was] tired and that he [worked] too much.","Dijo que estaba cansado y que trabajaba demasiado."],
+    [0,"Poor Tom! Ana texted me: “I am very happy.” Can you tell Tom what she said?","¡Pobre Tom! Ana me escribió: «Estoy muy feliz». ¿Le cuentas a Tom lo que dijo?"]],
+    o:["She said she was very happy.","She said me that she was very happy.","She said she be very happy."], oes:"Dijo que estaba muy feliz.",
+    e:"En el estilo indirecto el verbo retrocede un tiempo (am → was). Y con «said» no se añade «me» (se usa «told me»)."},
+  "B1.15": {s:["💭","¿Y si…?"], p:["Max","Jo"], t:[
+    [0,"What would you do if you won the lottery?","¿Qué harías si ganaras la lotería?"],
+    [1,"If I [won] the lottery, I [would] travel the world.","Si ganara la lotería, viajaría por el mundo."],
+    [0,"Nice! And what would you do if you had more free time?","¡Qué bien! ¿Y qué harías si tuvieras más tiempo libre?"]],
+    o:["If I had more free time, I would learn Italian.","If I would have more free time, I would learn Italian.","If I have more free time, I would learn Italian."], oes:"Si tuviera más tiempo libre, aprendería italiano.",
+    e:"Condicional tipo 2: If + pasado simple, would + verbo base. Después de «if» no va «would»."},
+  "B1.16": {s:["🏛️","En el museo"], p:["Ken","Sara"], t:[
+    [0,"Good morning! You are not [allowed] to take photos with a flash.","Buenos días. No está permitido tomar fotos con flash."],
+    [1,"Oh, sorry! [May] I use my phone without flash?","¡Oh, perdón! ¿Puedo usar mi teléfono sin flash?"],
+    [0,"Yes, you may. Do you have any other questions?","Sí, puede. ¿Tiene alguna otra pregunta?"]],
+    o:["Yes. Could I leave my bag here, please?","Yes. Could I to leave my bag here, please?","Yes. Am I allowed leave my bag here, please?"], oes:"Sí. ¿Podría dejar mi bolso aquí, por favor?",
+    e:"«Could I + verbo base» pide permiso con cortesía. Y «be allowed» necesita «to»: am I allowed to leave…"},
+  "B1.17": {s:["🍕","Gustos"], p:["Al","Bea"], t:[
+    [0,"I love pizza.","Me encanta la pizza."],
+    [1,"[So] [do] I! I can't cook it, though.","¡A mí también! Aunque no sé cocinarla."],
+    [0,"Neither can I. And I don't like spicy food.","Yo tampoco. Y no me gusta la comida picante."]],
+    o:["Neither do I.","So do I.","Neither don't I."], oes:"A mí tampoco.",
+    e:"Para coincidir con algo negativo usamos «Neither + auxiliar + sujeto»: Neither do I. «So do I» coincide con algo afirmativo, y no se repite la negación."},
+  /* ---------- B2 ---------- */
+  "B2.0": {s:["📰","Noticias del barrio"], p:["Cara","Ben"], t:[
+    [0,"Did you read about the robbery? The bank [was] [robbed] last night.","¿Leíste sobre el robo? El banco fue asaltado anoche."],
+    [1,"Yes! Two men [have] [been] [arrested], I think.","¡Sí! Creo que dos hombres han sido arrestados."],
+    [0,"Right. Do you know who found the stolen car?","Así es. ¿Sabes quién encontró el auto robado?"]],
+    o:["The car was found by a neighbour.","The car was find by a neighbour.","The car has found by a neighbour."], oes:"El auto fue encontrado por un vecino.",
+    e:"Pasiva: be + participio pasado (was found), y el agente se introduce con «by»."},
+  "B2.1": {s:["🤔","Un consejo"], p:["Fay","Ivan"], t:[
+    [0,"My boss is angry with me. What should I do?","Mi jefe está enojado conmigo. ¿Qué debería hacer?"],
+    [1,"If I [were] you, I [would] apologize.","Si yo fuera tú, me disculparía."],
+    [0,"You're right. And what would you do if he didn't accept it?","Tienes razón. ¿Y qué harías si no la aceptara?"]],
+    o:["If he didn't accept it, I would talk to HR.","If he wouldn't accept it, I would talk to HR.","If he doesn't accept it, I would talk to HR."], oes:"Si no la aceptara, hablaría con Recursos Humanos.",
+    e:"Condicional tipo 2: If + pasado simple, would + verbo base. Después de «if» no va «would»."},
+  "C1.0": {s:["🏡","¿Cuánto tiempo?"], p:["Nell","Omar"], t:[
+    [0,"How long have you [been] [living] here, Omar?","¿Cuánto tiempo llevas viviendo aquí, Omar?"],
+    [1,"I [have been living] here for ten years. I [have read] three books this month, too!","Llevo diez años viviendo aquí. ¡Además este mes he leído tres libros!"],
+    [0,"Impressive! You look tired. What have you been doing today?","¡Impresionante! Te ves cansado. ¿Qué has estado haciendo hoy?"]],
+    o:["I've been cleaning the house all morning.","I've cleaned the house all morning.","I'm cleaning the house all morning."], oes:"He estado limpiando la casa toda la mañana.",
+    e:"Una actividad que empezó en el pasado y llega hasta ahora (all morning), y cuyo efecto se nota (estás cansado) → presente perfecto continuo."},
+  "B2.9": {s:["😴","Un día largo"], p:["Ari","Lou"], t:[
+    [0,"You looked exhausted yesterday.","Ayer te veías agotado."],
+    [1,"I was tired because I [had] [been] [working] all day.","Estaba cansado porque había estado trabajando todo el día."],
+    [0,"I see. And Max? Why was he so angry when I saw him?","Ya veo. ¿Y Max? ¿Por qué estaba tan enojado cuando lo vi?"]],
+    o:["He had been waiting for an hour when you arrived.","He has been waiting for an hour when you arrived.","He had waiting for an hour when you arrived."], oes:"Había estado esperando una hora cuando llegaste.",
+    e:"Pasado perfecto continuo: had been + verbo-ing, para una acción prolongada que venía ocurriendo antes de otro momento pasado."},
+  "B2.3": {s:["🌙","¿Dónde está Sara?"], p:["Rex","Uma"], t:[
+    [0,"Sara isn't answering her phone.","Sara no contesta el teléfono."],
+    [1,"She [must] be tired after that long flight. Or she [might] be at work.","Debe de estar cansada después de ese vuelo largo. O quizá está en el trabajo."],
+    [0,"Look, her car is outside and all the lights are off. Where do you think she is?","Mira, su auto está afuera y todas las luces están apagadas. ¿Dónde crees que está?"]],
+    o:["She must be at home.","She can't be at home.","She must to be at home."], oes:"Debe de estar en casa.",
+    e:"«Must» expresa una deducción casi segura (el auto está afuera → está en casa). «Can't» expresaría que es imposible."},
+  "B2.7": {s:["📝","Después del examen"], p:["Pru","Jack"], t:[
+    [0,"I failed the exam. I [should] [have] studied more.","Reprobé el examen. Debí haber estudiado más."],
+    [1,"Don't worry. You [could] [have] passed if you'd slept more.","No te preocupes. Podrías haber aprobado si hubieras dormido más."],
+    [0,"I stayed up all night playing games. Was that a good idea?","Me quedé despierta toda la noche jugando. ¿Fue una buena idea?"]],
+    o:["No, you shouldn't have stayed up all night.","No, you shouldn't stayed up all night.","No, you shouldn't have stay up all night."], oes:"No, no debiste quedarte despierta toda la noche.",
+    e:"«Should have + participio» (o «shouldn't have») para criticar o lamentar algo que ya pasó."},
+  "B2.2": {s:["🏢","Después de la reunión"], p:["Bea","Cal"], t:[
+    [0,"What did the manager say in the meeting?","¿Qué dijo la gerente en la reunión?"],
+    [1,"She said she [was] tired and that she [had] [finished] the report.","Dijo que estaba cansada y que había terminado el informe."],
+    [0,"Thanks. She told me, “I will call you tomorrow.” What did she tell me? Say it in reported speech.","Gracias. Me dijo: «Te llamaré mañana». ¿Qué me dijo? Dilo en estilo indirecto."]],
+    o:["She said she would call you the next day.","She said she will call you the next day.","She said me she would call you the next day."], oes:"Dijo que te llamaría al día siguiente.",
+    e:"Estilo indirecto: will → would y tomorrow → the next day. Con «said» no se añade «me» (se usa «told me»)."},
+  "B2.5": {s:["✈️","Un vuelo perdido"], p:["Deb","Sid"], t:[
+    [0,"I missed my flight this morning!","¡Perdí mi vuelo esta mañana!"],
+    [1,"Oh no! If you [had] left earlier, you [would] [have] caught it.","¡Oh no! Si hubieras salido antes, lo habrías alcanzado."],
+    [0,"I know... What would you have done in my place?","Lo sé... ¿Qué habrías hecho tú en mi lugar?"]],
+    o:["If I had known, I would have left earlier.","If I would have known, I would have left earlier.","If I knew, I would have left earlier."], oes:"Si lo hubiera sabido, habría salido antes.",
+    e:"Condicional tipo 3: If + pasado perfecto (had known), would have + participio. Después de «if» no va «would»."},
+  "B2.8": {s:["🎮","Permiso para salir"], p:["Lina","Theo"], t:[
+    [0,"You can go out [as long as] you finish your homework.","Puedes salir siempre que termines la tarea."],
+    [1,"OK. But I'll be late [unless] I leave now.","Bien. Pero llegaré tarde a menos que salga ahora."],
+    [0,"Take a jacket [in case] it rains. Can I trust you to be home by nine?","Lleva una chaqueta por si llueve. ¿Puedo confiar en que estarás en casa a las nueve?"]],
+    o:["Yes, as long as the bus is on time.","Yes, as long as the bus will be on time.","Yes, unless the bus is on time."], oes:"Sí, siempre que el bus llegue a tiempo.",
+    e:"«As long as» = con la condición de que; va con presente (is), no con «will». «Unless» significa «a menos que» y no encaja aquí."},
+  "B2.13": {s:["🌴","Planes a futuro"], p:["Kim","Rob"], t:[
+    [0,"This time next week, I [will] [be] [lying] on a beach.","A esta hora la próxima semana estaré tumbada en una playa."],
+    [1,"Lucky you! By 2030, I [will] [have] [graduated] and I'll be working abroad.","¡Qué suerte! Para 2030 ya me habré graduado y estaré trabajando en el extranjero."],
+    [0,"Great! Is your project ready? Will you finish it by Friday?","¡Genial! ¿Tu proyecto está listo? ¿Lo terminarás para el viernes?"]],
+    o:["Yes, I will have finished it by Friday.","Yes, I will be finished it by Friday.","Yes, I will finishing it by Friday."], oes:"Sí, para el viernes ya lo habré terminado.",
+    e:"Futuro perfecto: will have + participio, para algo que estará terminado antes de un momento futuro (by Friday)."},
+  "B2.10": {s:["🍽️","Elegir en el restaurante"], p:["Dee","Will"], t:[
+    [0,"[Both] of my brothers love this place.","A mis dos hermanos les encanta este lugar."],
+    [1,"Nice! We can sit at [either] table. Which one do you prefer?","¡Qué bien! Podemos sentarnos en cualquiera de las dos mesas. ¿Cuál prefieres?"],
+    [0,"I don't mind. Do you want the pasta or the pizza? Choose one.","Me da igual. ¿Quieres la pasta o la pizza? Elige una."]],
+    o:["Either is fine for me.","Neither is fine for me.","Both is fine for me."], oes:"Cualquiera está bien para mí.",
+    e:"«Either» = cualquiera de los dos; «neither» = ninguno de los dos (no encaja aquí). «Both» lleva verbo plural: both are."},
+  "B2.11": {s:["🚪","Antes de salir"], p:["Ola","Ted"], t:[
+    [0,"Where is Ben? He looks different today.","¿Dónde está Ben? Se ve diferente hoy."],
+    [1,"He stopped [smoking] last year. Today he stopped [to buy] water on the way.","Dejó de fumar el año pasado. Hoy se detuvo a comprar agua en el camino."],
+    [0,"Ah, I see! Please don't forget to lock the door tonight.","¡Ah, ya veo! Por favor no olvides cerrar la puerta con llave esta noche."]],
+    o:["Don't worry, I won't forget to lock it.","Don't worry, I won't forget locking it.","Don't worry, I won't forget lock it."], oes:"No te preocupes, no olvidaré cerrarla.",
+    e:"«Forget to + verbo» = olvidar hacer algo que debías hacer. «Forget + -ing» = olvidar algo que ya hiciste."},
+  "B2.12": {s:["🚗","El viaje"], p:["Gia","Luke"], t:[
+    [0,"[In spite of] the traffic, we arrived on time.","A pesar del tráfico, llegamos a tiempo."],
+    [1,"Great! We left early [in order to] avoid it. My brother is late [whereas] I am always early.","¡Genial! Salimos temprano para evitarlo. Mi hermano llega tarde, mientras que yo siempre llego temprano."],
+    [0,"Ha ha! Why did you take the highway?","¡Ja, ja! ¿Por qué tomaron la autopista?"]],
+    o:["We took it so that we could arrive earlier.","We took it so that arriving earlier.","We took it in spite of we could arrive earlier."], oes:"La tomamos para poder llegar más temprano.",
+    e:"«So that» + oración (sujeto + could) expresa propósito. «In spite of» expresa contraste y va con sustantivo o -ing."},
+  "B2.14": {s:["🕷️","Miedos y gustos"], p:["Nia","Sam"], t:[
+    [0,"I'm afraid [of] spiders. What about you?","Les tengo miedo a las arañas. ¿Y tú?"],
+    [1,"Not me. I'm interested [in] learning about them, actually.","Yo no. De hecho, me interesa aprender sobre ellas."],
+    [0,"Really? Then what are you afraid of?","¿En serio? Entonces, ¿a qué le tienes miedo?"]],
+    o:["I'm afraid of heights.","I'm afraid from heights.","I'm afraid about heights."], oes:"Le tengo miedo a las alturas.",
+    e:"El adjetivo «afraid» va con «of». Las preposiciones dependientes se aprenden junto con la palabra."},
+  "C2.0": {s:["🏠","Reformas en casa"], p:["Lia","Tom"], t:[
+    [0,"Your car looks new! Did you repair it yourself?","¡Tu auto se ve nuevo! ¿Lo reparaste tú mismo?"],
+    [1,"No, I [had] it [repaired] yesterday. And I'm [getting] my hair [cut] tomorrow.","No, lo hice reparar ayer. Y mañana me van a cortar el pelo."],
+    [0,"Nice. Are you painting your house yourselves too?","Qué bien. ¿Ustedes también pintan su casa ustedes mismos?"]],
+    o:["No, we're having it painted next week.","No, we're having it paint next week.","No, we have painted it next week."], oes:"No, la vamos a hacer pintar la próxima semana.",
+    e:"Causativo: have + objeto + participio (having it painted): otra persona hace la acción por ti."},
+  "B2.15": {s:["👮","Un testigo"], p:["Ray","Mia"], t:[
+    [0,"Ma'am, the man [whose] wallet was stolen is here. Do you know him?","Señora, el hombre a quien le robaron la billetera está aquí. ¿Lo conoce?"],
+    [1,"Yes! And that is the house [where] it happened.","¡Sí! Y esa es la casa donde ocurrió."],
+    [0,"Right. Now tell me about the other woman. Who is she?","Bien. Ahora hábleme de la otra mujer. ¿Quién es?"]],
+    o:["She is the woman whose car was stolen.","She is the woman who car was stolen.","She is the woman which car was stolen."], oes:"Es la mujer a quien le robaron el auto.",
+    e:"«Whose» indica posesión (el auto de quién). «Who» y «which» no expresan posesión."},
+  "B2.16": {s:["📞","Al llegar"], p:["Ken","Ivy"], t:[
+    [0,"I'll call you [when] I arrive.","Te llamaré cuando llegue."],
+    [1,"Great! Wait here [until] I come back. I'll join you [as soon as] I finish.","¡Genial! Espera aquí hasta que vuelva. Me reuniré contigo en cuanto termine."],
+    [0,"Okay. So when will you call me?","Bien. Entonces, ¿cuándo me llamarás?"]],
+    o:["I'll call you as soon as I arrive.","I'll call you as soon as I will arrive.","I'll call you as soon as I arrived."], oes:"Te llamaré en cuanto llegue.",
+    e:"Después de as soon as / when / until, para hablar del futuro se usa presente simple (arrive), no «will»."},
+  "B2.17": {s:["🌏","Una nueva ciudad"], p:["Pao","Tim"], t:[
+    [0,"I [used to] live in Peru. Now I live in London.","Antes vivía en Perú. Ahora vivo en Londres."],
+    [1,"Is it hard? I'm [used to] waking up early, but London is very cold.","¿Es difícil? Estoy acostumbrado a despertarme temprano, pero Londres es muy frío."],
+    [0,"Yes, but I'm [getting used to] it. And you? Are you used to the cold?","Sí, pero me estoy acostumbrando. ¿Y tú? ¿Estás acostumbrado al frío?"]],
+    o:["Yes, I'm used to the cold.","Yes, I used to the cold.","Yes, I'm use to the cold."], oes:"Sí, estoy acostumbrado al frío.",
+    e:"«Be used to + sustantivo/-ing» = estar acostumbrado a. «I used to» habla de hábitos del pasado."},
+  "B2.18": {s:["📱","Por teléfono"], p:["Jay","Cleo"], t:[
+    [0,"Hi Cleo! Who are you texting [to]?","¡Hola, Cleo! ¿A quién le escribes?"],
+    [1,"My cousin. Where are you [from], Jay?","A mi primo. ¿De dónde eres, Jay?"],
+    [0,"I'm from Chile. I'm going to the cinema tonight.","Soy de Chile. Esta noche voy al cine."]],
+    o:["Nice! Who are you going with?","Nice! With who you are going?","Nice! Who you are going with?"], oes:"¡Qué bien! ¿Con quién vas?",
+    e:"En preguntas informales la preposición se queda al final: Who are you going with? Además, en la pregunta el auxiliar va antes del sujeto."}
+});
+/* Escenas C1-C2 */
+Object.assign(MISSION_SCENES, {
+  /* ---------- C1 ---------- */
+  "C1.1": {s:["💭","Arrepentimientos"], p:["Eva","Sid"], t:[
+    [0,"I [wish] I knew the answer to question five.","Ojalá supiera la respuesta a la pregunta cinco."],
+    [1,"Me too. I [wish] I [had] studied harder last week.","Yo también. Ojalá hubiera estudiado más la semana pasada."],
+    [0,"If only we had more time! Is there anything you regret about last summer?","¡Ojalá tuviéramos más tiempo! ¿Hay algo de lo que te arrepientas del verano pasado?"]],
+    o:["I wish I had traveled more.","I wish I would travel more last summer.","I wish I traveled more last summer."], oes:"Ojalá hubiera viajado más.",
+    e:"Para lamentar algo del pasado usamos «wish + pasado perfecto» (had traveled). «Wish + pasado simple» habla de una situación presente."},
+  "C1.2": {s:["😮","Un día caótico"], p:["Hugo","Lea"], t:[
+    [0,"[Never] have I seen such chaos at the airport.","Nunca había visto tanto caos en el aeropuerto."],
+    [1,"[Not only] did they lose my bag, [but] they also cancelled my flight!","¡No solo perdieron mi maleta, sino que también cancelaron mi vuelo!"],
+    [0,"Unbelievable! How did you feel when that happened?","¡Increíble! ¿Cómo te sentiste cuando pasó?"]],
+    o:["Never in my life have I been so angry.","Never in my life I have been so angry.","Never in my life have been I so angry."], oes:"Nunca en mi vida había estado tan enojada.",
+    e:"Tras una expresión negativa al inicio (never in my life) se invierte el orden: auxiliar + sujeto (have I been)."},
+  "C1.3": {s:["👨‍👩‍👧","Hablando de la familia"], p:["Ida","Noah"], t:[
+    [0,"My brother, [who] lives in Spain, is visiting next month.","Mi hermano, que vive en España, nos visita el próximo mes."],
+    [1,"How lovely! My sister, [who] is a doctor, might join us.","¡Qué lindo! Mi hermana, que es doctora, quizá se una a nosotros."],
+    [0,"Great! Tell me about your hometown.","¡Genial! Cuéntame de tu ciudad natal."]],
+    o:["Valencia, which is on the coast, is beautiful in summer.","Valencia, that is on the coast, is beautiful in summer.","Valencia which is on the coast, is beautiful in summer."], oes:"Valencia, que está en la costa, es hermosa en verano.",
+    e:"En una oración de relativo no definitoria (información extra) se usa «which/who», nunca «that», y va entre comas."},
+  "C1.4": {s:["🧩","El culpable"], p:["Rosa","Ian"], t:[
+    [0,"Who solved the problem in the end?","¿Quién resolvió el problema al final?"],
+    [1,"It was Sarah [who] solved it! [What] I need now is a good night's sleep.","¡Fue Sarah quien lo resolvió! Lo que necesito ahora es una buena noche de sueño."],
+    [0,"Ha! What I need is a coffee. Do you know who broke the printer?","¡Ja! Lo que yo necesito es un café. ¿Sabes quién rompió la impresora?"]],
+    o:["It was Tom who broke it.","It was Tom that he broke it.","Was Tom who broke it."], oes:"Fue Tom quien la rompió.",
+    e:"Oración enfática (cleft): It was + persona + who/that + verbo, sin repetir el sujeto (no «he»)."},
+  "C1.5": {s:["🏖️","Sugerencias y negaciones"], p:["Cam","Zoe"], t:[
+    [0,"What did Dan say about the holiday?","¿Qué dijo Dan sobre las vacaciones?"],
+    [1,"He [suggested] [going] to the beach. And Ana [denied] [taking] the money!","Sugirió ir a la playa. ¡Y Ana negó haber tomado el dinero!"],
+    [0,"Wow! Ana told me, “I didn't take it.” How would you report that?","¡Guau! Ana me dijo: «No lo tomé». ¿Cómo lo dirías en estilo indirecto?"]],
+    o:["She denied taking it.","She denied to take it.","She denied that she to take it."], oes:"Negó haberlo tomado.",
+    e:"«Deny» va seguido de gerundio (denied taking). No se usa infinitivo con «to» después de deny."},
+  "B2.6": {s:["💐","Un malentendido"], p:["Ivo","Mel"], t:[
+    [0,"I [do] like your new haircut!","¡Me gusta mucho tu nuevo corte de pelo!"],
+    [1,"Thanks! I thought you didn't notice it.","¡Gracias! Pensé que no lo habías notado."],
+    [0,"Of course I noticed! By the way, you told me you forgot my birthday. Is that true?","¡Claro que lo noté! Por cierto, me dijiste que olvidaste mi cumpleaños. ¿Es cierto?"]],
+    o:["I did remember it! I bought you a gift.","I do remembered it! I bought you a gift.","I did remembered it! I bought you a gift."], oes:"¡Sí me acordé! Te compré un regalo.",
+    e:"Énfasis con did + verbo en forma base (did remember), para insistir o contradecir. Nunca «did» + pasado."},
+  "C1.6": {s:["🔦","Un pequeño misterio"], p:["Nia","Pol"], t:[
+    [0,"The lights are off. They [must] [have] gone out.","Las luces están apagadas. Deben de haberse ido."],
+    [1,"He [can't] [have] finished already. It's only ten.","No puede haber terminado ya. Son solo las diez."],
+    [0,"True. Look, the window is broken. What do you think happened?","Cierto. Mira, la ventana está rota. ¿Qué crees que pasó?"]],
+    o:["Someone must have broken in.","Someone must had broken in.","Someone must to have broken in."], oes:"Alguien debe de haber entrado a la fuerza.",
+    e:"Deducción sobre el pasado: must have + participio (broken). Después de «must» no va «had» ni «to»."},
+  "C1.7": {s:["🏚️","Leyendas del pueblo"], p:["Gil","Hana"], t:[
+    [0,"It is [said] that the house is haunted.","Se dice que la casa está embrujada."],
+    [1,"Really? The owner is [believed] [to] be very rich.","¿En serio? Se cree que el dueño es muy rico."],
+    [0,"Interesting. And what do people say about the mayor?","Interesante. ¿Y qué dice la gente del alcalde?"]],
+    o:["He is said to be very honest.","He is said be very honest.","He says to be very honest."], oes:"Se dice que es muy honesto.",
+    e:"Pasiva con verbos de opinión: he is said to + verbo (o It is said that + oración)."},
+  "C1.8": {s:["🚶","Camino a casa"], p:["Mo","Ruby"], t:[
+    [0,"[Walking] down the street, I saw an old friend.","Caminando por la calle, vi a un viejo amigo."],
+    [1,"[Having] [finished] the report, I went home early.","Habiendo terminado el informe, me fui temprano a casa."],
+    [0,"Nice! And what did you do after school?","¡Qué bien! ¿Y tú qué hiciste después del colegio?"]],
+    o:["Having finished school, I moved to Madrid.","Having finish school, I moved to Madrid.","Having been finished school, I moved to Madrid."], oes:"Habiendo terminado el colegio, me mudé a Madrid.",
+    e:"Cláusula de participio perfecto: having + participio (having finished), para una acción anterior a la principal."},
+  "C1.9": {s:["📊","Reunión de resultados"], p:["Vega","Hale"], t:[
+    [0,"The plan was costly; [nevertheless], it was approved.","El plan fue costoso; sin embargo, fue aprobado."],
+    [1,"[Moreover], the results were reliable.","Además, los resultados fueron confiables."],
+    [0,"Exactly. Now, the budget for the second project was very low. What was the result?","Exacto. Ahora bien, el presupuesto del segundo proyecto era muy bajo. ¿Cuál fue el resultado?"]],
+    o:["Consequently, the project was delayed.","Nevertheless, the project was delayed.","Whereas, the project was delayed."], oes:"En consecuencia, el proyecto se retrasó.",
+    e:"«Consequently» introduce una consecuencia (poco presupuesto → retraso). «Nevertheless» expresa contraste y «whereas» compara dos ideas."},
+  "C1.10": {s:["🛍️","En la tienda"], p:["Ana","Ben"], t:[
+    [0,"Which dress do you like?","¿Qué vestido te gusta?"],
+    [1,"The blue [one]. Will it rain today? I hope [not].","El azul. ¿Lloverá hoy? Espero que no."],
+    [0,"Me too. Do you think Maria will come to the party?","Yo también. ¿Crees que María vendrá a la fiesta?"]],
+    o:["I think so.","I think it.","I think that so it."], oes:"Creo que sí.",
+    e:"«So» sustituye a toda la oración con verbos como think, hope o believe: I think so / I hope not."},
+  "C1.11": {s:["🔬","Presentando resultados"], p:["Ito","Lea"], t:[
+    [0,"The results [suggest] that the method is effective.","Los resultados sugieren que el método es eficaz."],
+    [1,"Yes. Students [tend] to learn faster with practice.","Sí. Los estudiantes tienden a aprender más rápido con práctica."],
+    [0,"Right. Can you state our conclusion without sounding too certain?","Bien. ¿Puedes expresar nuestra conclusión sin sonar demasiado categórica?"]],
+    o:["The data seem to suggest that it may be effective.","The data prove that it is definitely effective.","The data say that it always works."], oes:"Los datos parecen sugerir que podría ser eficaz.",
+    e:"El lenguaje cauteloso (hedging) usa verbos y modales suaves (seem to, may) en lugar de afirmaciones absolutas."},
+  "C1.12": {s:["🕵️","Después del accidente"], p:["Tea","Kai"], t:[
+    [0,"He denied [having] [taken] the money.","Negó haber tomado el dinero."],
+    [1,"And she seems [to] [have] forgotten her promise.","Y ella parece haber olvidado su promesa."],
+    [0,"Right. What did the driver say about the accident?","Cierto. ¿Qué dijo el conductor sobre el accidente?"]],
+    o:["He admitted having driven too fast.","He admitted having drive too fast.","He admitted to have driving too fast."], oes:"Admitió haber conducido demasiado rápido.",
+    e:"Gerundio perfecto: having + participio (having driven), para una acción anterior al verbo principal."},
+  "C1.13": {s:["🌎","Geografía y viajes"], p:["Sol","Marc"], t:[
+    [0,"[The] Amazon is [the] longest river in South America.","El Amazonas es el río más largo de Sudamérica."],
+    [1,"Yes! [Life] is beautiful there.","¡Sí! La vida es hermosa allí."],
+    [0,"Where would you love to travel next?","¿Adónde te encantaría viajar después?"]],
+    o:["I'd love to visit the Alps.","I'd love to visit Alps.","I'd love to visit an Alps."], oes:"Me encantaría visitar los Alpes.",
+    e:"Las cordilleras y los ríos llevan «the» (the Alps, the Amazon). Un nombre plural no lleva «a/an»."},
+  "C1.14": {s:["🎥","Salida al cine"], p:["Iva","Rob"], t:[
+    [0,"How was the film?","¿Cómo estuvo la película?"],
+    [1,"It was [absolutely] fantastic! The ending was [utterly] shocking.","¡Fue absolutamente fantástica! El final fue totalmente impactante."],
+    [0,"Wow. And was the popcorn good?","Guau. ¿Y las palomitas estaban buenas?"]],
+    o:["Yes, it was absolutely delicious!","Yes, it was very delicious!","Yes, it was absolutely good!"], oes:"¡Sí, estaban absolutamente deliciosas!",
+    e:"Con adjetivos extremos (delicious, fantastic) usamos «absolutely/utterly», no «very»; con adjetivos normales (good), «very» o «fairly»."},
+  /* ---------- C2 ---------- */
+  "C2.1": {s:["🤷","Consecuencias"], p:["Lena","Paco"], t:[
+    [0,"If I hadn't missed the flight, I [would] be there now.","Si no hubiera perdido el vuelo, estaría allí ahora."],
+    [1,"And if she [had] studied, she would pass the exam now.","Y si ella hubiera estudiado, aprobaría el examen ahora."],
+    [0,"Exactly. What would your life be like now if you had taken that job in Paris?","Exacto. ¿Cómo sería tu vida ahora si hubieras aceptado ese trabajo en París?"]],
+    o:["If I had taken it, I would be living in Paris now.","If I took it, I would be living in Paris now.","If I had taken it, I would have lived in Paris now."], oes:"Si lo hubiera aceptado, estaría viviendo en París ahora.",
+    e:"Condicional mixto: If + pasado perfecto (causa en el pasado), would + verbo base (resultado en el presente)."},
+  "C2.2": {s:["🔊","El ruido del vecino"], p:["Gus","Ivy"], t:[
+    [0,"I can't [put up with] this noise anymore.","Ya no aguanto este ruido."],
+    [1,"Me neither. Yesterday I [came up with] a plan: we'll talk to the neighbours.","Yo tampoco. Ayer se me ocurrió un plan: hablaremos con los vecinos."],
+    [0,"Good idea. But what if they don't listen?","Buena idea. ¿Pero y si no escuchan?"]],
+    o:["Then we'll have to put up with it.","Then we'll have to put up it.","Then we'll have to put up with to it."], oes:"Entonces tendremos que aguantarlo.",
+    e:"«Put up with» (aguantar) es un phrasal verb con partícula y preposición, inseparable: put up with it."},
+  "C2.3": {s:["📩","Normas de la empresa"], p:["Lee","Ana"], t:[
+    [0,"I suggest that he [arrive] early on Monday.","Sugiero que llegue temprano el lunes."],
+    [1,"It is essential that she [be] informed immediately.","Es esencial que ella sea informada de inmediato."],
+    [0,"Agreed. What does the manual require of all employees?","De acuerdo. ¿Qué exige el manual a todos los empleados?"]],
+    o:["It requires that every employee be present at nine.","It requires that every employee to be present at nine.","It requires that every employee being present at nine."], oes:"Exige que todo empleado esté presente a las nueve.",
+    e:"Subjuntivo mandativo: that + sujeto + verbo en forma base (be), sin -s ni «to»."},
+  "C2.4": {s:["📑","Redactando un informe"], p:["Ray","Tom"], t:[
+    [0,"Our [analysis] of the data revealed a clear pattern.","Nuestro análisis de los datos reveló un patrón claro."],
+    [1,"Yes. The company's [decision] surprised investors.","Sí. La decisión de la empresa sorprendió a los inversores."],
+    [0,"Indeed. How would you rewrite “We decided to cut prices” in a more formal, noun-based way?","En efecto. ¿Cómo reescribirías «Decidimos bajar los precios» de forma más formal, con sustantivos?"]],
+    o:["The decision to cut prices was unexpected.","We decided to cut prices unexpectedly.","Deciding we cut prices was unexpected."], oes:"La decisión de bajar los precios fue inesperada.",
+    e:"Nominalización: convertir el verbo en sustantivo (decide → decision) da un registro más formal y académico."},
+  "C2.5": {s:["🏢","La reunión perdida"], p:["Vera","Bo"], t:[
+    [0,"[Had] I known about the meeting, I would have attended.","De haber sabido de la reunión, habría asistido."],
+    [1,"[Were] she to apply, she would likely get the job.","Si ella se postulara, probablemente conseguiría el puesto."],
+    [0,"True. And what would you have done if you had seen the email earlier?","Cierto. ¿Y qué habrías hecho si hubieras visto el correo antes?"]],
+    o:["Had I seen the email earlier, I would have replied.","If had I seen the email earlier, I would have replied.","Have I seen the email earlier, I would have replied."], oes:"De haber visto el correo antes, habría respondido.",
+    e:"Inversión condicional formal: Had + sujeto + participio, sin «if»."},
+  "C2.6": {s:["🚭","Preferencias"], p:["Lou","Mick"], t:[
+    [0,"I'd [rather] stay home tonight.","Prefiero quedarme en casa esta noche."],
+    [1,"Fine. I'd rather you [didn't] smoke here, though.","Bien. Aunque preferiría que no fumaras aquí."],
+    [0,"Sorry! Would you mind if I smoked inside?","¡Perdón! ¿Te molestaría que fumara adentro?"]],
+    o:["I'd rather you didn't.","I'd rather you didn't to.","I'd rather you not smoked."], oes:"Preferiría que no lo hicieras.",
+    e:"«Would rather + sujeto + pasado simple» expresa lo que prefieres que haga otra persona: I'd rather you didn't."},
+  "C2.7": {s:["📈","Cambios en la empresa"], p:["Kay","Ed"], t:[
+    [0,"He [got] promoted last year.","Lo ascendieron el año pasado."],
+    [1,"Yes. And the work [must] [be] finished by Friday.","Sí. Y el trabajo debe estar terminado para el viernes."],
+    [0,"Right. What has happened to the old office?","Cierto. ¿Qué ha pasado con la oficina antigua?"]],
+    o:["It has been closed for repairs.","It has being closed for repairs.","It has been close for repairs."], oes:"La han cerrado por reparaciones.",
+    e:"Pasiva en presente perfecto: has been + participio pasado (closed)."},
+  "C2.8": {s:["🚌","Aquí viene"], p:["Ida","Pat"], t:[
+    [0,"[Attached] is a copy of my CV. I'll send it now.","Adjunto va una copia de mi currículum. Lo envío ahora."],
+    [1,"Thank you! Oh, look, [here] comes my sister.","¡Gracias! Oh, mira, ahí viene mi hermana."],
+    [0,"Great! Is it your bus or your taxi arriving?","¡Genial! ¿Es tu bus o tu taxi el que llega?"]],
+    o:["Here comes the bus!","Here is coming the bus!","Comes here the bus!"], oes:"¡Aquí viene el bus!",
+    e:"Con «here/there» al inicio y un sustantivo como sujeto, el verbo va antes del sujeto: Here comes the bus. (Con pronombres: Here it comes.)"},
+  "C2.9": {s:["🩺","En el consultorio"], p:["Paz","Dr. Kim"], t:[
+    [0,"Doctor, my back hurts a lot.","Doctor, me duele mucho la espalda."],
+    [1,"You [ought] [to] see a specialist. [Shall] I make an appointment now?","Debería ver a un especialista. ¿Le pido una cita ahora?"],
+    [0,"Yes, please. Need I bring my ID tomorrow?","Sí, por favor. ¿Necesito traer mi identificación mañana?"]],
+    o:["You needn't bring it.","You needn't to bring it.","You needn't brought it."], oes:"No hace falta que la traiga.",
+    e:"«Need» como modal (needn't) va con verbo en forma base, sin «to»: you needn't bring it."},
+  "C2.10": {s:["✉️","Correos formales"], p:["Tess","Owen"], t:[
+    [0,"I would be grateful if you could confirm receipt.","Le agradecería que confirmara la recepción."],
+    [1,"Sure! Can you let me know when you get it?","¡Claro! ¿Me avisas cuando lo recibas?"],
+    [0,"Of course. Now, how would you ask your boss for a day off in a formal email?","Claro. Ahora, ¿cómo le pedirías un día libre a tu jefe en un correo formal?"]],
+    o:["I would be grateful if I could take Friday off.","Gimme Friday off, please.","Can I take Friday off? Thanks!"], oes:"Le agradecería poder tomarme el viernes libre.",
+    e:"En un correo formal usamos fórmulas corteses (I would be grateful if…). Las formas coloquiales (Gimme, Can I…?) son para amigos."},
+  "C2.11": {s:["🏢","La presentación"], p:["Emil","Nora"], t:[
+    [0,"[To begin with], the plan is too expensive.","Para empezar, el plan es demasiado caro."],
+    [1,"Many people, [for instance], work from home.","Mucha gente, por ejemplo, trabaja desde casa."],
+    [0,"Good point. How would you end the presentation?","Buen punto. ¿Cómo terminarías la presentación?"]],
+    o:["To sum up, the plan needs a lower budget.","To begin with, the plan needs a lower budget.","For instance, the plan needs a lower budget."], oes:"En resumen, el plan necesita un presupuesto menor.",
+    e:"«To sum up» cierra un discurso; «to begin with» lo abre y «for instance» introduce un ejemplo."},
+  "C2.12": {s:["🍰","Después del examen"], p:["Bo","Cy"], t:[
+    [0,"How was the exam?","¿Cómo estuvo el examen?"],
+    [1,"It was a [piece of cake]! And the joke at the start helped to [break the ice].","¡Fue pan comido! Y el chiste del comienzo ayudó a romper el hielo."],
+    [0,"Great! And was your project difficult?","¡Genial! ¿Y tu proyecto fue difícil?"]],
+    o:["No, it was a piece of cake.","No, it was a slice of cake.","No, it was a piece of pie."], oes:"No, fue pan comido.",
+    e:"El modismo exacto es «a piece of cake» (muy fácil). Cambiar las palabras rompe la expresión."},
+  "C2.13": {s:["🔤","Jugando con palabras"], p:["Ana","Leo"], t:[
+    [0,"His [un]happi[ness] was obvious.","Su infelicidad era evidente."],
+    [1,"The [develop][ment] of the city is fast.","El desarrollo de la ciudad es rápido."],
+    [0,"Nice! Now tell me: what is the opposite of “possible”?","¡Bien! Ahora dime: ¿cuál es lo contrario de «possible»?"]],
+    o:["Impossible.","Unpossible.","Dispossible."], oes:"Imposible.",
+    e:"Antes de p, m y b el prefijo negativo es «im-» (impossible). «Un-» y «dis-» no se usan con esta palabra."},
+  "C2.14": {s:["🏃","Día de carrera"], p:["Rey","Luz"], t:[
+    [0,"[However] hard I try, I can't do it.","Por más que lo intente, no puedo."],
+    [1,"[Whatever] you decide, I'll support you.","Decidas lo que decidas, te apoyaré."],
+    [0,"Thanks. And what will you do on race day if the weather is terrible?","Gracias. ¿Y qué harás el día de la carrera si el clima es terrible?"]],
+    o:["No matter what happens, I'll run.","No matter what will happen, I'll run.","No matter what happens, I'll to run."], oes:"Pase lo que pase, correré.",
+    e:"«No matter what» + presente (happens), no «will». Y después de «I'll» va el verbo en forma base."}
+});
+/* SCENES-BC:END */
 /* MISSION-FX:BEGIN — arrastrar y soltar (Ordena / Completar), «Ahora dilo tú» por voz y pantalla de recompensa de la misión */
 const missionActive = ()=> !!(practiceTodaySession && practiceTodaySession.mission);
 /* arrastre con puntero: un toque sin mover sigue funcionando como clic; onHover(x,y) y onDrop(x,y) reciben coordenadas de pantalla */
