@@ -2160,6 +2160,40 @@ header{transition:transform .25s ease;}
 .rule-hint svg{flex:none;margin-top:1px;}
 @media (prefers-reduced-motion:reduce){.mp-bolt,.mp-line i,.mp-dot{transition:none;}.mp-combo,.mp-pop{animation:none;}}
 /* MISSION-PATH-CSS:END */
+/* MISSION-SCENE-CSS:BEGIN */
+.sc-wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+.sc-head{display:flex;align-items:center;gap:12px;}
+.sc-place{flex:none;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;background:color-mix(in srgb,var(--rl) 18%,var(--surface));border:2px solid color-mix(in srgb,var(--rl) 55%,transparent);}
+.sc-chat{display:flex;flex-direction:column;gap:12px;padding:14px 12px;border-radius:20px;background:var(--surface-2);border:1.5px solid var(--line);min-height:120px;}
+.sc-msg{display:flex;align-items:flex-end;gap:8px;max-width:92%;animation:scIn .3s cubic-bezier(.34,1.56,.64,1) both;}
+.sc-msg.me{flex-direction:row-reverse;align-self:flex-end;}
+.sc-msg.them{align-self:flex-start;}
+.sc-av{flex:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;background:var(--rl);color:var(--rli,#fff);}
+.sc-av.a1{background:#F5A623;color:#3F2700;}
+.sc-b{position:relative;padding:8px 12px 9px;border-radius:16px;background:var(--surface);border:1.5px solid var(--line);min-width:0;}
+.sc-msg.them .sc-b{border-bottom-left-radius:5px;}
+.sc-msg.me .sc-b{border-bottom-right-radius:5px;background:color-mix(in srgb,var(--rl) 16%,var(--surface));border-color:color-mix(in srgb,var(--rl) 50%,transparent);}
+.sc-name{font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:2px;}
+.sc-txt{font-size:1.02rem;font-weight:600;line-height:1.42;}
+.sc-hl{background:color-mix(in srgb,var(--rl) 28%,transparent);color:inherit;font-weight:800;border-radius:5px;padding:0 3px;}
+.sc-es{margin-top:4px;font-size:.84rem;color:var(--ink-soft);line-height:1.35;}
+.sc-es[hidden]{display:none;}
+.sc-spk{flex:none;width:32px;height:32px;border-radius:50%;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--rl) 18%,transparent);color:color-mix(in srgb,var(--rl) 65%,var(--ink));}
+.sc-msg.typing .sc-b{display:flex;gap:4px;padding:12px 14px;}
+.sc-msg.typing .sc-b i{display:block;width:7px;height:7px;border-radius:50%;background:var(--ink-soft);animation:scDot 1s infinite ease-in-out;}
+.sc-msg.typing .sc-b i:nth-child(2){animation-delay:.15s;}
+.sc-msg.typing .sc-b i:nth-child(3){animation-delay:.3s;}
+.sc-ctl{display:flex;align-items:center;gap:10px;}
+.sc-ctl .btn{flex:1;}
+.sc-tr{flex:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.82rem;color:var(--ink-soft);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:9px 13px;}
+.sc-tr[aria-pressed="true"]{color:color-mix(in srgb,var(--rl) 65%,var(--ink));border-color:var(--rl);background:color-mix(in srgb,var(--rl) 12%,var(--surface));}
+.sc-turn{border:2px solid var(--rl);border-radius:20px;padding:14px 16px;background:linear-gradient(135deg,color-mix(in srgb,var(--rl) 10%,transparent),var(--surface));animation:dsIn .35s ease both;}
+.sc-turn[hidden]{display:none;}
+.sc-turn .ds-cap{color:color-mix(in srgb,var(--rl) 65%,var(--ink));margin-bottom:8px;}
+@keyframes scIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes scDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.sc-msg,.sc-turn{animation:none;}.sc-msg.typing .sc-b i{animation:none;}}
+/* MISSION-SCENE-CSS:END */
 </style>
 </head>
 <body>
@@ -31798,6 +31832,7 @@ function renderPracticeHoy(){
   if(!practiceTodaySession) practiceTodaySession = buildPracticeTodaySession();
   const s = practiceTodaySession;
   if(s.mission && !s.mission.discovered){ missionDrawDiscover(s); return; }
+  if(s.mission && s.mission.stage === "scene"){ missionDrawScene(s); return; }
   if(s.index >= s.queue.length){ renderPracticeHoyComplete(); return; }
   const entry = s.queue[s.index];
   const labels = practiceTodayLabels(s);
@@ -31818,7 +31853,7 @@ function renderPracticeHoy(){
     <div class="section-head">
       <button class="theory-back" id="practiceHoyExitBtn">${s.mission ? "← Volver a la Ruta" : labels.exit}</button>
       <div class="eyebrow">${labels.eyebrow}</div>
-      ${s.mission ? missionBarHTML(s.mode === "unit" ? 2 : 1, s.mission.level) : ""}
+      ${s.mission ? missionBarHTML(s.mode === "unit" ? 2 : 1, s.mission.level, s.mission.unit) : ""}
       ${s.mission ? missionPathHTML(s) : ""}
     </div>
   `;
@@ -32894,7 +32929,7 @@ function renderTopicComplete(s){
   const delta = m.pct - s.before;
   document.getElementById("panel-practicehoy").innerHTML = `
     <div class="section-head" style="text-align:center;">
-      ${s.mission ? `<div style="max-width:520px;margin:0 auto 12px;">${missionBarHTML(2, s.mission.level)}</div>` : ""}
+      ${s.mission ? `<div style="max-width:520px;margin:0 auto 12px;">${missionBarHTML(2, s.mission.level, s.mission.unit)}</div>` : ""}
       <div style="width:88px;margin:0 auto 12px;">${mascotSVG(pct >= 70 ? "cheer" : "", 88)}</div>
       <h2>${pct >= 70 ? "¡Buen trabajo! 🎉" : "Sigue con este tema 💪"}</h2>
       <p class="dash-card-sub">${escHtml(s.title)} · ${s.correct}/${s.answered} correctas (${pct}%)</p>
@@ -33495,13 +33530,15 @@ function renderRoute(){
 /* MISSION:BEGIN — Misión de la Ruta: barra de pasos (Descubre → Entrenar → Cierre) y paso «Descubre» con ejemplos que se tocan */
 const MISSION_STEPS = ["Descubre", "Entrenar", "Cierre"];
 const ROUTE_INK = {A1:"#062B1E", A2:"#052E36", B1:"#072556", B2:"#FFFFFF", C1:"#560F2B", C2:"#3F2700"};
-function missionBarHTML(active, level){
-  const lc = ROUTE_LC[level] || "#8E6CFF", last = MISSION_STEPS.length - 1;
-  const steps = MISSION_STEPS.map((t, i)=>{
+function missionBarHTML(active, level, unit){
+  const names = (unit != null && missionSceneFor(level, unit)) ? ["Descubre", "Escena", "Entrenar", "Cierre"] : MISSION_STEPS;
+  if(active === "scene") active = 1; else if(names.length === 4 && active >= 1) active += 1;
+  const lc = ROUTE_LC[level] || "#8E6CFF", last = names.length - 1, edge = (50 / names.length).toFixed(2);
+  const steps = names.map((t, i)=>{
     const done = i < active, cur = i === active;
     return `<div class="mb-step ${done ? "done" : cur ? "cur" : ""}" role="listitem" ${cur ? 'aria-current="step"' : ""}><span class="mb-dot">${done ? svgIcon("tick", 14) : i + 1}</span><span class="mb-lab">${t}</span></div>`;
   }).join("");
-  return `<div class="mission-bar" role="list" aria-label="Pasos de la misión" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}"><div class="mb-line"><i style="width:${Math.round(active / last * 100)}%"></i></div>${steps}</div>`;
+  return `<div class="mission-bar" role="list" aria-label="Pasos de la misión" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}"><div class="mb-line" style="left:${edge}%;right:${edge}%"><i style="width:${Math.round(active / last * 100)}%"></i></div>${steps}</div>`;
 }
 function startMission(level, k){
   if(!routeUnits(level)[k] && currentLang !== "pt") return;
@@ -33601,7 +33638,7 @@ function missionDrawDiscover(s){
     <div class="section-head">
       <button class="theory-back" id="dsExit">← Volver a la Ruta</button>
       <div class="eyebrow">🧭 Misión ${level} · Unidad ${unit + 1}</div>
-      ${missionBarHTML(0, level)}
+      ${missionBarHTML(0, level, unit)}
     </div>
     <div class="ds-wrap" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}">
       <div><h2 class="ds-title">¿Notas algo en estas frases?</h2><p class="ds-sub">Toca cada una: escúchala y fíjate en la parte resaltada.</p></div>
@@ -33646,13 +33683,332 @@ function missionDrawDiscover(s){
     fb.innerHTML = `<strong>${ok ? "¡Correcto! 🎉" : "Casi 😉"}</strong>${escHtml(D.q.e || "")}`;
     answered = true; refresh();
   });
-  const finish = ()=>{ s.mission.discovered = true; renderPracticeHoy(); };
+  const finish = ()=>{ s.mission.discovered = true; if(missionSceneFor(s.mission.level, s.mission.unit)) s.mission.stage = "scene"; renderPracticeHoy(); };
   go.onclick = finish;
   document.getElementById("dsSkip").onclick = finish;
   document.getElementById("dsExit").onclick = ()=>{ practiceTodaySession = null; goTo("route"); };
   window.scrollTo({top:0, behavior:"smooth"});
 }
 /* MISSION:END */
+/* Escenas por unidad. Clave = "home.index" de la teoría. t = [quién(0|1), inglés con [resaltado], español].
+   El usuario responde como el personaje que NO habló al final: o = [correcta, mala, mala], oes = traducción de la correcta, e = explicación. */
+const MISSION_SCENES = {
+  /* ---------- A1 ---------- */
+  "A1.0": {s:["🎓","Primer día de clase"], p:["Ana","Leo"], t:[
+    [0,"Hi! I [am] Ana. What's your name?","¡Hola! Yo soy Ana. ¿Cómo te llamas?"],
+    [1,"Hi, Ana! My name [is] Leo. I [am] from Peru.","¡Hola, Ana! Mi nombre es Leo. Soy de Perú."],
+    [0,"Nice to meet you, Leo! [Are] you a new student?","¡Mucho gusto, Leo! ¿Eres un estudiante nuevo?"]],
+    o:["Yes, I am.","Yes, I is.","Yes, I are."], oes:"Sí, lo soy.",
+    e:"Con «I» el verbo to be es «am». «Is» es para he/she/it y «are» para you/we/they."},
+  "A1.7": {s:["🛍️","En una tienda"], p:["Mia","Tom"], t:[
+    [0,"Look! [This] is my new phone.","¡Mira! Este es mi teléfono nuevo."],
+    [1,"Cool! Are [those] your headphones on the table?","¡Genial! ¿Esos son tus audífonos en la mesa?"],
+    [0,"Yes, they are. Which bag is yours, Tom? The one next to you or the one over there?","Sí. ¿Cuál mochila es la tuya, Tom? ¿La que está a tu lado o la de allá?"]],
+    o:["That one over there is mine.","This one over there is mine.","Those one over there is mine."], oes:"Aquella de allá es la mía.",
+    e:"«Over there» indica algo lejano: «that» (singular). «This» es para lo que está cerca y «those» es plural."},
+  "A1.2": {s:["🍎","En el mercado"], p:["Dan","Sara"], t:[
+    [0,"Good morning! What would you like today?","Buenos días. ¿Qué te gustaría hoy?"],
+    [1,"I'd like [an] orange and two [bananas], please.","Quiero una naranja y dos plátanos, por favor."],
+    [0,"Here you are. Anything else?","Aquí tienes. ¿Algo más?"]],
+    o:["Yes, an apple and two tomatoes, please.","Yes, a apple and two tomatoes, please.","Yes, an apple and two tomatos, please."], oes:"Sí, una manzana y dos tomates, por favor.",
+    e:"Antes de vocal usamos «an» (an apple). Y los sustantivos que terminan en -o, como tomato, forman el plural con -es: tomatoes."},
+  "A1.4": {s:["🏠","Foto de familia"], p:["Nora","Eli"], t:[
+    [0,"This is [my] family. [My] dad is Carlos and [my] mom is Julia.","Esta es mi familia. Mi papá es Carlos y mi mamá es Julia."],
+    [1,"Nice photo! Is that [your] sister?","¡Linda foto! ¿Ella es tu hermana?"],
+    [0,"Yes! Tell me about your family, Eli. Who is that man in your photo?","¡Sí! Cuéntame de tu familia, Eli. ¿Quién es ese hombre de tu foto?"]],
+    o:["He is my uncle. His name is Pablo.","He is my uncle. Her name is Pablo.","He is me uncle. His name is Pablo."], oes:"Es mi tío. Su nombre es Pablo.",
+    e:"Para un hombre usamos «his» (su). «My» es el posesivo de «I»; «me» no sirve para decir «mi»."},
+  "A1.6": {s:["📚","Ayuda con la tarea"], p:["Lia","Max"], t:[
+    [0,"Max, I need help with my homework. Can you help [me]?","Max, necesito ayuda con mi tarea. ¿Puedes ayudarme?"],
+    [1,"Of course! Let's ask Mr. Green. I know [him] well.","¡Claro! Preguntemos al señor Green. Lo conozco bien."],
+    [0,"Great! Do you see Sara and Tom over there?","¡Genial! ¿Ves a Sara y a Tom allá?"]],
+    o:["Yes, I see them.","Yes, I see they.","Yes, I see their."], oes:"Sí, los veo.",
+    e:"Después del verbo usamos pronombres de objeto: «them» (ellos/as). «They» es de sujeto y «their» es posesivo."},
+  "A1.3": {s:["🏙️","Mi barrio"], p:["Sam","Ivy"], t:[
+    [0,"Where do you live, Ivy?","¿Dónde vives, Ivy?"],
+    [1,"In a small town. [There is] a park and [there are] two schools.","En un pueblo pequeño. Hay un parque y hay dos escuelas."],
+    [0,"Nice! [Is there] a supermarket near your house?","¡Qué bien! ¿Hay un supermercado cerca de tu casa?"]],
+    o:["Yes, there is. It is next to the park.","Yes, there are. It is next to the park.","Yes, there have. It is next to the park."], oes:"Sí, hay uno. Está al lado del parque.",
+    e:"Un solo supermercado → «there is». «There are» es para plural, y «there have» no existe."},
+  "A1.5": {s:["🔑","¿Dónde están mis llaves?"], p:["Rita","Paul"], t:[
+    [0,"Paul, where are my keys? Are they [in] my bag?","Paul, ¿dónde están mis llaves? ¿Están en mi bolso?"],
+    [1,"No. Your bag is [on] the chair. I see something [under] the table.","No. Tu bolso está sobre la silla. Veo algo debajo de la mesa."],
+    [0,"Oh, thank you! Is it my phone or my keys? Where exactly is it?","¡Gracias! ¿Es mi teléfono o mis llaves? ¿Dónde está exactamente?"]],
+    o:["It is under the table, next to the chair.","It is on the table, next to the chair.","It is at the table, under the chair."], oes:"Está debajo de la mesa, junto a la silla.",
+    e:"Paul dijo que lo ve debajo de la mesa: «under» = debajo de. «On» significa encima de."},
+  "A1.8": {s:["👨‍👩‍👧","Conociendo a un compañero"], p:["Zoe","Ben"], t:[
+    [0,"I [have] two brothers and one sister. [Have] you [got] any brothers?","Tengo dos hermanos y una hermana. ¿Tienes hermanos?"],
+    [1,"No, I [haven't]. But I [have got] a big dog!","No. Pero tengo un perro grande."],
+    [0,"Cool! [Has] your dog [got] a name?","¡Genial! ¿Tu perro tiene nombre?"]],
+    o:["Yes, it has. His name is Rex.","Yes, it have. His name is Rex.","Yes, it hasn't. His name is Rex."], oes:"Sí, tiene. Su nombre es Rex.",
+    e:"Con it/he/she la forma es «has». Y en una respuesta afirmativa no se usa «hasn't»."},
+  "A1.1": {s:["🌅","Rutina de la mañana"], p:["Kim","Jo"], t:[
+    [0,"What time do you get up, Jo?","¿A qué hora te levantas, Jo?"],
+    [1,"I [get] up at six. My sister [gets] up at seven.","Me levanto a las seis. Mi hermana se levanta a las siete."],
+    [0,"Wow! And what does your sister do?","¡Guau! ¿Y qué hace tu hermana?"]],
+    o:["She works at a bank.","She work at a bank.","She working at a bank."], oes:"Trabaja en un banco.",
+    e:"Con he/she/it el verbo lleva -s en presente simple: she works."},
+  "A1.11": {s:["🍽️","En el almuerzo"], p:["Lena","Omar"], t:[
+    [0,"Do you like fish, Omar?","¿Te gusta el pescado, Omar?"],
+    [1,"No, I [don't] like fish. And my brother [doesn't] eat meat.","No, no me gusta el pescado. Y mi hermano no come carne."],
+    [0,"Interesting! [Does] he eat eggs?","¡Interesante! ¿Él come huevos?"]],
+    o:["No, he doesn't eat eggs.","No, he don't eat eggs.","No, he doesn't eats eggs."], oes:"No, él no come huevos.",
+    e:"Con he/she/it usamos «doesn't», y el verbo va en forma base: doesn't eat (sin -s)."},
+  "A1.12": {s:["🏃","Hábitos"], p:["Nina","Carl"], t:[
+    [0,"Do you exercise every day, Carl?","¿Haces ejercicio todos los días, Carl?"],
+    [1,"No, I [never] exercise in the morning. I [usually] run in the evening.","No, nunca hago ejercicio en la mañana. Normalmente corro en la tarde."],
+    [0,"Nice! And are you ever late for class?","¡Qué bien! ¿Y llegas tarde a clase alguna vez?"]],
+    o:["No, I am never late.","No, I never am late.","No, I don't never late."], oes:"No, nunca llego tarde.",
+    e:"Con el verbo to be, el adverbio de frecuencia va DESPUÉS: I am never late."},
+  "A1.10": {s:["🎉","En una fiesta"], p:["Emma","Jack"], t:[
+    [0,"Hi! I'm Emma. [What] is your name?","¡Hola! Soy Emma. ¿Cómo te llamas?"],
+    [1,"I'm Jack. [Where] are you from?","Soy Jack. ¿De dónde eres?"],
+    [0,"I'm from Spain! And [when] is your birthday?","¡Soy de España! ¿Y cuándo es tu cumpleaños?"]],
+    o:["It is in June.","It is in Madrid.","It is my brother."], oes:"Es en junio.",
+    e:"«When» pregunta por el tiempo: la respuesta es un mes o una fecha. «Where» pregunta por el lugar y «who» por una persona."},
+  "A1.9": {s:["🎸","Club de música"], p:["Ava","Ian"], t:[
+    [0,"[Can] you play an instrument, Ian?","¿Puedes tocar un instrumento, Ian?"],
+    [1,"Yes, I [can] play the guitar, but I [can't] sing.","Sí, puedo tocar la guitarra, pero no puedo cantar."],
+    [0,"That's great! Can you play a song for the class?","¡Qué bien! ¿Puedes tocar una canción para la clase?"]],
+    o:["Sure, I can play one now.","Sure, I can to play one now.","Sure, I can plays one now."], oes:"Claro, puedo tocar una ahora.",
+    e:"Después de «can» el verbo va en forma base: sin «to» y sin -s."},
+  "A1.13": {s:["🎧","Planes del fin de semana"], p:["Tara","Mike"], t:[
+    [0,"What do you like doing on weekends?","¿Qué te gusta hacer los fines de semana?"],
+    [1,"I [love] [listening] to music and I [like] [playing] football. I [hate] [cleaning]!","Me encanta escuchar música y me gusta jugar fútbol. ¡Odio limpiar!"],
+    [0,"Ha ha! Me too. What do you [want] [to do] this Saturday?","¡Ja, ja! Yo también. ¿Qué quieres hacer este sábado?"]],
+    o:["I want to go to the cinema.","I want going to the cinema.","I want go to the cinema."], oes:"Quiero ir al cine.",
+    e:"«Want» va seguido de «to + verbo». Los verbos like/love/hate se usan con -ing."},
+  "A2.8": {s:["🚪","Órdenes en casa"], p:["Rosa","Leo"], t:[
+    [0,"Leo, [open] the window, please. It's hot in here.","Leo, abre la ventana, por favor. Hace calor aquí."],
+    [1,"OK! Can I watch TV now?","¡Está bien! ¿Puedo ver la tele ahora?"],
+    [0,"No. [Don't] watch TV. [Do] your homework first!","No. No veas la tele. ¡Haz la tarea primero!"],
+    [1,"Mom, I'm hungry. What do I do?","Mamá, tengo hambre. ¿Qué hago?"]],
+    o:["Wash your hands and eat an apple.","You wash your hands and eating an apple.","Washing your hands and eat an apple."], oes:"Lávate las manos y come una manzana.",
+    e:"Las órdenes usan el verbo en forma base y sin sujeto: «Wash…», «eat…»."},
+  "A1.14": {s:["🎒","Objetos perdidos"], p:["Pam","Tim"], t:[
+    [0,"Look! Whose backpack is this?","¡Mira! ¿De quién es esta mochila?"],
+    [1,"I think it's [Maria's] backpack. And this is [Tom's] jacket.","Creo que es la mochila de Maria. Y esta es la chaqueta de Tom."],
+    [0,"OK. Whose book is this, Tim? Is it your teacher's?","Bien. ¿De quién es este libro, Tim? ¿Es de tu profesor?"]],
+    o:["No, it's my friend's book.","No, it's my friends book.","No, it's book of my friend."], oes:"No, es el libro de mi amigo.",
+    e:"Para indicar el dueño usamos el genitivo sajón: 's (friend's). Sin apóstrofo o al revés no funciona en inglés."},
+  /* ---------- A2 ---------- */
+  "A2.11": {s:["🏖️","Después de las vacaciones"], p:["Ella","Jim"], t:[
+    [0,"Hi Jim! How [was] your holiday?","¡Hola, Jim! ¿Cómo estuvieron tus vacaciones?"],
+    [1,"It [was] great! The beaches [were] beautiful and the weather [was] hot.","¡Fueron geniales! Las playas eran hermosas y el clima estaba caluroso."],
+    [0,"Lucky you! [Were] you alone?","¡Qué suerte! ¿Estabas solo?"]],
+    o:["No, I wasn't. My cousins were with me.","No, I weren't. My cousins was with me.","No, I wasn't. My cousins was with me."], oes:"No. Mis primos estaban conmigo.",
+    e:"Con «I» → was/wasn't. Con plural (cousins) → were."},
+  "A2.0": {s:["🎬","¿Qué hiciste el fin de semana?"], p:["Kai","Lucy"], t:[
+    [0,"Hey Lucy! How was your weekend?","¡Hola, Lucy! ¿Cómo estuvo tu fin de semana?"],
+    [1,"Good! I [visited] my grandma and we [cooked] lunch together.","¡Bien! Visité a mi abuela y cocinamos juntas."],
+    [0,"Nice! What about Sunday? Tell me!","¡Qué lindo! ¿Y el domingo? ¡Cuéntame!"]],
+    o:["I watched a movie and went to bed late.","I watch a movie and went to bed late.","I watched a movie and goed to bed late."], oes:"Vi una película y me acosté tarde.",
+    e:"En pasado: «watched» (regular, -ed) y «went» (irregular). «Goed» no existe."},
+  "A2.12": {s:["📝","La tarea"], p:["Sofia","Alex"], t:[
+    [0,"[Did] you finish the homework, Alex?","¿Terminaste la tarea, Alex?"],
+    [1,"No, I [didn't] finish it. I [didn't] understand question 3.","No, no la terminé. No entendí la pregunta 3."],
+    [0,"[Did] you ask the teacher?","¿Le preguntaste a la profesora?"]],
+    o:["No, I didn't ask her.","No, I didn't asked her.","No, I don't asked her."], oes:"No, no le pregunté.",
+    e:"Después de «didn't» el verbo va en forma base: didn't ask (sin -ed)."},
+  "A2.5": {s:["☔","Cuando llamaste"], p:["Nick","Paula"], t:[
+    [0,"Paula, why didn't you answer my call last night?","Paula, ¿por qué no contestaste mi llamada anoche?"],
+    [1,"Sorry! I [was] [studying] and my phone [was] [charging].","¡Perdón! Estaba estudiando y mi teléfono estaba cargando."],
+    [0,"I see. And what [were] your brothers [doing]?","Ya veo. ¿Y qué estaban haciendo tus hermanos?"]],
+    o:["They were sleeping.","They was sleeping.","They sleeping."], oes:"Estaban durmiendo.",
+    e:"Pasado continuo: was/were + verbo-ing. Con «they» usamos «were»."},
+  "A2.1": {s:["🌳","En el parque"], p:["Ruth","Dan"], t:[
+    [0,"Hi Dan! What [are] you [doing]?","¡Hola, Dan! ¿Qué estás haciendo?"],
+    [1,"I [am] [waiting] for my friend. And you?","Estoy esperando a mi amigo. ¿Y tú?"],
+    [0,"I'm walking my dog. Is your friend coming now?","Estoy paseando a mi perro. ¿Tu amigo viene ya?"]],
+    o:["Yes, he is coming right now.","Yes, he coming right now.","Yes, he are coming right now."], oes:"Sí, viene ahora mismo.",
+    e:"Presente continuo: am/is/are + verbo-ing. Con «he» usamos «is»."},
+  "A2.13": {s:["☕","Café por la mañana"], p:["Carla","Pete"], t:[
+    [0,"Do you always drink coffee, Pete?","¿Siempre tomas café, Pete?"],
+    [1,"Yes, I [drink] coffee every morning. But today I'm [drinking] tea.","Sí, tomo café todas las mañanas. Pero hoy estoy tomando té."],
+    [0,"Hey, what [are] you [doing] right now?","Oye, ¿qué estás haciendo ahora mismo?"]],
+    o:["I am reading the menu.","I read the menu.","I reading the menu."], oes:"Estoy leyendo el menú.",
+    e:"«Right now» indica una acción en este momento: presente continuo (am reading). El presente simple es para hábitos."},
+  "A2.2": {s:["📱","Comparando teléfonos"], p:["Mona","Ray"], t:[
+    [0,"This phone is [cheaper] than that one.","Este teléfono es más barato que ese."],
+    [1,"Yes, but that one is [more expensive] and it's [the best] phone in the shop.","Sí, pero ese es más caro y es el mejor teléfono de la tienda."],
+    [0,"Hmm... Is your phone [heavier] than mine?","Mmm... ¿Tu teléfono es más pesado que el mío?"]],
+    o:["No, mine is lighter than yours.","No, mine is more light than yours.","No, mine is the lightest than yours."], oes:"No, el mío es más ligero que el tuyo.",
+    e:"Adjetivos cortos: -er + than (lighter than). «More light» y «the lightest than» no son correctos."},
+  "A2.16": {s:["🎤","Concurso de talentos"], p:["Vera","Tony"], t:[
+    [0,"Did you see the contest? Maria sang [beautifully]!","¿Viste el concurso? ¡María cantó hermoso!"],
+    [1,"Yes! And Peter played the piano [badly], but he worked [hard].","¡Sí! Y Peter tocó mal el piano, pero trabajó duro."],
+    [0,"Poor Peter! By the way, how does your brother drive?","¡Pobre Peter! Por cierto, ¿cómo maneja tu hermano?"]],
+    o:["He drives carefully.","He drives careful.","He drives more careful."], oes:"Maneja con cuidado.",
+    e:"Un adverbio describe cómo se hace la acción: adjetivo + -ly (careful → carefully)."},
+  "A2.7": {s:["🛒","Lista de compras"], p:["Gina","Bob"], t:[
+    [0,"We need [some] milk and [some] eggs.","Necesitamos leche y huevos."],
+    [1,"OK. How [many] eggs? And how [much] milk?","Bien. ¿Cuántos huevos? ¿Y cuánta leche?"],
+    [0,"Six eggs and a litre of milk. How much water do we have at home?","Seis huevos y un litro de leche. ¿Cuánta agua tenemos en casa?"]],
+    o:["We don't have much water.","We don't have many water.","We haven't got some water."], oes:"No tenemos mucha agua.",
+    e:"«Water» es incontable: «much», no «many». Y en negativas no usamos «some»."},
+  "A2.4": {s:["🎈","Fiesta en casa"], p:["Ivo","Jen"], t:[
+    [0,"Are there [any] snacks for the party?","¿Hay algo de comida para la fiesta?"],
+    [1,"Yes, there are [some] chips, but there isn't [any] pizza.","Sí, hay papas fritas, pero no hay pizza."],
+    [0,"Oh no! How many people are coming?","¡Oh no! ¿Cuánta gente viene?"]],
+    o:["Not many. Only ten people.","Not much. Only ten people.","Not any. Only ten people."], oes:"No muchas. Solo diez personas.",
+    e:"«People» es contable en plural, por eso usamos «many». «Much» es para incontables."},
+  "A2.17": {s:["☕","Un café caliente"], p:["Tess","Rob"], t:[
+    [0,"The coffee is [very] hot. Careful!","El café está muy caliente. ¡Cuidado!"],
+    [1,"Yes, it's [too] hot to drink.","Sí, está demasiado caliente para tomarlo."],
+    [0,"Let's go outside. Is it warm enough for a picnic?","Salgamos. ¿Hace suficiente calor para un picnic?"]],
+    o:["Yes, it is warm enough.","Yes, it is enough warm.","Yes, it is too warm enough."], oes:"Sí, hace suficiente calor.",
+    e:"«Enough» va DESPUÉS del adjetivo: warm enough."},
+  "A2.15": {s:["🍕","En un restaurante"], p:["Mark","Sue"], t:[
+    [0,"Good evening! [Would] you [like] a drink?","Buenas noches. ¿Le gustaría algo de beber?"],
+    [1,"Yes, I'd like a lemonade, please. [Can] I have some bread too?","Sí, quisiera una limonada, por favor. ¿Puedo pedir pan también?"],
+    [0,"Of course! Would you like some dessert?","¡Por supuesto! ¿Le gustaría un postre?"]],
+    o:["Yes, I'd like an ice cream, please.","Yes, I'd like have an ice cream, please.","Yes, I would liking an ice cream, please."], oes:"Sí, quisiera un helado, por favor.",
+    e:"«Would like» + sustantivo (o «to» + verbo). No se usa «have» suelto ni el -ing."},
+  "A2.3": {s:["🗓️","Planes para el fin de semana"], p:["Cleo","Dan"], t:[
+    [0,"What are you [going to] do this weekend?","¿Qué vas a hacer este fin de semana?"],
+    [1,"I'm [going to] visit my parents. Look at the clouds! It's [going to] rain.","Voy a visitar a mis padres. ¡Mira las nubes! Va a llover."],
+    [0,"Oh no! So are you going to take an umbrella?","¡Oh no! ¿Entonces vas a llevar un paraguas?"]],
+    o:["Yes, I'm going to take one.","Yes, I going to take one.","Yes, I'm going take one."], oes:"Sí, voy a llevar uno.",
+    e:"Forma completa: am/is/are + going to + verbo."},
+  "A2.14": {s:["👷","Horario de trabajo"], p:["Sam","Lina"], t:[
+    [0,"Are you free on Saturday, Lina?","¿Estás libre el sábado, Lina?"],
+    [1,"No, I [have to] work. But I [don't have to] work on Sunday.","No, tengo que trabajar. Pero no tengo que trabajar el domingo."],
+    [0,"OK! And what time does your brother have to get up on Monday?","¡Bien! ¿Y a qué hora tiene que levantarse tu hermano el lunes?"]],
+    o:["He has to get up at six.","He have to get up at six.","He has get up at six."], oes:"Tiene que levantarse a las seis.",
+    e:"Con he/she/it usamos «has to» + verbo en forma base."},
+  "A2.6": {s:["🔬","Clase de ciencias"], p:["Dana","Eli"], t:[
+    [0,"What happens if you [heat] water to 100 degrees?","¿Qué pasa si calientas agua a 100 grados?"],
+    [1,"If you [heat] it, it [boils]!","¡Si la calientas, hierve!"],
+    [0,"Correct! And what happens if you don't water a plant?","¡Correcto! ¿Y qué pasa si no riegas una planta?"]],
+    o:["If you don't water it, it dies.","If you don't water it, it will died.","If you not water it, it die."], oes:"Si no la riegas, se muere.",
+    e:"Condicional cero: If + presente, presente. Con «it» el verbo lleva -s: it dies."},
+  "A2.18": {s:["🏥","En el consultorio"], p:["Dr. Kim","Pablo"], t:[
+    [0,"You look tired. You [should] sleep more.","Te ves cansado. Deberías dormir más."],
+    [1,"I know. Also I have a cold. [Should] I go to work?","Lo sé. Además tengo un resfriado. ¿Debería ir a trabajar?"],
+    [0,"No, you [mustn't]! You [must] stay at home. Now, what should you drink?","¡No, no debes! Debes quedarte en casa. Ahora, ¿qué deberías tomar?"]],
+    o:["I should drink more water.","I should to drink more water.","I shoulds drink more water."], oes:"Debería tomar más agua.",
+    e:"Después de «should» el verbo va en forma base: sin «to» y sin -s."},
+  "A2.19": {s:["🗺️","Viajes"], p:["Owen","Bea"], t:[
+    [0,"[Have] you ever [been] to London, Bea?","¿Has estado alguna vez en Londres, Bea?"],
+    [1,"Yes, I [have]! But I've [never] [eaten] fish and chips.","¡Sí! Pero nunca he comido fish and chips."],
+    [0,"Really? Have you tried sushi yet?","¿En serio? ¿Ya probaste el sushi?"]],
+    o:["Yes, I've already tried it.","Yes, I've already try it.","Yes, I've already tried it yet."], oes:"Sí, ya lo probé.",
+    e:"Presente perfecto: have/has + participio (tried). «Already» va en afirmativas; «yet» en preguntas y negativas."},
+  "A2.20": {s:["🎂","La fiesta de cumpleaños"], p:["Liv","Ned"], t:[
+    [0,"Is this bag [yours], Ned?","¿Este bolso es tuyo, Ned?"],
+    [1,"No, it isn't [mine]. It's [hers]. Look, she's looking at [herself] in the mirror!","No, no es mío. Es de ella. ¡Mira, se está mirando en el espejo!"],
+    [0,"Ha ha! Wow, this cake is great. Who made it?","¡Ja, ja! Guau, este pastel está genial. ¿Quién lo hizo?"]],
+    o:["I made it myself.","I made it me.","I made it by mine."], oes:"Lo hice yo mismo.",
+    e:"Para decir «yo mismo» usamos el reflexivo: myself. «Me» y «by mine» no funcionan aquí."},
+  "A2.21": {s:["🕖","Cuándo y dónde"], p:["Fay","Tom"], t:[
+    [0,"Tom, my party is [on] Saturday [at] seven.","Tom, mi fiesta es el sábado a las siete."],
+    [1,"Great! Where is it?","¡Genial! ¿Dónde es?"],
+    [0,"It's [at] my house, [in] Green Street. When is your birthday?","Es en mi casa, en la calle Green. ¿Cuándo es tu cumpleaños?"]],
+    o:["It is on May 5th.","It is in May 5th.","It is at May 5th."], oes:"Es el 5 de mayo.",
+    e:"Con fechas exactas usamos «on» (on May 5th); con meses «in» (in May); con horas «at» (at seven)."}
+};
+/* MISSION-SCENE:BEGIN — «Escena»: mini conversación con dos personajes y respuesta elegida por el usuario (solo inglés) */
+RS_ICON.speaker = RS_ICON.speaker || "M11 5L6 9H2v6h4l5 4V5z M15.5 8.5a5 5 0 0 1 0 7 M18.5 5.5a9 9 0 0 1 0 13";
+function missionSceneFor(level, k){
+  if(currentLang !== "en") return null;
+  const u = routeUnits(level)[k];
+  return (u && MISSION_SCENES[`${u.home}.${u.index}`]) || null;
+}
+const scHtml = t=> escHtml(t).replace(/\[(.+?)\]/g, '<mark class="sc-hl">$1</mark>');
+const scPlain = t=> t.replace(/[\[\]]/g, "");
+function missionDrawScene(s){
+  const {level, unit} = s.mission, S = missionSceneFor(level, unit);
+  if(!S){ s.mission.stage = null; renderPracticeHoy(); return; }
+  const panel = document.getElementById("panel-practicehoy");
+  const ex = document.getElementById("exPanel"); if(ex && ex.parentElement === panel) panel.removeChild(ex);
+  const pb = document.getElementById("practiceHoyProgress"); if(pb && pb.parentElement === panel) panel.removeChild(pb);
+  panel.classList.remove("has-mission");
+  const lc = ROUTE_LC[level] || "#8E6CFF", n = S.t.length, me = 1 - S.t[n - 1][0];
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let idx = 0, busy = false, showTr = !!dialoguePrefs.showEs, answered = false;
+  panel.innerHTML = `
+    <div class="section-head">
+      <button class="theory-back" id="scExit">← Volver a la Ruta</button>
+      <div class="eyebrow">🧭 Misión ${level} · Unidad ${unit + 1}</div>
+      ${missionBarHTML("scene", level, unit)}
+    </div>
+    <div class="sc-wrap" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}">
+      <div class="sc-head"><span class="sc-place" aria-hidden="true">${S.s[0]}</span><div><h2 class="ds-title">${escHtml(S.s[1])}</h2>
+        <p class="ds-sub">Sigue la conversación con ${escHtml(S.p[0])} y ${escHtml(S.p[1])}. En el último turno respondes tú.</p></div></div>
+      <div class="sc-chat" id="scChat" aria-live="polite"></div>
+      <div class="sc-ctl"><button type="button" class="btn" id="scNext">Continuar ▸</button>
+        <button type="button" class="sc-tr" id="scTr" aria-pressed="${showTr}">${svgIcon("book", 15)} Traducción</button></div>
+      <div class="sc-turn" id="scTurn" hidden>
+        <div class="ds-cap">TU TURNO · ERES ${escHtml(S.p[me].toUpperCase())}</div>
+        <div class="options" id="scOpts"></div>
+        <div class="feedback" role="status" aria-live="polite" id="scFb"></div>
+      </div>
+      <div class="ds-foot"><button class="btn" id="scGo" disabled>Empezar a entrenar →</button><button type="button" class="ds-skip" id="scSkip">Saltar al entrenamiento</button></div>
+    </div>`;
+  const chat = document.getElementById("scChat"), next = document.getElementById("scNext"), trBtn = document.getElementById("scTr");
+  const spk = rsIcon("speaker", 16);
+  const bubble = (who, en, es, plain)=> {
+    const wrap = document.createElement("div");
+    wrap.className = `sc-msg ${who === me ? "me" : "them"}`;
+    wrap.innerHTML = `<span class="sc-av a${who}" aria-hidden="true">${escHtml(S.p[who][0])}</span>
+      <div class="sc-b"><div class="sc-name">${escHtml(S.p[who])}</div><div class="sc-txt">${plain ? escHtml(en) : scHtml(en)}</div><div class="sc-es"${showTr ? "" : " hidden"}>${escHtml(es || "")}</div></div>
+      <button type="button" class="sc-spk" aria-label="Escuchar a ${escHtml(S.p[who])}">${spk}</button>`;
+    wrap.querySelector(".sc-spk").onclick = ()=> dialogueSpeak(scPlain(en), who === 0 ? "A" : "B", .9);
+    return wrap;
+  };
+  const alive = ()=> practiceTodaySession === s && s.mission.stage === "scene" && document.body.contains(chat);
+  const reveal = ()=> {
+    if(busy || idx >= n) return;
+    busy = true; next.disabled = true;
+    const [who, en, es] = S.t[idx];
+    const typing = document.createElement("div");
+    typing.className = `sc-msg ${who === me ? "me" : "them"} typing`;
+    typing.innerHTML = `<span class="sc-av a${who}" aria-hidden="true">${escHtml(S.p[who][0])}</span><div class="sc-b" aria-label="${escHtml(S.p[who])} está escribiendo"><i></i><i></i><i></i></div>`;
+    chat.appendChild(typing); typing.scrollIntoView({block:"nearest", behavior:"smooth"});
+    setTimeout(()=> {
+      if(!alive()) return;
+      const b = bubble(who, en, es, false);
+      chat.replaceChild(b, typing); b.scrollIntoView({block:"nearest", behavior:"smooth"});
+      dialogueSpeak(scPlain(en), who === 0 ? "A" : "B", .9);
+      idx++; busy = false;
+      if(idx < n){ next.disabled = false; next.focus({preventScroll:true}); }
+      else { next.hidden = true; showTurn(); }
+    }, reduce ? 0 : 650);
+  };
+  const showTurn = ()=> {
+    const turn = document.getElementById("scTurn"), opts = document.getElementById("scOpts"), fb = document.getElementById("scFb"), go = document.getElementById("scGo");
+    const order = S.o.map((t, i)=> ({t, ok:i === 0})).sort(()=> Math.random() - .5);
+    opts.innerHTML = order.map((x, i)=> `<button class="opt-btn" data-i="${i}">${escHtml(x.t)}</button>`).join("");
+    turn.hidden = false; turn.scrollIntoView({block:"nearest", behavior:"smooth"});
+    const btns = [...opts.querySelectorAll(".opt-btn")];
+    btns.forEach(b=> b.onclick = ()=> {
+      if(answered) return; answered = true;
+      const pick = order[+b.dataset.i];
+      btns.forEach(x=> x.disabled = true);
+      b.classList.add(pick.ok ? "correct" : "wrong");
+      if(!pick.ok) btns[order.findIndex(x=> x.ok)].classList.add("correct");
+      fb.className = "feedback show " + (pick.ok ? "ok" : "bad");
+      fb.innerHTML = `<strong>${pick.ok ? "¡Muy bien! 🎉" : "Casi 😉"}</strong>${escHtml(S.e)}`;
+      const m = bubble(me, S.o[0], S.oes, true); chat.appendChild(m);
+      m.scrollIntoView({block:"nearest", behavior:"smooth"});
+      dialogueSpeak(S.o[0], me === 0 ? "A" : "B", .9);
+      go.disabled = false;
+    });
+  };
+  next.onclick = reveal;
+  trBtn.onclick = ()=> {
+    showTr = !showTr; dialoguePrefs.showEs = showTr; saveDialoguePrefs();
+    trBtn.setAttribute("aria-pressed", String(showTr));
+    chat.querySelectorAll(".sc-es").forEach(e=> e.hidden = !showTr);
+  };
+  const finish = ()=> { window.speechSynthesis && window.speechSynthesis.cancel(); s.mission.stage = null; renderPracticeHoy(); };
+  document.getElementById("scGo").onclick = finish;
+  document.getElementById("scSkip").onclick = finish;
+  document.getElementById("scExit").onclick = ()=> { window.speechSynthesis && window.speechSynthesis.cancel(); practiceTodaySession = null; goTo("route"); };
+  window.scrollTo({top:0, behavior:"smooth"});
+  reveal();
+}
+/* MISSION-SCENE:END */
 /* MISSION-PATH:BEGIN — mini camino de la misión (10 puntos con la mascota), aciertos seguidos, 💡 Regla y pista al fallar, formatos alternados */
 RS_ICON.flag = RS_ICON.flag || "M4 22V3 M4 4h13l-2 4 2 4H4";
 RS_ICON.bulb = RS_ICON.bulb || "M9 18h6 M10 21h4 M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z";
