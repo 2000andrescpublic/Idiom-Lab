@@ -2242,6 +2242,8 @@ button.rpers:focus-visible{outline:3px solid color-mix(in srgb,var(--rl,#8E6CFF)
 .sc-ctl .btn{flex:1;}
 .sc-tr{flex:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.82rem;color:var(--ink-soft);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:9px 13px;}
 .sc-tr[aria-pressed="true"]{color:color-mix(in srgb,var(--rl) 65%,var(--ink));border-color:var(--rl);background:color-mix(in srgb,var(--rl) 12%,var(--surface));}
+/* Sigue apagada por defecto, pero más notoria: antes era un botón gris más entre otros y pasaba desapercibido. */
+.sc-tr-hint[aria-pressed="false"]{color:color-mix(in srgb,var(--rl) 55%,var(--ink));border-color:color-mix(in srgb,var(--rl) 55%,var(--line));background:color-mix(in srgb,var(--rl) 7%,var(--surface));}
 .sc-turn{border:2px solid var(--rl);border-radius:20px;padding:14px 16px;background:linear-gradient(135deg,color-mix(in srgb,var(--rl) 10%,transparent),var(--surface));animation:dsIn .35s ease both;}
 .sc-turn[hidden]{display:none;}
 .sc-turn .ds-cap{color:color-mix(in srgb,var(--rl) 65%,var(--ink));margin-bottom:8px;}
@@ -32246,7 +32248,7 @@ registerAnswer = function(id, ok){
       s.mpBuf = [];
       if(!ok && board) board.pairs.filter(p=> p.mistakes > 0).forEach(p=> s.missed.push({prompt:`"${p.item.en}"`, answer:p.item.es}));
     }
-    if(s.mission){ (s.res || (s.res = []))[s.index] = ok; missionMarkDot(ok); if(!ok && id !== "vocab" && id !== "matchpairs") missionRuleHint(s); }   // la regla de gramática no aplica a las palabras
+    if(s.mission){ (s.res || (s.res = []))[s.index] = ok; missionMarkDot(ok); if(!ok && id !== "vocab" && id !== "matchpairs") missionRuleHint(s, id); }   // la regla de gramática no aplica a las palabras
     if(s.mode === "unit"){   // Cierre: qué se falló y acertó en las 6 primeras (para el reintento) y cómo fue el reto final
       if(s.challenge && s.challenge.on) (s.chalRes || (s.chalRes = [])).push(ok);
       else{ const cid = current[id] && current[id].id; if(cid) (ok ? (s.rightIds || (s.rightIds = [])) : (s.wrongIds || (s.wrongIds = []))).push(cid); }
@@ -37445,7 +37447,7 @@ const MISSION_SCENES = {
     [0,"Hi! I [am] Ana. What's your name?","¡Hola! Yo soy Ana. ¿Cómo te llamas?"],
     [1,"Hi, Ana! My name [is] Leo. I [am] from Peru.","¡Hola, Ana! Mi nombre es Leo. Soy de Perú."],
     [0,"Nice to meet you, Leo! [Are] you a new student?","¡Mucho gusto, Leo! ¿Eres un estudiante nuevo?"]],
-    o:["Yes, I am.","Yes, I is.","Yes, I are."], oes:"Sí, lo soy.",
+    o:["Yes, I am.","Yes, I do.","No, I amn't."], oes:"Sí, lo soy.",
     e:"Con «I» el verbo to be es «am». «Is» es para he/she/it y «are» para you/we/they."},
   "A1.7": {s:["🛍️","En una tienda"], p:["Mia","Tom"], t:[
     [0,"Look! [This] is my new phone.","¡Mira! Este es mi teléfono nuevo."],
@@ -37543,7 +37545,7 @@ const MISSION_SCENES = {
     [0,"Hi Jim! How [was] your holiday?","¡Hola, Jim! ¿Cómo estuvieron tus vacaciones?"],
     [1,"It [was] great! The beaches [were] beautiful and the weather [was] hot.","¡Fueron geniales! Las playas eran hermosas y el clima estaba caluroso."],
     [0,"Lucky you! [Were] you alone?","¡Qué suerte! ¿Estabas solo?"]],
-    o:["No, I wasn't. My cousins were with me.","No, I weren't. My cousins was with me.","No, I wasn't. My cousins was with me."], oes:"No. Mis primos estaban conmigo.",
+    o:["No, I wasn't. My cousins were with me.","No, I didn't. My cousins were with me.","No, I wasn't. My cousins was with me."], oes:"No. Mis primos estaban conmigo.",
     e:"Con «I» → was/wasn't. Con plural (cousins) → were."},
   "A2.0": {s:["🎬","¿Qué hiciste el fin de semana?"], p:["Kai","Lucy"], t:[
     [0,"Hey Lucy! How was your weekend?","¡Hola, Lucy! ¿Cómo estuvo tu fin de semana?"],
@@ -37561,13 +37563,13 @@ const MISSION_SCENES = {
     [0,"Paula, why didn't you answer my call last night?","Paula, ¿por qué no contestaste mi llamada anoche?"],
     [1,"Sorry! I [was] [studying] and my phone [was] [charging].","¡Perdón! Estaba estudiando y mi teléfono estaba cargando."],
     [0,"I see. And what [were] your brothers [doing]?","Ya veo. ¿Y qué estaban haciendo tus hermanos?"]],
-    o:["They were sleeping.","They was sleeping.","They sleeping."], oes:"Estaban durmiendo.",
+    o:["They were sleeping.","They were sleep.","They were slept."], oes:"Estaban durmiendo.",
     e:"Pasado continuo: was/were + verbo-ing. Con «they» usamos «were»."},
   "A2.1": {s:["🌳","En el parque"], p:["Ruth","Dan"], t:[
     [0,"Hi Dan! What [are] you [doing]?","¡Hola, Dan! ¿Qué estás haciendo?"],
     [1,"I [am] [waiting] for my friend. And you?","Estoy esperando a mi amigo. ¿Y tú?"],
     [0,"I'm walking my dog. Is your friend coming now?","Estoy paseando a mi perro. ¿Tu amigo viene ya?"]],
-    o:["Yes, he is coming right now.","Yes, he coming right now.","Yes, he are coming right now."], oes:"Sí, viene ahora mismo.",
+    o:["Yes, he is coming right now.","Yes, he comes right now.","Yes, he is come right now."], oes:"Sí, viene ahora mismo.",
     e:"Presente continuo: am/is/are + verbo-ing. Con «he» usamos «is»."},
   "A2.13": {s:["☕","Café por la mañana"], p:["Carla","Pete"], t:[
     [0,"Do you always drink coffee, Pete?","¿Siempre tomas café, Pete?"],
@@ -37684,13 +37686,13 @@ function missionDrawScene(s){
         <p class="ds-sub">Sigue la conversación con ${escHtml(S.p[0])} y ${escHtml(S.p[1])}. En el último turno respondes tú.</p></div></div>
       <div class="sc-chat" id="scChat" aria-live="polite"></div>
       <div class="sc-ctl"><button type="button" class="btn" id="scNext">Continuar ▸</button>
-        <button type="button" class="sc-tr" id="scTr" aria-pressed="${showTr}">${svgIcon("book", 15)} Traducción</button></div>
+        <button type="button" class="sc-tr sc-tr-hint" id="scTr" aria-pressed="${showTr}">${svgIcon("book", 15)} Traducción</button></div>
       <div class="sc-turn" id="scTurn" hidden>
         <div class="ds-cap">TU TURNO · ERES ${escHtml(S.p[me].toUpperCase())}</div>
         <div class="options" id="scOpts"></div>
         <div class="feedback" role="status" aria-live="polite" id="scFb"></div>
       </div>
-      <div class="ds-foot"><button class="btn" id="scGo" disabled>Continuar</button><button type="button" class="ds-skip" id="scSkip">Saltar al entrenamiento</button></div>
+      <div class="ds-foot"><button class="btn" id="scGo" disabled hidden>Continuar</button><button type="button" class="ds-skip" id="scSkip">Saltar al entrenamiento</button></div>
     </div>`;
   const chat = document.getElementById("scChat"), next = document.getElementById("scNext"), trBtn = document.getElementById("scTr");
   const spk = rsIcon("speaker", 16);
@@ -37726,6 +37728,7 @@ function missionDrawScene(s){
     const turn = document.getElementById("scTurn"), opts = document.getElementById("scOpts"), fb = document.getElementById("scFb"), go = document.getElementById("scGo");
     const order = S.o.map((t, i)=> ({t, ok:i === 0})).sort(()=> Math.random() - .5);
     opts.innerHTML = order.map((x, i)=> `<button class="opt-btn" data-i="${i}">${escHtml(x.t)}</button>`).join("");
+    go.hidden = false;   // recién ahora, con algo que hacer: antes se veía todo el diálogo con dos botones «Continuar» a la vez
     turn.hidden = false; turn.scrollIntoView({block:"nearest", behavior:"smooth"});
     const btns = [...opts.querySelectorAll(".opt-btn")];
     btns.forEach(b=> b.onclick = ()=> {
@@ -37854,7 +37857,7 @@ Object.assign(MISSION_SCENES, {
     [0,"Welcome! Our chocolate [is] [made] here in Belgium.","¡Bienvenidos! Nuestro chocolate se hace aquí en Bélgica."],
     [1,"Interesting! And when [was] this factory [built]?","¡Interesante! ¿Y cuándo se construyó esta fábrica?"],
     [0,"In 1920. Now guess: where is our chocolate exported?","En 1920. Ahora adivina: ¿adónde se exporta nuestro chocolate?"]],
-    o:["It is exported to many countries.","It is export to many countries.","It are exported to many countries."], oes:"Se exporta a muchos países.",
+    o:["It is exported to many countries.","It exports to many countries.","It is exports to many countries."], oes:"Se exporta a muchos países.",
     e:"Pasiva: be + participio pasado. Con «it» usamos «is»: it is exported."},
   "B2.4": {s:["🌆","Recuerdos"], p:["Iris","Paul"], t:[
     [0,"I [used to] live in Mexico City. Now I live in Madrid.","Antes vivía en Ciudad de México. Ahora vivo en Madrid."],
@@ -38374,13 +38377,49 @@ function missionPathHTML(s){
     <div class="mp-pop" id="mpPop" hidden><div class="ds-cap">${svgIcon("bulb", 16)} LA REGLA</div><div class="ds-rule-t">${rd.rule || "Fíjate en los ejemplos del tema."}</div>
       ${rd.sents.map(x=> `<div class="mp-ex">${x.hl.html}<span>${escHtml(x.es || "")}</span></div>`).join("")}</div></div>`;
 }
-/* pista al fallar: se añade la regla del tema al mensaje de error */
-function missionRuleHint(s){
+/* Texto de la pregunta que acabas de fallar, para buscar cuál de las 4 tarjetas de Descubre habla de ESE error en concreto
+   (antes de esto, la pista era siempre la misma regla general de la unidad, sin importar qué tipo de error fue). */
+function missionFailText(id){
+  const c = current[id]; if(!c) return "";
+  if(id === "listen") return c.sentence || "";
+  if(!c.item) return "";
+  if(id === "gapfill") return c.item.sentence || "";
+  if(id === "order") return c.item.correct || "";
+  if(id === "translate") return (c.item.en && c.item.en[0]) || "";
+  return "";
+}
+/* Afirmativa / negativa / pregunta: la misma señal que ya usa easyFirstScore. En completar, la frase fallada trae el
+   hueco sin rellenar («She ___ (not/be) at home.»), pero la pista entre paréntesis ya delata si es una negación. */
+function missionTextCategory(t){
+  if(/\?\s*$/.test(t)) return "q";
+  if(/n't\b|\bnot\b/i.test(t)) return "neg";
+  return "aff";
+}
+/* Busca, entre las tarjetas de Descubre de la unidad, la que habla del MISMO elemento de la frase fallada.
+   Primero por coincidencia exacta de la palabra entre [corchetes] (más precisa); si no hay ninguna
+   (p. ej. fallaste una negación con «isn't» y la tarjeta de negación de esa unidad usa «aren't»),
+   por la misma categoría afirmativa/negativa/pregunta. Ese contenido ya existe en «Descubre»: solo se reutiliza. */
+function missionCardExplain(s, id){
+  const FC = discCardsFor(s.mission.level, s.mission.unit); if(!FC) return null;
+  const text = missionFailText(id); if(!text) return null;
+  const cat = missionTextCategory(text), low = text.toLowerCase();
+  let hit = FC.find(([en])=>{
+    const m = en.match(/\[([^\]]+)\]/); if(!m) return false;
+    const kw = m[1].toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`\\b${kw}\\b`).test(low);
+  });
+  if(!hit && cat !== "aff") hit = FC.find(([en])=> missionTextCategory(en) === cat);   // "aff" es demasiado general para usarla de comodín
+  return hit ? hit[2] : null;
+}
+/* pista al fallar: se añade al mensaje de error una explicación del tipo de error concreto (tarjeta de Descubre que
+   coincide), y si no hay ninguna coincidencia, cae en la regla general de la unidad, como antes. */
+function missionRuleHint(s, id){
   setTimeout(()=>{
     const fb = document.querySelector("#exPanel .feedback.show.bad, #exPanel .feedback.bad.show");
     if(!fb || fb.querySelector(".rule-hint")) return;
-    const rd = missionRuleData(s); if(!rd.rule) return;
-    fb.insertAdjacentHTML("beforeend", `<div class="rule-hint">${svgIcon("bulb", 15)} <span><b>Recuerda:</b> ${rd.rule}</span></div>`);
+    const specific = id ? missionCardExplain(s, id) : null;
+    const text = specific || missionRuleData(s).rule; if(!text) return;
+    fb.insertAdjacentHTML("beforeend", `<div class="rule-hint">${svgIcon("bulb", 15)} <span><b>Recuerda:</b> ${text}</span></div>`);
   }, 80);
 }
 /* la mascota desliza desde el punto anterior hasta el actual */
