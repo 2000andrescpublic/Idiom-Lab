@@ -36503,10 +36503,52 @@ function missionVocabBlock(level){
   return ids.map(i=> ({type:"vocab", forcedId:`vocab:en:${level}:${i}`})).concat([{type:"matchpairs", level}]);
 }
 /* VOC-BLOCK:END */
+/* EASY-FIRST:BEGIN — la primera vez que se ve un tema, evita que el primer ejercicio de Entrenar sea el más difícil del lote
+   (antes salía lo que tocara por sorteo del SRS, y podía tocar de entrada una negación con 5 opciones parecidas).
+   No hay etiqueta de dificultad escrita a mano en el banco (~2500 ítems): se calcula sola a partir de 4 señales del propio
+   texto — cuántas opciones parecidas tiene, si es afirmativa o negativa/pregunta, cuántas palabras y si tiene contracciones —
+   y solo se usa para mover al frente el ítem más fácil encontrado; el resto de la sesión sigue mezclado como siempre. */
+function easyFirstScore(type, forcedId){
+  const p = forcedId.split(":"), lang = p[1], lv = p[2], idx = +p[3];
+  let text = "", opts = 0;
+  if(type === "gapfill"){
+    const item = ((LANG_PACKS[lang] || {}).GRAMMAR || {})[lv] && LANG_PACKS[lang].GRAMMAR[lv][idx];
+    if(!item) return 3;
+    text = item.sentence || "";
+    const o = ((GAPFILL_OPTS[lang] || {})[lv] || [])[idx];
+    opts = o ? o.length : 5;
+  }else if(type === "order"){
+    const item = ((LANG_PACKS[lang] || {}).ORDER || {})[lv] && LANG_PACKS[lang].ORDER[lv][idx];
+    if(!item) return 3;
+    text = item.correct || ""; opts = (item.words || []).length;
+  }else if(type === "translate"){
+    const item = ((LANG_PACKS[lang] || {}).TRANSLATE || {})[lv] && LANG_PACKS[lang].TRANSLATE[lv][idx];
+    if(!item) return 3;
+    text = (item.en && item.en[0]) || "";
+  }else if(type === "listen"){
+    text = (((LANG_PACKS[lang] || {}).LISTEN || {})[lv] || [])[idx] || "";
+  }else return 3;   // teoría, vocabulario, pares: sin señal de dificultad, quedan neutros
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  let score = Math.min(opts, 6) * 0.6 + Math.min(words, 12) * 0.15;
+  if(/\?\s*$/.test(text)) score += 1.5;             // pregunta
+  if(/n't\b|\bnot\b/i.test(text)) score += 1.5;      // negación
+  if(/[a-z]'[a-z]/i.test(text)) score += 0.8;        // alguna otra contracción (I'll, we're...)
+  return score;
+}
+function easyFirstReorder(queue){
+  if(!queue.length) return queue;
+  const scored = queue.map((q, i)=> ({i, score:easyFirstScore(q.type, q.forcedId || "")}));
+  const easiest = scored.reduce((a, b)=> b.score < a.score ? b : a);
+  if(easiest.i > 0){ const q = queue.slice(); const [item] = q.splice(easiest.i, 1); q.unshift(item); return q; }
+  return queue;
+}
+/* EASY-FIRST:END */
 function startMission(level, k){
   if(!routeUnits(level)[k] && currentLang !== "pt") return;
   const s = buildTopicSession(level, k);
+  const firstTime = currentLang === "en" && !topicProgress[topicKey(s.tHome, s.tIdx)];
   s.queue = missionAlternate(s.queue).concat(missionVocabBlock(level));
+  if(firstTime) s.queue = easyFirstReorder(s.queue);
   s.mission = {level, unit:k, discovered:false};
   practiceTodaySession = s;
   goTo("practicehoy");
