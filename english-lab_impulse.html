@@ -29647,7 +29647,14 @@ function newListenQuestion(){
     if(mode === "choose") current.listen.opts = listenBuildOptions(item, lv);
     if(mode === "cloze") current.listen.blanks = listenPickBlanks(item, lv);
   }
+  const ent = practiceEntry();   // reto final del Cierre: dictado escribiendo, sin fichas
+  if(ent && ent.typed && current.listen.mode === "dictation") current.listen.typed = true;
   drawListen();
+}
+/* paso actual de la sesión guiada (o null fuera de una sesión) */
+function practiceEntry(){
+  const s = typeof practiceTodaySession !== "undefined" ? practiceTodaySession : null;
+  return activeSection !== "exercises" && s && s.queue && s.queue[s.index] || null;
 }
 const LISTEN_CONFUSE = [["a","the"],["is","are"],["was","were"],["he","she"],["can","can't"],["do","does"],["has","have"],["his","her"],["they","we"],["in","on"],["at","in"],["to","for"],["this","that"],["these","those"],["will","would"],["did","do"],["and","but"],["than","then"],["your","you're"],["its","it's"],["their","there"],["been","being"],["my","me"],["them","him"],["had","has"],["never","ever"],["some","any"],["much","many"],["must","should"],["left","right"],["seven","eleven"],["morning","evening"],["like","likes"],["work","works"],["want","won't"],["should","shouldn't"],["would","wouldn't"],["did","didn't"],["is","isn't"],["are","aren't"],["have","haven't"]];
 /* Un distractor debe sonar parecido pero ser gramaticalmente posible; si no, se elige por gramática y no por oído. */
@@ -29760,6 +29767,7 @@ function listenPickBlanks(sentence, lv){
 }
 function drawListen(){
   const m = (current.listen && current.listen.mode) || "dictation";
+  if(current.listen && current.listen.typed && m === "dictation") return drawListenTyped();
   if(m === "choose") return drawListenChoose();
   if(m === "cloze") return drawListenCloze();
   if(m === "comp") return drawListenComp();
@@ -29903,6 +29911,52 @@ function drawListenDictation(){
   check.onclick = doCheck;
   next.onclick = newListenQuestion;
   listenAutoplay(sentence);
+}
+/* Dictado escribiendo la frase (sin fichas ni pistas): solo lo usa el reto final del Cierre de la Ruta */
+function drawListenTyped(){
+  const cur = current.listen, {lv, id, review, sentence} = cur, es = listenTranslation(sentence);
+  document.getElementById("exPanel").innerHTML = `
+    <div class="card">
+      ${scoreRowHtml("listen")}
+      <div class="q-top"><span class="badge-level">${lv}</span><div class="q-text">Reto: escucha y escribe la frase completa.</div>${reviewBadge(review)}</div>
+      ${listenBoxHTML()}
+      <input class="text-input" id="listenTypedInput" placeholder="Escribe lo que oyes..." autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="feedback" role="status" aria-live="polite" id="listenFeedback"></div>
+      <div class="btn-row">
+        <button class="btn" id="listenCheck">Comprobar</button>
+        <button class="btn secondary" id="listenNext" style="display:none;">Siguiente →</button>
+      </div>
+    </div>`;
+  listenWireBox(()=>sentence);
+  const input = document.getElementById("listenTypedInput"), check = document.getElementById("listenCheck"), next = document.getElementById("listenNext");
+  function doCheck(){
+    if(!input.value.trim()){ needAnswer(input); return; }
+    const typed = input.value, an = listenAnalyze(sentence, typed, "");
+    const ok = an.exact || an.nearly;
+    srsUpdate(id, ok);
+    if(ok) clearErrorIfMastered(id);
+    else recordError(id, "listen", lv, "Dictado (escucha y escribe la frase)", sentence, `La frase correcta era: "${sentence}".`);
+    registerAnswer("listen", ok);
+    input.disabled = true; check.disabled = true;
+    const fb = document.getElementById("listenFeedback");
+    fb.className = "feedback show " + (ok ? "ok" : "bad");
+    if(an.exact) fb.innerHTML = `<strong>¡Perfecto! 🎉</strong>Escuchaste correctamente: "${escHtml(sentence)}"`;
+    else if(an.nearly) fb.innerHTML = `<strong>¡Casi perfecto! 👏</strong>Entendiste toda la frase; solo revisa la ortografía: ${an.typos.map(t=>`<span style="color:#99123F;text-decoration:line-through;">${escHtml(t.typed)}</span> → <b>${escHtml(t.correct)}</b>`).join(", ")}.<div class="wr-body" style="margin-top:6px;">${listenDiffHTML(sentence, an)}</div>`;
+    else{
+      const pct = an.total ? Math.round(an.heard / an.total * 100) : 0, wrongWords = an.cw.filter((_, i)=> !an.cmatch[i]);
+      fb.innerHTML = `<strong>${pct >= 60 ? "Casi 😉" : "Sigue practicando"}</strong>
+        <div class="wr-progress-bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
+        Comparación palabra por palabra: ${listenDiffHTML(sentence, an)}${whyFailedHTML({yours: typed, correct: an.sv, why:`Acertaste <b>${an.heard} de ${an.total}</b> palabras (${pct}%). ${wrongWords.length ? `Te costaron: <b>${wrongWords.map(escHtml).join(", ")}</b>. ` : ""}`, tip:"Prueba con el botón 🐢 Lento y fíjate en las palabras cortas (a, the, to), que se pronuncian muy suaves.", speak: an.sv})}`;
+    }
+    fb.insertAdjacentHTML("beforeend", listenAfterHTML(sentence, es, ""));
+    listenWireAfter(fb, sentence);
+    next.style.display = "inline-block";
+  }
+  check.onclick = doCheck;
+  input.addEventListener("keydown", e=>{ if(e.key === "Enter" && !check.disabled) doCheck(); });
+  next.onclick = newListenQuestion;
+  listenAutoplay(sentence);
+  input.focus({preventScroll:true});
 }
 /* LISTEN-CHIPS:END */
 /* ---- Elige lo que oíste ---- */
@@ -30222,7 +30276,8 @@ function translateWireHeader(root){
 }
 function newTranslateQuestion(){
   clearInterval(translateTimer);
-  const mode = translateModeActive();
+  const ent = practiceEntry();   // reto final del Cierre: traducción abierta, sin fichas
+  const mode = ent && ent.write ? "write" : translateModeActive();
   if(mode === "scene") return translateNewScene();
   if(mode === "timed") return drawTranslateTimedStart();
   const lv = pickLevel();
@@ -31624,7 +31679,7 @@ function matchPairsModes(){
 function mpPractice(){ return MATCH_PRACTICES.find(p=>p.id===matchPairsPractice) || MATCH_PRACTICES[0]; }
 /* paso «Une los pares» de una sesión de Entrenar (o null si el tablero se abrió desde Ejercicios) */
 function mpSessionEntry(){
-  const s = typeof practiceTodaySession !== "undefined" ? practiceTodaySession : null, e = s && s.mission && s.queue[s.index];
+  const s = typeof practiceTodaySession !== "undefined" ? practiceTodaySession : null, e = activeSection !== "exercises" && s && s.mission && s.queue[s.index];
   return e && e.type === "matchpairs" ? e : null;
 }
 function mpClearTimers(st){
@@ -32016,7 +32071,10 @@ function renderPracticeHoy(){
   const s = practiceTodaySession;
   if(s.mission && !s.mission.discovered){ missionDrawDiscover(s); return; }
   if(s.mission && s.mission.stage === "scene"){ missionDrawScene(s); return; }
-  if(s.index >= s.queue.length){ renderPracticeHoyComplete(); return; }
+  if(s.index >= s.queue.length){
+    if(s.mode === "unit" && unitOfferChallenge(s)) return;   // 6/6 en el Cierre: reto final opcional
+    renderPracticeHoyComplete(); return;
+  }
   const entry = s.queue[s.index];
   const labels = practiceTodayLabels(s);
   const panel = document.getElementById("panel-practicehoy");
@@ -32165,6 +32223,10 @@ registerAnswer = function(id, ok){
       if(!ok && board) board.pairs.filter(p=> p.mistakes > 0).forEach(p=> s.missed.push({prompt:`"${p.item.en}"`, answer:p.item.es}));
     }
     if(s.mission){ (s.res || (s.res = []))[s.index] = ok; missionMarkDot(ok); if(!ok && id !== "vocab" && id !== "matchpairs") missionRuleHint(s); }   // la regla de gramática no aplica a las palabras
+    if(s.mode === "unit"){   // Cierre: qué se falló y acertó en las 6 primeras (para el reintento) y cómo fue el reto final
+      if(s.challenge && s.challenge.on) (s.chalRes || (s.chalRes = [])).push(ok);
+      else{ const cid = current[id] && current[id].id; if(cid) (ok ? (s.rightIds || (s.rightIds = [])) : (s.wrongIds || (s.wrongIds = []))).push(cid); }
+    }
     s.answered++;
     if(ok) s.correct++;
     if(!s.byType[id]) s.byType[id] = {correct:0, total:0};
@@ -33144,7 +33206,7 @@ function renderTopicComplete(s){
   {
     const rp = routeTouch(s.level, s.unit);
     rp.attempts = (rp.attempts || 0) + 1;
-    rp.best = Math.max(rp.best || 0, pct);
+    rp.trainBest = Math.max(rp.trainBest || 0, pct);   // aparte de `best` (solo Cierre): así Entrenar no infla las estrellas
     /* El entrenamiento ya no supera la unidad: se supera con el cierre, que se ofrece al terminar. */
   }
   const canClose = routeIsOpen(s.level, s.unit);
@@ -35609,10 +35671,84 @@ function buildUnitSession(level, k){
     const tq = shuffle((theoryQBank()[u.key] || []).map((_, n)=>({type:"theoryq", forcedId:`theoryq:pt:${u.key}:${n}`}))).slice(0, 2);
     const core = pickWithTranslateCap(u.items.map(x=>({type:x.type, forcedId:x.id})), ROUTE_CLOSE_SIZE - tq.length, recentTranslate(level, k));
     queue = shuffle(core.concat(tq));
-  }else queue = shuffle(pickWithTranslateCap(u.items.map(x=>({type:x.type, forcedId:x.id})), ROUTE_CLOSE_SIZE, recentTranslate(level, k)));
+  }else{
+    /* Reintento tras fallar: prioriza (hasta 3) lo que fallaste y evita lo que acertaste en ese intento; el resto sale de lo que no salió. */
+    const all = u.items.map(x=>({type:x.type, forcedId:x.id})), prev = routeState(level, k);
+    const miss = new Set(prev.cMissed || []), okd = new Set(prev.cRight || []);
+    if(miss.size && !prev.passed){
+      const q = [], trN = ()=> q.filter(x=> x.type === "translate").length;
+      shuffle(all.filter(x=> miss.has(x.forcedId))).forEach(x=> { if(q.length < 3 && !(x.type === "translate" && trN() >= TRANSLATE_CAP)) q.push(x); });
+      const rest = all.filter(x=> !miss.has(x.forcedId) && !okd.has(x.forcedId)), rec = recentTranslate(level, k);
+      pickWithTranslateCap(rest, ROUTE_CLOSE_SIZE - q.length, rec).forEach(x=> { if(q.length < ROUTE_CLOSE_SIZE && !(x.type === "translate" && trN() >= TRANSLATE_CAP)) q.push(x); });
+      const used = () => new Set(q.map(x=> x.forcedId));
+      shuffle(all.filter(x=> !used().has(x.forcedId) && x.type !== "translate")).forEach(x=> { if(q.length < ROUTE_CLOSE_SIZE) q.push(x); });   // si faltan, se completa con lo que sea (sin pasar del tope de «traducir»)
+      shuffle(all.filter(x=> !used().has(x.forcedId))).forEach(x=> { if(q.length < ROUTE_CLOSE_SIZE) q.push(x); });
+      queue = shuffle(q);
+    }else queue = shuffle(pickWithTranslateCap(all, ROUTE_CLOSE_SIZE, recentTranslate(level, k)));
+  }
   rememberTranslate(level, k, queue);
   return {mode:"unit", level, unit:k, queue, index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set()};
 }
+/* CIERRE-ADAPT:BEGIN — Cierre adaptativo (inglés). Al acertar 6/6 se ofrece un reto final de 2 ejercicios más difíciles (dictado escribiendo y traducción abierta, sin fichas);
+   superarlo da la tercera estrella. Al fallar, el reintento prioriza lo fallado (ver buildUnitSession). La unidad se registra al terminar las 6 preguntas, no al final del reto. */
+function unitChallengeEntries(s){
+  const u = routeUnits(s.level)[s.unit]; if(!u || !u.key) return [];
+  const now = Date.now(), inQ = new Set(s.queue.map(x=> x.forcedId));
+  const prio = id=>{ const d = SRS_DATA[id]; return !d ? 1 + Math.random() * 0.5 : d.dueAt <= now ? Math.random() * 0.6 : 2 + d.box * 0.1 + Math.random() * 0.05; };
+  const best = ids=> ids.slice().sort((a, b)=> prio(a) - prio(b))[0];
+  const ls = (LISTEN_TOPIC[u.key] || []).map(([lv, i])=> `listen:en:${lv}:${i}`);
+  const tr = u.items.filter(x=> x.type === "translate").map(x=> x.id), trNew = tr.filter(id=> !inQ.has(id));
+  const out = [];
+  if(ls.length) out.push({type:"listen", forcedId:best(ls), typed:true});
+  const t = trNew.length ? trNew : tr;
+  if(t.length) out.push({type:"translate", forcedId:best(t), write:true});
+  return out;
+}
+/* Guarda el resultado de las 6 primeras preguntas (una sola vez por sesión). */
+function unitRecord(s){
+  if(s.rec) return s.rec;
+  const level = s.level, coreA = s.coreAnswered != null ? s.coreAnswered : s.answered, coreC = s.coreCorrect != null ? s.coreCorrect : s.correct;
+  const pct = coreA ? Math.round(coreC / coreA * 100) : 0, passed = pct >= ROUTE_PASS_PCT;
+  const prevSt = routeState(level, s.unit), prevStarsN = routeStars(prevSt);
+  const rw = {wasPassed:!!prevSt.passed, prevStars:prevStarsN, prevBest:routeShownBest(prevSt), coreA, coreC, pct, passed};
+  const rp = routeTouch(level, s.unit);
+  rp.attempts = (rp.attempts || 0) + 1;
+  rp.best = Math.max(rp.best || 0, pct);
+  if(rp.chal === undefined && currentLang === "en") rp.chal = prevStarsN === 3;   // quien ya tenía 3 estrellas las conserva; el resto empieza sin el reto (en portugués sigue la regla anterior)
+  if(passed){ rp.passed = true; delete rp.cMissed; delete rp.cRight; }
+  else{ rp.cMissed = (s.wrongIds || []).slice(); rp.cRight = (s.rightIds || []).slice(); }
+  saveProgress();
+  return s.rec = rw;
+}
+/* Al terminar las 6 con todo bien: pantalla del reto. Devuelve true si la mostró (la sesión sigue). */
+function unitOfferChallenge(s){
+  if(currentLang !== "en" || s.challenge || s.rec) return false;
+  if(!(s.answered >= ROUTE_CLOSE_SIZE && s.correct === s.answered)) return false;
+  const extra = unitChallengeEntries(s);
+  if(extra.length < 2) return false;
+  s.coreAnswered = s.answered; s.coreCorrect = s.correct;
+  unitRecord(s);
+  s.challenge = {on:false, extra};
+  const panel = document.getElementById("panel-practicehoy"), lc = ROUTE_LC[s.level] || "#8E6CFF";
+  practiceTodayCleanup();
+  panel.innerHTML = `
+    <div class="rw" style="--rl:${lc}">
+      ${s.mission ? `<div class="rw-bar">${missionBarHTML(2, s.level, s.unit)}</div>` : ""}
+      <div class="rw-mascot">${mascotSVG("cheer", 84)}</div>
+      <h2 class="rw-title">¡${s.answered}/${s.answered}! Unidad ${s.unit + 1} superada</h2>
+      <p class="dash-card-sub">Reto final, si te animas: 2 ejercicios más difíciles, un dictado escribiendo la frase y una traducción abierta, sin fichas ni pistas. Si los aciertas ganas la tercera estrella.</p>
+      <div class="rw-chips"><span class="rw-chip">${rsIcon("star", 14)} ${routeStars(routeState(s.level, s.unit)) === 3 ? "Ya tienes 3 estrellas" : "Vale la tercera estrella"}</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:14px;">
+        <button class="btn" id="chalGo" type="button">Aceptar el reto →</button>
+        <button class="btn secondary" id="chalSkip" type="button">Terminar aquí</button>
+      </div>
+    </div>`;
+  document.getElementById("chalGo").onclick = ()=>{ s.challenge.on = true; s.queue.push(...extra); renderPracticeHoy(); };
+  document.getElementById("chalSkip").onclick = ()=> renderPracticeHoyComplete();
+  window.scrollTo({top:0, behavior:"smooth"});
+  return true;
+}
+/* CIERRE-ADAPT:END */
 function routeMissedLine(type, cur){
   if(type==="listen" && cur && cur.sentence) return {prompt:"Dictado", answer:cur.sentence};
   const it = cur && cur.item;
@@ -35639,14 +35775,11 @@ function routeStartClose(level, k){
 function renderUnitComplete(s){
   const level = s.level;
   const units = routeUnits(level), u = units[s.unit];
-  const pct = s.answered ? Math.round(s.correct/s.answered*100) : 0;
-  const passed = pct >= ROUTE_PASS_PCT;
-  const prevSt = routeState(level, s.unit), rw = {wasPassed:!!prevSt.passed, prevStars:routeStars(prevSt), prevBest:prevSt.best || 0};
-  const rp = routeTouch(level, s.unit);
-  rp.attempts = (rp.attempts||0) + 1;
-  rp.best = Math.max(rp.best||0, pct);
-  if(passed) rp.passed = true;
-  saveProgress();
+  const rec = unitRecord(s), rw = Object.assign({}, rec);   // las 6 primeras preguntas; el reto final (si lo hubo) se suma aparte
+  const pct = rec.pct, passed = rec.passed;
+  const chalDone = !!(s.chalRes && s.chalRes.length >= 2), chalOk = chalDone && s.chalRes.every(Boolean);
+  if(passed && chalOk){ const rp = routeTouch(level, s.unit); if(!rp.chal){ rp.chal = true; saveProgress(); } }
+  rw.chalDone = chalDone; rw.chalOk = chalOk;
   const hasNext = s.unit + 1 < units.length;
   const nextLevel = ROUTE_LEVELS[ROUTE_LEVELS.indexOf(level) + 1];
   const missed = s.missed.filter(Boolean);
@@ -35660,10 +35793,10 @@ function renderUnitComplete(s){
     <div class="section-head" style="text-align:center;"${s.mission ? " hidden" : ""}>
       <div style="width:88px;margin:0 auto 12px;">${mascotSVG(passed?"cheer":"",88)}</div>
       <h2>${passed ? `¡Unidad ${s.unit+1} superada! 🎉` : `Casi: unidad ${s.unit+1} por reforzar`}</h2>
-      <p class="dash-card-sub">${escHtml(u.title)} · ${s.correct}/${s.answered} correctas (${pct}%)</p>
+      <p class="dash-card-sub">${escHtml(u.title)} · ${rec.coreC}/${rec.coreA} correctas (${pct}%)</p>
       <p class="dash-card-sub">${passed
         ? (hasNext ? `Se abrió la Unidad ${s.unit+2}.` : `¡Terminaste todas las unidades de ${level}!${nextLevel ? ` Puedes seguir con ${nextLevel}.` : ""}`)
-        : `Necesitas ${ROUTE_PASS_PCT}% para superarla. Repasa la teoría y reintenta cuando quieras.`}</p>
+        : `Necesitas ${ROUTE_PASS_PCT}% para superarla. Repasa la teoría y reintenta: el próximo cierre prioriza lo que fallaste y no repite lo que acertaste.`}</p>
     </div>
     ${missedHtml}
     <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
@@ -35725,10 +35858,13 @@ function routeChestSvg(open){
     : `<svg width="64" height="56" viewBox="0 0 92 80" aria-hidden="true"><rect x="6" y="30" width="80" height="46" rx="8" fill="#8A5A2B"/><path d="M6 38a8 8 0 0 1 8-8h64a8 8 0 0 1 8 8v6H6z" fill="#B47A3C"/><rect x="6" y="44" width="80" height="6" fill="#F5C542"/><rect x="38" y="36" width="16" height="24" rx="4" fill="#F5C542"/><circle cx="46" cy="47" r="3.4" fill="#8A5A2B"/><path d="M14 30c2-14 14-22 32-22s30 8 32 22z" fill="#A16A32"/><path d="M14 30c2-14 14-22 32-22s30 8 32 22" fill="none" stroke="#F5C542" stroke-width="4"/></svg>`;
 }
 let routeSheet = null;   // {level, k} de la unidad con panel abierto
+/* Estrellas: superar el Cierre da 2; la tercera se gana con el reto final (2 ejercicios más difíciles al acertar 6/6).
+   `chal` lo fija el primer Cierre hecho con esta regla; las unidades superadas antes (chal sin definir) conservan su cálculo anterior. */
+const routeShownBest = st=> st.best != null ? st.best : (st.trainBest || 0);
 function routeStars(st){
   if(!st.passed) return 0;
-  const b = st.best || 0;
-  return b >= 90 ? 3 : b >= 80 ? 2 : 1;
+  if(st.chal === undefined){ const b = st.best || 0; return b >= 90 ? 3 : b >= 80 ? 2 : 1; }
+  return st.chal ? 3 : 2;
 }
 function routeStarsSvg(n){
   const star = (x, on)=> `<path d="M${x} 1.5l2.1 4.6 5 .6-3.7 3.4 1 5L${x} 12.7l-4.4 2.4 1-5-3.7-3.4 5-.6z" fill="${on ? "url(#i3g-yellow)" : "#3A3560"}" stroke="${on ? "#8F6100" : "#2A2645"}" stroke-width=".8" stroke-linejoin="round"/>`;
@@ -36033,11 +36169,11 @@ function renderRoute(){
     const st = routeState(level, k), open = routeIsOpen(level, k), isCur = k === cur;
     const cls = st.passed ? "done" : isCur ? "cur" : open ? "open" : "locked";
     const stars = routeStars(st);
-    const stTxt = st.passed ? `superada, ${stars} de 3 estrellas` : st.attempts ? `por reforzar, mejor ${st.best}%` : isCur ? "siguiente" : open ? "disponible" : "bloqueada";
+    const stTxt = st.passed ? `superada, ${stars} de 3 estrellas` : st.attempts ? `por reforzar, mejor ${routeShownBest(st)}%` : isCur ? "siguiente" : open ? "disponible" : "bloqueada";
     const glyph = !open && !st.passed ? svgIcon("lock", 26) : rsIcon(routeIcon(u.title, k), isCur ? 34 : 28);
     return `<button type="button" class="rnode ${cls} ${side}" id="route-unit-${level}-${k}" data-route-node="${k}" style="left:${xOf(r)}%;top:${yOf(r) - 32}px" aria-label="Unidad ${k + 1}: ${escHtml(u.title)}, ${stTxt}">
       <span class="rcirc">${isCur ? '<i class="rpulse"></i>' : ""}<b>${glyph}</b>${st.passed ? `<span class="rchk">${svgIcon("tick", 14).replace('class="ico3"', 'class="ico3 rn-tick"')}</span>` : ""}${isCur ? '<span class="rgo">EMPEZAR</span>' : ""}</span>
-      ${st.passed ? `<span class="rstars">${routeStarsSvg(stars)}</span>` : st.attempts ? `<span class="rbest">mejor ${st.best}%</span>` : ""}
+      ${st.passed ? `<span class="rstars">${routeStarsSvg(stars)}</span>` : st.attempts ? `<span class="rbest">mejor ${routeShownBest(st)}%</span>` : ""}
       <span class="rname" title="${escHtml(u.title)}">${escHtml(routeNodeLabel(u.title))}</span>
     </button>`;
   }).join("");
@@ -36089,7 +36225,7 @@ function renderRoute(){
     sheet.innerHTML = `<button type="button" class="route-sheet-x" id="routeSheetX" aria-label="Cerrar">×</button>
       <h4>${k + 1} · ${escHtml(u.title)}</h4>
       <p>${escHtml(ROUTE_BLURB[u.title] || u.summary)}</p>
-      ${st.passed ? `<div class="route-sheet-stars">${routeStarsSvg(routeStars(st))}<span>Mejor resultado: ${st.best}%</span></div>` : st.attempts ? `<div class="route-sheet-stars"><span>Por reforzar · mejor ${st.best}%</span></div>` : ""}
+      ${st.passed ? `<div class="route-sheet-stars">${routeStarsSvg(routeStars(st))}<span>Mejor resultado: ${routeShownBest(st)}%</span></div>` : st.attempts ? `<div class="route-sheet-stars"><span>Por reforzar · mejor ${routeShownBest(st)}%</span></div>` : ""}
       <div class="route-sheet-btns">
         ${open ? `<button class="btn" data-sheet="train">${svgIcon("target", 18)} ${st.passed ? "Repetir la misión" : "Empezar misión"}</button>` : `<button class="btn secondary" data-sheet="skip">Saltar: ya lo sé</button>`}
       </div>
@@ -36141,7 +36277,7 @@ function buildMilestoneSession(level, after){
     const core = u.items.map(x=> ({type:x.type, forcedId:x.id, unit:k}));
     const tq = (theoryQBank()[u.key] || []).map((_, n)=> ({type:"theoryq", forcedId:`theoryq:${currentLang}:${u.key}:${n}`, unit:k}));
     const st = routeState(level, k);
-    pools.push({k, items:core.concat(tq), weak:st.best != null ? 1 - st.best / 100 : 0.5});
+    pools.push({k, items:core.concat(tq), weak:routeShownBest(st) ? 1 - routeShownBest(st) / 100 : 0.5});
   }
   const picked = [], typeCount = {};
   const canTake = x=> !(x.type === "translate" && (typeCount.translate || 0) >= TRANSLATE_CAP);
@@ -37976,13 +38112,14 @@ function missionRewardHTML(s, o){
   let streak = 0, run = 0; res.forEach(v=> { run = v ? run + 1 : 0; streak = Math.max(streak, run); });
   const star = i=> `<svg class="rw-star${i < o.stars ? " on" : ""}" style="--d:${(0.25 + i * 0.4).toFixed(2)}s" width="58" height="58" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" stroke-linejoin="round"/></svg>`;
   const title = !o.passed ? `Casi: unidad ${unit + 1} por reforzar` : o.stars === 3 ? "¡Perfecto!" : o.stars === 2 ? "¡Muy bien!" : "¡Unidad superada!";
-  const chips = [`<span class="rw-chip">${rsIcon("check", 14)} ${s.correct}/${s.answered} correctas · ${o.pct}%</span>`];
+  const chips = [`<span class="rw-chip">${rsIcon("check", 14)} ${o.coreC != null ? o.coreC : s.correct}/${o.coreA != null ? o.coreA : s.answered} correctas · ${o.pct}%</span>`];
   if(streak >= 3) chips.push(`<span class="rw-chip amber">${rsIcon("zap", 14)} Racha de ${streak}</span>`);
   if(o.pct === 100) chips.push(`<span class="rw-chip amber">${rsIcon("star", 14)} Sin fallos</span>`);
+  if(o.chalDone) chips.push(`<span class="rw-chip${o.chalOk ? " amber" : ""}">${rsIcon(o.chalOk ? "star" : "target", 14)} Reto final: ${o.chalOk ? "superado" : "por reforzar"}</span>`);
   if(o.passed && o.wasPassed && o.stars > o.prevStars) chips.push(`<span class="rw-chip amber">${rsIcon("arrow", 14)} ¡Subiste a ${o.stars} ${o.stars === 1 ? "estrella" : "estrellas"}!</span>`);
   else if(o.wasPassed && o.pct > o.prevBest) chips.push(`<span class="rw-chip amber">${rsIcon("arrow", 14)} Nueva mejor marca</span>`);
   const sub = o.passed
-    ? (o.hasNext ? `Se abrió la Unidad ${unit + 2}.` : `¡Terminaste todas las unidades de ${level}!${o.nextLevel ? ` Puedes seguir con ${o.nextLevel}.` : ""}`) + (o.stars < 3 ? " Con 90% o más consigues las 3 estrellas." : "")
+    ? (o.hasNext ? `Se abrió la Unidad ${unit + 2}.` : `¡Terminaste todas las unidades de ${level}!${o.nextLevel ? ` Puedes seguir con ${o.nextLevel}.` : ""}`) + (o.stars < 3 ? (currentLang === "en" ? " Acierta 6/6 y supera el reto final para conseguir la tercera estrella." : " Con 90% o más consigues las 3 estrellas.") : "")
     : `Necesitas ${ROUTE_PASS_PCT}% para superarla. Repasa la teoría y reintenta cuando quieras.`;
   return `<div class="rw" style="--rl:${lc}">
     <div class="rw-bar">${missionBarHTML(o.passed ? 3 : 2, level, unit)}</div>
