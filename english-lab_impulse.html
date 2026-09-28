@@ -32388,6 +32388,11 @@ PRACTICE_TODAY_ORIGINALS.theoryq = newTheoryqQuestion;
    (Entrenar o Cierre) pasan al final de la cola: solo vuelven si no hay otras. La memoria vive mientras la app está abierta. */
 const TRANSLATE_CAP = 2;
 const RECENT_TRANSLATE = {};   // "nivel:unidad" -> [ids de la última sesión, ids de la anterior]
+/* El Cierre evitaba tan poco lo que Entrenar acababa de mostrar que hasta la mitad de sus preguntas podían repetirse
+   (bancos chicos, sobre todo en niveles altos). Se recuerda qué ítems (completar/ordenar/traducir) mostró el último
+   Entrenar de cada tema, solo mientras la app sigue abierta (igual que RECENT_TRANSLATE), y el Cierre los evita si puede. */
+const RECENT_ENTRENAR = {};   // "tema" (u.key) -> [ids del último Entrenar]
+const CIERRE_CORE_TYPES = new Set(["gapfill", "order", "translate"]);
 const recentTranslate = (level, k)=> new Set([].concat(...(RECENT_TRANSLATE[`${level}:${k}`] || [])));
 function rememberTranslate(level, k, queue){
   const key = `${level}:${k}`;
@@ -32430,6 +32435,7 @@ function buildTopicSession(level, k){
     picked.length = 0; picked.push(...keep, ...repl, ...drop.slice(0, drop.length - repl.length));
   }
   rememberTranslate(level, k, picked);
+  if(currentLang === "en") RECENT_ENTRENAR[key] = picked.filter(x=> CIERRE_CORE_TYPES.has(x.type)).map(x=> x.forcedId);
   return {mode:"topic", level, unit:k, tHome:u.home, tIdx:u.index, title:u.title, queue:shuffle(picked), index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set(), before: before ? before.pct : 0};
 }
 function startTopicPractice(home, idx){
@@ -35708,7 +35714,18 @@ function buildUnitSession(level, k){
       shuffle(all.filter(x=> !used().has(x.forcedId) && x.type !== "translate")).forEach(x=> { if(q.length < ROUTE_CLOSE_SIZE) q.push(x); });   // si faltan, se completa con lo que sea (sin pasar del tope de «traducir»)
       shuffle(all.filter(x=> !used().has(x.forcedId))).forEach(x=> { if(q.length < ROUTE_CLOSE_SIZE) q.push(x); });
       queue = shuffle(q);
-    }else queue = shuffle(pickWithTranslateCap(all, ROUTE_CLOSE_SIZE, recentTranslate(level, k)));
+    }else{
+      /* Evita repetir lo que el último Entrenar de este tema acaba de mostrar; si el banco es tan chico que no
+         alcanza para las 6 preguntas sin repetir nada, completa con lo repetido (nunca se queda con menos de 6). */
+      const rec = recentTranslate(level, k), seenEntrenar = new Set(RECENT_ENTRENAR[u.key] || []);
+      const fresh = all.filter(x=> !seenEntrenar.has(x.forcedId));
+      let q = pickWithTranslateCap(fresh, Math.min(ROUTE_CLOSE_SIZE, fresh.length), rec);
+      if(q.length < ROUTE_CLOSE_SIZE){
+        const used = new Set(q.map(x=> x.forcedId)), rest = all.filter(x=> !used.has(x.forcedId));
+        q = q.concat(pickWithTranslateCap(rest, ROUTE_CLOSE_SIZE - q.length, rec));
+      }
+      queue = shuffle(q);
+    }
   }
   rememberTranslate(level, k, queue);
   return {mode:"unit", level, unit:k, queue, index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set()};
