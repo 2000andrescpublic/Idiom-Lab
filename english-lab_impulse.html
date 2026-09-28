@@ -1143,6 +1143,9 @@ body.placement-locked .nav-link, body.placement-locked .nav-dropdown, body.place
   display:flex;align-items:center;justify-content:center;
 }
 @media(max-width:640px){.modal-box{padding:22px 18px;}}
+.confirm-box{max-width:360px;margin:0 auto;text-align:center;}
+.confirm-box .confirm-msg{margin:0 0 6px;font-size:0.96rem;line-height:1.5;}
+.confirm-box .btn-row{justify-content:center;}
 
 /* ---------------- SELECTOR DE PERFIL (varios usuarios, un mismo navegador) ---------------- */
 body.gate-active header, body.gate-active main, body.gate-active footer{display:none;}
@@ -24101,6 +24104,18 @@ function closeModal(){
   if(overlay) overlay.classList.remove("show");
   document.body.style.overflow = "";
 }
+/* Confirmación propia en vez de confirm(): el navegador de vista previa (y algunos navegadores
+   móviles) suprime los diálogos nativos, así que confirm() siempre devolvía false y el botón
+   parecía no hacer nada. */
+function appConfirm(message, onYes, opts){
+  opts = opts || {};
+  openModal(`<div class="confirm-box">
+    <p class="confirm-msg">${escHtml(message)}</p>
+    <div class="btn-row"><button class="btn secondary" id="confirmNo" type="button">${escHtml(opts.no || "Cancelar")}</button><button class="btn" id="confirmYes" type="button">${escHtml(opts.yes || "Sí, salir")}</button></div>
+  </div>`);
+  document.getElementById("confirmNo").onclick = closeModal;
+  document.getElementById("confirmYes").onclick = ()=>{ closeModal(); onYes(); };
+}
 document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); });
 
 /* =========================================================
@@ -25265,13 +25280,14 @@ function placementSetLock(on){
 }
 /* Salir de la Prueba de nivel sin hacerla (o sin terminarla): el usuario queda en A1, se libera el bloqueo y podrá hacerla cuando quiera. */
 function placementSkipToA1(){
-  if(!confirm("¿Salir de la prueba de nivel? Empezarás en A1 y podrás hacerla cuando quieras desde el Inicio.")) return;
-  placementState = null;
-  officialLevel = "A1"; currentLevel = "A1"; routeSelectedLevel = "A1";
-  document.querySelectorAll(".level-chip").forEach(c=> c.classList.toggle("active", c.textContent === currentLevel));
-  placementSetLock(false);
-  saveProgress();
-  goTo("home");
+  appConfirm("¿Salir de la prueba de nivel? Empezarás en A1 y podrás hacerla cuando quieras desde el Inicio.", ()=>{
+    placementState = null;
+    officialLevel = "A1"; currentLevel = "A1"; routeSelectedLevel = "A1";
+    document.querySelectorAll(".level-chip").forEach(c=> c.classList.toggle("active", c.textContent === currentLevel));
+    placementSetLock(false);
+    saveProgress();
+    goTo("home");
+  });
 }
 function renderPlacement(){
   placementState = null;
@@ -25415,7 +25431,7 @@ function drawPlacementQuestion(){
   const ex = document.getElementById("placementExitBtn");
   if(ex) ex.onclick = ()=>{
     if(placementLocked()) placementSkipToA1();
-    else if(confirm("¿Salir de la prueba? Se perderán tus respuestas.")) goTo("home");
+    else appConfirm("¿Salir de la prueba? Se perderán tus respuestas.", ()=> goTo("home"));
   };
   const opts_el = document.querySelectorAll("#placementOpts .opt-btn");
   opts_el.forEach(b=>{
@@ -25763,7 +25779,7 @@ function startExamModule(mod){
 function examExitLink(){ return `<div style="margin-top:10px;"><button class="practice-link" id="examExitBtn" type="button">Salir del módulo</button></div>`; }
 function examWireExit(){
   const ex = document.getElementById("examExitBtn");
-  if(ex) ex.onclick = ()=>{ if(confirm("¿Salir del módulo? Se perderán tus respuestas.")){ examRun = null; drawExamsHome(); } };
+  if(ex) ex.onclick = ()=>{ appConfirm("¿Salir del módulo? Se perderán tus respuestas.", ()=>{ examRun = null; drawExamsHome(); }); };
 }
 function drawExamQuestion(){
   const r = examRun, total = r.questions.length, q = r.questions[r.idx];
@@ -31606,6 +31622,11 @@ function matchPairsModes(){
   return modes;
 }
 function mpPractice(){ return MATCH_PRACTICES.find(p=>p.id===matchPairsPractice) || MATCH_PRACTICES[0]; }
+/* paso «Une los pares» de una sesión de Entrenar (o null si el tablero se abrió desde Ejercicios) */
+function mpSessionEntry(){
+  const s = typeof practiceTodaySession !== "undefined" ? practiceTodaySession : null, e = s && s.mission && s.queue[s.index];
+  return e && e.type === "matchpairs" ? e : null;
+}
 function mpClearTimers(st){
   if(!st) return;
   clearInterval(st.timer); clearInterval(st.cdTimer);
@@ -31652,11 +31673,13 @@ function mpFillBoard(st){
 function newMatchPairsQuestion(){
   if(current.matchpairs) mpClearTimers(current.matchpairs);
   if(!matchPairsModes().some(m=>m.id===matchPairsMode)) matchPairsMode = "vocab";
-  const mode = matchPairsMode, practice = mpPractice();
+  /* En Entrenar (Ruta) el tablero es siempre de vocabulario del nivel de la ruta y de 5 pares, sin importar las preferencias de la pestaña Ejercicios */
+  const forced = mpSessionEntry();
+  const mode = forced ? "vocab" : matchPairsMode, practice = forced ? MATCH_PRACTICES[0] : mpPractice();
   const sources = [];
   let lv = null;
   if(mode !== "phrasal"){
-    lv = pickLevel();
+    lv = forced ? forced.level : pickLevel();
     sources.push({kind:"vocab", lv, pool: LANG_PACKS[currentLang].VOCAB[lv], prefix: `vocab:${currentLang}:${lv}`});
   }
   if(mode !== "vocab") sources.push({kind:"phrasal", lv:null, pool: ALL_PHRASAL, prefix: "phrasal"});
@@ -31748,17 +31771,18 @@ function drawMatchPairs(){
     return `<button type="button" class="${cls}" data-side="${side}" data-i="${idx}" ${p.done?"disabled":""}>${p.done?"✓ ":""}${escHtml(txt)}</button>`;
   };
   const countHtml = ()=> timed ? `Pares: <b>${doneCount()}</b>` : `Emparejados: <b>${doneCount()}/${practice.total}</b>`;
+  const inSess = !!mpSessionEntry();   // en Entrenar no se cambian modo ni práctica: solo queda la voz
   const toolbar = `
     <div class="mp-toolbar">
-      ${modes.length > 1 ? `
+      ${!inSess && modes.length > 1 ? `
         <label for="mtchMode" style="font-size:0.82rem;color:var(--ink-soft);font-weight:700;">Modo:</label>
         <select id="mtchMode" class="text-input" style="width:auto;max-width:100%;padding:6px 10px;font-size:0.85rem;">
           ${modes.map(m=>`<option value="${m.id}" ${m.id===mode?"selected":""}>${m.label}</option>`).join("")}
         </select>` : ""}
-      <label for="mtchPractice" style="font-size:0.82rem;color:var(--ink-soft);font-weight:700;">Práctica:</label>
+      ${inSess ? "" : `<label for="mtchPractice" style="font-size:0.82rem;color:var(--ink-soft);font-weight:700;">Práctica:</label>
       <select id="mtchPractice" class="text-input" style="width:auto;max-width:100%;padding:6px 10px;font-size:0.85rem;">
         ${MATCH_PRACTICES.map(x=>`<option value="${x.id}" ${x.id===practice.id?"selected":""}>${x.label}</option>`).join("")}
-      </select>
+      </select>`}
       <button class="accent-btn ${voiceOn()?"active":""}" id="mtchVoice" type="button" aria-pressed="${voiceOn()}" style="margin-left:auto;">🔊 Voz</button>
     </div>`;
   let body = "";
@@ -31783,7 +31807,7 @@ function drawMatchPairs(){
         <div class="mp-pair-col">${st.rightOrder.map(i=>btn("R",i)).join("")}</div>
       </div>`;
     body = `${timerHtml}${gridHtml}<div id="mtchSummary">${st.finished ? mpSummaryHtml(st) : ""}</div>
-      <div class="btn-row"><button class="btn" id="mtchNext" style="display:${st.finished?"inline-block":"none"};">${timed?"Otra vez":"Siguiente ronda →"}</button></div>`;
+      <div class="btn-row"><button class="btn" id="mtchNext" style="display:${st.finished?"inline-block":"none"};">${timed?"Otra vez":inSess?"Continuar →":"Siguiente ronda →"}</button></div>`;
   }
   const html = `
     <div class="card">
@@ -31808,7 +31832,8 @@ function drawMatchPairs(){
   };
   const modeSel = document.getElementById("mtchMode");
   if(modeSel) modeSel.onchange = (e)=>{ matchPairsMode = e.target.value; newMatchPairsQuestion(); };
-  document.getElementById("mtchPractice").onchange = (e)=>{ matchPairsPractice = e.target.value; newMatchPairsQuestion(); };
+  const practiceSel = document.getElementById("mtchPractice");
+  if(practiceSel) practiceSel.onchange = (e)=>{ matchPairsPractice = e.target.value; newMatchPairsQuestion(); };
   document.getElementById("mtchVoice").onclick = (e)=>{
     if(timed) matchPairsVoiceTimed = !matchPairsVoiceTimed; else matchPairsVoice = !matchPairsVoice;
     e.currentTarget.classList.toggle("active", voiceOn());
@@ -31901,6 +31926,8 @@ function drawMatchPairs(){
 const PRACTICE_TODAY_TYPES = ["vocab","gapfill","order","listen","translate","phrasal","verbforms","wordclass"];
 const PRACTICE_TODAY_FN_NAMES = {vocab:"newVocabQuestion", gapfill:"newGapfillQuestion", order:"newOrderQuestion", listen:"newListenQuestion", translate:"newTranslateQuestion", phrasal:"newPhrasalQuestion", verbforms:"newVerbFormQuestion", wordclass:"newWordClassQuestion"};
 const PRACTICE_TODAY_ORIGINALS = {vocab:newVocabQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, listen:newListenQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, wordclass:newWordClassQuestion};
+/* «Une los pares» solo entra en las sesiones de Entrenar de la Ruta (no en PRACTICE_TODAY_TYPES: Práctica de hoy no lo sortea) */
+PRACTICE_TODAY_FN_NAMES.matchpairs = "newMatchPairsQuestion"; PRACTICE_TODAY_ORIGINALS.matchpairs = newMatchPairsQuestion;
 let practiceTodaySession = null;
 let _practiceTodayPatchedType = null;
 
@@ -32126,7 +32153,18 @@ registerAnswer = function(id, ok){
   _practiceTodayOrigRegisterAnswer(id, ok);
   const s = practiceTodaySession;
   if(s){
-    if(s.mission){ (s.res || (s.res = []))[s.index] = ok; missionMarkDot(ok); if(!ok) missionRuleHint(s); }
+    /* «Une los pares» en Entrenar: cada par avisa por separado, pero el tablero cuenta como UNA pregunta (acierta con una confusión o ninguna;
+       un solo error de emparejado marca dos pares, por eso no se cuenta por pares limpios) */
+    if(id === "matchpairs" && s.mission){
+      const buf = s.mpBuf || (s.mpBuf = []);
+      buf.push(ok);
+      if(buf.length < MATCH_PAIRS_N) return;
+      const board = current.matchpairs;
+      ok = !board || board.events.length <= 1;
+      s.mpBuf = [];
+      if(!ok && board) board.pairs.filter(p=> p.mistakes > 0).forEach(p=> s.missed.push({prompt:`"${p.item.en}"`, answer:p.item.es}));
+    }
+    if(s.mission){ (s.res || (s.res = []))[s.index] = ok; missionMarkDot(ok); if(!ok && id !== "vocab" && id !== "matchpairs") missionRuleHint(s); }   // la regla de gramática no aplica a las palabras
     s.answered++;
     if(ok) s.correct++;
     if(!s.byType[id]) s.byType[id] = {correct:0, total:0};
@@ -32135,7 +32173,7 @@ registerAnswer = function(id, ok){
     /* Un error vuelve a aparecer dos ejercicios más adelante (máx. una
        vez por ítem y 3 veces por sesión, para que no se haga interminable). */
     const failedId = !ok && current[id] && current[id].id;
-    if((s.mode === "unit" || s.mode === "topic" || s.mode === "milestone") && !ok) s.missed.push(routeMissedLine(id, current[id]));
+    if((s.mode === "unit" || s.mode === "topic" || s.mode === "milestone") && !ok && id !== "matchpairs") s.missed.push(routeMissedLine(id, current[id]));
     if(s.mode === "milestone"){ const uk = (s.queue[s.index] || {}).unit; if(uk != null){ const bu = s.byUnit[uk] || (s.byUnit[uk] = {correct:0, total:0}); bu.total++; if(ok) bu.correct++; } }
     if(s.mode !== "unit" && s.mode !== "milestone" && failedId && (PRACTICE_TODAY_TYPES.includes(id) || id === "theoryq") && s.retries < 3 && !s.retried.has(failedId)){
       s.retried.add(failedId);
@@ -32154,7 +32192,7 @@ registerAnswer = function(id, ok){
    ========================================================= */
 const TOPIC_SESSION_SIZE = 10;
 const TOPIC_BOX_SCORE = {1:0.15, 2:0.4, 3:0.65, 4:0.85, 5:1, 6:1, 7:1};
-const TOPIC_TYPE_LABELS = {gapfill:"Completar", order:"Ordenar", translate:"Traducir", vocab:"Vocabulario", listen:"Escucha", theoryq:"Teoría"};
+const TOPIC_TYPE_LABELS = {gapfill:"Completar", order:"Ordenar", translate:"Traducir", vocab:"Vocabulario", matchpairs:"Une los pares", listen:"Escucha", theoryq:"Teoría"};
 let _topicUnitMap = null;
 /* Escucha por tema: se quitan las frases que no practican el tema y se añaden las que sí (ver ROUTE_EXCLUDE). */
 Object.keys(ROUTE_EXCLUDE).forEach(key=>{
@@ -33137,7 +33175,7 @@ function renderTopicComplete(s){
       <button class="btn secondary" id="topicBackBtn">Volver a la lista</button>
     </div>`;
   if(pct >= 70) fireConfetti();
-  document.getElementById("topicAgainBtn").onclick = ()=>{ practiceTodaySession = buildTopicSession(s.level, s.unit); if(s.mission){ practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; practiceTodaySession.queue = missionAlternate(practiceTodaySession.queue); } renderPracticeHoy(); };
+  document.getElementById("topicAgainBtn").onclick = ()=>{ practiceTodaySession = buildTopicSession(s.level, s.unit); if(s.mission){ practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; practiceTodaySession.queue = missionAlternate(practiceTodaySession.queue).concat(missionVocabBlock(s.level)); } renderPracticeHoy(); };
   const closeBtn = document.getElementById("topicCloseBtn");
   if(closeBtn) closeBtn.onclick = ()=>{ practiceTodaySession = buildUnitSession(s.level, s.unit); if(s.mission){ practiceTodaySession.mission = {level:s.mission.level, unit:s.mission.unit, discovered:true}; practiceTodaySession.queue = missionAlternate(practiceTodaySession.queue); } renderPracticeHoy(); };
   document.getElementById("topicTheoryBtn").onclick = ()=>{ practiceTodaySession = null; openTheoryTopic(s.tHome, s.tIdx); };
@@ -36174,10 +36212,22 @@ function missionBarHTML(active, level, unit){
   }).join("");
   return `<div class="mission-bar" role="list" aria-label="Pasos de la misión" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}"><div class="mb-line" style="left:${edge}%;right:${edge}%"><i style="width:${Math.min(100, Math.round(active / last * 100))}%"></i></div>${steps}</div>`;
 }
+/* VOC-BLOCK:BEGIN — bloque de vocabulario al final de Entrenar (solo inglés): 3 tarjetas + 1 tablero de 5 pares, con palabras del nivel de la ruta
+   (las vencidas primero, luego las que nunca viste). Cuentan para el % como cualquier pregunta; el tablero cuenta como una sola. */
+const MISSION_VOCAB_CARDS = 3;
+function missionVocabBlock(level){
+  const pool = currentLang === "en" ? (LANG_PACKS.en.VOCAB || {})[level] : null;
+  if(!pool || pool.length < MISSION_VOCAB_CARDS + MATCH_PAIRS_N) return [];
+  const now = Date.now(), pr = {};
+  pool.forEach((_, i)=>{ const d = SRS_DATA[`vocab:en:${level}:${i}`]; pr[i] = !d ? 1 + Math.random() * 0.5 : d.dueAt <= now ? Math.random() * 0.6 : 2 + d.box * 0.1 + Math.random() * 0.05; });
+  const ids = Object.keys(pr).sort((a, b)=> pr[a] - pr[b]).slice(0, MISSION_VOCAB_CARDS);
+  return ids.map(i=> ({type:"vocab", forcedId:`vocab:en:${level}:${i}`})).concat([{type:"matchpairs", level}]);
+}
+/* VOC-BLOCK:END */
 function startMission(level, k){
   if(!routeUnits(level)[k] && currentLang !== "pt") return;
   const s = buildTopicSession(level, k);
-  s.queue = missionAlternate(s.queue);
+  s.queue = missionAlternate(s.queue).concat(missionVocabBlock(level));
   s.mission = {level, unit:k, discovered:false};
   practiceTodaySession = s;
   goTo("practicehoy");
