@@ -23237,8 +23237,13 @@ function wireWeeklyGoal(){
     setTimeout(()=>{ window._celebBadge = badgeSvg("week", 0, 76); showBigCelebration("📅 ¡Objetivo semanal cumplido!", `Practicaste ${weeklyGoalDays} días esta semana.`, "cheer"); }, 600);
   }
 }
+/* El texto del primer slide depende de si ya hiciste la Prueba de nivel (antes decía siempre "ya te ubicó",
+   lo cual era falso para quien empieza directo en A1 sin haberla hecho). */
+const onboardingStartText = ()=> placementResult
+  ? "La Prueba de nivel ya te ubicó. Desde Inicio puedes abrir tu Ruta: temas de teoría en el orden correcto, cada uno con su práctica y un cierre para superarlo. Puedes repetir la prueba cuando quieras."
+  : "Empiezas en A1, el primer nivel de la Ruta. Si crees que ya sabes algo de inglés, puedes hacer la Prueba de nivel cuando quieras desde Inicio para saltar directo a tu nivel.";
 const ONBOARDING_SLIDES = [
-  {icon:"🎯", title:"Tu punto de partida", text:"La Prueba de nivel ya te ubicó. Desde Inicio puedes abrir tu Ruta: temas de teoría en el orden correcto, cada uno con su práctica y un cierre para superarlo. Puedes repetir la prueba cuando quieras."},
+  {icon:"🎯", title:"Tu punto de partida", get text(){ return onboardingStartText(); }},
   {icon:"🔁", title:"Practica un poco cada día", text:"En Ejercicios eliges una destreza (vocabulario, gramática, lectura, escucha, escritura) y dentro de ella el ejercicio. «Repaso de hoy» te recuerda lo que estás a punto de olvidar. Tu racha y el objetivo semanal te ayudan a mantener el hábito."},
   {icon:"📊", title:"Mide tu avance", text:"En Exámenes haces módulos sin cronómetro (gramática, uso de la lengua, lectura, escucha, escritura y habla). Verás tu nivel por destreza, la evolución de tus puntajes y un plan de repaso automático."}
 ];
@@ -26181,7 +26186,9 @@ function renderProfileGate(){
     const list = getProfiles();
     const avatar = PROFILE_AVATARS[list.length % PROFILE_AVATARS.length];
     const id = "p_" + Date.now();
-    list.push({id, name, avatar, createdAt: Date.now(), learningLang: selectedNewProfileLang, placementPending: true});   // el usuario nuevo debe hacer la Prueba de nivel
+    /* El perfil nuevo empieza directo en A1, sin pantalla obligatoria: la Prueba de nivel queda como invitación opcional en Inicio
+       (antes bloqueaba el camino al primer ejercicio con una pantalla + confirmación para salir; ver PLACEMENT-GATE). */
+    list.push({id, name, avatar, createdAt: Date.now(), learningLang: selectedNewProfileLang});
     saveProfilesList(list);
     setActiveProfileId(id);
     location.reload();
@@ -38747,6 +38754,25 @@ document.addEventListener("keydown", (e)=>{
     if(opts[idx]){ opts[idx].click(); }
   }
 });
+
+/* FEEDBACK-SCROLL:BEGIN — al fallar, el cuadro de feedback (con la explicación) puede quedar fuera de la pantalla,
+   sobre todo en móvil, y nada avisaba que había que bajar. Un observador único cubre TODOS los tipos de ejercicio
+   a la vez (en vez de tocar cada draw*Question) porque reacciona a cualquier .feedback.show.bad que aparezca,
+   sin importar de qué función salió. Solo al fallar: al acertar el texto es corto y no hace falta mover nada.
+   El retraso de 120 ms deja que se agregue también el «Recuerda: …» de missionRuleHint (que llega ~80 ms después),
+   así el desplazamiento muestra el cuadro completo de una vez, no a medias. */
+let _fbScrollTimer = null, _lastScrolledFeedback = null;
+function _feedbackScrollCheck(){
+  const fb = document.querySelector(".feedback.show.bad");
+  if(!fb || fb === _lastScrolledFeedback) return;
+  _lastScrolledFeedback = fb;
+  fb.scrollIntoView({block:"nearest", behavior:"smooth"});
+}
+new MutationObserver(()=>{
+  clearTimeout(_fbScrollTimer);
+  _fbScrollTimer = setTimeout(_feedbackScrollCheck, 120);
+}).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:["class"]});
+/* FEEDBACK-SCROLL:END */
 
 /* Registro del service worker (modo offline / instalable como PWA).
    Se hace después del load para no competir con la carga inicial, y se
