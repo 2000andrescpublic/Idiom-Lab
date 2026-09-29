@@ -2288,6 +2288,9 @@ button.rpers:focus-visible{outline:3px solid color-mix(in srgb,var(--rl,#8E6CFF)
 .rw-star.on{animation:rwStar .6s cubic-bezier(.34,1.56,.64,1) var(--d) both;filter:drop-shadow(0 3px 6px rgba(255,180,0,.45));}
 .rw-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:4px;}
 .rw-chip{display:inline-flex;align-items:center;gap:5px;font-size:.8rem;font-weight:800;border-radius:999px;padding:6px 12px;background:color-mix(in srgb,var(--rl) 16%,var(--surface));border:1.5px solid color-mix(in srgb,var(--rl) 45%,transparent);color:var(--ink);}
+/* VOC-BANNER: aviso al entrar al bloque de vocabulario de Entrenar (después de la gramática, antes de las tarjetas) */
+.voc-block-banner{display:flex;align-items:center;gap:8px;max-width:480px;margin:14px auto 0;padding:10px 16px;border-radius:14px;border-top:2px dashed var(--line);font-size:.85rem;font-weight:700;color:var(--ink-soft);}
+.voc-block-banner span{flex:none;display:flex;color:var(--purple);}
 .rw-chip.amber{background:#F5A623;border-color:#F5A623;color:#3F2700;}
 .rw-chest{display:flex;align-items:center;gap:12px;text-align:left;margin-top:8px;padding:12px 16px;border-radius:20px;border:2px solid #F5C542;background:linear-gradient(135deg,rgba(245,197,66,.18),var(--surface));animation:rwBounce .9s ease .8s both;}
 .rw-chest b{display:block;}
@@ -32122,6 +32125,7 @@ function renderPracticeHoy(){
       ${s.mission ? missionBarHTML(s.mode === "unit" ? 2 : 1, s.mission.level, s.mission.unit) : ""}
       ${s.mission ? missionPathHTML(s) : ""}
     </div>
+    ${entry.vocabBlockStart ? `<div class="voc-block-banner"><span>${svgIcon("flashcards", 15)}</span>Ahora, un poco de vocabulario del nivel</div>` : ""}
   `;
   if(!progressBar){
     progressBar = document.createElement("div");
@@ -36519,7 +36523,9 @@ function missionVocabBlock(level){
   const now = Date.now(), pr = {};
   pool.forEach((_, i)=>{ const d = SRS_DATA[`vocab:en:${level}:${i}`]; pr[i] = !d ? 1 + Math.random() * 0.5 : d.dueAt <= now ? Math.random() * 0.6 : 2 + d.box * 0.1 + Math.random() * 0.05; });
   const ids = Object.keys(pr).sort((a, b)=> pr[a] - pr[b]).slice(0, MISSION_VOCAB_CARDS);
-  return ids.map(i=> ({type:"vocab", forcedId:`vocab:en:${level}:${i}`})).concat([{type:"matchpairs", level}]);
+  const block = ids.map(i=> ({type:"vocab", forcedId:`vocab:en:${level}:${i}`})).concat([{type:"matchpairs", level}]);
+  if(block.length) block[0].vocabBlockStart = true;   // marca el primer paso del bloque, para avisar el cambio de tema (ver VOC-BANNER)
+  return block;
 }
 /* VOC-BLOCK:END */
 /* EASY-FIRST:BEGIN — la primera vez que se ve un tema, evita que el primer ejercicio de Entrenar sea el más difícil del lote
