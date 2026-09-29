@@ -25655,11 +25655,17 @@ function drawExamsHome(){
     <div class="section-head">
       <div class="eyebrow">Evaluación</div>
       <h2>Exámenes</h2>
-      <p><b>Para medir tu progreso con el tiempo</b>, destreza por destreza. Haz el módulo que quieras, sin cronómetro. Cada intento queda guardado con su puntaje y su nivel estimado; <b>no cambia tu nivel oficial</b>: te lo sugiere y tú decides si aplicarlo. Si solo quieres saber por dónde empezar, usa la Prueba de nivel.</p>
+      <p><b>Para medir tu progreso con el tiempo</b>, destreza por destreza. Haz el módulo que quieras, sin cronómetro. Cada intento queda guardado con su puntaje y su nivel estimado; <b>no cambia tu nivel oficial</b>: te lo sugiere y tú decides si aplicarlo.</p>
     </div>
+    ${/* PLACEMENT-BANNER:BEGIN */ !placementResult ? `<div class="card" style="margin-bottom:16px;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span style="font-size:1.1rem;">💡</span>
+      <span style="flex:1;min-width:200px;font-size:0.88rem;color:var(--ink-soft);">Estás en <b>${currentLevel}</b> por defecto. Si no es tu nivel real, la Prueba de nivel te ubica mejor.</span>
+      <button class="practice-link" id="exmPlacementCta" type="button">Hacer la Prueba de nivel →</button>
+    </div>` : "" /* PLACEMENT-BANNER:END */}
     ${has ? `<div class="ex-tabbar" role="group" aria-label="Secciones de Exámenes">${tabs.map(([id, l])=> `<button type="button" class="ex-tab${id === examTab ? " active" : ""}" aria-pressed="${id === examTab}" data-exam-tab="${id}"><span>${l}</span></button>`).join("")}</div>` : ""}
     ${body}`;
   document.getElementById("panel-exams").innerHTML = html;
+  document.getElementById("exmPlacementCta")?.addEventListener("click", ()=> goTo("placement"));
   document.querySelectorAll("[data-exam-tab]").forEach(b=> b.onclick = ()=>{ examTab = b.dataset.examTab; drawExamsHome(); });
   document.querySelectorAll("[data-exam-mod]").forEach(b=> b.onclick = ()=> startExamModule(b.dataset.examMod));
   examWireExtras();
@@ -28049,6 +28055,11 @@ function renderExercisesShell(){
       <p>Elige una destreza y practica según tu nivel.</p>
       <p class="kbd-hint">Atajo: pulsa <kbd>1</kbd>–<kbd>4</kbd> para elegir una opción.</p>
     </div>
+    ${/* PLACEMENT-BANNER:BEGIN */ !placementResult ? `<div class="card" style="margin-bottom:16px;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span style="font-size:1.1rem;">💡</span>
+      <span style="flex:1;min-width:200px;font-size:0.88rem;color:var(--ink-soft);">Estás practicando en <b>${currentLevel}</b>. Si no es tu nivel real, la Prueba de nivel te ubica mejor.</span>
+      <button class="practice-link" id="exPlacementCta" type="button">Hacer la Prueba de nivel →</button>
+    </div>` : "" /* PLACEMENT-BANNER:END */}
     <div class="exn-bar" id="exnBar">
       <button type="button" class="exn-back" id="exnBack" aria-label="Volver">‹</button>
       <span class="exn-crumb" id="exnCrumb" aria-live="polite"></span>
@@ -28065,6 +28076,7 @@ function renderExercisesShell(){
   `;
   const panel = document.getElementById("panel-exercises");
   panel.innerHTML = html;
+  document.getElementById("exPlacementCta")?.addEventListener("click", ()=> goTo("placement"));
   document.getElementById("exnBack").onclick = exBack;
   if(_exRO){ try{ _exRO.disconnect(); }catch(e){} }
   if("ResizeObserver" in window){ _exRO = new ResizeObserver(exSyncHeight); document.querySelectorAll("#exn .exn-pg").forEach(p=> _exRO.observe(p)); }
