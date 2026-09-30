@@ -22999,6 +22999,82 @@ const VERBS_EXTRA = {"en":[{"base":"look","es":"mirar","emoji":"👀","type":"Re
 VERBS.push(...VERBS_EXTRA.en); VERBS_PT.push(...VERBS_EXTRA.pt);
 /* Traducción al tocar una palabra: las formas conjugadas de los verbos nuevos también se reconocen (en portugués se crea la tabla equivalente). */
 VERBS_EXTRA.en.forEach(v=>{ [v.base, v.s3, v.past, v.participle, v.gerund].forEach(f=>{ if(f) String(f).split(" / ").forEach(x=>{ VERB_FORM_LOOKUP[x.toLowerCase()] = VERB_FORM_LOOKUP[x.toLowerCase()] || v.es; }); }); });
+/* VERBS-PT-ADD:BEGIN — ~35 verbos comunes que faltaban en el banco de Verbos PT frente a los 300 verbos más frecuentes de EN
+   (ver comparación hecha en la Fase 2 de paridad PT); contenido redactado por IA, sin revisión nativa todavía. */
+const VERBS_PT_ADD = [
+  {base:"construir", es:"construir", emoji:"🏗️", type:"Irregular", s3:"constrói", past:"construiu", participle:"construído", gerund:"construindo", obj:"uma casa", presEu:"construo", pretEu:"construí",
+   esInf:"construir", esGerundio:"construyendo", esParticipio:"construido", esPresYo:"construyo", esPresTu:"construyes", esPretYo:"construí", esPretTu:"construiste", esObj:"una casa"},
+  {base:"esconder", es:"esconder", emoji:"🙈", type:"Regular", s3:"esconde", past:"escondeu", participle:"escondido", gerund:"escondendo", obj:"o presente", presEu:"escondo", pretEu:"escondi",
+   esInf:"esconder", esGerundio:"escondiendo", esParticipio:"escondido", esPresYo:"escondo", esPresTu:"escondes", esPretYo:"escondí", esPretTu:"escondiste", esObj:"el regalo"},
+  {base:"segurar", es:"sostener / sujetar", emoji:"✋", type:"Regular", s3:"segura", past:"segurou", participle:"segurado", gerund:"segurando", obj:"a mão dela", presEu:"seguro", pretEu:"segurei",
+   esInf:"sostener", esGerundio:"sosteniendo", esParticipio:"sostenido", esPresYo:"sostengo", esPresTu:"sostienes", esPretYo:"sostuve", esPretTu:"sostuviste", esObj:"su mano"},
+  {base:"significar", es:"significar", emoji:"💭", type:"Regular", s3:"significa", past:"significou", participle:"significado", gerund:"significando", obj:"muito para mim", presEu:"significo", pretEu:"signifiquei",
+   esInf:"significar", esGerundio:"significando", esParticipio:"significado", esPresYo:"significo", esPresTu:"significas", esPretYo:"signifiqué", esPretTu:"significaste", esObj:"mucho para mí"},
+  {base:"sentar", es:"sentarse", emoji:"🪑", type:"Regular", s3:"senta", past:"sentou", participle:"sentado", gerund:"sentando", obj:"no sofá", presEu:"sento", pretEu:"sentei",
+   esInf:"sentarse", esGerundio:"sentándose", esParticipio:"sentado", esPresYo:"me siento", esPresTu:"te sientas", esPretYo:"me senté", esPretTu:"te sentaste", esObj:"en el sofá"},
+  {base:"roubar", es:"robar", emoji:"🦹", type:"Regular", s3:"rouba", past:"roubou", participle:"roubado", gerund:"roubando", obj:"o dinheiro", presEu:"roubo", pretEu:"roubei",
+   esInf:"robar", esGerundio:"robando", esParticipio:"robado", esPresYo:"robo", esPresTu:"robas", esPretYo:"robé", esPretTu:"robaste", esObj:"el dinero"},
+  {base:"acordar", es:"despertar", emoji:"⏰", type:"Regular", s3:"acorda", past:"acordou", participle:"acordado", gerund:"acordando", obj:"cedo", presEu:"acordo", pretEu:"acordei",
+   esInf:"despertar", esGerundio:"despertando", esParticipio:"despertado", esPresYo:"despierto", esPresTu:"despiertas", esPretYo:"desperté", esPretTu:"despertaste", esObj:"temprano"},
+  {base:"crescer", es:"crecer", emoji:"🌱", type:"Irregular", s3:"cresce", past:"cresceu", participle:"crescido", gerund:"crescendo", obj:"rápido", presEu:"cresço", pretEu:"cresci",
+   esInf:"crecer", esGerundio:"creciendo", esParticipio:"crecido", esPresYo:"crezco", esPresTu:"creces", esPretYo:"crecí", esPretTu:"creciste", esObj:"rápido"},
+  {base:"aguentar", es:"aguantar / soportar", emoji:"💪", type:"Regular", s3:"aguenta", past:"aguentou", participle:"aguentado", gerund:"aguentando", obj:"a dor", presEu:"aguento", pretEu:"aguentei",
+   esInf:"soportar", esGerundio:"soportando", esParticipio:"soportado", esPresYo:"soporto", esPresTu:"soportas", esPretYo:"soporté", esPretTu:"soportaste", esObj:"el dolor"},
+  {base:"dobrar", es:"doblar", emoji:"🧺", type:"Regular", s3:"dobra", past:"dobrou", participle:"dobrado", gerund:"dobrando", obj:"a roupa", presEu:"dobro", pretEu:"dobrei",
+   esInf:"doblar", esGerundio:"doblando", esParticipio:"doblado", esPresYo:"doblo", esPresTu:"doblas", esPretYo:"doblé", esPretTu:"doblaste", esObj:"la ropa"},
+  {base:"morder", es:"morder", emoji:"🍎", type:"Regular", s3:"morde", past:"mordeu", participle:"mordido", gerund:"mordendo", obj:"a maçã", presEu:"mordo", pretEu:"mordi",
+   esInf:"morder", esGerundio:"mordiendo", esParticipio:"mordido", esPresYo:"muerdo", esPresTu:"muerdes", esPretYo:"mordí", esPretTu:"mordiste", esObj:"la manzana"},
+  {base:"sangrar", es:"sangrar", emoji:"🩸", type:"Regular", s3:"sangra", past:"sangrou", participle:"sangrado", gerund:"sangrando", obj:"muito", presEu:"sangro", pretEu:"sangrei",
+   esInf:"sangrar", esGerundio:"sangrando", esParticipio:"sangrado", esPresYo:"sangro", esPresTu:"sangras", esPretYo:"sangré", esPretTu:"sangraste", esObj:"mucho"},
+  {base:"soprar", es:"soplar", emoji:"💨", type:"Regular", s3:"sopra", past:"soprou", participle:"soprado", gerund:"soprando", obj:"as velas", presEu:"sopro", pretEu:"soprei",
+   esInf:"soplar", esGerundio:"soplando", esParticipio:"soplado", esPresYo:"soplo", esPresTu:"soplas", esPretYo:"soplé", esPretTu:"soplaste", esObj:"las velas"},
+  {base:"alimentar", es:"alimentar", emoji:"🍖", type:"Regular", s3:"alimenta", past:"alimentou", participle:"alimentado", gerund:"alimentando", obj:"o cachorro", presEu:"alimento", pretEu:"alimentei",
+   esInf:"alimentar", esGerundio:"alimentando", esParticipio:"alimentado", esPresYo:"alimento", esPresTu:"alimentas", esPretYo:"alimenté", esPretTu:"alimentaste", esObj:"al perro"},
+  {base:"perdoar", es:"perdonar", emoji:"🤝", type:"Regular", s3:"perdoa", past:"perdoou", participle:"perdoado", gerund:"perdoando", obj:"o amigo", presEu:"perdoo", pretEu:"perdoei",
+   esInf:"perdonar", esGerundio:"perdonando", esParticipio:"perdonado", esPresYo:"perdono", esPresTu:"perdonas", esPretYo:"perdoné", esPretTu:"perdonaste", esObj:"al amigo"},
+  {base:"congelar", es:"congelar", emoji:"🧊", type:"Regular", s3:"congela", past:"congelou", participle:"congelado", gerund:"congelando", obj:"a comida", presEu:"congelo", pretEu:"congelei",
+   esInf:"congelar", esGerundio:"congelando", esParticipio:"congelado", esPresYo:"congelo", esPresTu:"congelas", esPretYo:"congelé", esPretTu:"congelaste", esObj:"la comida"},
+  {base:"pendurar", es:"colgar", emoji:"🖼️", type:"Regular", s3:"pendura", past:"pendurou", participle:"pendurado", gerund:"pendurando", obj:"o quadro", presEu:"penduro", pretEu:"pendurei",
+   esInf:"colgar", esGerundio:"colgando", esParticipio:"colgado", esPresYo:"cuelgo", esPresTu:"cuelgas", esPretYo:"colgué", esPretTu:"colgaste", esObj:"el cuadro"},
+  {base:"machucar", es:"lastimar", emoji:"🤕", type:"Regular", s3:"machuca", past:"machucou", participle:"machucado", gerund:"machucando", obj:"o joelho", presEu:"machuco", pretEu:"machuquei",
+   esInf:"lastimar", esGerundio:"lastimando", esParticipio:"lastimado", esPresYo:"lastimo", esPresTu:"lastimas", esPretYo:"lastimé", esPretTu:"lastimaste", esObj:"la rodilla"},
+  {base:"liderar", es:"liderar", emoji:"👑", type:"Regular", s3:"lidera", past:"liderou", participle:"liderado", gerund:"liderando", obj:"a equipe", presEu:"lidero", pretEu:"liderei",
+   esInf:"liderar", esGerundio:"liderando", esParticipio:"liderado", esPresYo:"lidero", esPresTu:"lideras", esPretYo:"lideré", esPretTu:"lideraste", esObj:"al equipo"},
+  {base:"deitar", es:"acostarse / recostarse", emoji:"🛏️", type:"Regular", s3:"deita", past:"deitou", participle:"deitado", gerund:"deitando", obj:"na cama", presEu:"deito", pretEu:"deitei",
+   esInf:"acostarse", esGerundio:"acostándose", esParticipio:"acostado", esPresYo:"me acuesto", esPresTu:"te acuestas", esPretYo:"me acosté", esPretTu:"te acostaste", esObj:"en la cama"},
+  {base:"superar", es:"superar", emoji:"🏆", type:"Regular", s3:"supera", past:"superou", participle:"superado", gerund:"superando", obj:"o medo", presEu:"supero", pretEu:"superei",
+   esInf:"superar", esGerundio:"superando", esParticipio:"superado", esPresYo:"supero", esPresTu:"superas", esPretYo:"superé", esPretTu:"superaste", esObj:"el miedo"},
+  {base:"sacudir", es:"sacudir", emoji:"🫨", type:"Irregular", s3:"sacode", past:"sacudiu", participle:"sacudido", gerund:"sacudindo", obj:"o tapete", presEu:"sacudo", pretEu:"sacudi",
+   esInf:"sacudir", esGerundio:"sacudiendo", esParticipio:"sacudido", esPresYo:"sacudo", esPresTu:"sacudes", esPretYo:"sacudí", esPretTu:"sacudiste", esObj:"la alfombra"},
+  {base:"derramar", es:"derramar", emoji:"🥤", type:"Regular", s3:"derrama", past:"derramou", participle:"derramado", gerund:"derramando", obj:"o suco", presEu:"derramo", pretEu:"derramei",
+   esInf:"derramar", esGerundio:"derramando", esParticipio:"derramado", esPresYo:"derramo", esPresTu:"derramas", esPretYo:"derramé", esPretTu:"derramaste", esObj:"el jugo"},
+  {base:"brilhar", es:"brillar", emoji:"✨", type:"Regular", s3:"brilha", past:"brilhou", participle:"brilhado", gerund:"brilhando", obj:"no céu", presEu:"brilho", pretEu:"brilhei",
+   esInf:"brillar", esGerundio:"brillando", esParticipio:"brillado", esPresYo:"brillo", esPresTu:"brillas", esPretYo:"brillé", esPretTu:"brillaste", esObj:"en el cielo"},
+  {base:"atirar", es:"disparar / lanzar", emoji:"🎯", type:"Regular", s3:"atira", past:"atirou", participle:"atirado", gerund:"atirando", obj:"a bola", presEu:"atiro", pretEu:"atirei",
+   esInf:"disparar", esGerundio:"disparando", esParticipio:"disparado", esPresYo:"disparo", esPresTu:"disparas", esPretYo:"disparé", esPretTu:"disparaste", esObj:"la pelota"},
+  {base:"encolher", es:"encoger", emoji:"🩳", type:"Regular", s3:"encolhe", past:"encolheu", participle:"encolhido", gerund:"encolhendo", obj:"na lavagem", presEu:"encolho", pretEu:"encolhi",
+   esInf:"encoger", esGerundio:"encogiendo", esParticipio:"encogido", esPresYo:"encojo", esPresTu:"encoges", esPretYo:"encogí", esPretTu:"encogiste", esObj:"en el lavado"},
+  {base:"afundar", es:"hundir", emoji:"🚢", type:"Regular", s3:"afunda", past:"afundou", participle:"afundado", gerund:"afundando", obj:"o barco", presEu:"afundo", pretEu:"afundei",
+   esInf:"hundir", esGerundio:"hundiendo", esParticipio:"hundido", esPresYo:"hundo", esPresTu:"hundes", esPretYo:"hundí", esPretTu:"hundiste", esObj:"el barco"},
+  {base:"girar", es:"girar", emoji:"🔄", type:"Regular", s3:"gira", past:"girou", participle:"girado", gerund:"girando", obj:"a chave", presEu:"giro", pretEu:"girei",
+   esInf:"girar", esGerundio:"girando", esParticipio:"girado", esPresYo:"giro", esPresTu:"giras", esPretYo:"giré", esPretTu:"giraste", esObj:"la llave"},
+  {base:"incomodar", es:"molestar", emoji:"😤", type:"Regular", s3:"incomoda", past:"incomodou", participle:"incomodado", gerund:"incomodando", obj:"o vizinho", presEu:"incomodo", pretEu:"incomodei",
+   esInf:"molestar", esGerundio:"molestando", esParticipio:"molestado", esPresYo:"molesto", esPresTu:"molestas", esPretYo:"molesté", esPretTu:"molestaste", esObj:"al vecino"},
+  {base:"retirar", es:"retirar", emoji:"🏧", type:"Regular", s3:"retira", past:"retirou", participle:"retirado", gerund:"retirando", obj:"dinheiro do banco", presEu:"retiro", pretEu:"retirei",
+   esInf:"retirar", esGerundio:"retirando", esParticipio:"retirado", esPresYo:"retiro", esPresTu:"retiras", esPretYo:"retiré", esPretTu:"retiraste", esObj:"dinero del banco"},
+  {base:"tentar", es:"intentar", emoji:"🎯", type:"Regular", s3:"tenta", past:"tentou", participle:"tentado", gerund:"tentando", obj:"de novo", presEu:"tento", pretEu:"tentei",
+   esInf:"intentar", esGerundio:"intentando", esParticipio:"intentado", esPresYo:"intento", esPresTu:"intentas", esPretYo:"intenté", esPretTu:"intentaste", esObj:"de nuevo"},
+  {base:"solicitar", es:"solicitar", emoji:"📝", type:"Regular", s3:"solicita", past:"solicitou", participle:"solicitado", gerund:"solicitando", obj:"um visto", presEu:"solicito", pretEu:"solicitei",
+   esInf:"solicitar", esGerundio:"solicitando", esParticipio:"solicitado", esPresYo:"solicito", esPresTu:"solicitas", esPretYo:"solicité", esPretTu:"solicitaste", esObj:"una visa"},
+  {base:"anotar", es:"anotar", emoji:"📝", type:"Regular", s3:"anota", past:"anotou", participle:"anotado", gerund:"anotando", obj:"o número", presEu:"anoto", pretEu:"anotei",
+   esInf:"anotar", esGerundio:"anotando", esParticipio:"anotado", esPresYo:"anoto", esPresTu:"anotas", esPretYo:"anoté", esPretTu:"anotaste", esObj:"el número"},
+  {base:"derrubar", es:"derribar / dejar caer", emoji:"🥃", type:"Regular", s3:"derruba", past:"derrubou", participle:"derrubado", gerund:"derrubando", obj:"o copo", presEu:"derrubo", pretEu:"derrubei",
+   esInf:"derribar", esGerundio:"derribando", esParticipio:"derribado", esPresYo:"derribo", esPresTu:"derribas", esPretYo:"derribé", esPretTu:"derribaste", esObj:"el vaso"},
+  {base:"encarar", es:"encarar / mirar fijamente", emoji:"👀", type:"Regular", s3:"encara", past:"encarou", participle:"encarado", gerund:"encarando", obj:"o problema", presEu:"encaro", pretEu:"encarei",
+   esInf:"encarar", esGerundio:"encarando", esParticipio:"encarado", esPresYo:"encaro", esPresTu:"encaras", esPretYo:"encaré", esPretTu:"encaraste", esObj:"el problema"}
+];
+VERBS_PT.push(...VERBS_PT_ADD);
+/* VERBS-PT-ADD:END */
 const VERB_FORM_LOOKUP_PT = {};
 VERBS_PT.forEach(v=>{ [v.base, v.s3, v.past, v.participle, v.gerund, v.presEu, v.pretEu].forEach(f=>{ if(f) VERB_FORM_LOOKUP_PT[String(f).toLowerCase()] = v.es; }); });
 /* VERBS-EXTRA:END */
@@ -26320,7 +26396,7 @@ function pfDrawSettings(body){
         <button type="button" class="ex-tab${currentLang === "en" ? " active" : ""}" data-learn-lang="en">🇺🇸 Inglés</button>
         <button type="button" class="ex-tab${currentLang === "pt" ? " active" : ""}" data-learn-lang="pt">🇧🇷 Portugués (Brasil)</button>
       </div>
-      <p class="pf-note">${currentLang === "pt" ? "El contenido en portugués es nuevo y todavía está en revisión: puede tener errores. Si ves alguno, avísalo." : "Tu progreso se guarda por separado para cada idioma, así que puedes ir y volver sin perder nada."}</p>
+      <p class="pf-note">Tu progreso se guarda por separado para cada idioma, así que puedes ir y volver sin perder nada.</p>
       <label class="pf-lb" for="dailyGoalInput">Meta diaria (ejercicios)</label>
       <input type="number" min="1" max="100" class="text-input" id="dailyGoalInput" value="${dailyGoal}" style="max-width:120px;">
     </div>
@@ -32504,7 +32580,7 @@ function buildTopicSession(level, k){
     picked.length = 0; picked.push(...keep, ...repl, ...drop.slice(0, drop.length - repl.length));
   }
   rememberTranslate(level, k, picked);
-  if(currentLang === "en") RECENT_ENTRENAR[key] = picked.filter(x=> CIERRE_CORE_TYPES.has(x.type)).map(x=> x.forcedId);
+  RECENT_ENTRENAR[key] = picked.filter(x=> CIERRE_CORE_TYPES.has(x.type)).map(x=> x.forcedId);
   return {mode:"topic", level, unit:k, tHome:u.home, tIdx:u.index, title:u.title, queue:shuffle(picked), index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set(), before: before ? before.pct : 0};
 }
 function startTopicPractice(home, idx){
@@ -35799,14 +35875,17 @@ function buildUnitSession(level, k){
   rememberTranslate(level, k, queue);
   return {mode:"unit", level, unit:k, queue, index:0, answered:0, correct:0, byType:{}, missed:[], retries:0, retried:new Set()};
 }
-/* CIERRE-ADAPT:BEGIN — Cierre adaptativo (inglés). Al acertar 6/6 se ofrece un reto final de 2 ejercicios más difíciles (dictado escribiendo y traducción abierta, sin fichas);
-   superarlo da la tercera estrella. Al fallar, el reintento prioriza lo fallado (ver buildUnitSession). La unidad se registra al terminar las 6 preguntas, no al final del reto. */
+/* CIERRE-ADAPT:BEGIN — Cierre adaptativo. Al acertar 6/6 se ofrece un reto final de 2 ejercicios más difíciles (dictado escribiendo y traducción abierta, sin fichas);
+   superarlo da la tercera estrella. Al fallar, el reintento prioriza lo fallado (ver buildUnitSession). La unidad se registra al terminar las 6 preguntas, no al final del reto.
+   El dictado sale de LISTEN_TOPIC (mapa curado a mano, solo inglés) cuando currentLang==="en"; en los demás idiomas sale directo de los ítems "listen" propios de la unidad. */
 function unitChallengeEntries(s){
   const u = routeUnits(s.level)[s.unit]; if(!u || !u.key) return [];
   const now = Date.now(), inQ = new Set(s.queue.map(x=> x.forcedId));
   const prio = id=>{ const d = SRS_DATA[id]; return !d ? 1 + Math.random() * 0.5 : d.dueAt <= now ? Math.random() * 0.6 : 2 + d.box * 0.1 + Math.random() * 0.05; };
   const best = ids=> ids.slice().sort((a, b)=> prio(a) - prio(b))[0];
-  const ls = (LISTEN_TOPIC[u.key] || []).map(([lv, i])=> `listen:en:${lv}:${i}`);
+  const ls = currentLang === "en"
+    ? (LISTEN_TOPIC[u.key] || []).map(([lv, i])=> `listen:en:${lv}:${i}`)
+    : u.items.filter(x=> x.type === "listen").map(x=> x.id);
   const tr = u.items.filter(x=> x.type === "translate").map(x=> x.id), trNew = tr.filter(id=> !inQ.has(id));
   const out = [];
   if(ls.length) out.push({type:"listen", forcedId:best(ls), typed:true});
@@ -35824,7 +35903,7 @@ function unitRecord(s){
   const rp = routeTouch(level, s.unit);
   rp.attempts = (rp.attempts || 0) + 1;
   rp.best = Math.max(rp.best || 0, pct);
-  if(rp.chal === undefined && currentLang === "en") rp.chal = prevStarsN === 3;   // quien ya tenía 3 estrellas las conserva; el resto empieza sin el reto (en portugués sigue la regla anterior)
+  if(rp.chal === undefined) rp.chal = prevStarsN === 3;   // quien ya tenía 3 estrellas las conserva; el resto empieza sin el reto
   if(passed){ rp.passed = true; delete rp.cMissed; delete rp.cRight; }
   else{ rp.cMissed = (s.wrongIds || []).slice(); rp.cRight = (s.rightIds || []).slice(); }
   saveProgress();
@@ -35832,7 +35911,7 @@ function unitRecord(s){
 }
 /* Al terminar las 6 con todo bien: pantalla del reto. Devuelve true si la mostró (la sesión sigue). */
 function unitOfferChallenge(s){
-  if(currentLang !== "en" || s.challenge || s.rec) return false;
+  if(s.challenge || s.rec) return false;
   if(!(s.answered >= ROUTE_CLOSE_SIZE && s.correct === s.answered)) return false;
   const extra = unitChallengeEntries(s);
   if(extra.length < 2) return false;
@@ -35892,7 +35971,7 @@ function renderUnitComplete(s){
   rw.chalDone = chalDone; rw.chalOk = chalOk;
   /* práctica personalizada pendiente que conviene hacer ahora (la de esta unidad o, al cerrar el bloque, la que falte para el cofre) */
   let persTarget = -1;
-  if(passed && currentLang === "en"){
+  if(passed){
     const nU = units.length;
     if(routePersonalIsPos(s.unit, nU) && routePersonalVisible(level, s.unit) && !routePersonalState(level, s.unit).done) persTarget = s.unit;
     else if((s.unit + 1) % ROUTE_CHEST_EVERY === 0 && s.unit < nU - 1){ const pend = routePersonalPending(level, s.unit); if(pend.length) persTarget = pend[0]; }
@@ -36260,7 +36339,7 @@ function renderRoute(){
   routeSelectedLevel = level; routeSheet = null;
   const units = routeUnits(level), n = units.length;
   const passedCount = routeLevelPassed(level), cur = routeCurrentIndex(level);
-  const inReview = currentLang === "pt" || ROUTE_REVIEW_LEVELS.includes(level);
+  const inReview = ROUTE_REVIEW_LEVELS.includes(level);
   const pct = n ? Math.round(passedCount / n * 100) : 0;
   const curLv = routeCurrentLevel();
   const tabs = ROUTE_LEVELS.map(l=>{
@@ -36417,22 +36496,21 @@ function routeHitoUnitsDone(level, after){   // todas las unidades del bloque su
 }
 /* El cofre se habilita con las unidades del bloque hechas y sin ninguna práctica personalizada visible pendiente */
 function routeHitoReady(level, after){ return routeHitoUnitsDone(level, after) && routePersonalPending(level, after).length === 0; }
-/* PERSONAL:BEGIN — Práctica personalizada (inglés): cada 3 unidades aparece un nodo que repasa lo tuyo (ítems vencidos del repaso espaciado y del banco de errores) de las unidades ya vistas.
+/* PERSONAL:BEGIN — Práctica personalizada: cada 3 unidades aparece un nodo que repasa lo tuyo (ítems vencidos del repaso espaciado y del banco de errores) de las unidades ya vistas.
    Solo se muestra si hay al menos PERSONAL_MIN ítems (o si ya está hecha); si está visible y sin hacer, hay que completarla para abrir el cofre del bloque. No tiene puntaje: se marca hecha al terminar.
    Se guarda en routeProgress["NIVEL:rep<unidad>"] = {done, attempts, answered, correct, ts}. */
 const ROUTE_PERSONAL_EVERY = 3, PERSONAL_SIZE = 8, PERSONAL_MIN = 3;
 const routePersonalKey = (level, u)=> `${level}:rep${u}`;
 const routePersonalState = (level, u)=> routeProgress[routePersonalKey(level, u)] || {};
-const routePersonalIsPos = (u, n)=> currentLang === "en" && (u + 1) % ROUTE_PERSONAL_EVERY === 0 && u < n - 1;
+const routePersonalIsPos = (u, n)=> (u + 1) % ROUTE_PERSONAL_EVERY === 0 && u < n - 1;
 function routePersonalPositions(level){ const n = routeUnits(level).length, out = []; for(let u = 0; u < n; u++) if(routePersonalIsPos(u, n)) out.push(u); return out; }
 function routePersonalPool(level, upTo){
-  if(currentLang !== "en") return [];
   const units = routeUnits(level), now = Date.now(), errIds = new Set((ERROR_BANK || []).map(e=> e.id)), out = [], seen = new Set();
   for(let k = 0; k <= upTo && k < units.length; k++){
     const u = units[k];
     const ids = u.items.map(x=> ({type:x.type, id:x.id}))
       .concat((theoryQBank()[u.key] || []).map((_, n)=> ({type:"theoryq", id:`theoryq:${currentLang}:${u.key}:${n}`})))
-      .concat((LISTEN_TOPIC[u.key] || []).map(([lv, i])=> ({type:"listen", id:`listen:en:${lv}:${i}`})));
+      .concat(currentLang === "en" ? (LISTEN_TOPIC[u.key] || []).map(([lv, i])=> ({type:"listen", id:`listen:en:${lv}:${i}`})) : []);   // LISTEN_TOPIC es un mapa curado solo para inglés; en otros idiomas u.items ya trae sus propios ítems "listen"
     ids.forEach(x=>{
       if(seen.has(x.id)) return; seen.add(x.id);
       const d = SRS_DATA[x.id], due = !!(d && d.dueAt <= now), err = errIds.has(x.id);
@@ -36577,16 +36655,16 @@ function missionBarHTML(active, level, unit){
   }).join("");
   return `<div class="mission-bar" role="list" aria-label="Pasos de la misión" style="--rl:${lc};--rli:${ROUTE_INK[level] || "#fff"}"><div class="mb-line" style="left:${edge}%;right:${edge}%"><i style="width:${Math.min(100, Math.round(active / last * 100))}%"></i></div>${steps}</div>`;
 }
-/* VOC-BLOCK:BEGIN — bloque de vocabulario al final de Entrenar (solo inglés): 3 tarjetas + 1 tablero de 5 pares, con palabras del nivel de la ruta
+/* VOC-BLOCK:BEGIN — bloque de vocabulario al final de Entrenar: 3 tarjetas + 1 tablero de 5 pares, con palabras del nivel de la ruta
    (las vencidas primero, luego las que nunca viste). Cuentan para el % como cualquier pregunta; el tablero cuenta como una sola. */
 const MISSION_VOCAB_CARDS = 3;
 function missionVocabBlock(level){
-  const pool = currentLang === "en" ? (LANG_PACKS.en.VOCAB || {})[level] : null;
+  const pool = (LANG_PACKS[currentLang].VOCAB || {})[level];
   if(!pool || pool.length < MISSION_VOCAB_CARDS + MATCH_PAIRS_N) return [];
   const now = Date.now(), pr = {};
-  pool.forEach((_, i)=>{ const d = SRS_DATA[`vocab:en:${level}:${i}`]; pr[i] = !d ? 1 + Math.random() * 0.5 : d.dueAt <= now ? Math.random() * 0.6 : 2 + d.box * 0.1 + Math.random() * 0.05; });
+  pool.forEach((_, i)=>{ const d = SRS_DATA[`vocab:${currentLang}:${level}:${i}`]; pr[i] = !d ? 1 + Math.random() * 0.5 : d.dueAt <= now ? Math.random() * 0.6 : 2 + d.box * 0.1 + Math.random() * 0.05; });
   const ids = Object.keys(pr).sort((a, b)=> pr[a] - pr[b]).slice(0, MISSION_VOCAB_CARDS);
-  const block = ids.map(i=> ({type:"vocab", forcedId:`vocab:en:${level}:${i}`})).concat([{type:"matchpairs", level}]);
+  const block = ids.map(i=> ({type:"vocab", forcedId:`vocab:${currentLang}:${level}:${i}`})).concat([{type:"matchpairs", level}]);
   if(block.length) block[0].vocabBlockStart = true;   // marca el primer paso del bloque, para avisar el cambio de tema (ver VOC-BANNER)
   return block;
 }
@@ -36637,7 +36715,7 @@ function easyFirstReorder(queue){
    (pestaña Ejercicios) y construye el mismo modo para Completar, que no lo tenía. */
 const WRITE_MODE_LEVELS = new Set(["B1", "B2", "C1", "C2"]);
 function applyWriteMode(queue, level, firstTime){
-  if(currentLang !== "en" || firstTime || !WRITE_MODE_LEVELS.has(level)) return queue;
+  if(firstTime || !WRITE_MODE_LEVELS.has(level)) return queue;
   const q = queue.slice();
   ["gapfill", "translate"].forEach(t=>{
     const i = q.findIndex(x=> x.type === t);
@@ -36649,7 +36727,7 @@ function applyWriteMode(queue, level, firstTime){
 function startMission(level, k){
   if(!routeUnits(level)[k] && currentLang !== "pt") return;
   const s = buildTopicSession(level, k);
-  const firstTime = currentLang === "en" && !topicProgress[topicKey(s.tHome, s.tIdx)];
+  const firstTime = !topicProgress[topicKey(s.tHome, s.tIdx)];
   s.queue = missionAlternate(s.queue).concat(missionVocabBlock(level));
   if(firstTime) s.queue = easyFirstReorder(s.queue);
   s.queue = applyWriteMode(s.queue, level, firstTime);
