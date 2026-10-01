@@ -1618,6 +1618,26 @@ button.pvr-c:active{transform:translate(-50%,-50%) scale(.97);}
 @media (min-width:900px){.pvr-card{position:sticky;top:90px;}}
 .pv-sec[hidden],.pv-list[hidden]{display:none;}
 /* PHRASAL-UI-CSS:END */
+/* CROSSWORD-CSS:BEGIN */
+.cw-grid{display:grid;gap:4px;justify-content:center;margin:14px 0;}
+.cwc{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;border-radius:6px;position:relative;text-transform:uppercase;}
+.cwc-blank{background:transparent;}
+.cwc-empty{background:var(--bg-soft);border:1.5px solid var(--line);}
+.cwc-solved{background:var(--teal);color:#fff;border:1.5px solid var(--teal);}
+.cwc-active{box-shadow:0 0 0 2px var(--purple);}
+.cwc-num{position:absolute;top:1px;left:2px;font-size:7px;font-weight:700;opacity:.65;}
+.cw-active-clue{background:var(--bg-soft);border:1.5px solid var(--purple);border-radius:12px;padding:10px 14px;margin-bottom:10px;}
+.cw-active-label{font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--purple);text-transform:uppercase;}
+.cw-active-word{font-size:18px;font-weight:800;margin-top:2px;}
+.cw-active-word small{font-weight:500;opacity:.7;font-size:13px;}
+.cw-input{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:2px solid var(--purple);font-weight:800;font-size:16px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.cw-clue-list{display:flex;flex-direction:column;gap:6px;margin:10px 0;}
+.cw-clue{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-size:13px;}
+.cw-clue-active{border-color:var(--purple);background:var(--bg-soft);font-weight:700;}
+.cw-clue-done{border-color:var(--teal);opacity:.75;}
+.cw-clue-badge{width:20px;height:20px;border-radius:999px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+.cw-clue-done .cw-clue-badge{background:var(--teal);border-color:var(--teal);color:#fff;}
+/* CROSSWORD-CSS:END */
 /* CONECTORES-CSS:BEGIN */
 .cn-chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px;}
 .cn-chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);font-family:inherit;font-weight:700;font-size:.8rem;border-radius:999px;padding:7px 14px;cursor:pointer;}
@@ -2359,7 +2379,7 @@ const NAV = [
   {group:"theory-group", label:"Teoría", icon:"book", items:[
     {id:"theory", label:"Gramática"},
     {id:"categories", label:"Categorías Gramaticales"},
-    {id:"phrasal", label:"Phrasal Verbs"},
+    {id:"phrasal", label:"Phrasal Verbs", only:"en"},
     {id:"verbs", label:"Verbos"},
   ]},
   {group:"utils-group", label:"Utilidades", icon:"compass", items:[
@@ -2399,6 +2419,7 @@ const EX_TABS = [
   {id:"translate", icon:"lightning", label:"Traducción"},
   {id:"phrasal", icon:"puzzle", label:"Phrasal Verbs"},
   {id:"verbforms", icon:"books", label:"Conjugación"},
+  {id:"crossword", icon:"grid", label:"Crucigrama"},
   {id:"verbcards", icon:"flashcards", label:"Tarjetas de verbos"},
   {id:"wordclass", icon:"tag", label:"Categorías"},
   {id:"writing", icon:"journalpen", label:"Writing"},
@@ -20730,7 +20751,7 @@ let _exerciseLevelOverride = null;
 let activeSection = "home";
 let activeExercise = "vocab";
 const stats = {};
-["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt","theoryq","vocabtype","vocabcloze","collocations","wordfamily","verbcards","connectors"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
+["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt","theoryq","vocabtype","vocabcloze","collocations","wordfamily","verbcards","connectors","crossword"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
 const current = {};
 const dailyStreak = {count:0, lastDate:null};   // racha diaria global, distinta de stats[id].streak
 const weeklyHistory = [];  // [{weekStart, exercisesDone, correct, correctRate}] — últimas 12 semanas
@@ -24149,6 +24170,7 @@ Object.assign(ICONS, {
 Object.assign(I3_MAP, {party:"orange", speaker:"blue", wink:"yellow", bulb:"yellow", checkok:"green", crossbad:"red", repeat:"blue", refresh:"blue", mic:"coral", warn:"yellow", turtle:"green", timer:"purple", trophy:"yellow", flame:"orange", star:"yellow", thumb:"orange", flask:"teal", reddot:"red", trend:"teal", clapper:"purple", calendar:"coral", cone:"orange", eye:"blue", radio:"blue", leaf:"green", medalg:"yellow", moon:"purple", sun:"yellow", plus:"coral", trash:"coral", hourglass:"orange", tick:"green", prev:"blue", next:"blue", stop:"red", gear:"silver", lock:"yellow", dice:"purple", diamond:"blue", question:"blue", smile:"yellow", sad:"blue", arrowr:"teal", medals:"silver", medalb:"bronze"});
 ICONS.medals = ICONS.medalg; ICONS.medalb = ICONS.medalg;
 ICONS.copy = `<rect x="8.5" y="8.5" width="12" height="12" rx="2.6"/><path d="M15.5 8.5V6.6A2.6 2.6 0 0012.9 4H6.6A2.6 2.6 0 004 6.6v6.3a2.6 2.6 0 002.6 2.6h1.9" fill="none"/>`; I3_MAP.copy = "blue";
+ICONS.grid = `<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>`; I3_MAP.grid = "teal";
 ["repeat", "refresh", "plus", "trend", "tick", "arrowr"].forEach(n=> I3_STROKE.add(n));
 (function injectVisual3dDefs(){
   const grads = Object.keys(I3_PAL).map(k=> `<linearGradient id="i3g-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${I3_PAL[k][0]}"/><stop offset="1" stop-color="${I3_PAL[k][1]}"/></linearGradient>`).join("");
@@ -25010,7 +25032,7 @@ function renderTopicVisual(t){
 /* Vista derivada de stats — no guarda nada nuevo, solo lee lo que ya existe. */
 function computeSkillRadar(){
   const acc = id => stats[id].total ? Math.round(stats[id].correct/stats[id].total*100) : 0;
-  const gramIds = ["gapfill","verbforms","wordclass","phrasal"];
+  const gramIds = ["gapfill","verbforms","wordclass","phrasal"].filter(id=> isExerciseReadyForLang(id, currentLang));
   const gramAvg = Math.round(gramIds.reduce((sum,id)=>sum+acc(id),0) / gramIds.length);
   return [
     {id:"gapfill", label:"Gramática", value:gramAvg},
@@ -25021,7 +25043,7 @@ function computeSkillRadar(){
   ];
 }
 function weakestExerciseType(){
-  const ids = ["vocab","gapfill","verbforms","wordclass","phrasal","listen","reading","writing"];
+  const ids = ["vocab","gapfill","verbforms","wordclass","phrasal","listen","reading","writing"].filter(id=> isExerciseReadyForLang(id, currentLang));
   let best = null;
   ids.forEach(id=>{
     const st = stats[id];
@@ -25069,7 +25091,7 @@ function renderRadarSVG(skills){
    (más "order"->Gramática, "translate"->Vocabulario, "dialogue"->Listening,
    que el radar no cubre pero sí cuentan como ejercicios hechos). */
 const DAILY_ACTIVITY_CATS = [
-  {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","verbcards","wordclass","phrasal","order","theoryq","connectors"]},
+  {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","verbcards","wordclass","phrasal","order","theoryq","connectors","crossword"]},
   {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics","matchpairs","es2pt","vocabtype","vocabcloze","collocations","wordfamily"]},
   {label:"Listening", color:"var(--blue)", gradId:"gListening", from:"#2E9CDB", to:"#8DD0F5", ids:["listen","dialogue","minimalpairs"]},
   {label:"Reading", color:"var(--amber)", gradId:"gReading", from:"#F5A623", to:"#FBD38D", ids:["reading","readingcloze","readingletters"]},
@@ -28527,7 +28549,7 @@ const VERB_SECTION_META = {
 const EX_GROUPS = [
   {id:"vocab", label:"Vocabulario", icon:"flashcards", items:["vocab","matchpairs","wordclass","phrasal"]},
   {id:"lexicon", label:"Palabras en uso", icon:"puzzle", items:["vocabtype","vocabcloze","collocations","wordfamily"]},
-  {id:"grammar", label:"Gramática", icon:"pencil", items:["gapfill","order","verbforms","verbcards","translate","connectors"]},
+  {id:"grammar", label:"Gramática", icon:"pencil", items:["gapfill","order","verbforms","verbcards","translate","connectors","crossword"]},
   {id:"reading", label:"Lectura", icon:"book", items:["reading","readingcloze","readingletters"]},
   {id:"listen", label:"Escucha y habla", icon:"headphones", items:["listen","minimalpairs","dialogue"]},
   {id:"writing", label:"Escritura", icon:"journalpen", items:["writing"]},
@@ -28540,7 +28562,7 @@ const EX_SUB_LABEL = {vocabtype:"Escribe la palabra", vocabcloze:"Completa la fr
 const EX_SUB_DESC = {
   vocab:"Elige el significado correcto de cada palabra.", matchpairs:"Une cada palabra con su pareja.", wordclass:"Clasifica palabras por su categoría.", phrasal:"Aprende verbos con partícula.",
   gapfill:"Completa la oración con la opción correcta.", order:"Ordena las palabras para formar la frase.", verbforms:"Practica las formas de cada verbo.", verbcards:"Desliza cada verbo: ya lo sé o repasar. Toca para voltear.", translate:"Traduce frases entre tu idioma y el que aprendes.",
-  connectors:"Elige el conector que une las ideas de la frase.",
+  connectors:"Elige el conector que une las ideas de la frase.", crossword:"Completa el tablero de verbos: resuelve una palabra y se revelan las letras que cruza con las demás.",
   reading:"Lee un texto y responde preguntas.", readingcloze:"Completa los huecos dentro del texto.", readingletters:"Escribe las letras que faltan.",
   vocabtype:"Escribe la palabra que corresponde al significado.", vocabcloze:"Completa la frase con la palabra correcta.", collocations:"Elige el verbo que suele acompañar a cada palabra.", wordfamily:"Forma la palabra derivada que pide la frase.",
   listen:"Escucha una frase y escríbela o elígela.", minimalpairs:"Distingue sonidos muy parecidos.", dialogue:"Practica conversaciones reales.",
@@ -28688,8 +28710,8 @@ function renderExercise(id, forceNew){
     renderExerciseComingSoon();
     return;
   }
-  const DRAW = {vocabtype:drawVocabType, vocabcloze:drawVocabCloze, collocations:drawColloc, wordfamily:drawWordFam, vocab:drawVocab, matchpairs:drawMatchPairs, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, verbcards:drawVerbCards, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank};
-  const NEWQ = {vocabtype:newVocabTypeQuestion, vocabcloze:newVocabClozeQuestion, collocations:newCollocQuestion, connectors:newConnectorQuestion, wordfamily:newWordFamQuestion, vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, verbcards:newVerbCardsQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank};
+  const DRAW = {vocabtype:drawVocabType, vocabcloze:drawVocabCloze, collocations:drawColloc, wordfamily:drawWordFam, vocab:drawVocab, matchpairs:drawMatchPairs, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, verbcards:drawVerbCards, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank, crossword:drawCrossword};
+  const NEWQ = {vocabtype:newVocabTypeQuestion, vocabcloze:newVocabClozeQuestion, collocations:newCollocQuestion, connectors:newConnectorQuestion, wordfamily:newWordFamQuestion, vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, verbcards:newVerbCardsQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank, crossword:newCrosswordQuestion};
   if(forceNew || !current[id]) NEWQ[id]();
   else DRAW[id]();
 }
@@ -31894,6 +31916,175 @@ function drawVerbForm(){
   });
   document.getElementById("verbformNext").onclick = newVerbFormQuestion;
 }
+
+/* CROSSWORD:BEGIN — Crucigrama de verbos: tablero entrelazado (estilo Wordscapes/crucigrama real) armado en el
+   momento a partir de pasado/participio de VERBS filtrados por verbCefrLevel(), con reintentos si una
+   combinación de verbos no logra cruzar bien. Las letras donde dos palabras se cruzan quedan visibles apenas
+   se resuelve una de las dos. Solo inglés por ahora: no hay LANG_EXERCISE_READY.pt.crossword, así que
+   isExerciseReadyForLang("crossword","pt") es false y la pestaña no aparece en Ejercicios para PT. */
+const CROSSWORD_TARGET = 5, CROSSWORD_FLOOR = 3, CROSSWORD_ATTEMPTS = 40;
+function crosswordPool(level){
+  const lv = level === "C2" ? "C1" : level;
+  const out = [];
+  VERBS.forEach(v=>{
+    if(verbCefrLevel(v) !== lv) return;
+    const past = (v.past || "").toUpperCase(), part = (v.participle || "").toUpperCase();
+    if(past.length < 3) return;
+    if(past === part) out.push({word:past, base:v.base, es:v.es, label:"pasado o participio"});
+    else{
+      out.push({word:past, base:v.base, es:v.es, label:"pasado"});
+      if(part.length >= 3) out.push({word:part, base:v.base, es:v.es, label:"participio"});
+    }
+  });
+  return out;
+}
+function crosswordCanPlace(word, row, col, dir, placed){
+  for(let i = 0; i < word.length; i++){
+    const r = dir === "down" ? row + i : row, c = dir === "across" ? col + i : col;
+    for(const p of placed){
+      for(let pi = 0; pi < p.word.length; pi++){
+        const pr = p.dir === "across" ? p.row : p.row + pi, pc = p.dir === "across" ? p.col + pi : p.col;
+        if(pr === r && pc === c && p.word[pi] !== word[i]) return false;
+      }
+    }
+  }
+  return true;
+}
+function crosswordFindSpot(word, placed){
+  for(const p of placed){
+    for(let pi = 0; pi < p.word.length; pi++){
+      const pr = p.dir === "across" ? p.row : p.row + pi, pc = p.dir === "across" ? p.col + pi : p.col;
+      for(let wi = 0; wi < word.length; wi++){
+        if(p.word[pi] !== word[wi]) continue;
+        const dir = p.dir === "across" ? "down" : "across";
+        const row = dir === "down" ? pr - wi : pr, col = dir === "across" ? pc - wi : pc;
+        if(crosswordCanPlace(word, row, col, dir, placed)) return {row, col, dir};
+      }
+    }
+  }
+  return null;
+}
+function crosswordFinalize(placed){
+  const minRow = Math.min(...placed.map(p=>p.row)), minCol = Math.min(...placed.map(p=>p.col));
+  const words = placed.map(p=> ({...p, row:p.row-minRow, col:p.col-minCol}));
+  const starts = [];
+  words.forEach(w=>{ if(!starts.find(s=> s.row===w.row && s.col===w.col)) starts.push({row:w.row, col:w.col}); });
+  starts.sort((a,b)=> a.row-b.row || a.col-b.col);
+  words.forEach(w=>{ w.number = starts.findIndex(s=> s.row===w.row && s.col===w.col) + 1; });
+  const rows = Math.max(...words.map(w=> w.dir==="down" ? w.row+w.word.length : w.row+1));
+  const cols = Math.max(...words.map(w=> w.dir==="across" ? w.col+w.word.length : w.col+1));
+  return {words, rows, cols};
+}
+function crosswordBuild(level){
+  const pool = crosswordPool(level);
+  if(pool.length < CROSSWORD_FLOOR) return null;
+  for(let attempt = 0; attempt < CROSSWORD_ATTEMPTS; attempt++){
+    const order = shuffle([...pool]);
+    const placed = [{...order[0], row:0, col:0, dir:"across"}];
+    for(let i = 1; i < order.length && placed.length < CROSSWORD_TARGET; i++){
+      const w = order[i];
+      if(placed.some(p=> p.word === w.word)) continue;
+      const spot = crosswordFindSpot(w.word, placed);
+      if(spot) placed.push({...w, ...spot});
+    }
+    if(placed.length >= CROSSWORD_FLOOR) return crosswordFinalize(placed);
+  }
+  return null;
+}
+function crosswordCellLetters(cw, r, c){
+  const g = cw.grid; let letter = null, solved = false, active = false;
+  g.words.forEach((w, i)=>{
+    for(let k = 0; k < w.word.length; k++){
+      const rr = w.dir==="down" ? w.row+k : w.row, cc = w.dir==="across" ? w.col+k : w.col;
+      if(rr===r && cc===c){ letter = w.word[k]; if(cw.solved[i]) solved = true; if(i===cw.activeIdx) active = true; }
+    }
+  });
+  return letter===null ? null : {letter, solved, active};
+}
+function newCrosswordQuestion(){
+  const level = pickLevel();
+  const built = crosswordBuild(level) || crosswordBuild("B1");
+  current.crossword = {level, grid:built, solved:built.words.map(()=>false), activeIdx:0};
+  drawCrossword();
+}
+function drawCrossword(){
+  const cw = current.crossword, g = cw.grid;
+  const allDone = cw.solved.every(Boolean);
+  const activeWord = g.words[cw.activeIdx];
+  let gridHtml = "";
+  for(let r=0; r<g.rows; r++){
+    for(let c=0; c<g.cols; c++){
+      const st = crosswordCellLetters(cw, r, c);
+      if(!st){ gridHtml += `<div class="cwc cwc-blank"></div>`; continue; }
+      const startWord = g.words.find(w=> w.row===r && w.col===c);
+      const numHtml = startWord ? `<span class="cwc-num">${startWord.number}</span>` : "";
+      const activeCls = (st.active && !allDone) ? " cwc-active" : "";
+      gridHtml += `<div class="cwc ${st.solved ? "cwc-solved" : "cwc-empty"}${activeCls}">${numHtml}${st.solved ? st.letter : ""}</div>`;
+    }
+  }
+  const clueListHtml = g.words.map((w, i)=>{
+    const done = cw.solved[i], act = !done && i===cw.activeIdx;
+    return `<div class="cw-clue${done ? " cw-clue-done" : act ? " cw-clue-active" : ""}" data-i="${i}">
+      <span class="cw-clue-badge">${done ? "✓" : w.number}</span>
+      <span class="cw-clue-tx">${w.number}. ${escHtml(w.base.toUpperCase())} <small>→ ${w.label}</small>${done ? ` · ${w.word}` : ""}</span>
+    </div>`;
+  }).join("");
+  document.getElementById("exPanel").innerHTML = `
+    <div class="card">
+      ${scoreRowHtml("crossword")}
+      <div class="cw-grid" style="grid-template-columns:repeat(${g.cols},32px);grid-template-rows:repeat(${g.rows},32px);">${gridHtml}</div>
+      ${allDone ? `
+        <div class="feedback show ok"><strong>¡Crucigrama completo! 🎉</strong> Resolviste las ${g.words.length} palabras.</div>
+        <div class="btn-row"><button class="btn" id="cwNext">Nuevo crucigrama →</button></div>
+      ` : `
+        <div class="cw-active-clue">
+          <div class="cw-active-label">Pista ${activeWord.number} · ${activeWord.label}</div>
+          <div class="cw-active-word">${escHtml(activeWord.base.toUpperCase())} <small>(${escHtml(activeWord.es)})</small></div>
+        </div>
+        <input type="text" id="cwInput" class="cw-input" autocomplete="off" autocapitalize="characters" placeholder="${"_ ".repeat(activeWord.word.length).trim()}">
+        <div class="feedback" role="status" aria-live="polite" id="cwFeedback"></div>
+        <div class="cw-clue-list">${clueListHtml}</div>
+        <div class="btn-row"><button class="btn secondary" id="cwHint">Pista (revelar letra)</button><button class="btn" id="cwCheck">Comprobar</button></div>
+      `}
+    </div>`;
+  if(allDone){ document.getElementById("cwNext").onclick = newCrosswordQuestion; return; }
+  document.querySelectorAll(".cw-clue[data-i]").forEach(el=>{
+    el.onclick = ()=>{ const i = +el.dataset.i; if(cw.solved[i]) return; cw.activeIdx = i; drawCrossword(); };
+  });
+  const input = document.getElementById("cwInput");
+  input.focus();
+  const check = ()=>{
+    const val = input.value.trim().toUpperCase();
+    const w = g.words[cw.activeIdx];
+    const ok = val === w.word;
+    const id = `crossword:${w.base}:${w.label}`;
+    srsUpdate(id, ok);
+    registerAnswer("crossword", ok);
+    exRoundTick("crossword", ok);
+    if(ok){
+      cw.solved[cw.activeIdx] = true;
+      clearErrorIfMastered(id);
+      const nextIdx = g.words.findIndex((x, i)=> !cw.solved[i]);
+      if(nextIdx >= 0) cw.activeIdx = nextIdx;
+      drawCrossword();
+    }else{
+      recordError(id, "crossword", "VERB", `${w.base.toUpperCase()} → ${w.label}`, w.word, `"${w.base}" (${w.es}) en ${w.label} es "${w.word}".`);
+      const fb = document.getElementById("cwFeedback");
+      fb.className = "feedback show bad";
+      fb.innerHTML = `<strong>Casi 😉</strong> Prueba de nuevo o usa la pista.`;
+      input.classList.add("shake");
+      setTimeout(()=> input.classList.remove("shake"), 400);
+    }
+  };
+  document.getElementById("cwCheck").onclick = check;
+  input.onkeydown = e=>{ if(e.key==="Enter"){ e.preventDefault(); check(); } };
+  document.getElementById("cwHint").onclick = ()=>{
+    const w = g.words[cw.activeIdx], cur = input.value.toUpperCase();
+    if(cur.length < w.word.length) input.value = w.word.slice(0, cur.length+1);
+    input.focus();
+  };
+}
+/* CROSSWORD:END */
 
 /* VERBCARDS:BEGIN — Tarjetas de verbos: desliza a la izquierda (ya lo sé) o a la derecha (repasar); toca para voltear. Usa el SRS (ids verbcards:lang:índice) con datos extra streak/day para el dominio. */
 const VC_SIZE = 20, VC_DUE_CAP = 14;
