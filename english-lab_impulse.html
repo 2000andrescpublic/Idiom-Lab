@@ -32120,7 +32120,7 @@ const NOTES_COMPLETION_EN = {
   A1:[{idx:0, notes:[
     {label:"Trabajo del padre", answer:"teacher"},
     {label:"Trabajo de la madre", answer:"doctor"},
-    {label:"Hermanos que tiene", answer:"one brother"},
+    {label:"Hermanos que tiene", answer:"one brother", alt:["one"]},
     {label:"La casa está cerca de", answer:"the park"},
   ]}],
   A2:[{idx:5, notes:[
@@ -32153,7 +32153,16 @@ const NOTES_COMPLETION_EN = {
     {label:"Qué cuestionan los críticos", answer:"persuasion ends and manipulation begins"},
   ]}],
 };
-function ncNormalize(s){ return (s || "").trim().toLowerCase().replace(/\s+/g, " "); }
+const NC_NUMS = {"1":"one","2":"two","3":"three","4":"four","5":"five","6":"six","7":"seven","8":"eight","9":"nine","10":"ten"};
+function ncNormalize(s){
+  const words = (s || "").trim().toLowerCase().replace(/\s+/g, " ").split(" ").filter(Boolean);
+  while(words.length > 1 && ["the", "a", "an"].includes(words[0])) words.shift();
+  return words.map(w=> NC_NUMS[w] || w).join(" ");
+}
+function ncIsCorrect(value, note){
+  const v = ncNormalize(value);
+  return v !== "" && [note.answer, ...(note.alt || [])].some(a=> ncNormalize(a) === v);
+}
 function newNotesCompletionQuestion(){
   const want = pickLevel();
   const lv = NOTES_COMPLETION_EN[want] ? want : "B1";
@@ -32172,14 +32181,14 @@ function drawNotesCompletion(){
         <input id="nc${i}" class="nc-input" type="text" value="${escHtml(nc.values[i])}" data-i="${i}" autocomplete="off">
       </div>`;
     }
-    const ok = ncNormalize(nc.values[i]) === ncNormalize(n.answer);
+    const ok = ncIsCorrect(nc.values[i], n);
     return `<div style="display:flex;flex-direction:column;gap:4px;">
       <label style="font-size:12.5px;color:var(--ink-soft);">${escHtml(n.label)}:</label>
       <input class="nc-input ${ok ? "nc-ok" : "nc-bad"}" type="text" value="${escHtml(nc.values[i] || "—")}" readonly>
       ${ok ? "" : `<div class="nc-correction">Correcto: <strong>${escHtml(n.answer)}</strong></div>`}
     </div>`;
   }).join("");
-  const correctCount = nc.checked ? nc.notes.filter((n, i)=> ncNormalize(nc.values[i]) === ncNormalize(n.answer)).length : 0;
+  const correctCount = nc.checked ? nc.notes.filter((n, i)=> ncIsCorrect(nc.values[i], n)).length : 0;
   document.getElementById("exPanel").innerHTML = `
     <div class="card">
       ${scoreRowHtml("notescompletion")}
@@ -32187,6 +32196,7 @@ function drawNotesCompletion(){
         <div style="font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--purple);text-transform:uppercase;margin-bottom:5px;">Texto · ${escHtml(nc.passage.title)}</div>
         <p style="margin:0;font-size:13.5px;line-height:1.55;">${escHtml(nc.passage.text)}</p>
       </div>
+      <p style="margin:0 0 10px;font-size:12.5px;color:var(--ink-soft);">Completa cada nota con la palabra o frase del texto (no importan mayúsculas ni artículos).</p>
       <div style="display:flex;flex-direction:column;gap:12px;">${notesHtml}</div>
       ${nc.checked ? `
         <div class="feedback show ${correctCount === nc.notes.length ? "ok" : "bad"}"><strong>${correctCount} de ${nc.notes.length} correctas.</strong> ${correctCount === nc.notes.length ? "¡Perfecto! 🎉" : "Revisa las correcciones arriba."}</div>
@@ -32205,7 +32215,7 @@ function drawNotesCompletion(){
   document.getElementById("ncCheck").onclick = ()=>{
     nc.checked = true;
     nc.notes.forEach((n, i)=>{
-      const ok = ncNormalize(nc.values[i]) === ncNormalize(n.answer);
+      const ok = ncIsCorrect(nc.values[i], n);
       const id = `notescompletion:${nc.level}:${nc.idx}:${i}`;
       srsUpdate(id, ok);
       registerAnswer("notescompletion", ok);
