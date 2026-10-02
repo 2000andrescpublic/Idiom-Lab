@@ -1640,6 +1640,13 @@ button.pvr-c:active{transform:translate(-50%,-50%) scale(.97);}
 .cw-clue-badge{width:20px;height:20px;border-radius:999px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
 .cw-clue-done .cw-clue-badge{background:var(--teal);border-color:var(--teal);color:#fff;}
 /* CROSSWORD-CSS:END */
+/* NOTESCOMPLETION-CSS:BEGIN */
+.nc-input{width:100%;box-sizing:border-box;padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-weight:600;font-size:14px;font-family:inherit;}
+.nc-input:focus{border-color:var(--purple);outline:none;}
+.nc-input.nc-ok{border-color:var(--teal);background:rgba(34,197,94,.08);color:var(--teal);}
+.nc-input.nc-bad{border-color:var(--pink);background:rgba(224,69,122,.08);color:var(--pink);}
+.nc-correction{font-size:12px;color:var(--pink);}
+/* NOTESCOMPLETION-CSS:END */
 /* CONECTORES-CSS:BEGIN */
 .cn-chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px;}
 .cn-chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);font-family:inherit;font-weight:700;font-size:.8rem;border-radius:999px;padding:7px 14px;cursor:pointer;}
@@ -2410,6 +2417,7 @@ const EX_TABS = [
   {id:"reading", icon:"book", label:"Lectura"},
   {id:"readingcloze", icon:"search", label:"Lectura interactiva"},
   {id:"readingletters", icon:"keyboard", label:"Completa las letras"},
+  {id:"notescompletion", icon:"notes", label:"Completa las notas"},
   {id:"listen", icon:"headphones", label:"Escucha"},
   {id:"minimalpairs", icon:"link", label:"Pares mínimos"},
   {id:"vocabtype", icon:"keyboard", label:"Escribe la palabra"},
@@ -20753,7 +20761,7 @@ let _exerciseLevelOverride = null;
 let activeSection = "home";
 let activeExercise = "vocab";
 const stats = {};
-["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt","theoryq","vocabtype","vocabcloze","collocations","wordfamily","verbcards","connectors","crossword"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
+["vocab","gapfill","order","reading","readingcloze","readingletters","listen","translate","phrasal","verbforms","wordclass","dialogue","writing","vocabtopics","minimalpairs","matchpairs","es2pt","theoryq","vocabtype","vocabcloze","collocations","wordfamily","verbcards","connectors","crossword","notescompletion"].forEach(id => stats[id] = {correct:0, total:0, streak:0});
 const current = {};
 const dailyStreak = {count:0, lastDate:null};   // racha diaria global, distinta de stats[id].streak
 const weeklyHistory = [];  // [{weekStart, exercisesDone, correct, correctRate}] — últimas 12 semanas
@@ -24173,6 +24181,7 @@ Object.assign(I3_MAP, {party:"orange", speaker:"blue", wink:"yellow", bulb:"yell
 ICONS.medals = ICONS.medalg; ICONS.medalb = ICONS.medalg;
 ICONS.copy = `<rect x="8.5" y="8.5" width="12" height="12" rx="2.6"/><path d="M15.5 8.5V6.6A2.6 2.6 0 0012.9 4H6.6A2.6 2.6 0 004 6.6v6.3a2.6 2.6 0 002.6 2.6h1.9" fill="none"/>`; I3_MAP.copy = "blue";
 ICONS.grid = `<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>`; I3_MAP.grid = "teal";
+ICONS.notes = `<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>`; I3_MAP.notes = "orange";
 ["repeat", "refresh", "plus", "trend", "tick", "arrowr"].forEach(n=> I3_STROKE.add(n));
 (function injectVisual3dDefs(){
   const grads = Object.keys(I3_PAL).map(k=> `<linearGradient id="i3g-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${I3_PAL[k][0]}"/><stop offset="1" stop-color="${I3_PAL[k][1]}"/></linearGradient>`).join("");
@@ -25096,7 +25105,7 @@ const DAILY_ACTIVITY_CATS = [
   {label:"Gramática", color:"var(--purple)", gradId:"gGramatica", from:"#0D9C93", to:"#4FD1C5", ids:["gapfill","verbforms","verbcards","wordclass","phrasal","order","theoryq","connectors","crossword"]},
   {label:"Vocabulario", color:"var(--teal)", gradId:"gVocabulario", from:"#22C55E", to:"#86EFAC", ids:["vocab","translate","vocabtopics","matchpairs","es2pt","vocabtype","vocabcloze","collocations","wordfamily"]},
   {label:"Listening", color:"var(--blue)", gradId:"gListening", from:"#2E9CDB", to:"#8DD0F5", ids:["listen","dialogue","minimalpairs"]},
-  {label:"Reading", color:"var(--amber)", gradId:"gReading", from:"#F5A623", to:"#FBD38D", ids:["reading","readingcloze","readingletters"]},
+  {label:"Reading", color:"var(--amber)", gradId:"gReading", from:"#F5A623", to:"#FBD38D", ids:["reading","readingcloze","readingletters","notescompletion"]},
   {label:"Writing", color:"var(--pink)", gradId:"gWriting", from:"#E0457A", to:"#F5A0BE", ids:["writing"]},
 ];
 const WEEKDAY_ABBR = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
@@ -28552,7 +28561,7 @@ const EX_GROUPS = [
   {id:"vocab", label:"Vocabulario", icon:"flashcards", items:["vocab","matchpairs","wordclass","phrasal"]},
   {id:"lexicon", label:"Palabras en uso", icon:"puzzle", items:["vocabtype","vocabcloze","collocations","wordfamily"]},
   {id:"grammar", label:"Gramática", icon:"pencil", items:["gapfill","order","verbforms","verbcards","translate","connectors","crossword"]},
-  {id:"reading", label:"Lectura", icon:"book", items:["reading","readingcloze","readingletters"]},
+  {id:"reading", label:"Lectura", icon:"book", items:["reading","readingcloze","readingletters","notescompletion"]},
   {id:"listen", label:"Escucha y habla", icon:"headphones", items:["listen","minimalpairs","dialogue"]},
   {id:"writing", label:"Escritura", icon:"journalpen", items:["writing"]},
   {id:"review", label:"Repaso", icon:"pin", items:["errorbank"]},
@@ -28565,7 +28574,7 @@ const EX_SUB_DESC = {
   vocab:"Elige el significado correcto de cada palabra.", matchpairs:"Une cada palabra con su pareja.", wordclass:"Clasifica palabras por su categoría.", phrasal:"Aprende verbos con partícula.",
   gapfill:"Completa la oración con la opción correcta.", order:"Ordena las palabras para formar la frase.", verbforms:"Practica las formas de cada verbo.", verbcards:"Desliza cada verbo: ya lo sé o repasar. Toca para voltear.", translate:"Traduce frases entre tu idioma y el que aprendes.",
   connectors:"Elige el conector que une las ideas de la frase.", crossword:"Completa el tablero de verbos: resuelve una palabra y se revelan las letras que cruza con las demás.",
-  reading:"Lee un texto y responde preguntas.", readingcloze:"Completa los huecos dentro del texto.", readingletters:"Escribe las letras que faltan.",
+  reading:"Lee un texto y responde preguntas.", readingcloze:"Completa los huecos dentro del texto.", readingletters:"Escribe las letras que faltan.", notescompletion:"Lee el texto y completa las notas con palabras exactas de él.",
   vocabtype:"Escribe la palabra que corresponde al significado.", vocabcloze:"Completa la frase con la palabra correcta.", collocations:"Elige el verbo que suele acompañar a cada palabra.", wordfamily:"Forma la palabra derivada que pide la frase.",
   listen:"Escucha una frase y escríbela o elígela.", minimalpairs:"Distingue sonidos muy parecidos.", dialogue:"Practica conversaciones reales.",
 };
@@ -28712,8 +28721,8 @@ function renderExercise(id, forceNew){
     renderExerciseComingSoon();
     return;
   }
-  const DRAW = {vocabtype:drawVocabType, vocabcloze:drawVocabCloze, collocations:drawColloc, wordfamily:drawWordFam, vocab:drawVocab, matchpairs:drawMatchPairs, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, verbcards:drawVerbCards, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank, crossword:drawCrossword};
-  const NEWQ = {vocabtype:newVocabTypeQuestion, vocabcloze:newVocabClozeQuestion, collocations:newCollocQuestion, connectors:newConnectorQuestion, wordfamily:newWordFamQuestion, vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, verbcards:newVerbCardsQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank, crossword:newCrosswordQuestion};
+  const DRAW = {vocabtype:drawVocabType, vocabcloze:drawVocabCloze, collocations:drawColloc, wordfamily:drawWordFam, vocab:drawVocab, matchpairs:drawMatchPairs, gapfill:drawGapfill, order:drawOrder, reading:drawReading, readingcloze:drawReadingCloze, readingletters:drawReadingLetters, listen:drawListen, minimalpairs:drawMinimalPair, dialogue:drawDialogue, translate:drawTranslate, phrasal:drawPhrasal, verbforms:drawVerbForm, verbcards:drawVerbCards, wordclass:drawWordClass, writing:drawWriting, errorbank:drawErrorBank, crossword:drawCrossword, notescompletion:drawNotesCompletion};
+  const NEWQ = {vocabtype:newVocabTypeQuestion, vocabcloze:newVocabClozeQuestion, collocations:newCollocQuestion, connectors:newConnectorQuestion, wordfamily:newWordFamQuestion, vocab:newVocabQuestion, matchpairs:newMatchPairsQuestion, gapfill:newGapfillQuestion, order:newOrderQuestion, reading:newReadingQuestion, readingcloze:newReadingClozeQuestion, readingletters:newReadingLettersQuestion, listen:newListenQuestion, minimalpairs:newMinimalPairQuestion, dialogue:newDialogueQuestion, translate:newTranslateQuestion, phrasal:newPhrasalQuestion, verbforms:newVerbFormQuestion, verbcards:newVerbCardsQuestion, wordclass:newWordClassQuestion, writing:newWritingQuestion, errorbank:drawErrorBank, crossword:newCrosswordQuestion, notescompletion:newNotesCompletionQuestion};
   if(forceNew || !current[id]) NEWQ[id]();
   else DRAW[id]();
 }
@@ -32102,6 +32111,112 @@ function drawCrossword(){
   };
 }
 /* CROSSWORD:END */
+
+/* NOTESCOMPLETION:BEGIN — Completa las notas (estilo IELTS Reading): a partir de un texto ya existente de
+   READING, se completa una tabla de notas con palabras/frases tomadas literalmente del texto. Los sets de
+   notas (qué palabra se convierte en hueco y qué etiqueta lleva) se curaron a mano sobre textos de READING ya
+   existentes — no se escribieron lecturas nuevas. Solo inglés por ahora: sin LANG_EXERCISE_READY.pt.notescompletion. */
+const NOTES_COMPLETION_EN = {
+  A1:[{idx:0, notes:[
+    {label:"Trabajo del padre", answer:"teacher"},
+    {label:"Trabajo de la madre", answer:"doctor"},
+    {label:"Hermanos que tiene", answer:"one brother"},
+    {label:"La casa está cerca de", answer:"the park"},
+  ]}],
+  A2:[{idx:5, notes:[
+    {label:"Medio de transporte", answer:"plane"},
+    {label:"Hora de despegue", answer:"nine in the morning"},
+    {label:"Duración del vuelo", answer:"three hours"},
+    {label:"Qué vio por la ventana", answer:"the clouds"},
+  ]}],
+  B1:[{idx:6, notes:[
+    {label:"País donde se descubrió el café", answer:"Ethiopia"},
+    {label:"Animal afectado por las bayas", answer:"goats"},
+    {label:"Primer lugar al que se extendió", answer:"the Middle East"},
+    {label:"Luego se extendió a", answer:"Europe"},
+  ]}],
+  B2:[{idx:4, notes:[
+    {label:"Porción de plástico reciclada de forma efectiva", answer:"a small percentage"},
+    {label:"Dónde termina gran parte del plástico", answer:"landfills or oceans"},
+    {label:"Tiempo que puede tardar en descomponerse", answer:"hundreds of years"},
+    {label:"Acción de algunos gobiernos", answer:"banning single-use plastics"},
+  ]}],
+  C1:[{idx:6, notes:[
+    {label:"Nombre del enfoque de conservación", answer:"Rewilding"},
+    {label:"Animal reintroducido como ejemplo", answer:"wolves"},
+    {label:"Dónde se reintrodujeron", answer:"national parks"},
+    {label:"Preocupación de los críticos", answer:"local agricultural interests"},
+  ]}],
+  C2:[{idx:1, notes:[
+    {label:"Campo que popularizó la teoría", answer:"behavioral economists"},
+    {label:"Ejemplo de nudge mencionado", answer:"making healthy food more visible"},
+    {label:"Qué cuestionan los críticos", answer:"persuasion ends and manipulation begins"},
+  ]}],
+};
+function ncNormalize(s){ return (s || "").trim().toLowerCase().replace(/\s+/g, " "); }
+function newNotesCompletionQuestion(){
+  const want = pickLevel();
+  const lv = NOTES_COMPLETION_EN[want] ? want : "B1";
+  const sets = NOTES_COMPLETION_EN[lv];
+  const set = sets[Math.floor(Math.random() * sets.length)];
+  const passage = READING[lv][set.idx];
+  current.notescompletion = {level:lv, idx:set.idx, passage, notes:set.notes, values:set.notes.map(()=>""), checked:false};
+  drawNotesCompletion();
+}
+function drawNotesCompletion(){
+  const nc = current.notescompletion;
+  const notesHtml = nc.notes.map((n, i)=>{
+    if(!nc.checked){
+      return `<div style="display:flex;flex-direction:column;gap:4px;">
+        <label for="nc${i}" style="font-size:12.5px;color:var(--ink-soft);">${escHtml(n.label)}:</label>
+        <input id="nc${i}" class="nc-input" type="text" value="${escHtml(nc.values[i])}" data-i="${i}" autocomplete="off">
+      </div>`;
+    }
+    const ok = ncNormalize(nc.values[i]) === ncNormalize(n.answer);
+    return `<div style="display:flex;flex-direction:column;gap:4px;">
+      <label style="font-size:12.5px;color:var(--ink-soft);">${escHtml(n.label)}:</label>
+      <input class="nc-input ${ok ? "nc-ok" : "nc-bad"}" type="text" value="${escHtml(nc.values[i] || "—")}" readonly>
+      ${ok ? "" : `<div class="nc-correction">Correcto: <strong>${escHtml(n.answer)}</strong></div>`}
+    </div>`;
+  }).join("");
+  const correctCount = nc.checked ? nc.notes.filter((n, i)=> ncNormalize(nc.values[i]) === ncNormalize(n.answer)).length : 0;
+  document.getElementById("exPanel").innerHTML = `
+    <div class="card">
+      ${scoreRowHtml("notescompletion")}
+      <div style="background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--purple);text-transform:uppercase;margin-bottom:5px;">Texto · ${escHtml(nc.passage.title)}</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;">${escHtml(nc.passage.text)}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">${notesHtml}</div>
+      ${nc.checked ? `
+        <div class="feedback show ${correctCount === nc.notes.length ? "ok" : "bad"}"><strong>${correctCount} de ${nc.notes.length} correctas.</strong> ${correctCount === nc.notes.length ? "¡Perfecto! 🎉" : "Revisa las correcciones arriba."}</div>
+        <div class="btn-row"><button class="btn" id="ncNext">Siguiente →</button></div>
+      ` : `
+        <div class="btn-row"><button class="btn" id="ncCheck">Comprobar</button></div>
+      `}
+    </div>`;
+  document.querySelectorAll(".nc-input[data-i]").forEach(el=>{
+    el.oninput = ()=>{ nc.values[+el.dataset.i] = el.value; };
+  });
+  if(nc.checked){
+    document.getElementById("ncNext").onclick = newNotesCompletionQuestion;
+    return;
+  }
+  document.getElementById("ncCheck").onclick = ()=>{
+    nc.checked = true;
+    nc.notes.forEach((n, i)=>{
+      const ok = ncNormalize(nc.values[i]) === ncNormalize(n.answer);
+      const id = `notescompletion:${nc.level}:${nc.idx}:${i}`;
+      srsUpdate(id, ok);
+      registerAnswer("notescompletion", ok);
+      exRoundTick("notescompletion", ok);
+      if(ok) clearErrorIfMastered(id);
+      else recordError(id, "notescompletion", "READ", `${nc.passage.title} — ${n.label}`, n.answer, `El texto dice: "${n.answer}".`);
+    });
+    drawNotesCompletion();
+  };
+}
+/* NOTESCOMPLETION:END */
 
 /* VERBCARDS:BEGIN — Tarjetas de verbos: desliza a la izquierda (ya lo sé) o a la derecha (repasar); toca para voltear. Usa el SRS (ids verbcards:lang:índice) con datos extra streak/day para el dominio. */
 const VC_SIZE = 20, VC_DUE_CAP = 14;
