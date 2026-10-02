@@ -1645,7 +1645,9 @@ button.pvr-c:active{transform:translate(-50%,-50%) scale(.97);}
 .nc-input:focus{border-color:var(--purple);outline:none;}
 .nc-input.nc-ok{border-color:var(--teal);background:rgba(34,197,94,.08);color:var(--teal);}
 .nc-input.nc-bad{border-color:var(--pink);background:rgba(224,69,122,.08);color:var(--pink);}
+.nc-input.nc-near{border-color:var(--amber);background:rgba(245,166,35,.1);color:var(--amber);}
 .nc-correction{font-size:12px;color:var(--pink);}
+.nc-correction-near{color:var(--amber);}
 /* NOTESCOMPLETION-CSS:END */
 /* CONECTORES-CSS:BEGIN */
 .cn-chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px;}
@@ -32130,27 +32132,27 @@ const NOTES_COMPLETION_EN = {
     {label:"Qué vio por la ventana", answer:"the clouds"},
   ]}],
   B1:[{idx:6, notes:[
-    {label:"País donde se descubrió el café", answer:"Ethiopia"},
-    {label:"Animal afectado por las bayas", answer:"goats"},
-    {label:"Primer lugar al que se extendió", answer:"the Middle East"},
-    {label:"Luego se extendió a", answer:"Europe"},
+    {label:"Country where coffee was first discovered", answer:"Ethiopia"},
+    {label:"Animal that became energetic after eating the berries", answer:"goats"},
+    {label:"First region it spread to", answer:"the Middle East"},
+    {label:"Then it spread to", answer:"Europe"},
   ]}],
   B2:[{idx:4, notes:[
-    {label:"Porción de plástico reciclada de forma efectiva", answer:"a small percentage"},
-    {label:"Dónde termina gran parte del plástico", answer:"landfills or oceans"},
-    {label:"Tiempo que puede tardar en descomponerse", answer:"hundreds of years"},
-    {label:"Acción de algunos gobiernos", answer:"banning single-use plastics"},
+    {label:"Share of plastic that is recycled effectively", answer:"a small percentage"},
+    {label:"Where much of the plastic ends up", answer:"landfills or oceans"},
+    {label:"Time it can take to break down", answer:"hundreds of years"},
+    {label:"Action some governments have taken", answer:"banning single-use plastics"},
   ]}],
   C1:[{idx:6, notes:[
-    {label:"Nombre del enfoque de conservación", answer:"Rewilding"},
-    {label:"Animal reintroducido como ejemplo", answer:"wolves"},
-    {label:"Dónde se reintrodujeron", answer:"national parks"},
-    {label:"Preocupación de los críticos", answer:"local agricultural interests"},
+    {label:"Name of the conservation approach", answer:"Rewilding"},
+    {label:"Animal reintroduced as an example", answer:"wolves"},
+    {label:"Where they were reintroduced", answer:"national parks"},
+    {label:"What critics say it can conflict with", answer:"local agricultural interests"},
   ]}],
   C2:[{idx:1, notes:[
-    {label:"Campo que popularizó la teoría", answer:"behavioral economists"},
-    {label:"Ejemplo de nudge mencionado", answer:"making healthy food more visible"},
-    {label:"Qué cuestionan los críticos", answer:"persuasion ends and manipulation begins"},
+    {label:"Who popularized the theory", answer:"behavioral economists"},
+    {label:"Example of a nudge given", answer:"making healthy food more visible"},
+    {label:"Critics question where…", answer:"persuasion ends and manipulation begins"},
   ]}],
 };
 const NC_NUMS = {"1":"one","2":"two","3":"three","4":"four","5":"five","6":"six","7":"seven","8":"eight","9":"nine","10":"ten"};
@@ -32162,6 +32164,26 @@ function ncNormalize(s){
 function ncIsCorrect(value, note){
   const v = ncNormalize(value);
   return v !== "" && [note.answer, ...(note.alt || [])].some(a=> ncNormalize(a) === v);
+}
+function ncLev(a, b){
+  const d = Array.from({length:a.length + 1}, (_, i)=> [i, ...Array(b.length).fill(0)]);
+  for(let j = 1; j <= b.length; j++) d[0][j] = j;
+  for(let i = 1; i <= a.length; i++) for(let j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+/* Diagnostico de una respuesta: ok | typo | partial | intext | wrong | empty, con el mensaje que ve el alumno. */
+function ncDiagnose(value, note, passageText){
+  const v = ncNormalize(value);
+  if(!v) return {kind:"empty", msg:"Sin respuesta."};
+  const keys = [note.answer, ...(note.alt || [])].map(ncNormalize);
+  if(keys.includes(v)) return {kind:"ok", msg:""};
+  const typo = keys.find(k=> v.length >= 3 && ncLev(v, k) <= (k.length > 6 ? 2 : 1));
+  if(typo) return {kind:"typo", msg:`Error de ortografía: escribiste «${escHtml(value.trim())}», se escribe «${escHtml(note.answer)}».`};
+  if(keys.some(k=> (" " + k + " ").includes(" " + v + " "))) return {kind:"partial", msg:`Te faltó parte de la frase. Era «${escHtml(note.answer)}».`};
+  const pt = " " + passageText.toLowerCase().replace(/[^a-z0-9'\s-]/g, " ").replace(/\s+/g, " ") + " ";
+  if(pt.includes(" " + (value || "").trim().toLowerCase() + " ")) return {kind:"intext", msg:`Esa palabra está en el texto, pero no responde a esta nota. Correcto: «${escHtml(note.answer)}».`};
+  return {kind:"wrong", msg:`Eso no aparece en el texto. Correcto: «${escHtml(note.answer)}».`};
 }
 function newNotesCompletionQuestion(){
   const want = pickLevel();
@@ -32181,11 +32203,11 @@ function drawNotesCompletion(){
         <input id="nc${i}" class="nc-input" type="text" value="${escHtml(nc.values[i])}" data-i="${i}" autocomplete="off">
       </div>`;
     }
-    const ok = ncIsCorrect(nc.values[i], n);
+    const dg = ncDiagnose(nc.values[i], n, nc.passage.text), ok = dg.kind === "ok";
     return `<div style="display:flex;flex-direction:column;gap:4px;">
       <label style="font-size:12.5px;color:var(--ink-soft);">${escHtml(n.label)}:</label>
-      <input class="nc-input ${ok ? "nc-ok" : "nc-bad"}" type="text" value="${escHtml(nc.values[i] || "—")}" readonly>
-      ${ok ? "" : `<div class="nc-correction">Correcto: <strong>${escHtml(n.answer)}</strong></div>`}
+      <input class="nc-input ${ok ? "nc-ok" : dg.kind === "typo" || dg.kind === "partial" ? "nc-near" : "nc-bad"}" type="text" value="${escHtml(nc.values[i] || "—")}" readonly>
+      ${ok ? "" : `<div class="nc-correction${dg.kind === "typo" || dg.kind === "partial" ? " nc-correction-near" : ""}">${dg.msg}</div>`}
     </div>`;
   }).join("");
   const correctCount = nc.checked ? nc.notes.filter((n, i)=> ncIsCorrect(nc.values[i], n)).length : 0;
@@ -32196,7 +32218,7 @@ function drawNotesCompletion(){
         <div style="font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--purple);text-transform:uppercase;margin-bottom:5px;">Texto · ${escHtml(nc.passage.title)}</div>
         <p style="margin:0;font-size:13.5px;line-height:1.55;">${escHtml(nc.passage.text)}</p>
       </div>
-      <p style="margin:0 0 10px;font-size:12.5px;color:var(--ink-soft);">Completa cada nota con la palabra o frase del texto (no importan mayúsculas ni artículos).</p>
+      <p style="margin:0 0 10px;font-size:12.5px;color:var(--ink-soft);">${["A1", "A2"].includes(nc.level) ? "Completa cada nota con la palabra o frase del texto (no importan mayúsculas ni artículos)." : "Complete each note with the word or phrase from the text (capitalization and articles don't matter)."}</p>
       <div style="display:flex;flex-direction:column;gap:12px;">${notesHtml}</div>
       ${nc.checked ? `
         <div class="feedback show ${correctCount === nc.notes.length ? "ok" : "bad"}"><strong>${correctCount} de ${nc.notes.length} correctas.</strong> ${correctCount === nc.notes.length ? "¡Perfecto! 🎉" : "Revisa las correcciones arriba."}</div>
@@ -32215,13 +32237,14 @@ function drawNotesCompletion(){
   document.getElementById("ncCheck").onclick = ()=>{
     nc.checked = true;
     nc.notes.forEach((n, i)=>{
-      const ok = ncIsCorrect(nc.values[i], n);
+      const dg = ncDiagnose(nc.values[i], n, nc.passage.text), ok = dg.kind === "ok";
+      const why = dg.kind === "typo" ? `Error de ortografía: se escribe "${n.answer}".` : dg.kind === "partial" ? `Faltó parte de la frase: "${n.answer}".` : `El texto dice: "${n.answer}".`;
       const id = `notescompletion:${nc.level}:${nc.idx}:${i}`;
       srsUpdate(id, ok);
       registerAnswer("notescompletion", ok);
       exRoundTick("notescompletion", ok);
       if(ok) clearErrorIfMastered(id);
-      else recordError(id, "notescompletion", "READ", `${nc.passage.title} — ${n.label}`, n.answer, `El texto dice: "${n.answer}".`);
+      else recordError(id, "notescompletion", "READ", `${nc.passage.title} — ${n.label}`, n.answer, why);
     });
     drawNotesCompletion();
   };
