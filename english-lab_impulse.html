@@ -286,6 +286,31 @@ header{
 .theme-toggle[data-active="light"] .theme-toggle-opt[data-theme="light"]{opacity:1;}
 @media (prefers-reduced-motion: reduce){.theme-toggle-thumb{transition:none;}}
 
+/* ---------------- TAB BAR (celular) ----------------
+   En celular las 5 secciones de uso diario van en una barra inferior; el menú
+   hamburguesa queda para el resto. Idioma y tema pasan a Perfil › Ajustes. */
+.tabbar{display:none;}
+@media (max-width:900px){
+  .tabbar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:70;
+    background:rgba(var(--surface-rgb),0.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));}
+  .tab-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:var(--ink-soft);
+    font:600 0.68rem/1.2 'Inter',sans-serif;padding:2px 0;min-height:48px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .tab-ico{display:grid;place-items:center;width:54px;height:30px;border-radius:999px;transition:background-color .2s ease,color .2s ease,transform .12s ease-out;}
+  .tab-ico svg{width:22px;height:22px;}
+  .tab-btn.active{color:var(--ink);}
+  .tab-btn.active .tab-ico{background:rgba(var(--purple-rgb),0.18);color:var(--purple);}
+  .tab-btn:active .tab-ico{transform:scale(0.92);}
+  .tab-btn:focus-visible{outline:none;}
+  .tab-btn:focus-visible .tab-ico{outline:3px solid var(--purple);outline-offset:1px;}
+  body{padding-bottom:calc(66px + env(safe-area-inset-bottom,0px));}
+  .header-right .lang-switch,.header-right .theme-toggle{display:none;}
+  .celebration-toast{bottom:calc(82px + env(safe-area-inset-bottom,0px));}
+  .combo-badge{bottom:calc(136px + env(safe-area-inset-bottom,0px));}
+  body.placement-locked .tabbar{pointer-events:none;opacity:.35;}
+}
+@media (max-width:900px) and (prefers-reduced-motion: reduce){.tab-ico{transition:none;}}
+
 /* ---------------- LEVEL BAR ---------------- */
 .level-bar{
   background:var(--bg-soft);border-bottom:1px solid var(--line);
@@ -297,6 +322,14 @@ header{
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
 }
 .level-bar-label{font-size:0.8rem;color:var(--ink-soft);font-weight:600;margin-right:4px;}
+.level-chips{display:flex;gap:8px;flex-wrap:wrap;}
+@media (max-width:900px){
+  .level-bar-inner{padding:8px 16px;flex-wrap:nowrap;}
+  .level-bar-label{display:none;}
+  .level-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px;}
+  .level-chips::-webkit-scrollbar{display:none;}
+  .level-chips .level-chip{flex:0 0 auto;padding:5px 13px;}
+}
 .level-chip{
   border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);
   padding:6px 14px;border-radius:999px;font-size:0.82rem;font-weight:700;
@@ -2381,7 +2414,7 @@ button.rpers:focus-visible{outline:3px solid color-mix(in srgb,var(--rl,#8E6CFF)
   <div class="level-bar" id="levelBar">
     <div class="level-bar-inner">
       <span class="level-bar-label">Nivel:</span>
-      <div id="levelChips" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+      <div id="levelChips" class="level-chips"></div>
     </div>
   </div>
 </header>
@@ -2389,6 +2422,8 @@ button.rpers:focus-visible{outline:3px solid color-mix(in srgb,var(--rl,#8E6CFF)
 <div class="nav-backdrop" id="navBackdrop"></div>
 
 <main id="main" tabindex="-1"></main>
+
+<nav class="tabbar" id="tabBar" aria-label="Secciones principales"></nav>
 
 <footer>Hecho con cariño para aprender inglés · Contenido basado en los estándares de gramática del inglés americano (US English) · English Lab</footer>
 
@@ -24869,7 +24904,8 @@ function goTo(sectionId){
     if(t.dataset.id === sectionId) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current");
   });
   document.querySelectorAll(".section-panel").forEach(p=>p.classList.toggle("active", p.id==="panel-"+sectionId));
-  document.getElementById("levelBar").classList.toggle("show", (sectionId==="theory" && !(activeTheoryTopic && theoryReturnTo)) || sectionId==="exercises" || sectionId==="vocabtopics");
+  document.getElementById("levelBar").classList.toggle("show", (sectionId==="theory" && !activeTheoryTopic) || sectionId==="exercises" || sectionId==="vocabtopics");
+  syncTabBar(sectionId);
   if(LANG_GATED_SECTIONS.includes(sectionId) && !isSectionReadyForLang(sectionId, currentLang)){
     renderLangComingSoon(sectionId);
   }else{
@@ -25374,6 +25410,7 @@ function openTheoryTopic(level, index, returnTo){
   goTo("theory");
 }
 function renderTheory(){
+  if(activeSection === "theory") document.getElementById("levelBar").classList.toggle("show", !activeTheoryTopic);
   if(activeTheoryTopic){ drawTheoryDetail(activeTheoryTopic.level, activeTheoryTopic.index); }
   else if(rsView && currentLang === "en"){ drawSummaries(); }
   else { drawTheoryListView(); }
@@ -26895,6 +26932,11 @@ function pfDrawSettings(body){
     </div>
     <div class="card">
       <h3 class="dash-card-title">Experiencia</h3>
+      <label class="pf-lb">Tema</label>
+      <div class="pf-langs">
+        <button type="button" class="ex-tab${document.documentElement.dataset.theme === "dark" ? " active" : ""}" data-set-theme="dark">Oscuro</button>
+        <button type="button" class="ex-tab${document.documentElement.dataset.theme !== "dark" ? " active" : ""}" data-set-theme="light">Claro</button>
+      </div>
       ${row("reducedMotionToggle", prefersReducedMotion(), "Reducir movimiento (sin confeti ni animaciones grandes)")}
       ${row("fxSoundToggle", fxSoundOn(), "Sonido y vibración suaves al responder")}
       ${row("fxAutoToggle", fxAutoOn(), "Pasar solo a la siguiente pregunta tras acertar")}
@@ -26914,6 +26956,10 @@ function pfDrawSettings(body){
     p.avatar = b.dataset.a; saveProfilesList(list); pfDrawHead();
     document.querySelectorAll("#pfAvs .pf-avopt").forEach(x=>{ const on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-checked", String(on)); });
     saved("Guardado ✓");
+  });
+  document.querySelectorAll("[data-set-theme]").forEach(b=> b.onclick = ()=>{
+    setTheme(b.dataset.setTheme);
+    document.querySelectorAll("[data-set-theme]").forEach(x=> x.classList.toggle("active", x === b));
   });
   document.querySelectorAll("[data-learn-lang]").forEach(b=> b.onclick = ()=>{
     const lang = b.dataset.learnLang; if(lang === currentLang) return;
@@ -40477,16 +40523,39 @@ function applyThemeToggleIcon(){
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   if(themeColorMeta) themeColorMeta.setAttribute("content", isDark ? "#0B1416" : "#0D9C93");
 }
+function setTheme(next){
+  if(next === document.documentElement.dataset.theme) return;
+  document.documentElement.dataset.theme = next;
+  try{ localStorage.setItem("englishlab_theme_v1_impulse", next); }catch(e){}
+  applyThemeToggleIcon();
+}
 document.getElementById("themeToggle").querySelectorAll(".theme-toggle-opt").forEach(opt=>{
-  opt.onclick = ()=>{
-    const next = opt.dataset.theme;
-    if(next === document.documentElement.dataset.theme) return;
-    document.documentElement.dataset.theme = next;
-    try{ localStorage.setItem("englishlab_theme_v1_impulse", next); }catch(e){}
-    applyThemeToggleIcon();
-  };
+  opt.onclick = ()=> setTheme(opt.dataset.theme);
 });
 applyThemeToggleIcon();
+
+/* TABBAR:BEGIN — barra inferior de navegación en celular (ver CSS TAB BAR). */
+const TAB_ITEMS = [["home","Inicio","home"],["route","Ruta","route"],["exercises","Practicar","pencil"],["theory","Teoría","book"],["profile","Perfil","user"]];
+const TAB_OF = {practicehoy:"exercises", categories:"theory", phrasal:"theory", verbs:"theory"};
+function syncTabBar(sectionId){
+  const cur = TAB_OF[sectionId] || sectionId;
+  document.querySelectorAll("#tabBar .tab-btn").forEach(b=>{
+    const on = b.dataset.id === cur;
+    b.classList.toggle("active", on);
+    if(on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+  });
+}
+(function buildTabBar(){
+  const bar = document.getElementById("tabBar"); if(!bar) return;
+  bar.innerHTML = TAB_ITEMS.map(([id, label, ic])=> `<button type="button" class="tab-btn" data-id="${id}"><span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[ic]}</svg></span><span>${label}</span></button>`).join("");
+  bar.querySelectorAll(".tab-btn").forEach(b=> b.onclick = ()=>{
+    const id = b.dataset.id;
+    if(id === activeSection && id !== "theory" && id !== "exercises"){ window.scrollTo({top:0, behavior:"smooth"}); return; }
+    resetSectionState(id); goTo(id); window.scrollTo({top:0, behavior:"instant"});
+  });
+  syncTabBar(activeSection);
+})();
+/* TABBAR:END */
 
 /* Atajo de teclado: en Ejercicios, las teclas 1-9 eligen la opción
    correspondiente de preguntas de opción múltiple (simula el click
