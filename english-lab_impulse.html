@@ -323,11 +323,33 @@ header{
 .fb-sheet.bad{border-top-color:var(--pink);}
 .fb-sheet .feedback{margin:0;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;}
 .fb-sheet-actions{flex:none;margin-top:12px;display:flex;}
+.fb-sheet-toggle{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;margin:-6px auto 8px;padding:2px 14px 4px;border:0;background:none;color:var(--ink-soft);font:700 .72rem 'Inter',sans-serif;cursor:pointer;}
+.fb-grab{width:38px;height:4px;border-radius:99px;background:var(--line);}
+.fb-sheet.collapsed .feedback{max-height:2.6em;overflow:hidden;}
 .fb-sheet-actions .btn{flex:1;justify-content:center;text-align:center;padding:14px 18px;font-size:1rem;background:var(--grad-purple);color:#fff;border-color:transparent;}
 body.fb-sheet-open{padding-bottom:calc(var(--fbsheet-h,240px) + 16px);}
 body.fb-sheet-open .celebration-toast{bottom:calc(var(--fbsheet-h,240px) + 12px);}
 @keyframes fbSheetIn{from{transform:translateY(100%);}to{transform:none;}}
 @media (prefers-reduced-motion: reduce){.fb-sheet{animation:none;}}
+
+.placement-banner{margin-bottom:16px;padding:12px 44px 12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:relative;}
+.placement-banner > span:nth-child(2){flex:1;min-width:200px;font-size:0.88rem;color:var(--ink-soft);}
+.pb-ico{display:flex;flex:none;}
+.pb-close{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;border:0;background:transparent;color:var(--ink-soft);font-size:1.3rem;line-height:1;cursor:pointer;}
+.pb-close:hover{background:var(--bg-soft);color:var(--ink);}
+@media (max-width:600px){.placement-banner{padding:10px 40px 10px 12px;gap:8px;}.placement-banner .practice-link{padding:8px 14px;font-size:.8rem;}}
+
+.review-badge{background:#FCEBD6;color:#7A4200;border-color:#F3D3A8;}
+:root[data-theme="dark"] .review-badge{background:var(--tip-tint);color:var(--tip-ink);border-color:var(--tip-line);}
+
+.nav-mobile-prefs{display:none;}
+@media (max-width:900px){
+  .nav-mobile-prefs{display:block;margin-top:auto;padding:16px 4px 0;border-top:1px solid var(--line);}
+  .nmp-label{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 8px 6px;}
+  .nmp-row{display:flex;gap:8px;}
+  .nmp-btn{flex:1;min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);font:700 .86rem 'Inter',sans-serif;cursor:pointer;}
+  .nmp-btn.active{border-color:var(--purple);background:rgba(var(--purple-rgb),.16);}
+}
 
 /* ---------------- LEVEL BAR ---------------- */
 .level-bar{
@@ -1325,6 +1347,9 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .home-bubble{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:10px 14px;color:#fff;font-size:.98rem;line-height:1.45;backdrop-filter:blur(6px);}
 .home-bubble b{color:#FFD23F;}
 .home-cta{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cta-bar{display:block;height:6px;border-radius:99px;background:rgba(0,0,0,.18);overflow:hidden;margin-top:8px;}
+.cta-bar i{display:block;height:100%;border-radius:99px;background:currentColor;opacity:.85;}
+.cta-bar-txt{margin-top:3px;font-variant-numeric:tabular-nums;}
 .home-cta-btn{display:flex;flex-direction:column;gap:3px;text-align:left;border:0;border-radius:18px;padding:14px 16px;cursor:pointer;font-family:inherit;transition:transform .15s ease,box-shadow .2s ease;}
 .home-cta-btn strong{font-size:1.08rem;font-weight:800;}
 .home-cta-btn small{font-size:.78rem;opacity:.88;line-height:1.35;}
@@ -23944,6 +23969,15 @@ function maybeShowOnboarding(){
   requestAnimationFrame(()=> requestAnimationFrame(showOnboarding));   // de inmediato, antes del primer toque: con retraso tapaba lo primero que se tocaba
 }
 /* MOTIVATION:END */
+/* Aviso de Prueba de nivel (Ejercicios y Exámenes): se puede cerrar, y queda cerrado para ese perfil. */
+function placementBannerKey(){ return "englishlab_pb_closed_v1_impulse_" + (typeof ACTIVE_PROFILE_ID !== "undefined" ? ACTIVE_PROFILE_ID : ""); }
+function placementBannerDismissed(){ try{ return localStorage.getItem(placementBannerKey()) === "1"; }catch(e){ return false; } }
+document.addEventListener("click", e=>{
+  const b = e.target.closest(".pb-close"); if(!b) return;
+  try{ localStorage.setItem(placementBannerKey(), "1"); }catch(err){}
+  const card = b.closest(".placement-banner"); if(card) card.remove();
+  if(typeof exSyncHeight === "function") exSyncHeight();
+});
 /* ---- Celebración (racha nueva / subida de nivel) ---- */
 let _celebTimer = null;
 /* Respuesta vacía: no se registra como intento; se avisa en el propio campo. */
@@ -24544,7 +24578,7 @@ const E3_MAP = {
   "📈":"trend", "📉":"trend", "📊":"chartbar", "🎬":"clapper", "📅":"calendar", "🗓":"calendar", "🚧":"cone", "🔀":"shuffle", "🏷":"tag", "👁":"eye", "🙈":"eye",
   "🔘":"radio", "🌿":"leaf", "🌱":"leaf", "💬":"chat", "🥇":"medalg", "🥈":"medals", "🥉":"medalb", "🏅":"medalg", "🌙":"moon", "☀":"sun", "➕":"plus", "📌":"pin", "📍":"pin",
   "👤":"user", "🗑":"trash", "⏳":"hourglass", "⌛":"hourglass", "✔":"tick", "▶":"play", "⏮":"prev", "⏭":"next", "⏹":"stop", "⚡":"lightning", "⚙":"gear", "🔧":"gear", "🔒":"lock",
-  "🎲":"dice", "🗣":"chat", "🙂":"smile", "😊":"smile", "😃":"smile", "😄":"smile", "😀":"smile", "😞":"sad", "😢":"sad", "😟":"sad", "😕":"sad", "😩":"sad", "➡":"arrowr", "🔹":"diamond", "🔷":"diamond", "❓":"question", "❔":"question", "🔗":"link", "🧱":"box", "📦":"box", "🎨":"palette", "🏁":"target", "🛠":"gear", "🔤":"tag", "📤":"box", "📥":"box"
+  "🎲":"dice", "🗺":"compass", "🗣":"chat", "🙂":"smile", "😊":"smile", "😃":"smile", "😄":"smile", "😀":"smile", "😞":"sad", "😢":"sad", "😟":"sad", "😕":"sad", "😩":"sad", "➡":"arrowr", "🔹":"diamond", "🔷":"diamond", "❓":"question", "❔":"question", "🔗":"link", "🧱":"box", "📦":"box", "🎨":"palette", "🏁":"target", "🛠":"gear", "🔤":"tag", "📤":"box", "📥":"box"
 };
 const E3_ALT = {"🎉":"celebración", "🔊":"audio", "😉":"guiño", "💡":"idea", "✅":"correcto", "❌":"incorrecto", "🎯":"objetivo", "🔁":"repetir", "🎤":"micrófono", "📖":"libro", "⚠":"aviso", "🐢":"lento", "🏆":"trofeo", "🔥":"racha"};
 const E3_RE = /\p{Extended_Pictographic}️?(?:‍\p{Extended_Pictographic}️?)*/gu;
@@ -24684,7 +24718,7 @@ function fxAutoAdvance(ok, id){
 /* FB-SHEET:BEGIN — en celular, al mostrarse el resultado de un ejercicio de una sola pregunta, mueve la caja de
    feedback y el botón Siguiente a una hoja fija abajo (fuera del carrusel de Ejercicios, que usa transform
    y no permite position:fixed adentro). La hoja se cierra cuando #exPanel se vuelve a dibujar o se cambia de sección. */
-const FB_SHEET_TYPES = new Set(["vocab","gapfill","order","listen","translate","verbforms","wordclass","phrasal","vocabtype","vocabcloze","collocations","connectors","wordfamily","minimalpairs"]);
+const FB_SHEET_TYPES = new Set(["vocab","gapfill","order","listen","translate","verbforms","wordclass","phrasal","vocabtype","vocabcloze","collocations","connectors","wordfamily","minimalpairs","reading","writing","matchpairs","readingcloze","readingletters","notescompletion"]);
 const fbSheetMQ = window.matchMedia("(max-width: 900px)");
 let _fbSheetRO = null;
 function fbSheetClose(){
@@ -24699,14 +24733,22 @@ function fbSheetMaybeOpen(){
   const panel = document.getElementById("exPanel"); if(!panel) return;
   const fbs = panel.querySelectorAll(".feedback.show"); if(fbs.length !== 1) return;
   const fb = fbs[0], card = fb.closest(".card"); if(!card) return;
-  const nxt = [...card.querySelectorAll(".btn-row button")].find(b=> (fb.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) && b.offsetParent && !b.disabled && /^\s*(Siguiente|Continuar)/i.test(b.textContent));
+  const nxt = [...card.querySelectorAll(".btn-row button")].find(b=> (fb.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) && b.offsetParent && !b.disabled && /^\s*(Siguiente|Continuar|Ver resumen|Nuevo texto|Otra ronda|Nueva ronda)/i.test(b.textContent));
   if(!nxt) return;
   const sh = document.createElement("div");
   sh.id = "fbSheet"; sh.className = "fb-sheet " + (fb.classList.contains("ok") ? "ok" : "bad");
   sh.setAttribute("role", "region"); sh.setAttribute("aria-label", "Resultado de la respuesta");
   const actions = document.createElement("div"); actions.className = "fb-sheet-actions";
   actions.appendChild(nxt);
-  sh.append(fb, actions);
+  const tg = document.createElement("button");
+  tg.type = "button"; tg.className = "fb-sheet-toggle"; tg.setAttribute("aria-expanded", "true");
+  tg.innerHTML = `<span class="fb-grab" aria-hidden="true"></span><span class="fb-tg-tx">Ocultar explicación</span>`;
+  tg.onclick = ()=>{
+    const col = sh.classList.toggle("collapsed");
+    tg.setAttribute("aria-expanded", String(!col));
+    tg.querySelector(".fb-tg-tx").textContent = col ? "Ver explicación" : "Ocultar explicación";
+  };
+  sh.append(tg, fb, actions);
   document.body.appendChild(sh);
   document.body.classList.add("fb-sheet-open");
   const setH = ()=> document.body.style.setProperty("--fbsheet-h", sh.offsetHeight + "px");
@@ -24714,7 +24756,7 @@ function fbSheetMaybeOpen(){
   if(window.ResizeObserver){ _fbSheetRO = new ResizeObserver(setH); _fbSheetRO.observe(sh); }
   sh.addEventListener("click", e=>{
     const b = e.target.closest("button");
-    if(b && /^\s*(Siguiente|Continuar|Otra|Nueva)/i.test(b.textContent)) setTimeout(()=>{ if(document.getElementById("fbSheet") === sh) fbSheetClose(); }, 0);
+    if(b && /^\s*(Siguiente|Continuar|Ver resumen|Otra|Nueva|Nuevo)/i.test(b.textContent)) setTimeout(()=>{ if(document.getElementById("fbSheet") === sh) fbSheetClose(); }, 0);
   });
   nxt.focus({preventScroll:true});
 }
@@ -24910,6 +24952,16 @@ function buildHeader(){
       b.onclick=()=>{ resetSectionState(s.id); goTo(s.id); };
       nav.appendChild(b);
     }
+  });
+  /* En celular el selector de idioma sale del encabezado: queda también al pie del menú lateral. */
+  const navPrefs = document.createElement("div");
+  navPrefs.className = "nav-mobile-prefs";
+  navPrefs.innerHTML = `<div class="nmp-label">Idioma que practicas</div><div class="nmp-row"><button type="button" class="nmp-btn" data-nmp-lang="en">🇺🇸 Inglés</button><button type="button" class="nmp-btn" data-nmp-lang="pt">🇧🇷 Portugués</button></div>`;
+  nav.appendChild(navPrefs);
+  navPrefs.querySelectorAll("[data-nmp-lang]").forEach(b=>{
+    const on = b.dataset.nmpLang === currentLang;
+    b.classList.toggle("active", on); b.setAttribute("aria-pressed", String(on));
+    b.onclick = ()=>{ const f = document.querySelector(`.lang-switch-flag[data-lang="${b.dataset.nmpLang}"]`); if(f) f.click(); };
   });
   document.addEventListener("click", ()=>{
     document.querySelectorAll(".nav-dropdown.open").forEach(d=> d.classList.remove("open"));
@@ -25393,8 +25445,8 @@ function renderHome(){
   const rPct = rUnits.length ? Math.round(rPassed / rUnits.length * 100) : 0;
   let rTitle, rSub, rLine;
   if(rCur === -1){ rTitle = "Ver la ruta"; rSub = `Ruta ${rLevel} completa`; rLine = `Superaste las ${rUnits.length} unidades${rNext ? ` · siguiente: ${rNext}` : ""}`; }
-  else if(!Object.keys(routeProgress).length){ rTitle = `Empezar la Ruta ${rLevel}`; rSub = placementResult ? "Empieza en el nivel de tu prueba" : "Tu camino de A1 a C2"; rLine = "Teoría y repaso guiados"; }
-  else{ rTitle = "Continuar mi Ruta"; rSub = "Sigue donde lo dejaste"; rLine = `${rLevel} · Unidad ${rCur + 1}: ${escHtml(rUnits[rCur].title)}`; }
+  else if(!Object.keys(routeProgress).length){ rTitle = `Empezar la Ruta ${rLevel}`; rSub = placementResult ? "Empieza en el nivel de tu prueba" : "Tu camino de A1 a C2"; rLine = rUnits[0] ? `Unidad 1: ${escHtml(routeNodeLabel(rUnits[0].title))}` : "Teoría y repaso guiados"; }
+  else{ rTitle = "Continuar mi Ruta"; rSub = "Sigue donde lo dejaste"; rLine = `${rLevel} · Unidad ${rCur + 1}: ${escHtml(routeNodeLabel(rUnits[rCur].title))}`; }
   const weekRow = weekDaysInfo().map(d=> `<span class="${d.done ? "on" : ""}${d.today ? " today" : ""}" title="${d.k}">${d.n}</span>`).join("");
   const html = `
     <div class="landing-hero home-hero">
@@ -25408,7 +25460,7 @@ function renderHome(){
           </div>
         </div>
         <div class="home-cta">
-          <button class="home-cta-btn cta-route" id="routeHomeBtn" type="button"><small>${rSub}</small><strong>${rTitle} →</strong><small>${rLine}</small></button>
+          <button class="home-cta-btn cta-route" id="routeHomeBtn" type="button"><small>${rSub}</small><strong>${rTitle} →</strong><small>${rLine}</small>${rCur === -1 ? "" : `<span class="cta-bar" role="img" aria-label="${rPassed} de ${rUnits.length} unidades de la Ruta ${rLevel}"><i style="width:${Math.max(rPct, 3)}%"></i></span><small class="cta-bar-txt">${rPassed} de ${rUnits.length} unidades</small>`}</button>
           <button class="home-cta-btn cta-practice" id="practiceHoyStartBtn" type="button"><small>10 ejercicios · unos 8 min</small><strong>Práctica de hoy →</strong><small>${reviewN ? `Tienes ${reviewN} por repasar` : "Variados, con foco en tu punto débil"}</small></button>
         </div>
         <div class="home-links">
@@ -26374,10 +26426,11 @@ function drawExamsHome(){
       <h2>Exámenes</h2>
       <p><b>Para medir tu progreso con el tiempo</b>, destreza por destreza. Haz el módulo que quieras, sin cronómetro. Cada intento queda guardado con su puntaje y su nivel estimado; <b>no cambia tu nivel oficial</b>: te lo sugiere y tú decides si aplicarlo.</p>
     </div>
-    ${/* PLACEMENT-BANNER:BEGIN */ !placementResult ? `<div class="card" style="margin-bottom:16px;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span style="font-size:1.1rem;">💡</span>
+    ${/* PLACEMENT-BANNER:BEGIN */ !placementResult && !placementBannerDismissed() ? `<div class="card placement-banner">
+      <span class="pb-ico">${svgIcon("bulb", 18)}</span>
       <span style="flex:1;min-width:200px;font-size:0.88rem;color:var(--ink-soft);">Estás en <b>${currentLevel}</b> por defecto. Si no es tu nivel real, la Prueba de nivel te ubica mejor.</span>
       <button class="practice-link" id="exmPlacementCta" type="button">Hacer la Prueba de nivel →</button>
+      <button type="button" class="pb-close" aria-label="Cerrar este aviso">×</button>
     </div>` : "" /* PLACEMENT-BANNER:END */}
     ${has ? `<div class="ex-tabbar" role="group" aria-label="Secciones de Exámenes">${tabs.map(([id, l])=> `<button type="button" class="ex-tab${id === examTab ? " active" : ""}" aria-pressed="${id === examTab}" data-exam-tab="${id}"><span>${l}</span></button>`).join("")}</div>` : ""}
     ${body}`;
@@ -28848,10 +28901,11 @@ function renderExercisesShell(){
       <p>Elige una destreza y practica según tu nivel.</p>
       <p class="kbd-hint">Atajo: pulsa <kbd>1</kbd>–<kbd>4</kbd> para elegir una opción.</p>
     </div>
-    ${/* PLACEMENT-BANNER:BEGIN */ !placementResult ? `<div class="card" style="margin-bottom:16px;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span style="font-size:1.1rem;">💡</span>
+    ${/* PLACEMENT-BANNER:BEGIN */ !placementResult && !placementBannerDismissed() ? `<div class="card placement-banner">
+      <span class="pb-ico">${svgIcon("bulb", 18)}</span>
       <span style="flex:1;min-width:200px;font-size:0.88rem;color:var(--ink-soft);">Estás practicando en <b>${currentLevel}</b>. Si no es tu nivel real, la Prueba de nivel te ubica mejor.</span>
       <button class="practice-link" id="exPlacementCta" type="button">Hacer la Prueba de nivel →</button>
+      <button type="button" class="pb-close" aria-label="Cerrar este aviso">×</button>
     </div>` : "" /* PLACEMENT-BANNER:END */}
     <div class="exn-bar" id="exnBar">
       <button type="button" class="exn-back" id="exnBack" aria-label="Volver">‹</button>
@@ -28960,7 +29014,7 @@ function scoreRowHtml(id){
   </div>`;
 }
 function reviewBadge(review){
-  return review ? `<span class="score-pill" style="background:#FCEBD6;color:#7A4200;">🔁 Repaso</span>` : "";
+  return review ? `<span class="score-pill review-badge">🔁 Repaso</span>` : "";
 }
 function registerAnswer(id, ok){
   const st = stats[id];
