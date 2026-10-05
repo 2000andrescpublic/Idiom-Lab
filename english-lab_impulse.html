@@ -311,6 +311,24 @@ header{
 }
 @media (max-width:900px) and (prefers-reduced-motion: reduce){.tab-ico{transition:none;}}
 
+/* ---------------- HOJA DE RESULTADO (celular) ----------------
+   Al responder en Ejercicios, el resultado y el botón Siguiente suben en una hoja fija abajo
+   (FB-SHEET en el script). Así nunca hay que hacer scroll para ver la explicación. */
+.fb-sheet{position:fixed;left:0;right:0;bottom:0;z-index:80;background:var(--surface);
+  border-top:3px solid var(--line);border-radius:20px 20px 0 0;
+  padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -14px 34px rgba(0,0,0,.35);max-height:62vh;display:flex;flex-direction:column;
+  animation:fbSheetIn .3s cubic-bezier(0.23,1,0.32,1);}
+.fb-sheet.ok{border-top-color:var(--teal);}
+.fb-sheet.bad{border-top-color:var(--pink);}
+.fb-sheet .feedback{margin:0;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;}
+.fb-sheet-actions{flex:none;margin-top:12px;display:flex;}
+.fb-sheet-actions .btn{flex:1;justify-content:center;text-align:center;padding:14px 18px;font-size:1rem;background:var(--grad-purple);color:#fff;border-color:transparent;}
+body.fb-sheet-open{padding-bottom:calc(var(--fbsheet-h,240px) + 16px);}
+body.fb-sheet-open .celebration-toast{bottom:calc(var(--fbsheet-h,240px) + 12px);}
+@keyframes fbSheetIn{from{transform:translateY(100%);}to{transform:none;}}
+@media (prefers-reduced-motion: reduce){.fb-sheet{animation:none;}}
+
 /* ---------------- LEVEL BAR ---------------- */
 .level-bar{
   background:var(--bg-soft);border-bottom:1px solid var(--line);
@@ -1912,7 +1930,9 @@ button.pvr-c:active{transform:translate(-50%,-50%) scale(.97);}
 .exn-ex .exn-ar{display:block;color:var(--purple);font-size:1.3rem;margin-left:auto;}
 /* barra de la ronda */
 .exr{margin:0 0 12px;}
-.exr-t{display:flex;justify-content:space-between;gap:10px;font-size:.78rem;color:var(--ink-soft);font-weight:700;margin-bottom:5px;}
+.exr-t{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.78rem;color:var(--ink-soft);font-weight:700;margin-bottom:5px;}
+.exr-streak{display:inline-flex;align-items:center;gap:3px;color:var(--ink);font-variant-numeric:tabular-nums;}
+#exPanel .score-row{display:none;}
 .exr-b{display:flex;gap:3px;}
 .exr-b i{flex:1;height:7px;border-radius:99px;background:var(--line);transition:background .25s ease;}
 .exr-b i.ok{background:#3DE08D;}
@@ -24620,6 +24640,51 @@ function fxAutoAdvance(ok, id){
   }, delay);
 }
 /* FEEDBACK-FX:END */
+/* FB-SHEET:BEGIN — en celular, al mostrarse el resultado de un ejercicio de una sola pregunta, mueve la caja de
+   feedback y el botón Siguiente a una hoja fija abajo (fuera del carrusel de Ejercicios, que usa transform
+   y no permite position:fixed adentro). La hoja se cierra cuando #exPanel se vuelve a dibujar o se cambia de sección. */
+const FB_SHEET_TYPES = new Set(["vocab","gapfill","order","listen","translate","verbforms","wordclass","phrasal","vocabtype","vocabcloze","collocations","connectors","wordfamily","minimalpairs"]);
+const fbSheetMQ = window.matchMedia("(max-width: 900px)");
+let _fbSheetRO = null;
+function fbSheetClose(){
+  const sh = document.getElementById("fbSheet"); if(sh) sh.remove();
+  if(_fbSheetRO){ _fbSheetRO.disconnect(); _fbSheetRO = null; }
+  document.body.classList.remove("fb-sheet-open");
+}
+function fbSheetMaybeOpen(){
+  if(!fbSheetMQ.matches || activeSection !== "exercises" || !FB_SHEET_TYPES.has(activeExercise) || document.getElementById("fbSheet")) return;
+  const panel = document.getElementById("exPanel"); if(!panel) return;
+  const fbs = panel.querySelectorAll(".feedback.show"); if(fbs.length !== 1) return;
+  const fb = fbs[0], card = fb.closest(".card"); if(!card) return;
+  const nxt = [...card.querySelectorAll(".btn-row button")].find(b=> (fb.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) && b.offsetParent && !b.disabled && /^\s*(Siguiente|Continuar)/i.test(b.textContent));
+  if(!nxt) return;
+  const sh = document.createElement("div");
+  sh.id = "fbSheet"; sh.className = "fb-sheet " + (fb.classList.contains("ok") ? "ok" : "bad");
+  sh.setAttribute("role", "region"); sh.setAttribute("aria-label", "Resultado de la respuesta");
+  const actions = document.createElement("div"); actions.className = "fb-sheet-actions";
+  actions.appendChild(nxt);
+  sh.append(fb, actions);
+  document.body.appendChild(sh);
+  document.body.classList.add("fb-sheet-open");
+  const setH = ()=> document.body.style.setProperty("--fbsheet-h", sh.offsetHeight + "px");
+  setH();
+  if(window.ResizeObserver){ _fbSheetRO = new ResizeObserver(setH); _fbSheetRO.observe(sh); }
+  sh.addEventListener("click", e=>{
+    const b = e.target.closest("button");
+    if(b && /^\s*(Siguiente|Continuar|Otra|Nueva)/i.test(b.textContent)) setTimeout(()=>{ if(document.getElementById("fbSheet") === sh) fbSheetClose(); }, 0);
+  });
+  nxt.focus({preventScroll:true});
+}
+(function fbSheetWatch(){
+  const host = document.getElementById("main"); if(!host) return;
+  let t = null;
+  new MutationObserver(muts=>{
+    if(document.getElementById("fbSheet") && muts.some(m=> m.type === "childList" && m.target.id === "exPanel")) fbSheetClose();
+    clearTimeout(t); t = setTimeout(fbSheetMaybeOpen, 0);
+  }).observe(host, {subtree:true, childList:true, attributes:true, attributeFilter:["class"]});
+  if(fbSheetMQ.addEventListener) fbSheetMQ.addEventListener("change", ()=>{ if(!fbSheetMQ.matches) fbSheetClose(); });
+})();
+/* FB-SHEET:END */
 
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
@@ -28796,7 +28861,8 @@ function exRoundRender(){
   const el = document.getElementById("exRound"); if(!el) return;
   if(activeExercise === "verbcards"){ el.innerHTML = ""; return; }
   const n = exRound.res.length, ok = exRound.res.filter(Boolean).length;
-  el.innerHTML = `<div class="exr-t"><span>${n >= 10 ? "Ronda completa" : `Pregunta ${n + 1} de 10`}</span><span>${ok} ${ok === 1 ? "acierto" : "aciertos"} en la ronda</span></div>
+  const streak = (stats[activeExercise] || {}).streak || 0;
+  el.innerHTML = `<div class="exr-t"><span>${n >= 10 ? "Ronda completa" : `${n} de 10 respondidas`} · ${ok} ${ok === 1 ? "acierto" : "aciertos"}</span><span class="exr-streak" title="Racha de aciertos seguidos">${svgIcon("flame", 15)}${streak}</span></div>
     <div class="exr-b" role="img" aria-label="Ronda: ${n} de 10 respondidas">${Array.from({length:10}, (_, i)=> `<i class="${i < n ? (exRound.res[i] ? "ok" : "bad") : i === n ? "act" : ""}"></i>`).join("")}</div>`;
 }
 function exRoundTick(id, ok){
@@ -40538,6 +40604,7 @@ applyThemeToggleIcon();
 const TAB_ITEMS = [["home","Inicio","home"],["route","Ruta","route"],["exercises","Practicar","pencil"],["theory","Teoría","book"],["profile","Perfil","user"]];
 const TAB_OF = {practicehoy:"exercises", categories:"theory", phrasal:"theory", verbs:"theory"};
 function syncTabBar(sectionId){
+  if(typeof fbSheetClose === "function") fbSheetClose();
   const cur = TAB_OF[sectionId] || sectionId;
   document.querySelectorAll("#tabBar .tab-btn").forEach(b=>{
     const on = b.dataset.id === cur;
