@@ -184,7 +184,7 @@ header{
     background:var(--surface);flex-direction:column;align-items:stretch;flex-wrap:nowrap;
     padding:80px 16px 24px;gap:2px;overflow-y:auto;z-index:90;
     box-shadow:-10px 0 40px rgba(0,0,0,0.18);
-    transform:translateX(100%);transition:transform .25s cubic-bezier(0.32,0.72,0,1);
+    transform:translateX(100%);transition:transform .2s cubic-bezier(0.32,0.72,0,1);
   }
   .main-nav.mobile-open{transform:translateX(0);}
   .main-nav .nav-link{width:100%;justify-content:flex-start;padding:12px 14px;}
@@ -369,7 +369,8 @@ body.fb-sheet-open .celebration-toast{bottom:calc(var(--fbsheet-h,240px) + 12px)
 
 /* ---------------- LAYOUT ---------------- */
 main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
-.section-panel{display:none;animation:fadein .22s cubic-bezier(0.23,1,0.32,1);}
+.section-panel{display:none;animation:panelIn .18s cubic-bezier(0.23,1,0.32,1);}
+@keyframes panelIn{from{opacity:.35;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .section-panel.active{display:block;}
 @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
@@ -456,11 +457,16 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
 .hero-radar-card{margin:0;position:relative;overflow:hidden;}
 .hero-radar-card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--grad-hero);}
 .chart-card-blob{position:absolute;border-radius:50%;opacity:0.10;z-index:0;pointer-events:none;}
-.chart-card-header{position:relative;z-index:1;display:flex;align-items:center;gap:12px;margin-bottom:2px;}
+.chart-card-header{position:relative;z-index:1;display:flex;align-items:center;gap:12px;margin-bottom:2px;text-align:left;}
+@media (max-width:600px){
+  .chart-card-header{align-items:flex-start;}
+  .hero-radar-card .chart-legend-row[aria-hidden="true"]{display:none;}
+  .chart-card-header .dash-card-sub{font-size:.8rem;line-height:1.4;}
+}
 .chart-card-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;box-shadow:0 8px 18px rgba(var(--purple-rgb),0.28);}
 .chart-card-icon.purple{background:var(--grad-purple);}
 .chart-card-icon.teal{background:var(--grad-teal);box-shadow:0 8px 18px rgba(34,197,94,0.28);}
-.chart-legend-row{display:flex;flex-wrap:nowrap;justify-content:center;gap:2px;margin-top:6px;overflow-x:hidden;}
+.chart-legend-row{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 6px;margin-top:8px;}
 .chart-legend-chip{display:inline-flex;align-items:center;gap:3px;font-size:0.75rem;font-weight:600;color:var(--ink-soft);padding:2px 6px 2px 4px;border-radius:999px;background:var(--bg-soft);white-space:nowrap;flex-shrink:0;}
 .chart-legend-dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0;}
 .dash-top-grid{
@@ -615,7 +621,14 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:8px;font-size:0.93rem;
 }
 .examples li .es{color:var(--ink-soft);font-size:0.83rem;display:block;margin-top:3px;}
+.topic-more{margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:0 14px;}
+.topic-more summary{cursor:pointer;font-weight:700;font-size:0.9rem;color:var(--ink-soft);padding:12px 0;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+.topic-more summary::-webkit-details-marker{display:none;}
+.topic-more summary::after{content:"▾";transition:transform .2s ease;}
+.topic-more[open] summary::after{transform:rotate(180deg);}
+.topic-more .summary{margin:0 0 14px;}
 .tip-box{
+  display:flex;gap:8px;align-items:flex-start;
   background:#FFF3E0;border:1px solid #F8D9A8;border-radius:12px;
   padding:12px 16px;font-size:0.87rem;margin-top:14px;color:#7A4200;
 }
@@ -688,6 +701,21 @@ main{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
 .tv-ctable td{padding:10px 14px;font-size:0.81rem;color:var(--ink-soft);border-bottom:1px solid var(--line);vertical-align:top;}
 .tv-ctable tr:last-child td{border-bottom:none;}
 .tv-ctable .tv-rowlabel{color:var(--ink-soft);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:.02em;width:120px;}
+.tv-ctable .tv-rowlead{text-transform:none;font-size:0.81rem;color:var(--ink);}
+/* En celular la tabla pasa a filas apiladas: cada fila es una tarjeta y cada celda lleva el nombre de su columna. */
+@media (max-width:600px){
+  .tv-contrast{overflow-x:visible;}
+  .tv-ctable,.tv-ctable tbody,.tv-ctable tr,.tv-ctable td{display:block;width:auto;}
+  .tv-ctable thead{display:none;}
+  .tv-ctable{border-radius:14px;}
+  .tv-ctable tr{padding:10px 14px;border-bottom:1px solid var(--line);}
+  .tv-ctable tr:last-child{border-bottom:none;}
+  .tv-ctable td{padding:3px 0;border:none;font-size:0.86rem;}
+  .tv-ctable .tv-rowlabel{width:auto;margin-bottom:4px;color:var(--ink);font-size:0.75rem;}
+  .tv-ctable .tv-rowlead{font-size:0.95rem;}
+  .tv-ctable td[data-th]{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;align-items:baseline;}
+  .tv-ctable td[data-th]::before{content:attr(data-th);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--purple);}
+}
 
 /* ---------------- CATEGORIES ---------------- */
 .cat-layout{display:grid;grid-template-columns:1fr 3fr;gap:20px;align-items:start;}
@@ -1327,7 +1355,15 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
   .home-hero{padding:20px 16px;}
   .home-hero-top{flex-direction:column;text-align:center;gap:10px;}
   .home-hero-msg h1{font-size:1.6rem;}
-  .home-cta,.home-grid{grid-template-columns:1fr;}
+  .home-cta{grid-template-columns:1fr;}
+  .home-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0;}
+  .home-card{padding:12px 6px;border-radius:18px;gap:4px;}
+  .home-card h4{font-size:.62rem;letter-spacing:.06em;}
+  .home-card svg[role="img"]{width:64px;height:64px;}
+  .home-card .medal{width:44px;height:auto;}
+  .home-streak-num{font-size:1.6rem;padding-top:4px;}
+  .home-week{display:none;}
+  .home-card-sub{font-size:.72rem;line-height:1.3;}
   .home-links{justify-content:center;}
   .home-empty{flex-direction:column;text-align:center;}
 }
@@ -1362,7 +1398,8 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .route-cont:active{transform:translateY(1px) scale(.985);}
 .route-hero-bolt{flex:none;position:relative;z-index:1;}
 .route-hero-bolt .bolt{margin:0;}
-.route-tabs{display:flex;gap:8px;margin:14px 0 4px;overflow-x:auto;padding-bottom:4px;}
+.route-tabs{display:flex;flex-wrap:nowrap;gap:8px;margin:14px 0 4px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.route-tabs::-webkit-scrollbar{display:none;}
 .route-tab{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px 4px;border-radius:16px;border:2px solid transparent;background:none;cursor:pointer;color:var(--ink-soft);font-family:inherit;}
 .route-tab span{font-size:.72rem;font-weight:700;}
 .route-tab.active{background:var(--purple-soft);border-color:var(--purple);color:var(--purple-dark);}
@@ -1375,8 +1412,8 @@ h2 .emo3d,.theory-list-title .emo3d{margin-right:.35em;font-size:.85em;}
 .rnode.done .rcirc{background:radial-gradient(circle at 35% 30%,#8DF0B0,#1FA463);box-shadow:0 5px 0 #0E6A3B,0 9px 14px rgba(0,0,0,.3);color:#fff;}
 .rnode.cur .rcirc{width:74px;height:74px;font-size:1.5rem;background:radial-gradient(circle at 35% 30%,#FFE58A,#F58A1F);box-shadow:0 6px 0 #9A4B00,0 0 0 6px rgba(255,201,60,.25),0 10px 20px rgba(0,0,0,.35);color:#3B2600;}
 .rnode.open .rcirc{background:radial-gradient(circle at 35% 30%,#9DB8FF,#4F3DFF);box-shadow:0 5px 0 #2C2196,0 9px 14px rgba(0,0,0,.3);color:#fff;}
-.rnode.locked .rcirc{background:var(--bg-soft);border:2px solid var(--line);box-shadow:0 5px 0 var(--line);color:var(--ink-soft);}
-.rnode.locked .rname{color:var(--ink-soft);opacity:.75;}
+.rnode.locked .rcirc{background:var(--surface-2);border:2px solid var(--line);box-shadow:0 5px 0 var(--line);color:var(--ink-soft);}
+.rnode.locked .rname{color:var(--ink-soft);}
 .rcirc b{position:relative;z-index:1;line-height:0;display:flex;}
 .rcirc b:not(:has(svg)){line-height:1;}
 .rpulse{position:absolute;inset:-7px;border-radius:50%;border:3px solid #FFC93C;animation:rpulse 1.8s ease-out infinite;}
@@ -1748,7 +1785,10 @@ button.pvr-c:active{transform:translate(-50%,-50%) scale(.97);}
 /* CONECTORES-CSS:END */
 /* PERFIL-UI-CSS:BEGIN */
 .pf-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
-.pf-av{width:48px;height:48px;font-size:1.4rem;}
+.pf-av{width:72px;height:72px;font-size:2.2rem;flex:none;}
+.pf-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.pf-chip{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:700;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 6px;font-variant-numeric:tabular-nums;}
+.pf-chip svg{flex:none;}
 .pf-hn{flex:1 1 150px;min-width:0;}
 .pf-hn b{font-weight:800;font-size:1.05rem;}
 .pf-hn small{display:block;color:var(--ink-soft);font-size:.8rem;margin-top:2px;}
@@ -1756,6 +1796,7 @@ button.pvr-c:active{transform:translate(-50%,-50%) scale(.97);}
 .pf-tabs{display:flex;gap:4px;border-bottom:1.5px solid var(--line);margin:0 0 16px;overflow-x:auto;}
 .pf-tab{flex:1 1 0;min-width:max-content;border:0;background:none;color:var(--ink-soft);font-family:inherit;font-weight:700;font-size:.88rem;padding:11px 8px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1.5px;}
 .pf-tab[aria-selected="true"]{color:var(--purple);border-bottom-color:var(--purple);}
+@media (max-width:520px){.pf-tab{min-width:0;font-size:.82rem;padding:11px 4px;}.pf-hn small{font-size:.74rem;}}
 :root[data-theme="dark"] .pf-tab[aria-selected="true"]{color:#B7A5FF;border-bottom-color:#B7A5FF;}
 .pf-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
 @media (min-width:700px){.pf-kpis{grid-template-columns:repeat(4,minmax(0,1fr));}}
@@ -23900,7 +23941,7 @@ function drawOnboarding(){
 function maybeShowOnboarding(){
   if(onboardingSeen || placementLocked()) return;
   onboardingSeen = true; saveProgress();
-  setTimeout(showOnboarding, 700);
+  requestAnimationFrame(()=> requestAnimationFrame(showOnboarding));   // de inmediato, antes del primer toque: con retraso tapaba lo primero que se tocaba
 }
 /* MOTIVATION:END */
 /* ---- Celebración (racha nueva / subida de nivel) ---- */
@@ -24652,7 +24693,9 @@ function fbSheetClose(){
   document.body.classList.remove("fb-sheet-open");
 }
 function fbSheetMaybeOpen(){
-  if(!fbSheetMQ.matches || activeSection !== "exercises" || !FB_SHEET_TYPES.has(activeExercise) || document.getElementById("fbSheet")) return;
+  if(!fbSheetMQ.matches || document.getElementById("fbSheet")) return;
+  // Ejercicios: solo los tipos de una pregunta. Práctica de hoy y misiones de la Ruta (mismo #exPanel): cualquier paso con un resultado y un botón Siguiente.
+  if(!(activeSection === "exercises" && FB_SHEET_TYPES.has(activeExercise)) && activeSection !== "practicehoy") return;
   const panel = document.getElementById("exPanel"); if(!panel) return;
   const fbs = panel.querySelectorAll(".feedback.show"); if(fbs.length !== 1) return;
   const fb = fbs[0], card = fb.closest(".card"); if(!card) return;
@@ -25144,12 +25187,12 @@ function renderTVSpectrum(v){
 }
 function renderTVContrast(v){
   const head = v.cols.map(c=>`<th>${c}</th>`).join("");
-  const rows = v.rows.map(r=> `<tr><td class="tv-rowlabel">${r.label}</td>${r.cells.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("");
+  const rows = v.rows.map(r=> `<tr><td class="tv-rowlabel">${r.label}</td>${r.cells.map((c, i)=>`<td data-th="${escHtml(String(v.cols[i] || "").replace(/<[^>]+>/g, ""))}"><span>${c}</span></td>`).join("")}</tr>`).join("");
   return `<div class="tv-contrast"><table class="tv-ctable"><thead><tr><th></th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function renderTVPattern(v){
   const head = v.cols.map(c=>`<th>${c}</th>`).join("");
-  const rows = v.rows.map(r=> `<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("");
+  const rows = v.rows.map(r=> `<tr>${r.map((c, i)=>`<td${i ? ` data-th="${escHtml(String(v.cols[i] || "").replace(/<[^>]+>/g, ""))}"` : ` class="tv-rowlabel tv-rowlead"`}><span>${c}</span></td>`).join("")}</tr>`).join("");
   return `<div class="tv-contrast">${v.formula ? `<div class="tv-formula-banner">${v.formula}</div>` : ""}<table class="tv-ctable"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function renderTopicVisual(t){
@@ -25184,6 +25227,7 @@ function weakestExerciseType(){
   return best.id;
 }
 function renderRadarSVG(skills){
+  const rfs = window.innerWidth < 600 ? 19 : 12;
   const n = skills.length, cx=200, cy=132, R=96;
   const angleFor = i => (Math.PI*2*i/n) - Math.PI/2;
   const pt = (i, frac) => { const a=angleFor(i); return [cx+R*frac*Math.cos(a), cy+R*frac*Math.sin(a)]; };
@@ -25200,10 +25244,10 @@ function renderRadarSVG(skills){
   const labels = skills.map((s,i)=>{
     const [x,y] = pt(i,1.24);
     const anchor = Math.abs(x-cx)<4 ? "middle" : (x>cx ? "start" : "end");
-    return `<text x="${x}" y="${y-4}" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="${anchor}">${s.label}</text>
-            <text x="${x}" y="${y+11}" font-size="12" fill="var(--ink-soft)" text-anchor="${anchor}">${s.value}%</text>`;
+    return `<text x="${x}" y="${y-4}" font-size="${rfs}" font-weight="700" fill="var(--ink)" text-anchor="${anchor}">${s.label}</text>
+            <text x="${x}" y="${y+11}" font-size="${rfs}" fill="var(--ink-soft)" text-anchor="${anchor}">${s.value}%</text>`;
   }).join("");
-  return `<svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid meet" style="width:100%;height:230px;display:block;margin:0 auto;">
+  return `<svg viewBox="${rfs > 12 ? "-40 -22 480 300" : "0 0 400 260"}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:${rfs > 12 ? "auto" : "230px"};display:block;margin:0 auto;">
     <defs>
       <linearGradient id="radarFillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="${brandHex()}"/>
@@ -25256,18 +25300,19 @@ function renderDailyActivitySVG(daysData){
   // se refresca en cada render para reflejar el idioma activo.
   const gramaticaCat = DAILY_ACTIVITY_CATS.find(c=>c.gradId==="gGramatica");
   if(gramaticaCat){ gramaticaCat.from = brandHex(); gramaticaCat.to = brandHexLight(); }
-  const w=560, h=240, padTop=16, padBottom=36, padLeft=30, padRight=10;
+  const narrow = window.innerWidth < 600;
+  const w = narrow ? 340 : 560, h = narrow ? 220 : 240, padTop=16, padBottom=36, padLeft = narrow ? 26 : 30, padRight=10, fs = narrow ? 13 : 12;
   const plotW = w - padLeft - padRight, plotH = h - padTop - padBottom;
   const maxTotal = Math.max(...daysData.map(d=>d.total));
   const niceMax = Math.max(4, Math.ceil(maxTotal/4)*4);
-  const barGap = 10;
+  const barGap = narrow ? 6 : 10;
   const barW = (plotW - barGap*(daysData.length-1)) / daysData.length;
   const today = todayStr();
 
   const gridLines = [0,0.25,0.5,0.75,1].map(f=>{
     const y = padTop + plotH - f*plotH;
     return `<line x1="${padLeft}" y1="${y}" x2="${w-padRight}" y2="${y}" stroke="var(--line)" stroke-width="1"/>
-            <text x="${padLeft-8}" y="${y+4}" font-size="12" fill="var(--ink-soft)" text-anchor="end">${Math.round(f*niceMax)}</text>`;
+            <text x="${padLeft-8}" y="${y+4}" font-size="${fs}" fill="var(--ink-soft)" text-anchor="end">${Math.round(f*niceMax)}</text>`;
   }).join("");
 
   const gradDefs = DAILY_ACTIVITY_CATS.map(c=>`
@@ -25298,8 +25343,8 @@ function renderDailyActivitySVG(daysData){
         ${d.total>0 ? `<rect x="${x-2}" y="${padTop+plotH-((d.total/niceMax)*plotH)-2}" width="${barW+4}" height="${(d.total/niceMax)*plotH+2}" fill="${isToday?'var(--purple)':'transparent'}" fill-opacity="0.06" rx="5"/>` : ""}
         ${rects}
       </g>
-      <text x="${x+barW/2}" y="${h-padBottom+16}" font-size="12" fill="${isToday?'var(--purple-dark)':'var(--ink-soft)'}" text-anchor="middle" font-weight="${isToday?800:400}">${dayLabel}</text>
-      ${d.total>0 ? `<text x="${x+barW/2}" y="${yCursor-6}" font-size="12" fill="var(--ink)" text-anchor="middle" font-weight="700">${d.total}</text>` : ""}`;
+      <text x="${x+barW/2}" y="${h-padBottom+16}" font-size="${fs}" fill="${isToday?'var(--purple-dark)':'var(--ink-soft)'}" text-anchor="middle" font-weight="${isToday?800:400}">${dayLabel}</text>
+      ${d.total>0 ? `<text x="${x+barW/2}" y="${yCursor-6}" font-size="${fs}" fill="var(--ink)" text-anchor="middle" font-weight="700">${d.total}</text>` : ""}`;
   }).join("");
 
   return `
@@ -25382,9 +25427,9 @@ function renderHome(){
             <defs><linearGradient id="homeRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DF3FF"/><stop offset="1" stop-color="#4F3DFF"/></linearGradient></defs>
             <circle cx="40" cy="40" r="31" fill="none" stroke="var(--line)" stroke-width="9"/>
             <circle cx="40" cy="40" r="31" fill="none" stroke="url(#homeRing)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${ringDash} ${ringLen}" transform="rotate(-90 40 40)"/>
-            <text x="40" y="45" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)">${doneToday}/${goalN}</text>
+            <text x="40" y="45" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)">${Math.min(doneToday, goalN)}/${goalN}</text>
           </svg>
-          <div class="home-card-sub">${remainToday ? `Te faltan ${remainToday} hoy` : "¡Meta cumplida!"}</div>
+          <div class="home-card-sub">${remainToday ? `Te faltan ${remainToday} hoy` : doneToday > goalN ? `¡Meta cumplida! · +${doneToday - goalN} extra` : "¡Meta cumplida!"}</div>
         </div>
         <div class="home-card">
           <h4>Racha</h4>
@@ -25728,12 +25773,13 @@ function drawTheoryDetail(lv, index){
       <h2>${t.title}</h2>
     </div>
     <div class="card topic-card">
-      <p class="summary">${t.detail || t.summary}</p>
+      <p class="summary">${t.detail && t.summary ? t.summary : (t.detail || t.summary)}</p>
       ${renderTopicVisual(t)}
       ${t.visual && t.visual.type === "pattern" ? "" : `<ul class="examples">
         ${t.examples.map(e=>`<li>${wz(e.en)}<span class="es">${e.es}</span></li>`).join("")}
       </ul>`}
-      <div class="tip-box">💡 ${t.tip}</div>
+      <div class="tip-box">${svgIcon("bulb", 16)} ${t.tip}</div>
+      ${t.detail && t.summary && t.detail !== t.summary ? `<details class="topic-more"${theoryHighlight ? " open" : ""}><summary>Leer la explicación completa</summary><p class="summary">${t.detail}</p></details>` : ""}
       ${topicPracticeBlockHTML(lv, index)}
       <button class="practice-link" id="theoryPracticeBtn">Más ejercicios de gramática del nivel ${lv} →</button>
     </div>
@@ -26897,7 +26943,9 @@ function pfActiveProfile(){ return getProfiles().find(p=> p.id === ACTIVE_PROFIL
 function pfDrawHead(){
   const ap = pfActiveProfile(), el = document.getElementById("pfHead"); if(!el) return;
   el.innerHTML = `<span class="profile-avatar pf-av">${ap ? ap.avatar : "🐱"}</span>
-    <div class="pf-hn"><b>${escHtml(ap ? ap.name : "Usuario")}</b><small>Este progreso se guarda solo para este perfil en este navegador.</small></div>
+    <div class="pf-hn"><b>${escHtml(ap ? ap.name : "Usuario")}</b>
+      <div class="pf-chips"><span class="pf-chip">${medalSvg(officialLevel, 22)}Nivel ${officialLevel}</span><span class="pf-chip">${svgIcon("flame", 16)}${dailyStreak.count} ${dailyStreak.count === 1 ? "día" : "días"} de racha</span></div>
+      <small>Este progreso se guarda solo para este perfil en este navegador.</small></div>
     <div class="pf-ha"><button type="button" class="ex-tab" id="switchProfileBtn">${svgIcon("user", 16)} Cambiar de usuario</button><button type="button" class="ex-tab" id="showGuideBtn">${svgIcon("book", 16)} Guía de bienvenida</button></div>`;
   document.getElementById("showGuideBtn").onclick = ()=> showOnboarding();
   document.getElementById("switchProfileBtn").onclick = ()=>{ setActiveProfileId(null); location.reload(); };
@@ -40176,7 +40224,7 @@ function missionCardExplain(s, id){
    coincide), y si no hay ninguna coincidencia, cae en la regla general de la unidad, como antes. */
 function missionRuleHint(s, id){
   setTimeout(()=>{
-    const fb = document.querySelector("#exPanel .feedback.show.bad, #exPanel .feedback.bad.show");
+    const fb = document.querySelector("#fbSheet .feedback.show.bad, #exPanel .feedback.show.bad, #exPanel .feedback.bad.show");
     if(!fb || fb.querySelector(".rule-hint")) return;
     const specific = id ? missionCardExplain(s, id) : null;
     const text = specific || missionRuleData(s).rule; if(!text) return;
@@ -40605,7 +40653,8 @@ const TAB_ITEMS = [["home","Inicio","home"],["route","Ruta","route"],["exercises
 const TAB_OF = {practicehoy:"exercises", categories:"theory", phrasal:"theory", verbs:"theory"};
 function syncTabBar(sectionId){
   if(typeof fbSheetClose === "function") fbSheetClose();
-  const cur = TAB_OF[sectionId] || sectionId;
+  const inMission = sectionId === "practicehoy" && typeof practiceTodaySession !== "undefined" && practiceTodaySession && practiceTodaySession.mission;
+  const cur = inMission ? "route" : (TAB_OF[sectionId] || sectionId);
   document.querySelectorAll("#tabBar .tab-btn").forEach(b=>{
     const on = b.dataset.id === cur;
     b.classList.toggle("active", on);
